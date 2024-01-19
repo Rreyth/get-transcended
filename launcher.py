@@ -1,1 +1,3 @@
-print("tkt c pong")
+from game.core import run
+
+run()
