@@ -1,0 +1,57 @@
+version: '3'
+
+services:
+  django:
+    build:
+      context: ./requirements/Django
+    container_name: django
+    image: django
+    # restart: always
+    volumes:
+      - app:/app
+    expose:
+      - "8000"
+    networks:
+      - transcendNetwork
+
+  daphne:
+    build:
+      context: ./requirements/Daphne
+    container_name: daphne
+    image: daphne
+    # restart: always
+    volumes:
+      - app:/app
+    expose:
+      - "8001"
+    networks:
+      - transcendNetwork
+
+  nginx:
+    build:
+      context: ./requirements/Nginx
+    container_name: nginx
+    image: nginx
+    restart: always
+    ports:
+      - "8080:8080"
+    # volumes:
+    #   - 
+    networks:
+      - transcendNetwork
+
+
+volumes:
+    app:
+        driver: local
+        name: app
+        driver_opts:
+            o: bind
+            type: none
+            device: ./django_code
+
+
+networks:
+  transcendNetwork:
+    driver: bridge
+    name: transcendNetwork
