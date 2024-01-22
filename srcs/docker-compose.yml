@@ -32,7 +32,7 @@ services:
       context: ./requirements/Nginx
     container_name: nginx
     image: nginx
-    restart: always
+    # restart: always
     ports:
       - "8080:8080"
     # volumes:

@@ -1,9 +1,11 @@
 FROM python:3.8
 
-WORKDIR /app
+WORKDIR /app/transcend
 
 COPY utils/requirements .
 RUN pip install --no-cache-dir -r requirements
+RUN rm requirements
+
 
 # Copiez le code source dans le conteneur
 # COPY . .
@@ -12,4 +14,4 @@ RUN pip install --no-cache-dir -r requirements
 EXPOSE 8001
 
 # Commande pour démarrer Daphne
-CMD ["daphne", "project.asgi:application", "-b", "0.0.0.0", "-p", "8001"]
+CMD ["daphne", "transcend.asgi:application", "-b", "0.0.0.0", "-p", "8001"]
