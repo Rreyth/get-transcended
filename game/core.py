@@ -1,9 +1,7 @@
-import math
 import time
 import sys
-import pygame as pg
 from .input_handler import *
-import game.config as conf
+from .config import *
 from .Player import *
 from .Wall import *
 from .Ball import *
@@ -12,20 +10,21 @@ from .update import *
 class Game:
 	def __init__(self): #init class
 		pg.init()
-		self.winSize = [conf.winWidth, conf.winHeight]
+		self.winSize = [winWidth, winHeight]
 		self.win = pg.display.set_mode(self.winSize)
 		self.clock = pg.time.Clock()
 		self.fps = 120
 		self.last = time.time()
-		self.runMainLoop = True
-		self.players = [Player(1), Player(2)]
+		self.state = "game"
+		self.players = [Player(1, "Player1"), Player(2, "Player2")]
 		self.walls = [Wall("up"), Wall("down")]
 		self.ball = Ball()
-		self.font = pg.font.Font(conf.scoreFont, int(conf.textSize))
-		self.text = self.font.render("3 - 5", True, (255, 255, 255))
+		self.font = pg.font.Font(font, int(textSize))
 	
-	def run(self): #run game loop
-		while self.runMainLoop:
+	def run(self): #run game loop # relaunch when modif state
+		# while self.state == "menu"
+		# while self.state == "pause"
+		while self.state == "game":
 			self.input()
 			self.tick()
 			self.render()
@@ -61,8 +60,16 @@ class Game:
 		self.walls[0].draw(self.win)
 		self.walls[1].draw(self.win)
 		self.ball.draw(self.win)
+  
+		score = str(self.players[0].score) + " - " + str(self.players[1].score)
+  
+		names = [self.players[0].name, self.players[1].name]
+  
+		text = [self.font.render(score, True, (255, 255, 255)), self.font.render(names[0], True, (255, 255, 255)), self.font.render(names[1], True, (255, 255, 255))]
 
-		self.win.blit(self.text, ((conf.winWidth / 2) - (self.text.get_size()[0] / 2), conf.textDist))
+		self.win.blit(text[0], ((winWidth / 2) - (text[0].get_size()[0] / 2), textDist))
+		self.win.blit(text[1], (0, textDist))
+		self.win.blit(text[2], (winWidth - text[2].get_size()[0], textDist))
 
 		pg.display.update() #call to update render
 		
