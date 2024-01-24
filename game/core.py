@@ -6,6 +6,8 @@ from .Player import *
 from .Wall import *
 from .Ball import *
 from .update import *
+from .render import *
+from .Menu import *
 
 class Game:
 	def __init__(self): #init class
@@ -15,20 +17,24 @@ class Game:
 		self.clock = pg.time.Clock()
 		self.fps = 120
 		self.last = time.time()
-		self.state = "game"
-		self.players = [Player(1, "Player1"), Player(2, "Player2")]
-		self.walls = [Wall("up"), Wall("down")]
-		self.ball = Ball()
+		self.state = "menu"
+		self.menu = Menu()
+		self.players = [Player(1, "Player1"), Player(2, "Player2")] #passer dans le menu
+		self.walls = [Wall("up"), Wall("down")] #passer dans le menu
+		self.ball = Ball() #passer dans le menu
 		self.font = pg.font.Font(font, int(textSize))
+		self.max_score = 5 #modif by custom game #passer dans le menu
 	
 	def run(self): #run game loop # relaunch when modif state
-		# while self.state == "menu"
-		# while self.state == "pause"
-		while self.state == "game":
+		while self.state != "end": # while self.state == "pause" # ajouter comme menu
 			self.input()
 			self.tick()
 			self.render()
 			self.clock.tick(self.fps)
+
+		if self.state == "end": #update with win/loose/end loop
+			print("Final score:", self.players[0].score, "-", self.players[1].score)
+			self.quit()
 			
 	def input(self): #catch user input
 		for event in pg.event.get():
@@ -39,7 +45,7 @@ class Game:
 		self.mouseState = pg.mouse.get_pressed()
 		self.mousePos = pg.mouse.get_pos()
   
-		input_handler_2p(self, self.players)
+		input_handler(self)
 		
 	def tick(self): #calcul method
 		tmp = time.time()
@@ -51,25 +57,14 @@ class Game:
 		pg.display.set_caption(str(self.clock.get_fps()))
 		
 	def render(self): #graphic update
-		self.win.fill((0, 0, 0)) #clean screen
-		
-		#update drawing (render in another file ?)
-		#fct draw avec des for 
-		self.players[0].draw(self.win)
-		self.players[1].draw(self.win)
-		self.walls[0].draw(self.win)
-		self.walls[1].draw(self.win)
-		self.ball.draw(self.win)
-  
-		score = str(self.players[0].score) + " - " + str(self.players[1].score)
-  
-		names = [self.players[0].name, self.players[1].name]
-  
-		text = [self.font.render(score, True, (255, 255, 255)), self.font.render(names[0], True, (255, 255, 255)), self.font.render(names[1], True, (255, 255, 255))]
-
-		self.win.blit(text[0], ((winWidth / 2) - (text[0].get_size()[0] / 2), textDist))
-		self.win.blit(text[1], (0, textDist))
-		self.win.blit(text[2], (winWidth - text[2].get_size()[0], textDist))
+		#render menu  #clean
+		#render game(mode) #clean
+		#render pause #over with transparancy
+		#render end #clean?
+		if self.state == "menu":
+			render_menu(self)
+		if self.state == "game":
+			render_game(self)
 
 		pg.display.update() #call to update render
 		

@@ -3,7 +3,7 @@ from random import randint
 
 class Ball:
 	def __init__(self):
-		self.radius = 10
+		self.radius = 7
 		center = [winWidth / 2, winHeight / 2]
 		self.hitbox = pg.Rect([center[0] - self.radius, center[1] - self.radius], [self.radius * 2, self.radius * 2])
 
@@ -13,7 +13,7 @@ class Ball:
 		self.multiplier = 1.0
 		self.last_hit = 0
 
-	def move(self, players):
+	def move(self, players, walls):
 		if self.stick != 0:
 			for player in players:
 				if player.nb == self.stick:
@@ -21,8 +21,27 @@ class Ball:
 						self.hitbox.center = (player.paddle.centerx + 25, player.paddle.centery)
 					if player.nb == 2:
 						self.hitbox.center = (player.paddle.centerx - 25, player.paddle.centery)
+			return
+		rad = math.radians(self.dir)
+		if self.radius > self.speed:
+			new_x = self.hitbox.centerx + (self.speed * math.cos(rad))
+			new_y = self.hitbox.centery + (self.speed * math.sin(rad))
+			self.hitbox.center = (new_x, new_y)
+			return
+
+		tmp_speed = self.radius
+		collision = False
+		while not collision and tmp_speed <= self.speed:
+			tmp_x = self.hitbox.centerx + (tmp_speed * math.cos(rad))
+			tmp_y = self.hitbox.centery + (tmp_speed * math.sin(rad))
+			collision = try_collide(tmp_x, tmp_y, self.radius, players, walls)
+			if collision:
+				break
+			tmp_speed += self.radius
+
+		if collision:
+			self.hitbox.center = (tmp_x, tmp_y)
 		else:
-			rad = math.radians(self.dir)
 			new_x = self.hitbox.centerx + (self.speed * math.cos(rad))
 			new_y = self.hitbox.centery + (self.speed * math.sin(rad))
 			self.hitbox.center = (new_x, new_y)
@@ -46,24 +65,37 @@ class Ball:
 		for player in players:
 			if self.hitbox.colliderect(player.paddle):
 				diff_x = (self.hitbox.center[0] - player.paddle.center[0]) / (player.paddle.size[0] / 2)
+				tmp = diff_x
+				if diff_x > 1 or diff_x < -1:
+					diff_x = diff_x % 1 if diff_x > 0 else diff_x % -1
+				if tmp != diff_x and diff_x == 0:
+					diff_x = 1 if tmp > 0 else -1 
 				diff_y = (self.hitbox.center[1] - player.paddle.center[1]) / (player.paddle.size[1] / 2)
-	
+
 				max = 45
 				if (diff_y >= 1):
-					self.dir = (max * diff_x) + 90
-				elif (diff_y <= -1):
 					self.dir = (max * (-diff_x)) + 90
+					while self.hitbox.colliderect(player.paddle):
+						self.hitbox.centery += 1
+				elif (diff_y <= -1):
+					self.dir = (max * diff_x) + 270
+					while self.hitbox.colliderect(player.paddle):
+						self.hitbox.centery -= 1
 				elif (diff_x >= 0):
 					self.dir = max * diff_y
+					while self.hitbox.colliderect(player.paddle):
+						self.hitbox.centerx += 1
 				else:
 					self.dir = (max * (-diff_y)) + 180
+					while self.hitbox.colliderect(player.paddle):
+						self.hitbox.centerx -= 1
 				if (self.multiplier < 5):
 					self.multiplier += 0.1
 				self.last_hit = player.nb
   
 	def update(self, walls, players, delta):
 		self.speed = ball_speed_per_sec * delta * self.multiplier
-		self.move(players)
+		self.move(players, walls)
 		self.collide(walls, players)
 		self.goal(players)
 		self.unstuck()
@@ -72,12 +104,12 @@ class Ball:
 		pg.draw.circle(win, (255, 255, 255), self.hitbox.center, self.radius)
 
 	def unstuck(self):
-		if round(self.dir) % 360 in range(88, 93) or round(self.dir) % 360 in range(-272, -268):
+		if round(self.dir) % 360 in range(85, 96) or round(self.dir) % 360 in range(-275, -264):
 			if (self.last_hit == 1):
 				self.dir -= 5
 			else:
 				self.dir += 5
-		if round(self.dir) % 360 in range(268, 273) or round(self.dir) % 360 in range(-92, -89):
+		if round(self.dir) % 360 in range(265, 276) or round(self.dir) % 360 in range(-95, -86):
 			if (self.last_hit == 1):
 				self.dir += 5
 			else:
@@ -102,5 +134,17 @@ class Ball:
 			self.dir = 0
 		elif self.stick == 2:
 			self.dir = 180
-      
+	  
 		self.stick = 0
+  
+  
+def try_collide(x, y, radius, players, walls):
+	tmp_rect = pg.Rect([x - radius, y - radius], [radius * 2, radius * 2])
+	for wall in walls:
+		if tmp_rect.colliderect(wall.hitbox):
+			return True
+	
+	for player in players:
+		if tmp_rect.colliderect(player.paddle):
+			return True
+	return False

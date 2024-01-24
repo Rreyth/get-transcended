@@ -1,8 +1,11 @@
 from .config import *
 
 def update_all(core, delta):
-    
-	for player in core.players:
-		player.speed = speed_per_sec * delta
-
-	core.ball.update(core.walls, core.players, delta)
+	if core.state == "game":
+		core.ball.update(core.walls, core.players, delta)
+ 
+		for player in core.players:
+			if player.score == core.max_score:
+				core.state = "end"
+			player.speed = speed_per_sec * delta
+	
