@@ -8,6 +8,7 @@ from .Ball import *
 from .update import *
 from .render import *
 from .Menu import *
+from .Pause import *
 
 class Game:
 	def __init__(self): #init class
@@ -19,11 +20,9 @@ class Game:
 		self.last = time.time()
 		self.state = "menu"
 		self.menu = Menu()
-		self.players = [Player(1, "Player1"), Player(2, "Player2")] #passer dans le menu
-		self.walls = [Wall("up"), Wall("down")] #passer dans le menu
-		self.ball = Ball() #passer dans le menu
+		self.pause = [False, Pause()]
 		self.font = pg.font.Font(font, int(textSize))
-		self.max_score = 5 #modif by custom game #passer dans le menu
+
 	
 	def run(self): #run game loop # relaunch when modif state
 		while self.state != "end": # while self.state == "pause" # ajouter comme menu
@@ -40,6 +39,8 @@ class Game:
 		for event in pg.event.get():
 			if event.type == pg.QUIT: #event click on cross
 				self.quit()
+			if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
+				escape_handler(self)
     
 		self.keyboardState = pg.key.get_pressed()
 		self.mouseState = pg.mouse.get_pressed()
@@ -63,7 +64,9 @@ class Game:
 		#render end #clean?
 		if self.state == "menu":
 			render_menu(self)
-		if self.state == "game":
+		elif self.pause[0]:
+			render_pause(self)
+		elif self.state == "game":
 			render_game(self)
 
 		pg.display.update() #call to update render

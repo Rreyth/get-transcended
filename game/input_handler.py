@@ -3,24 +3,24 @@ from .config import *
 def input_handler(core):
 	if core.state == "menu":
 		menu_input(core)
-	if core.state == "game":
+	elif core.state == "game" and not core.pause[0]:
 		#call depends on selected mod
 		input_handler_2p(core, core.players)
-	# elif core.state == "pause":
+	elif core.pause[0]:
+		pause_input(core)
 	# 	#input to return to game + return to menu ?
 	# elif core.state == "end":
 	# 	#button return menu + quit + escape = quit ?
 
 def menu_input(core):
-	if core.keyboardState[pg.K_ESCAPE]:
-		core.quit()
-	if core.keyboardState[pg.K_RETURN]:
-		core.state = "game"
+	if core.mouseState[0] and pg.mouse.get_focused():
+		core.menu.click(core, core.mousePos)
 
+def pause_input(core):
+	if core.mouseState[0] and pg.mouse.get_focused():
+		core.pause[1].click(core, core.mousePos)
 
 def	input_handler_1p(core, player):
-	if core.keyboardState[pg.K_ESCAPE]:
-		core.quit() # pause menu
 	if core.keyboardState[pg.K_UP] or core.keyboardState[pg.K_w]:
 		player.moveUp(core.walls[0].hitbox)
 	if core.keyboardState[pg.K_DOWN] or core.keyboardState[pg.K_s]:
@@ -30,8 +30,6 @@ def	input_handler_1p(core, player):
   
   
 def	input_handler_2p(core, players):
-	if core.keyboardState[pg.K_ESCAPE]:
-		core.quit() # pause menu
 	if core.keyboardState[pg.K_w]:
 		players[0].moveUp(core.walls[0].hitbox)
 	if core.keyboardState[pg.K_s]:
@@ -44,3 +42,13 @@ def	input_handler_2p(core, players):
 		core.ball.launch()
 	if core.keyboardState[pg.K_LEFT] and core.ball.stick == 2:
 		core.ball.launch()
+
+def escape_handler(core):
+	if core.state == "menu": #end screen too ?
+		core.quit()
+	if core.state == "game":
+		core.pause[0] = not core.pause[0]
+		if core.mode != "ONLINE" and core.pause[0]:
+			core.pause[1].freeze = True
+		else:
+			core.pause[1].freeze = False

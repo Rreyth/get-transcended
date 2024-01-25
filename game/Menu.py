@@ -1,4 +1,7 @@
 from .config import *
+from .Player import *
+from .Wall import *
+from .Ball import *
 
 class Menu:
 	def __init__(self):
@@ -19,3 +22,34 @@ class Menu:
 			pg.draw.rect(win, (255, 255, 255), rect, 2, int(self.button_size[1] * 0.25))
 			button = self.button_font.render(key, True, (255, 255, 255))
 			win.blit(button, (rect.centerx - (button.get_size()[0] / 2), (rect.centery) - (button.get_size()[1] * 0.45)))
+   
+   
+	def click(self, core, mousePos):
+		for key, rect in self.buttons.items():
+			if rect.collidepoint(mousePos):
+				if key != "CUSTOM":
+					setValues(key, core)
+				else:
+					pass
+					# customMenu(core)
+
+	
+ 
+def setValues(key, core):
+	if key == "LOCAL":
+		core.max_score = 5
+		core.players = [Player(1, "Player1"), Player(2, "Player2")]
+		core.walls = [Wall("up"), Wall("down")]
+		core.ball = Ball()
+		core.state = "game"
+		core.mode = "local"
+	if key == "SOLO":
+		pass
+		# core.max_score = 5
+		# core.players = [Player(1, "Player1"), Player(2, "AI")]
+		# core.walls = [Wall("up"), Wall("down")]
+		# core.ball = Ball()
+		# core.state = "game"
+		# core.mode = "solo"
+	if key == "ONLINE":
+		pass

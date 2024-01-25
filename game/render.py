@@ -1,7 +1,7 @@
 from .config import *
 
 def render_game(core):
-	core.win.fill((0, 0, 0)) #clean screen
+	core.win.fill((0, 0, 0)) 
 
 	core.players[0].draw(core.win)
 	core.players[1].draw(core.win)
@@ -20,6 +20,17 @@ def render_game(core):
 	core.win.blit(text[2], (winWidth - text[2].get_size()[0], textDist))
  
 def render_menu(core):
-	core.win.fill((0, 0, 0)) #clean screen
+	core.win.fill((0, 0, 0)) 
 	
 	core.menu.draw(core.win)
+ 
+def render_pause(core):
+	render_game(core)
+
+	alpha_surface = pg.Surface(core.winSize, flags = pg.SRCALPHA)
+ 
+	alpha_surface.fill((0, 0, 0, 125))
+	core.win.blit(alpha_surface, (0, 0))
+
+	core.pause[1].draw(core.win)
+	
