@@ -2,6 +2,8 @@ from .config import *
 from .Player import *
 from .Wall import *
 from .Ball import *
+from .StartScreen import *
+from .Pause import *
 
 class Menu:
 	def __init__(self):
@@ -41,8 +43,9 @@ def setValues(key, core):
 		core.players = [Player(1, "Player1"), Player(2, "Player2")]
 		core.walls = [Wall("up"), Wall("down")]
 		core.ball = Ball()
-		core.state = "game"
+		core.state = "start"
 		core.mode = "local"
+		core.start_screen = StartScreen(core.mode) #freeze during timer
 	if key == "SOLO":
 		pass
 		# core.max_score = 5

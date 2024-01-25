@@ -35,6 +35,16 @@ def render_pause(core):
 	core.pause[1].draw(core.win)
 	
 def render_end(core):
-    core.win.fill((0, 0, 0))
-    
-    core.end.draw(core, core.win)
+	core.win.fill((0, 0, 0))
+	
+	core.end.draw(core, core.win)
+	
+def render_start(core):
+	render_game(core)
+	
+	alpha_surface = pg.Surface(core.winSize, flags = pg.SRCALPHA)
+ 
+	alpha_surface.fill((0, 0, 0, 125))
+	core.win.blit(alpha_surface, (0, 0))
+ 
+	core.start_screen.draw(core.win)

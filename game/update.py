@@ -9,4 +9,7 @@ def update_all(core, delta):
 				core.state = "end"
 				player.win = "WIN"
 			player.speed = speed_per_sec * delta
-	
+	if core.state == "start":
+		core.start_screen.update()
+		if core.start_screen.timer == 0:
+			core.state = "game"

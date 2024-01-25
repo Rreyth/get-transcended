@@ -10,6 +10,7 @@ from .render import *
 from .Menu import *
 from .Pause import *
 from .End import *
+from .StartScreen import *
 
 class Game:
 	def __init__(self): #init class
@@ -22,7 +23,7 @@ class Game:
 		self.state = "menu"
 		self.menu = Menu()
 		self.pause = [False, Pause()]
-		self.end = End()
+		self.end = End() #faire des variation ? passer dans menu ?
 		self.font = pg.font.Font(font, int(textSize))
 
 	
@@ -52,7 +53,7 @@ class Game:
 		self.last = tmp
 
 		update_all(self, delta)
-  
+
 		pg.display.set_caption(str(self.clock.get_fps()))
 		
 	def render(self): #graphic update
@@ -60,6 +61,8 @@ class Game:
 		#render game(mode) #clean
 		#render pause #over with transparancy
 		#render end #clean?
+		if self.state == "start":
+			render_start(self)
 		if self.state == "end":
 			render_end(self)
 		elif self.state == "menu":

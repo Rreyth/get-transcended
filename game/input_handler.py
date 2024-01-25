@@ -47,7 +47,7 @@ def	input_handler_2p(core, players):
 		core.ball.launch()
 
 def escape_handler(core):
-	if core.state == "menu" or core.state == "end": #end screen too ?
+	if core.state == "menu" or core.state == "end":
 		core.quit()
 	if core.state == "game":
 		core.pause[0] = not core.pause[0]
