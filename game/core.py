@@ -9,6 +9,7 @@ from .update import *
 from .render import *
 from .Menu import *
 from .Pause import *
+from .End import *
 
 class Game:
 	def __init__(self): #init class
@@ -21,19 +22,16 @@ class Game:
 		self.state = "menu"
 		self.menu = Menu()
 		self.pause = [False, Pause()]
+		self.end = End()
 		self.font = pg.font.Font(font, int(textSize))
 
 	
 	def run(self): #run game loop # relaunch when modif state
-		while self.state != "end": # while self.state == "pause" # ajouter comme menu
+		while True:
 			self.input()
 			self.tick()
 			self.render()
 			self.clock.tick(self.fps)
-
-		if self.state == "end": #update with win/loose/end loop
-			print("Final score:", self.players[0].score, "-", self.players[1].score)
-			self.quit()
 			
 	def input(self): #catch user input
 		for event in pg.event.get():
@@ -62,7 +60,9 @@ class Game:
 		#render game(mode) #clean
 		#render pause #over with transparancy
 		#render end #clean?
-		if self.state == "menu":
+		if self.state == "end":
+			render_end(self)
+		elif self.state == "menu":
 			render_menu(self)
 		elif self.pause[0]:
 			render_pause(self)

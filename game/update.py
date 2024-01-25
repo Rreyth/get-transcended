@@ -7,5 +7,6 @@ def update_all(core, delta):
 		for player in core.players:
 			if player.score == core.max_score:
 				core.state = "end"
+				player.win = "WIN"
 			player.speed = speed_per_sec * delta
 	

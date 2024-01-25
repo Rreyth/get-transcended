@@ -1,16 +1,19 @@
 from .config import *
 
 def input_handler(core):
-	if core.state == "menu":
+	if core.state == "end":
+		end_input(core)
+	elif core.state == "menu":
 		menu_input(core)
 	elif core.state == "game" and not core.pause[0]:
 		#call depends on selected mod
 		input_handler_2p(core, core.players)
 	elif core.pause[0]:
 		pause_input(core)
-	# 	#input to return to game + return to menu ?
-	# elif core.state == "end":
-	# 	#button return menu + quit + escape = quit ?
+
+def end_input(core):
+	if core.mouseState[0] and pg.mouse.get_focused():
+		core.end.click(core, core.mousePos)
 
 def menu_input(core):
 	if core.mouseState[0] and pg.mouse.get_focused():
@@ -44,7 +47,7 @@ def	input_handler_2p(core, players):
 		core.ball.launch()
 
 def escape_handler(core):
-	if core.state == "menu": #end screen too ?
+	if core.state == "menu" or core.state == "end": #end screen too ?
 		core.quit()
 	if core.state == "game":
 		core.pause[0] = not core.pause[0]

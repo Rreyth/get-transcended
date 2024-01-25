@@ -5,6 +5,7 @@ class Player:
 	def __init__(self, nb, name):
 		self.nb = nb
 		self.name = name
+		self.win = "LOOSE"
 		self.score = 0
 		size = [winWidth * 0.007 ,winHeight * 0.1]
 		if (nb == 1):

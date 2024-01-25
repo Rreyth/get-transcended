@@ -34,3 +34,7 @@ def render_pause(core):
 
 	core.pause[1].draw(core.win)
 	
+def render_end(core):
+    core.win.fill((0, 0, 0))
+    
+    core.end.draw(core, core.win)
