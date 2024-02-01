@@ -13,7 +13,7 @@ class Player:
 			self.goal = pg.Rect((-50, 0), (50, winHeight))
 		else:
 			pos = [winWidth - (winWidth * 0.02) - size[0], (winHeight / 2) - (size[1] / 2)]
-			self.goal = pg.Rect((winWidth + 50, 0), (50, winHeight))
+			self.goal = pg.Rect((winWidth, 0), (50, winHeight))
 		self.paddle = pg.Rect(pos, size)
 	
 	def	moveUp(self, wall):
