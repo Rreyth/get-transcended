@@ -34,5 +34,6 @@ class End:
 	def click(self, core, mousePos):
 		if self.button.collidepoint(mousePos):
 			core.state = "menu"
+			core.mode = "none"
 			core.pause[0] = False
 			core.pause[1].freeze = False

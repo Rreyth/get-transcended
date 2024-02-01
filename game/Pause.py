@@ -24,5 +24,6 @@ class Pause:
 			if rect.collidepoint(mousePos):
 				if key == "BACK TO MENU":
 					core.state = "menu"
+					core.mode = "none"
 				core.pause[0] = False
 				self.freeze = False

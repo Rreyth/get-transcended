@@ -6,8 +6,10 @@ def input_handler(core):
 	elif core.state == "menu":
 		menu_input(core)
 	elif core.state == "game" and not core.pause[0]:
-		#call depends on selected mod
-		input_handler_2p(core, core.players)
+		if core.mode == "local":
+			input_handler_2p(core, core.players)
+		elif core.mode == "solo":
+			input_handler_1p(core, core.players[0])
 	elif core.pause[0]:
 		pause_input(core)
 

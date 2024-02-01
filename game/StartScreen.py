@@ -4,18 +4,28 @@ from .config import *
 class StartScreen:
 	def __init__(self, mode): #mode pour modif quoi afficher et ou
 		self.state = True
+		self.mode = mode
 		self.timer = 3
 		self.time = time.time()
 		self.font = pg.font.Font(font, int(winHeight * 0.085))
 		self.size = [150, 100]
-		self.player_input = {
-			"W": pg.Rect(((winWidth / 4) - (self.size[0] / 2), (winHeight / 3) - (self.size[1] / 2)), self.size),
-			"S": pg.Rect(((winWidth / 4) - (self.size[0] / 2), (winHeight / 2) - (self.size[1] / 2)), self.size),
-			"Space": pg.Rect(((winWidth / 4) - (self.size[0] / 2), (winHeight / 3 * 2) - (self.size[1] / 2)), self.size),
-			"UP": pg.Rect(((winWidth / 4 * 3) - (self.size[0] / 2), (winHeight / 3) - (self.size[1] / 2)), self.size),
-			"DOWN": pg.Rect(((winWidth / 4 * 3) - (self.size[0] / 2), (winHeight / 2) - (self.size[1] / 2)), self.size),
-			"LEFT": pg.Rect(((winWidth / 4 * 3) - (self.size[0] / 2), (winHeight / 3 * 2) - (self.size[1] / 2)), self.size)
-		}
+		if mode == "local":
+			self.player_input = {
+				"W": pg.Rect(((winWidth / 4) - (self.size[0] / 2), (winHeight / 3) - (self.size[1] / 2)), self.size),
+				"S": pg.Rect(((winWidth / 4) - (self.size[0] / 2), (winHeight / 2) - (self.size[1] / 2)), self.size),
+				"Space": pg.Rect(((winWidth / 4) - (self.size[0] / 2), (winHeight / 3 * 2) - (self.size[1] / 2)), self.size),
+				"UP": pg.Rect(((winWidth / 4 * 3) - (self.size[0] / 2), (winHeight / 3) - (self.size[1] / 2)), self.size),
+				"DOWN": pg.Rect(((winWidth / 4 * 3) - (self.size[0] / 2), (winHeight / 2) - (self.size[1] / 2)), self.size),
+				"LEFT": pg.Rect(((winWidth / 4 * 3) - (self.size[0] / 2), (winHeight / 3 * 2) - (self.size[1] / 2)), self.size)
+			}
+		elif mode == "solo":
+			self.player_input = {
+				"W": pg.Rect(((winWidth / 5) - (self.size[0] / 2), (winHeight / 3) - (self.size[1] / 2)), self.size),
+				"S": pg.Rect(((winWidth / 5) - (self.size[0] / 2), (winHeight / 2) - (self.size[1] / 2)), self.size),
+				"Space": pg.Rect(((winWidth / 5) + (self.size[0] * 0.275), (winHeight / 3 * 2) - (self.size[1] / 2)), self.size),
+				"UP": pg.Rect(((winWidth / 4 + self.size[0]) - (self.size[0] / 2), (winHeight / 3) - (self.size[1] / 2)), self.size),
+				"DOWN": pg.Rect(((winWidth / 4 + self.size[0]) - (self.size[0] / 2), (winHeight / 2) - (self.size[1] / 2)), self.size),
+			}
 
 	def draw(self, win):
 		for key, rect in self.player_input.items():

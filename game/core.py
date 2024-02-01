@@ -21,6 +21,7 @@ class Game:
 		self.fps = 120
 		self.last = time.time()
 		self.state = "menu"
+		self.mode = "none"
 		self.menu = Menu()
 		self.pause = [False, Pause()]
 		self.end = End() #faire des variation ? passer dans menu ?
@@ -57,13 +58,10 @@ class Game:
 		pg.display.set_caption(str(self.clock.get_fps()))
 		
 	def render(self): #graphic update
-		#render menu  #clean
-		#render game(mode) #clean
-		#render pause #over with transparancy
-		#render end #clean?
+
 		if self.state == "start":
 			render_start(self)
-		if self.state == "end":
+		elif self.state == "end":
 			render_end(self)
 		elif self.state == "menu":
 			render_menu(self)

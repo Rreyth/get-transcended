@@ -45,14 +45,14 @@ def setValues(key, core):
 		core.ball = Ball()
 		core.state = "start"
 		core.mode = "local"
-		core.start_screen = StartScreen(core.mode) #freeze during timer
 	if key == "SOLO":
-		pass
-		# core.max_score = 5
-		# core.players = [Player(1, "Player1"), Player(2, "AI")]
-		# core.walls = [Wall("up"), Wall("down")]
-		# core.ball = Ball()
-		# core.state = "game"
-		# core.mode = "solo"
+		core.max_score = 5
+		core.players = [Player(1, "Player1"), Player(2, "AI")]
+		core.walls = [Wall("up"), Wall("down")]
+		core.ball = Ball()
+		core.state = "start"
+		core.mode = "solo"
 	if key == "ONLINE":
 		pass
+	if core.mode != "none":
+		core.start_screen = StartScreen(core.mode)
