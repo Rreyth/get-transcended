@@ -4,6 +4,7 @@ from .Wall import *
 from .Ball import *
 from .StartScreen import *
 from .Pause import *
+from .AI import *
 
 class Menu:
 	def __init__(self):
@@ -48,6 +49,7 @@ def setValues(key, core):
 	if key == "SOLO":
 		core.max_score = 5
 		core.players = [Player(1, "Player1"), Player(2, "AI")]
+		core.ai = AI(core.players[1])
 		core.walls = [Wall("up"), Wall("down")]
 		core.ball = Ball()
 		core.state = "start"

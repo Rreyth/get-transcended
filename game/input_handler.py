@@ -10,6 +10,7 @@ def input_handler(core):
 			input_handler_2p(core, core.players)
 		elif core.mode == "solo":
 			input_handler_1p(core, core.players[0])
+			input_handler_ai(core, core.players[1])
 	elif core.pause[0]:
 		pause_input(core)
 
@@ -30,10 +31,18 @@ def	input_handler_1p(core, player):
 		player.moveUp(core.walls[0].hitbox)
 	if core.keyboardState[pg.K_DOWN] or core.keyboardState[pg.K_s]:
 		player.moveDown(core.walls[1].hitbox)
-	if core.keyboardState[pg.K_SPACE] and core.ball.stick:
+	if core.keyboardState[pg.K_SPACE] and core.ball.stick == player.nb:
 		core.ball.launch()
   
-  
+def input_handler_ai(core, ai):
+	pass
+	if core.keyboardState[pg.K_KP8]:
+		ai.moveUp(core.walls[0].hitbox)
+	if core.keyboardState[pg.K_KP2]:
+		ai.moveDown(core.walls[1].hitbox)
+	if core.keyboardState[pg.K_KP5] and core.ball.stick == ai.nb:
+		core.ball.launch()
+
 def	input_handler_2p(core, players):
 	if core.keyboardState[pg.K_w]:
 		players[0].moveUp(core.walls[0].hitbox)
