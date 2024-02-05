@@ -5,6 +5,7 @@ from .Ball import *
 from .StartScreen import *
 from .Pause import *
 from .AI import *
+from .Custom import *
 
 class Menu:
 	def __init__(self):
@@ -30,11 +31,7 @@ class Menu:
 	def click(self, core, mousePos):
 		for key, rect in self.buttons.items():
 			if rect.collidepoint(mousePos):
-				if key != "CUSTOM":
-					setValues(key, core)
-				else:
-					pass
-					# customMenu(core)
+				setValues(key, core)
 
 	
  
@@ -54,6 +51,9 @@ def setValues(key, core):
 		core.ball = Ball()
 		core.state = "start"
 		core.mode = "solo"
+	if key == "CUSTOM":
+		core.state = "custom"
+		core.custom_menu = CustomMenu()
 	if key == "ONLINE":
 		pass
 	if core.mode != "none":

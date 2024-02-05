@@ -13,6 +13,12 @@ def input_handler(core):
 			input_handler_ai(core, core.players[1])
 	elif core.pause[0]:
 		pause_input(core)
+	elif core.state == "custom":
+		custom_input(core)
+
+def custom_input(core): #format event pour eviter les appui long ?
+	if core.mouseState[0] and pg.mouse.get_focused():
+		core.custom_menu.click(core, core.mousePos)
 
 def end_input(core):
 	if core.mouseState[0] and pg.mouse.get_focused():
@@ -34,8 +40,7 @@ def	input_handler_1p(core, player):
 	if core.keyboardState[pg.K_SPACE] and core.ball.stick == player.nb:
 		core.ball.launch()
   
-def input_handler_ai(core, ai):
-	pass
+def input_handler_ai(core, ai): # standby, when client version, launch msg to serv
 	if core.keyboardState[pg.K_KP8]:
 		ai.moveUp(core.walls[0].hitbox)
 	if core.keyboardState[pg.K_KP2]:
@@ -66,3 +71,6 @@ def escape_handler(core):
 			core.pause[1].freeze = True
 		else:
 			core.pause[1].freeze = False
+	if core.state == "custom":
+		core.state = "menu"
+		core.mode = "none"

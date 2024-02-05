@@ -45,7 +45,7 @@ class Game:
 		self.keyboardState = pg.key.get_pressed()
 		self.mouseState = pg.mouse.get_pressed()
 		self.mousePos = pg.mouse.get_pos()
-  
+
 		input_handler(self)
 		
 	def tick(self): #calcul method
@@ -65,6 +65,8 @@ class Game:
 			render_end(self)
 		elif self.state == "menu":
 			render_menu(self)
+		elif self.state == "custom":
+			render_custom(self)
 		elif self.pause[0]:
 			render_pause(self)
 		elif self.state == "game":

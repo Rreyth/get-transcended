@@ -1,15 +1,15 @@
 from .config import *
 import time
+import copy
 
-class AI:
+class AI: #pygame fait chier, le mode standalone aussi, si je veux avancer sur l'ia il vaut mieux passer en mode serv-cli
 	def __init__(self, ai):
 		self.time = 0
 		self.target = ai.paddle.topleft
 
 	def update(self, core, ai):
-		# if core.ball.stick == ai.nb:
-		# 	core.keyboardState[pg.K_KP5] = 1
-		# 	# pg.key.set_pressed(core.keyboardState)
+		# if core.ball.stick == ai.nb: # standby, when client version, launch msg to serv
+		# 	pg.event.post(pg.event.Event(pg.KEYDOWN, key = pg.K_KP5))
 		tmp = time.time()
 		delta = tmp - self.time
 		if delta >= 1:
@@ -20,11 +20,13 @@ class AI:
 			self.move(ai)
  
 	def predict(self, core, ai):
-		print("PREDICT")
+		pass
+		# tmp = copy.deepcopy(core)
+		# tmp.test = "mabit"
 		#copie du core, simule les 5-10 prochaines secondes du jeu
 
 	def move(self, ai):
-		print("MOVE")
+		pass
 		if self.target[1] < ai.paddle.y:
 			pass #keypress 8
 		if self.target[1] > ai.paddle.y:
