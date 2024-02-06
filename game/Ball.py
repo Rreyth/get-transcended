@@ -50,17 +50,17 @@ class Ball:
 		rad = math.radians(self.dir)
 		dx = math.cos(rad)
 		dy = math.sin(rad)
-
-		for wall in walls:
-			if self.hitbox.colliderect(wall.hitbox):
-				dy = -dy
-				while self.hitbox.colliderect(wall.hitbox):
-					if wall.pos == "up":
-						self.hitbox.centery += 1
-					else:
-						self.hitbox.centery -= 1
-				rad = math.atan2(dy, dx)
-				self.dir = math.degrees(rad) % 360
+		if walls:
+			for wall in walls:
+				if self.hitbox.colliderect(wall.hitbox):
+					dy = -dy
+					while self.hitbox.colliderect(wall.hitbox):
+						if wall.pos == "up":
+							self.hitbox.centery += 1
+						else:
+							self.hitbox.centery -= 1
+					rad = math.atan2(dy, dx)
+					self.dir = math.degrees(rad) % 360
 	
 		for player in players:
 			if self.hitbox.colliderect(player.paddle):

@@ -3,10 +3,12 @@ from .config import *
 def render_game(core):
 	core.win.fill((0, 0, 0)) 
 
-	core.players[0].draw(core.win)
-	core.players[1].draw(core.win)
-	core.walls[0].draw(core.win)
-	core.walls[1].draw(core.win)
+	for player in core.players:
+		player.draw(core.win)
+
+	if core.walls:
+		core.walls[0].draw(core.win)
+		core.walls[1].draw(core.win)
 	core.ball.draw(core.win)
 
 	score = str(core.players[0].score) + " - " + str(core.players[1].score)

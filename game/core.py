@@ -41,10 +41,12 @@ class Game:
 				self.quit()
 			if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
 				escape_handler(self)
+			if event.type == pg.MOUSEBUTTONDOWN:
+				self.mouseState = pg.mouse.get_pressed()
+				self.mousePos = pg.mouse.get_pos()
+				mouse_handler(self)
     
 		self.keyboardState = pg.key.get_pressed()
-		self.mouseState = pg.mouse.get_pressed()
-		self.mousePos = pg.mouse.get_pos()
 
 		input_handler(self)
 		

@@ -1,22 +1,26 @@
 from .config import *
 
 def input_handler(core):
-	if core.state == "end":
-		end_input(core)
-	elif core.state == "menu":
-		menu_input(core)
-	elif core.state == "game" and not core.pause[0]:
+	if core.state == "game" and not core.pause[0]:
 		if core.mode == "local":
 			input_handler_2p(core, core.players)
 		elif core.mode == "solo":
 			input_handler_1p(core, core.players[0])
 			input_handler_ai(core, core.players[1])
+	
+
+def mouse_handler(core):
+	if core.state == "end":
+		end_input(core)
+	elif core.state == "menu":
+		menu_input(core)
 	elif core.pause[0]:
 		pause_input(core)
 	elif core.state == "custom":
 		custom_input(core)
 
-def custom_input(core): #format event pour eviter les appui long ?
+
+def custom_input(core):
 	if core.mouseState[0] and pg.mouse.get_focused():
 		core.custom_menu.click(core, core.mousePos)
 
