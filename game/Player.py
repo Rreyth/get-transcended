@@ -16,14 +16,14 @@ class Player:
 			self.goal = pg.Rect((winWidth, 0), (50, winHeight))
 		self.paddle = pg.Rect(pos, size)
 	
-	def	moveUp(self, wall):
+	def	moveUp(self, walls):
 		self.paddle.y -= self.speed
-		while (self.paddle.colliderect(wall)):
+		while walls and self.paddle.colliderect(walls[0].hitbox):
 			self.paddle.y += 1
 			
-	def moveDown(self, wall):
+	def moveDown(self, walls):
 		self.paddle.y += self.speed
-		while (self.paddle.colliderect(wall)):
+		while walls and self.paddle.colliderect(walls[1].hitbox):
 			self.paddle.y -= 1
 
 	def draw(self, win):

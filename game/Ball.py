@@ -12,6 +12,16 @@ class Ball:
   
 		self.multiplier = 1.0
 		self.last_hit = 0
+		self.cpy = False
+
+	def copy(self, ball):
+		self.hitbox.centerx = ball.hitbox.centerx
+		self.hitbox.centery = ball.hitbox.centery
+		self.stick = ball.stick
+		self.dir = ball.dir
+		self.multiplier = ball.multiplier
+		self.last_hit = ball.last_hit
+		self.cpy = True
 
 	def move(self, players, walls):
 		if self.stick != 0:
@@ -99,6 +109,13 @@ class Ball:
 		self.collide(walls, players)
 		self.goal(players)
 		self.unstuck()
+
+		if not self.cpy:
+			if self.hitbox.centery < 0:
+				self.hitbox.centery += winHeight
+			if self.hitbox.centery >= winHeight:
+				self.hitbox.centery -= winHeight
+
   
 	def draw(self, win):
 		pg.draw.circle(win, (255, 255, 255), self.hitbox.center, self.radius)
@@ -116,6 +133,8 @@ class Ball:
 				self.dir -= 5
 	
 	def goal(self, players):
+		if self.cpy:
+			return
 		for player in players:
 			if self.hitbox.colliderect(player.goal):
 				if player.nb == 1:
@@ -140,11 +159,13 @@ class Ball:
   
 def try_collide(x, y, radius, players, walls):
 	tmp_rect = pg.Rect([x - radius, y - radius], [radius * 2, radius * 2])
-	for wall in walls:
-		if tmp_rect.colliderect(wall.hitbox):
-			return True
 	
 	for player in players:
 		if tmp_rect.colliderect(player.paddle):
+			return True
+	if not walls:
+		return False
+	for wall in walls:
+		if tmp_rect.colliderect(wall.hitbox):
 			return True
 	return False

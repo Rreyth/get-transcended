@@ -9,6 +9,9 @@ def render_game(core):
 	if core.walls:
 		core.walls[0].draw(core.win)
 		core.walls[1].draw(core.win)
+
+	if core.ballcpy:
+		core.ballcpy.draw(core.win)
 	core.ball.draw(core.win)
 
 	score = str(core.players[0].score) + " - " + str(core.players[1].score)
@@ -52,6 +55,6 @@ def render_start(core):
 	core.start_screen.draw(core.win)
  
 def render_custom(core):
-    core.win.fill((0, 0, 0))
-    
-    core.custom_menu.draw(core.win)
+	core.win.fill((0, 0, 0))
+	
+	core.custom_menu.draw(core.win)

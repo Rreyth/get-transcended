@@ -26,6 +26,7 @@ class Game:
 		self.pause = [False, Pause()]
 		self.end = End() #faire des variation ? passer dans menu ?
 		self.font = pg.font.Font(font, int(textSize))
+		self.ai = []
 
 	
 	def run(self): #run game loop # relaunch when modif state

@@ -4,6 +4,7 @@ from .Button import *
 from .Player import *
 from .Wall import *
 from .StartScreen import *
+from .AI import *
 
 class CustomMenu: #modif max score (fleches?)/ time ? nb players ? / mode selected pour highlight le mode selectionne
 	def __init__(self):
@@ -39,10 +40,8 @@ class CustomMenu: #modif max score (fleches?)/ time ? nb players ? / mode select
 			button.draw(win)
 
 	def click(self, core, mousePos):
-		interact = False
 		for button in self.down_buttons:
 			if button.hitbox.collidepoint(mousePos):
-				interact = True
 				if button.name == "BACK TO MENU":
 					core.state = "menu"
 					core.mode = "none"
@@ -50,29 +49,24 @@ class CustomMenu: #modif max score (fleches?)/ time ? nb players ? / mode select
 				elif button.name == "START":
 					self.start(core)
 					break
-		if interact:
-			return
+
 		for button in self.players_buttons:
 			if button.hitbox.collidepoint(mousePos):
-				interact = True
 				if not button.highlight:
 					for other in self.players_buttons:
 						other.highlight = False
 				button.highlight = not button.highlight
 				break
-		if interact:
-			return
+
 		for button in self.mod_buttons:
 			if button.hitbox.collidepoint(mousePos):
-				interact = True
 				if button.name == "LOCAL" and not button.highlight:
 					self.mod_buttons[1].highlight = False
 				if button.name == "ONLINE" and not button.highlight:
 					self.mod_buttons[0].highlight = False
 				button.highlight = not button.highlight
 				break
-		if interact:
-			return
+
 		for button in self.param_buttons:
 			if button.hitbox.collidepoint(mousePos):
 				if button.name == "+":
@@ -81,14 +75,57 @@ class CustomMenu: #modif max score (fleches?)/ time ? nb players ? / mode select
 					self.score -= 1
 				break
 
+		if self.players_buttons[0].highlight:
+			self.mod_buttons[0].highlight = True
+			self.mod_buttons[1].highlight = False
+
 
 	def start(self, core):
+		if not self.validStart():
+			return
 		core.max_score = self.score
-		# core.players = self.players
-		# core.walls = self.walls
-		core.players = [Player(1, "Player1"), Player(2, "Player2")]
-		core.walls = [Wall("up"), Wall("down")]
+		self.initPlayers(core)
+		self.initWalls(core)
 		core.ball = Ball()
+		core.ballcpy = False
 		core.state = "start"
 		core.mode = "local" #changer pour custom
 		core.start_screen = StartScreen(core.mode)
+
+	def initPlayers(self, core):
+		if self.players_buttons[0].highlight:
+			core.players = [Player(1, "AI"), Player(2, "AI")]
+			core.ai.append(AI(core.players[0]))
+			core.ai.append(AI(core.players[1]))
+		if self.players_buttons[1].highlight:
+			core.players = [Player(1, "Player1"), Player(2, "Player2")]
+		if self.players_buttons[2].highlight:
+			core.players = [Player(1, "Player1"), Player(2, "Player2")] #replace with 2v2
+		if self.players_buttons[3].highlight:
+			core.players = [Player(1, "Player1"), Player(2, "Player2")] #replace with 1v1v1 triangle
+
+	def initWalls(self, core):
+		if self.mod_buttons[2].highlight:
+			core.walls = False
+		else:
+			core.walls = [Wall("up"), Wall("down")]
+
+	def validStart(self):
+		selected = False
+		for button in self.players_buttons:
+			if button.highlight:
+				selected = True
+				break
+		if not selected:
+			return False
+		selected = False
+		for button in self.mod_buttons:
+			if button.name == "LOCAL" and button.highlight:
+				selected = True
+				break
+			if button.name == "ONLINE" and button.highlight:
+				selected = True
+				break
+		if not selected:
+			return False
+		return True

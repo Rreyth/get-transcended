@@ -41,14 +41,16 @@ def setValues(key, core):
 		core.players = [Player(1, "Player1"), Player(2, "Player2")]
 		core.walls = [Wall("up"), Wall("down")]
 		core.ball = Ball()
+		core.ballcpy = False
 		core.state = "start"
 		core.mode = "local"
 	if key == "SOLO":
 		core.max_score = 5
 		core.players = [Player(1, "Player1"), Player(2, "AI")]
-		core.ai = AI(core.players[1])
+		core.ai.append(AI(core.players[1]))
 		core.walls = [Wall("up"), Wall("down")]
 		core.ball = Ball()
+		core.ballcpy = False
 		core.state = "start"
 		core.mode = "solo"
 	if key == "CUSTOM":

@@ -38,29 +38,29 @@ def pause_input(core):
 
 def	input_handler_1p(core, player):
 	if core.keyboardState[pg.K_UP] or core.keyboardState[pg.K_w]:
-		player.moveUp(core.walls[0].hitbox)
+		player.moveUp(core.walls)
 	if core.keyboardState[pg.K_DOWN] or core.keyboardState[pg.K_s]:
-		player.moveDown(core.walls[1].hitbox)
+		player.moveDown(core.walls)
 	if core.keyboardState[pg.K_SPACE] and core.ball.stick == player.nb:
 		core.ball.launch()
   
 def input_handler_ai(core, ai): # standby, when client version, launch msg to serv
 	if core.keyboardState[pg.K_KP8]:
-		ai.moveUp(core.walls[0].hitbox)
+		ai.moveUp(core.walls)
 	if core.keyboardState[pg.K_KP2]:
-		ai.moveDown(core.walls[1].hitbox)
+		ai.moveDown(core.walls)
 	if core.keyboardState[pg.K_KP5] and core.ball.stick == ai.nb:
 		core.ball.launch()
 
 def	input_handler_2p(core, players):
 	if core.keyboardState[pg.K_w]:
-		players[0].moveUp(core.walls[0].hitbox)
+		players[0].moveUp(core.walls)
 	if core.keyboardState[pg.K_s]:
-		players[0].moveDown(core.walls[1].hitbox)
+		players[0].moveDown(core.walls)
 	if core.keyboardState[pg.K_UP]:
-		players[1].moveUp(core.walls[0].hitbox)
+		players[1].moveUp(core.walls)
 	if core.keyboardState[pg.K_DOWN]:
-		players[1].moveDown(core.walls[1].hitbox)
+		players[1].moveDown(core.walls)
 	if core.keyboardState[pg.K_SPACE] and core.ball.stick == 1:
 		core.ball.launch()
 	if core.keyboardState[pg.K_LEFT] and core.ball.stick == 2:

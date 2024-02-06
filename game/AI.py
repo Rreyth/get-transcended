@@ -5,6 +5,7 @@ import copy
 class AI: #pygame fait chier, le mode standalone aussi, si je veux avancer sur l'ia il vaut mieux passer en mode serv-cli
 	def __init__(self, ai):
 		self.time = 0
+		self.pos = ai.paddle.topleft
 		self.target = ai.paddle.topleft
 
 	def update(self, core, ai):
@@ -13,13 +14,13 @@ class AI: #pygame fait chier, le mode standalone aussi, si je veux avancer sur l
 		tmp = time.time()
 		delta = tmp - self.time
 		if delta >= 1:
-			self.predict(core, ai)
+			self.predict(core)
 			self.time = tmp
 		
 		if self.target != ai.paddle.topleft:
 			self.move(ai)
  
-	def predict(self, core, ai):
+	def predict(self, core):
 		pass
 		# tmp = copy.deepcopy(core)
 		# tmp.test = "mabit"
