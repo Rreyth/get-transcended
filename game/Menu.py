@@ -43,7 +43,7 @@ def setValues(key, core):
 		core.ball = Ball()
 		core.ballcpy = False
 		core.state = "start"
-		core.mode = "local"
+		core.mode = "LOCAL"
 	if key == "SOLO":
 		core.max_score = 5
 		core.players = [Player(1, "Player1", 2, False), Player(2, "AI", 2, False)]

@@ -8,6 +8,7 @@ class Ball:
 		self.hitbox = pg.Rect([center[0] - self.radius, center[1] - self.radius], [self.radius * 2, self.radius * 2])
 
 		self.stick = 0
+		self.side = "none"
 		self.launch()
   
 		self.multiplier = 1.0
@@ -27,9 +28,10 @@ class Ball:
 		if self.stick != 0:
 			for player in players:
 				if player.nb == self.stick:
-					if player.nb == 1:
+					self.side = player.side
+					if player.side == "left":
 						self.hitbox.center = (player.paddle[0].centerx + 25, player.paddle[0].centery)
-					if player.nb == 2:
+					if player.side == "right":
 						self.hitbox.center = (player.paddle[0].centerx - 25, player.paddle[0].centery)
 			return
 		rad = math.radians(self.dir)
@@ -138,22 +140,31 @@ class Ball:
 			return
 		for player in players:
 			if self.hitbox.colliderect(player.goal):
-				if player.nb == 1:
-					players[1].score += 1
-				else:
-					players[0].score += 1
+				if players.__len__() == 2:
+					if player.nb == 1:
+						players[1].score += 1
+					else:
+						players[0].score += 1
+				#elif players.__len__() == 3: -> last_hit prend le point, si csc -1
+				elif players.__len__() == 4:
+					if player.nb == 1 or player.nb == 2:
+						players[2].score += 1
+					else:
+						players[0].score += 1
 				self.stick = player.nb
 				self.multiplier = 1.0
+				break
 
 	def launch(self):
 		if self.stick == 0:
 			self.dir = randint(0, 359)
 			while self.dir in range(75, 106) or self.dir in range(255, 286):
 				self.dir = randint(0, 359)
-		if self.stick == 1:
-			self.dir = 0
-		elif self.stick == 2:
-			self.dir = 180
+		else:
+			if self.side == "left":
+				self.dir = 0
+			elif self.side == "right":
+				self.dir = 180
 	  
 		self.stick = 0
   

@@ -2,8 +2,11 @@ from .config import *
 
 def input_handler(core):
 	if core.state == "game" and not core.pause[0]:
-		if core.mode == "local":
-			input_handler_2p(core, core.players)
+		if core.mode == "LOCAL":
+			if core.players.__len__() == 2:
+				input_handler_2p(core, core.players)
+			elif core.players.__len__() == 4: #modif pour ia 
+				input_handler_4p(core, core.players)
 		elif core.mode == "solo":
 			input_handler_1p(core, core.players[0])
 			input_handler_ai(core, core.players[1])
@@ -64,6 +67,28 @@ def	input_handler_2p(core, players):
 	if core.keyboardState[pg.K_SPACE] and core.ball.stick == 1:
 		core.ball.launch()
 	if core.keyboardState[pg.K_LEFT] and core.ball.stick == 2:
+		core.ball.launch()
+
+def	input_handler_4p(core, players):
+	if core.keyboardState[pg.K_w]:
+		players[0].moveUp(core.walls)
+	if core.keyboardState[pg.K_s]:
+		players[0].moveDown(core.walls)
+	if core.keyboardState[pg.K_t]:
+		players[1].moveUp(core.walls)
+	if core.keyboardState[pg.K_g]:
+		players[1].moveDown(core.walls)
+	if core.keyboardState[pg.K_UP]:
+		players[3].moveUp(core.walls)
+	if core.keyboardState[pg.K_DOWN]:
+		players[3].moveDown(core.walls)
+	if core.keyboardState[pg.K_KP8]:
+		players[2].moveUp(core.walls)
+	if core.keyboardState[pg.K_KP5]:
+		players[2].moveDown(core.walls)
+	if core.keyboardState[pg.K_SPACE] and (core.ball.stick == 1 or core.ball.stick == 2):
+		core.ball.launch()
+	if (core.keyboardState[pg.K_LEFT] or core.keyboardState[pg.K_KP4]) and (core.ball.stick == 3 or core.ball.stick == 4):
 		core.ball.launch()
 
 def escape_handler(core):

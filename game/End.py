@@ -1,38 +1,49 @@
 from .config import *
+from .Button import *
 
 class End:
 	def __init__(self):
-		self.button_font = pg.font.Font(font, int(winHeight * 0.085))
 		self.text_font = pg.font.Font(font, int(winHeight * 0.1))
 		self.size = [winWidth * 0.2, winHeight * 0.1]
-		self.button = pg.Rect(((winWidth / 2) - (self.size[0] / 2), winHeight - (self.size[1] * 1.5)), self.size)
+		self.button = Button("BACK TO MENU", (winWidth / 2) - (self.size[0] / 2), winHeight - (self.size[1] * 1.5), self.size[0], self.size[1], winHeight * 0.085)
   
   
+	def draw(self, core, win, score):
+		text = [self.text_font.render(core.players[0].name, True, (255, 255, 255))]
+		pos = [[(winWidth / 3) - (text[0].get_size()[0] / 2), (winHeight / 3) - (text[0].get_size()[1] /2)]]
+		text.append(self.text_font.render(core.players[0].win, True, (255, 255, 255)))
+		pos.append([(winWidth / 3) - (text[1].get_size()[0] / 2), (winHeight / 2) - (text[1].get_size()[1] /2)])
+		text.append(self.text_font.render(str(score[0]), True, (255, 255, 255)))
+		pos.append([(winWidth / 2) - 75, (winHeight / 2) - (text[2].get_size()[1] /2)])
   
-	def draw(self, core, win):
-		text = self.text_font.render(core.players[0].name, True, (255, 255, 255))
-		win.blit(text, ((winWidth / 3) - (text.get_size()[0] / 2), (winHeight / 3) - (text.get_size()[1] /2)))
-		text = self.text_font.render(core.players[0].win, True, (255, 255, 255))
-		win.blit(text, ((winWidth / 3) - (text.get_size()[0] / 2), (winHeight / 2) - (text.get_size()[1] /2)))
-		text = self.text_font.render(str(core.players[0].score), True, (255, 255, 255))
-		win.blit(text, ((winWidth / 2) - 75, (winHeight / 2) - (text.get_size()[1] /2)))
+		text.append(self.text_font.render(core.players[1].name, True, (255, 255, 255)))
+		pos.append([(winWidth / 3 * 2) - (text[3].get_size()[0] / 2), (winHeight / 3) - (text[3].get_size()[1] /2)])
+		text.append(self.text_font.render(core.players[1].win, True, (255, 255, 255)))
+		pos.append([(winWidth / 3 * 2) - (text[4].get_size()[0] / 2), (winHeight / 2) - (text[4].get_size()[1] /2)])
+		text.append(self.text_font.render(str(score[1]), True, (255, 255, 255)))
+		pos.append([(winWidth / 2) + 50, (winHeight / 2) - (text[5].get_size()[1] / 2)])
+
+		text.append(self.text_font.render("_", True, (255, 255, 255)))
+		pos.append([(winWidth / 2) - (text[6].get_size()[0] / 2), (winHeight / 2) - (text[6].get_size()[1] * 0.75)])
   
-		text = self.text_font.render(core.players[1].name, True, (255, 255, 255))
-		win.blit(text, ((winWidth / 3 * 2) - (text.get_size()[0] / 2), (winHeight / 3) - (text.get_size()[1] /2)))
-		text = self.text_font.render(core.players[1].win, True, (255, 255, 255))
-		win.blit(text, ((winWidth / 3 * 2) - (text.get_size()[0] / 2), (winHeight / 2) - (text.get_size()[1] /2)))
-		text = self.text_font.render(str(core.players[1].score), True, (255, 255, 255))
-		win.blit(text, ((winWidth / 2) + 50, (winHeight / 2) - (text.get_size()[1] / 2)))
+		if core.players.__len__() == 4:
+			pos.append(pos[3].copy())
+			pos[3][0] = pos[0][0]
+			pos[0][0] -= (text[0].get_size()[0] + 50)
+			text[4] = self.text_font.render(core.players[2].win, True, (255, 255, 255))
+			text.append(self.text_font.render(core.players[2].name, True, (255, 255, 255)))
+			text.append(self.text_font.render(core.players[3].name, True, (255, 255, 255)))
+			pos.append([pos[7][0] + text[7].get_size()[0] + 50, pos[7][1]])
+
   
-		text = self.text_font.render("_", True, (255, 255, 255))
-		win.blit(text, ((winWidth / 2) - (text.get_size()[0] / 2), (winHeight / 2) - (text.get_size()[1] * 0.75)))
-  
-		pg.draw.rect(win, (255, 255, 255), self.button, 2, int(self.size[1] * 0.25))
-		button = self.button_font.render("BACK TO MENU", True, (255, 255, 255))
-		win.blit(button, (self.button.centerx - (button.get_size()[0] / 2), (self.button.centery) - (button.get_size()[1] * 0.45)))
+		for i in range(text.__len__()):
+			win.blit(text[i], pos[i])
+
+		self.button.draw(win)
+
   
 	def click(self, core, mousePos):
-		if self.button.collidepoint(mousePos):
+		if self.button.hitbox.collidepoint(mousePos):
 			core.state = "menu"
 			core.mode = "none"
 			core.pause[0] = False

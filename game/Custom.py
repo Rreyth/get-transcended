@@ -6,7 +6,7 @@ from .Wall import *
 from .StartScreen import *
 from .AI import *
 
-class CustomMenu: #modif max score (fleches?)/ time ? nb players ? / mode selected pour highlight le mode selectionne
+class CustomMenu:
 	def __init__(self):
 		self.size = [winWidth * 0.2, winHeight * 0.1]
 		self.mod_size = [winWidth * 0.09, winHeight * 0.05]
@@ -78,7 +78,7 @@ class CustomMenu: #modif max score (fleches?)/ time ? nb players ? / mode select
 		if self.players_buttons[0].highlight:
 			self.mod_buttons[0].highlight = True
 			self.mod_buttons[1].highlight = False
-			self.mod_buttons[3].highlight = False
+			self.mod_buttons[3].highlight = True
 		elif self.players_buttons[1].highlight and self.mod_buttons[3].highlight:
 			self.mod_buttons[0].highlight = True
 			self.mod_buttons[1].highlight = False
@@ -91,13 +91,17 @@ class CustomMenu: #modif max score (fleches?)/ time ? nb players ? / mode select
 		core.max_score = self.score
 		self.initPlayers(core)
 		self.initWalls(core)
-		core.ball = Ball()
+		core.ball = Ball() #ajout d'un param pour le triangle
 		core.ballcpy = False
 		core.state = "start"
-		core.mode = "local" #changer pour custom
-		core.start_screen = StartScreen(core.mode)
+		if "AI OPPONENT" in self.mod_list and self.players_buttons[1].highlight:
+			core.mode = "solo"
+		if self.players_buttons[0].highlight:
+			core.mode = "AI"
+		else:
+			core.mode = self.mod_list[0]
+		core.start_screen = StartScreen(core.mode) #adapt to nb players
 
-	#determine local or online + mods + players
 	def getMods(self):
 		self.mod_list = []
 		for button in self.mod_buttons:
@@ -133,6 +137,8 @@ class CustomMenu: #modif max score (fleches?)/ time ? nb players ? / mode select
 					self.players[2] = "Player2"
 					if "AI OPPONENT" in self.mod_list:
 						self.players[3] = "AI"
+					else:
+						self.players[3] = "Player3"
 
       
 	def initPlayers(self, core):

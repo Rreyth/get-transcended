@@ -1,15 +1,18 @@
 import time
 from .config import *
 
+#mode pour modif quoi afficher et ou
+ #adapt to nb players
 class StartScreen:
-	def __init__(self, mode): #mode pour modif quoi afficher et ou
+	def __init__(self, mode):
 		self.state = True
 		self.mode = mode
 		self.timer = 3
 		self.time = time.time()
 		self.font = pg.font.Font(font, int(winHeight * 0.085))
 		self.size = [150, 100]
-		if mode == "local":
+		self.player_input = {}
+		if mode == "LOCAL":
 			self.player_input = {
 				"W": pg.Rect(((winWidth / 4) - (self.size[0] / 2), (winHeight / 3) - (self.size[1] / 2)), self.size),
 				"S": pg.Rect(((winWidth / 4) - (self.size[0] / 2), (winHeight / 2) - (self.size[1] / 2)), self.size),
