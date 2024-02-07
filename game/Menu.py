@@ -38,7 +38,7 @@ class Menu:
 def setValues(key, core):
 	if key == "LOCAL":
 		core.max_score = 5
-		core.players = [Player(1, "Player1"), Player(2, "Player2")]
+		core.players = [Player(1, "Player1", 2, False), Player(2, "Player2", 2, False)]
 		core.walls = [Wall("up"), Wall("down")]
 		core.ball = Ball()
 		core.ballcpy = False
@@ -46,7 +46,7 @@ def setValues(key, core):
 		core.mode = "local"
 	if key == "SOLO":
 		core.max_score = 5
-		core.players = [Player(1, "Player1"), Player(2, "AI")]
+		core.players = [Player(1, "Player1", 2, False), Player(2, "AI", 2, False)]
 		core.ai.append(AI(core.players[1]))
 		core.walls = [Wall("up"), Wall("down")]
 		core.ball = Ball()

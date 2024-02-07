@@ -5,8 +5,8 @@ import copy
 class AI: #pygame fait chier, le mode standalone aussi, si je veux avancer sur l'ia il vaut mieux passer en mode serv-cli
 	def __init__(self, ai):
 		self.time = 0
-		self.pos = ai.paddle.topleft
-		self.target = ai.paddle.topleft
+		self.pos = ai.paddle[0].topleft
+		self.target = ai.paddle[0].topleft
 
 	def update(self, core, ai):
 		# if core.ball.stick == ai.nb: # standby, when client version, launch msg to serv
@@ -17,7 +17,7 @@ class AI: #pygame fait chier, le mode standalone aussi, si je veux avancer sur l
 			self.predict(core)
 			self.time = tmp
 		
-		if self.target != ai.paddle.topleft:
+		if self.target != ai.paddle[0].topleft:
 			self.move(ai)
  
 	def predict(self, core):
@@ -28,7 +28,7 @@ class AI: #pygame fait chier, le mode standalone aussi, si je veux avancer sur l
 
 	def move(self, ai):
 		pass
-		if self.target[1] < ai.paddle.y:
+		if self.target[1] < ai.paddle[0].y:
 			pass #keypress 8
-		if self.target[1] > ai.paddle.y:
+		if self.target[1] > ai.paddle[0].y:
 			pass #keypress 2

@@ -21,7 +21,7 @@ class CustomMenu: #modif max score (fleches?)/ time ? nb players ? / mode select
 		self.mod_buttons = [Button("LOCAL", winWidth / 5 - (self.mod_size[0] / 2), winHeight / 2 - (self.mod_size[1] / 2), self.mod_size[0], self.mod_size[1], winHeight * 0.06),
               	Button("ONLINE", winWidth / 5 * 2 - (self.mod_size[0] / 2), winHeight / 2 - (self.mod_size[1] / 2), self.mod_size[0], self.mod_size[1], winHeight * 0.06),
           		Button("BORDERLESS", winWidth / 5 * 3 - (self.mod_size[0] / 2), winHeight / 2 - (self.mod_size[1] / 2), self.mod_size[0], self.mod_size[1], winHeight * 0.06),
-            	Button("POWER UPS", winWidth / 5 * 4 - (self.mod_size[0] / 2), winHeight / 2 - (self.mod_size[1] / 2), self.mod_size[0], self.mod_size[1], winHeight * 0.06)]
+            	Button("AI OPPONENT", winWidth / 5 * 4 - (self.mod_size[0] / 2), winHeight / 2 - (self.mod_size[1] / 2), self.mod_size[0], self.mod_size[1], winHeight * 0.06)]
 		self.param_buttons = [Button("-", winWidth / 2 + 35, winHeight / 4 * 3 - (winHeight * 0.03 / 2), winWidth * 0.015, winHeight * 0.03, winHeight * 0.06),
 				Button("+", winWidth / 2 + 65, winHeight / 4 * 3 - (winHeight * 0.03 / 2), winWidth * 0.015, winHeight * 0.03, winHeight * 0.06)]
 		self.players_buttons[1].highlight = True
@@ -78,11 +78,16 @@ class CustomMenu: #modif max score (fleches?)/ time ? nb players ? / mode select
 		if self.players_buttons[0].highlight:
 			self.mod_buttons[0].highlight = True
 			self.mod_buttons[1].highlight = False
+			self.mod_buttons[3].highlight = False
+		elif self.players_buttons[1].highlight and self.mod_buttons[3].highlight:
+			self.mod_buttons[0].highlight = True
+			self.mod_buttons[1].highlight = False
 
 
 	def start(self, core):
 		if not self.validStart():
 			return
+		self.getMods()
 		core.max_score = self.score
 		self.initPlayers(core)
 		self.initWalls(core)
@@ -92,17 +97,57 @@ class CustomMenu: #modif max score (fleches?)/ time ? nb players ? / mode select
 		core.mode = "local" #changer pour custom
 		core.start_screen = StartScreen(core.mode)
 
+	#determine local or online + mods + players
+	def getMods(self):
+		self.mod_list = []
+		for button in self.mod_buttons:
+			if button.highlight:
+				self.mod_list.append(button.name)
+		
+		self.players = {}
+		for button in self.players_buttons:
+			if button.highlight:
+				if button.name == "AI VS AI":
+					self.players[1] = "AI"
+					self.players[2] = "AI"
+					break
+				elif button.name == "1 VS 1":
+					self.players[1] = "Player1"
+					if "AI OPPONENT" in self.mod_list:
+						self.players[2] = "AI"
+					else:
+						self.players[2] = "Player2"
+					break
+				elif button.name == "2 VS 2":
+					self.players[1] = "Player1"
+					self.players[2] = "Player2"
+					if "AI OPPONENT" in self.mod_list:
+						self.players[3] = "AI"
+						self.players[4] = "AI"
+					else:
+						self.players[3] = "Player3"
+						self.players[4] = "Player4"
+					break
+				elif button.name == "1 VS 1 VS 1":
+					self.players[1] = "Player1"
+					self.players[2] = "Player2"
+					if "AI OPPONENT" in self.mod_list:
+						self.players[3] = "AI"
+
+      
 	def initPlayers(self, core):
+		core.players = []
+		for key, name in self.players.items():
+			core.players.append(Player(key, name, self.players.__len__(), True if "BORDERLESS" in self.mod_list else False))
 		if self.players_buttons[0].highlight:
-			core.players = [Player(1, "AI"), Player(2, "AI")]
 			core.ai.append(AI(core.players[0]))
 			core.ai.append(AI(core.players[1]))
-		if self.players_buttons[1].highlight:
-			core.players = [Player(1, "Player1"), Player(2, "Player2")]
-		if self.players_buttons[2].highlight:
-			core.players = [Player(1, "Player1"), Player(2, "Player2")] #replace with 2v2
-		if self.players_buttons[3].highlight:
-			core.players = [Player(1, "Player1"), Player(2, "Player2")] #replace with 1v1v1 triangle
+		elif "AI OPPONENT" in self.mod_list:
+			if self.players.__len__() == 2 or self.players.__len__() == 3:
+				core.ai.append(AI(core.players[self.players.__len__() - 1]))
+			else:
+				core.ai.append(AI(core.players[2]))
+				core.ai.append(AI(core.players[3]))
 
 	def initWalls(self, core):
 		if self.mod_buttons[2].highlight:
