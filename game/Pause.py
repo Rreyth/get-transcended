@@ -1,29 +1,28 @@
 from .config import *
+from .Button import *
 
 class Pause:
 	def __init__(self):
 		self.freeze = False
 		self.title_font = pg.font.Font(font, int(winHeight / 3))
-		self.font = pg.font.Font(font, int(winHeight * 0.085))
 		self.size = [winWidth * 0.2, winHeight * 0.1]
-		self.buttons = {}
-		self.buttons["RESUME"] = pg.Rect(((winWidth / 2) - (self.size[0] / 2), (winHeight / 2) - (self.size[1] / 2)), self.size)
-		self.buttons["BACK TO MENU"] = pg.Rect(((winWidth / 2) - (self.size[0] / 2), (winHeight / 3 * 2) - (self.size[1] / 2)), self.size)
+		self.buttons = [Button("RESUME", (winWidth / 2) - (self.size[0] / 2), (winHeight / 2) - (self.size[1] / 2), self.size[0], self.size[1], winHeight * 0.085),
+                  Button("BACK TO MENU", (winWidth / 2) - (self.size[0] / 2), (winHeight / 3 * 2) - (self.size[1] / 2), self.size[0], self.size[1], winHeight * 0.085)]
   
 	def draw(self, win):
 		title = self.title_font.render("PAUSE", True, (255, 255, 255))
 		win.blit(title, ((winWidth / 2) - (title.get_size()[0] / 2), -50))
   
-		for key, rect in self.buttons.items():
-			pg.draw.rect(win, (255, 255, 255), rect, 2, int(self.size[1] * 0.25))
-			button = self.font.render(key, True, (255, 255, 255))
-			win.blit(button, (rect.centerx - (button.get_size()[0] / 2), (rect.centery) - (button.get_size()[1] * 0.45)))
-   
+		for button in self.buttons:
+			button.draw(win)
+  
+
 	def click(self, core, mousePos):
-		for key, rect in self.buttons.items():
-			if rect.collidepoint(mousePos):
-				if key == "BACK TO MENU":
+		for button in self.buttons:
+			if button.hitbox.collidepoint(mousePos):
+				if button.name == "BACK TO MENU":
 					core.state = "menu"
 					core.mode = "none"
 				core.pause[0] = False
 				self.freeze = False
+     

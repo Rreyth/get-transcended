@@ -1,5 +1,6 @@
 import time
 from .config import *
+from .Button import *
 
 #mode pour modif quoi afficher et ou
  #adapt to nb players
@@ -11,30 +12,25 @@ class StartScreen:
 		self.time = time.time()
 		self.font = pg.font.Font(font, int(winHeight * 0.085))
 		self.size = [150, 100]
-		self.player_input = {}
+		self.player_input = []
 		if mode == "LOCAL":
-			self.player_input = {
-				"W": pg.Rect(((winWidth / 4) - (self.size[0] / 2), (winHeight / 3) - (self.size[1] / 2)), self.size),
-				"S": pg.Rect(((winWidth / 4) - (self.size[0] / 2), (winHeight / 2) - (self.size[1] / 2)), self.size),
-				"Space": pg.Rect(((winWidth / 4) - (self.size[0] / 2), (winHeight / 3 * 2) - (self.size[1] / 2)), self.size),
-				"UP": pg.Rect(((winWidth / 4 * 3) - (self.size[0] / 2), (winHeight / 3) - (self.size[1] / 2)), self.size),
-				"DOWN": pg.Rect(((winWidth / 4 * 3) - (self.size[0] / 2), (winHeight / 2) - (self.size[1] / 2)), self.size),
-				"LEFT": pg.Rect(((winWidth / 4 * 3) - (self.size[0] / 2), (winHeight / 3 * 2) - (self.size[1] / 2)), self.size)
-			}
+			self.player_input = [Button("W", (winWidth / 4) - (self.size[0] / 2), (winHeight / 3) - (self.size[1] / 2), self.size[0], self.size[1], winHeight * 0.085),
+                        Button("S", (winWidth / 4) - (self.size[0] / 2), (winHeight / 2) - (self.size[1] / 2), self.size[0], self.size[1], winHeight * 0.085),
+                        Button("Space", (winWidth / 4) - (self.size[0] / 2), (winHeight / 3 * 2) - (self.size[1] / 2), self.size[0], self.size[1], winHeight * 0.085),
+                        Button("UP", (winWidth / 4 * 3) - (self.size[0] / 2), (winHeight / 3) - (self.size[1] / 2), self.size[0], self.size[1], winHeight * 0.085),
+                        Button("DOWN", (winWidth / 4 * 3) - (self.size[0] / 2), (winHeight / 2) - (self.size[1] / 2), self.size[0], self.size[1], winHeight * 0.085),
+                        Button("LEFT", (winWidth / 4 * 3) - (self.size[0] / 2), (winHeight / 3 * 2) - (self.size[1] / 2), self.size[0], self.size[1], winHeight * 0.085)]
+
 		elif mode == "solo":
-			self.player_input = {
-				"W": pg.Rect(((winWidth / 5) - (self.size[0] / 2), (winHeight / 3) - (self.size[1] / 2)), self.size),
-				"S": pg.Rect(((winWidth / 5) - (self.size[0] / 2), (winHeight / 2) - (self.size[1] / 2)), self.size),
-				"Space": pg.Rect(((winWidth / 5) + (self.size[0] * 0.275), (winHeight / 3 * 2) - (self.size[1] / 2)), self.size),
-				"UP": pg.Rect(((winWidth / 4 + self.size[0]) - (self.size[0] / 2), (winHeight / 3) - (self.size[1] / 2)), self.size),
-				"DOWN": pg.Rect(((winWidth / 4 + self.size[0]) - (self.size[0] / 2), (winHeight / 2) - (self.size[1] / 2)), self.size),
-			}
+			self.player_input = [Button("W", (winWidth / 5) - (self.size[0] / 2), (winHeight / 3) - (self.size[1] / 2), self.size[0], self.size[1], winHeight * 0.085),
+                        Button("S", (winWidth / 5) - (self.size[0] / 2), (winHeight / 2) - (self.size[1] / 2), self.size[0], self.size[1], winHeight * 0.085),
+                        Button("Space", (winWidth / 5) + (self.size[0] * 0.275), (winHeight / 3 * 2) - (self.size[1] / 2), self.size[0], self.size[1], winHeight * 0.085),
+                        Button("UP", (winWidth / 4 + self.size[0]) - (self.size[0] / 2), (winHeight / 3) - (self.size[1] / 2), self.size[0], self.size[1], winHeight * 0.085),
+                        Button("DOWN", (winWidth / 4 + self.size[0]) - (self.size[0] / 2), (winHeight / 2) - (self.size[1] / 2), self.size[0], self.size[1], winHeight * 0.085)]
 
 	def draw(self, win):
-		for key, rect in self.player_input.items():
-			pg.draw.rect(win, (255, 255, 255), rect, 2, int(self.size[1] * 0.25))
-			button = self.font.render(key, True, (255, 255, 255))
-			win.blit(button, (rect.centerx - (button.get_size()[0] / 2), (rect.centery) - (button.get_size()[1] * 0.45)))
+		for button in self.player_input:
+			button.draw(win)
 		timer = self.font.render(str(self.timer), True, (255, 255, 255))
 		win.blit(timer, ((winWidth / 2) - (timer.get_size()[0] / 2), (winHeight / 2) - (timer.get_size()[1] / 2)))
   
