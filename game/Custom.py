@@ -17,7 +17,7 @@ class CustomMenu:
 		self.players_buttons = [Button("AI VS AI", winWidth / 5 - (self.mod_size[0] / 2), winHeight / 4 - (self.mod_size[1] / 2), self.mod_size[0], self.mod_size[1], winHeight * 0.06),
        			Button("1 VS 1", winWidth / 5 * 2 - (self.mod_size[0] / 2), winHeight / 4 - (self.mod_size[1] / 2), self.mod_size[0], self.mod_size[1], winHeight * 0.06),
           		Button("2 VS 2", winWidth / 5 * 3 - (self.mod_size[0] / 2), winHeight / 4 - (self.mod_size[1] / 2), self.mod_size[0], self.mod_size[1], winHeight * 0.06),
-            	Button("1 VS 1 VS 1", winWidth / 5 * 4 - (self.mod_size[0] / 2), winHeight / 4 - (self.mod_size[1] / 2), self.mod_size[0], self.mod_size[1], winHeight * 0.06)]
+            	Button("1V1V1V1", winWidth / 5 * 4 - (self.mod_size[0] / 2), winHeight / 4 - (self.mod_size[1] / 2), self.mod_size[0], self.mod_size[1], winHeight * 0.06)]
 		self.mod_buttons = [Button("LOCAL", winWidth / 5 - (self.mod_size[0] / 2), winHeight / 2 - (self.mod_size[1] / 2), self.mod_size[0], self.mod_size[1], winHeight * 0.06),
               	Button("ONLINE", winWidth / 5 * 2 - (self.mod_size[0] / 2), winHeight / 2 - (self.mod_size[1] / 2), self.mod_size[0], self.mod_size[1], winHeight * 0.06),
           		Button("BORDERLESS", winWidth / 5 * 3 - (self.mod_size[0] / 2), winHeight / 2 - (self.mod_size[1] / 2), self.mod_size[0], self.mod_size[1], winHeight * 0.06),
@@ -97,10 +97,11 @@ class CustomMenu:
 		core.state = "start"
 		if "AI OPPONENT" in self.mod_list and self.players_buttons[1].highlight:
 			core.mode = "solo"
-		if self.players_buttons[0].highlight:
+		elif self.players_buttons[0].highlight:
 			core.mode = "AI"
 		else:
 			core.mode = self.mod_list[0]
+		core.custom_mod = "1V1V1V1" if "1V1V1V1" in self.mod_list else False
 		core.start_screen = StartScreen(core.mode) #adapt to nb players
 
 	def getMods(self):
@@ -133,19 +134,22 @@ class CustomMenu:
 						self.players[3] = "Player3"
 						self.players[4] = "Player4"
 					break
-				elif button.name == "1 VS 1 VS 1":
+				elif button.name == "1V1V1V1":
+					self.mod_list.append(button.name)
 					self.players[1] = "Player1"
 					self.players[2] = "Player2"
-					if "AI OPPONENT" in self.mod_list:
-						self.players[3] = "AI"
-					else:
-						self.players[3] = "Player3"
+					self.players[3] = "Player3"
+					self.players[4] = "Player4"
+					# if "AI OPPONENT" in self.mod_list:
+					# 	self.players[3] = "AI"
+					# else:
+					# 	self.players[3] = "Player3"
 
       
 	def initPlayers(self, core):
 		core.players = []
 		for key, name in self.players.items():
-			core.players.append(Player(key, name, self.players.__len__(), True if "BORDERLESS" in self.mod_list else False))
+			core.players.append(Player(key, name, self.players.__len__(), True if "BORDERLESS" in self.mod_list else False, True if "1V1V1V1" in self.mod_list else False))
 		if self.players_buttons[0].highlight:
 			core.ai.append(AI(core.players[0]))
 			core.ai.append(AI(core.players[1]))
@@ -159,10 +163,10 @@ class CustomMenu:
 	def initWalls(self, core):
 		if self.mod_buttons[2].highlight:
 			core.walls = False
-		# elif self.players_buttons[3].highlight:
-		# 	core.walls = [Wall("tri_left"), Wall("tri_right")]
+		elif self.players_buttons[3].highlight:
+			core.walls = [Wall("up", True), Wall("down", True), Wall("left", True), Wall("right", True)]
 		else:
-			core.walls = [Wall("up"), Wall("down")]
+			core.walls = [Wall("up", False), Wall("down", False)]
 
 	def validStart(self):
 		selected = False

@@ -33,18 +33,19 @@ class Menu:
 	
  
 def setValues(name, core):
+	core.custom_mod = False
 	if name == "LOCAL":
 		core.max_score = 5
-		core.players = [Player(1, "Player1", 2, False), Player(2, "Player2", 2, False)]
-		core.walls = [Wall("up"), Wall("down")]
+		core.players = [Player(1, "Player1", 2, False, False), Player(2, "Player2", 2, False, False)]
+		core.walls = [Wall("up", False), Wall("down", False)]
 		core.ball = Ball(False)
 		core.state = "start"
 		core.mode = "LOCAL"
 	if name == "SOLO":
 		core.max_score = 5
-		core.players = [Player(1, "Player1", 2, False), Player(2, "AI", 2, False)]
+		core.players = [Player(1, "Player1", 2, False, False), Player(2, "AI", 2, False, False)]
 		core.ai.append(AI(core.players[1]))
-		core.walls = [Wall("up"), Wall("down")]
+		core.walls = [Wall("up", False), Wall("down", False)]
 		core.ball = Ball(False)
 		core.state = "start"
 		core.mode = "solo"

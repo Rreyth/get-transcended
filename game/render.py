@@ -16,13 +16,15 @@ def render_game(core):
 	
 
 def render_text(core, nb_players):
+	text = []
 	if nb_players == 2:
 		score = str(core.players[0].score) + " - " + str(core.players[1].score)
 		names = [core.players[0].name, core.players[1].name]
 		text = [core.font.render(score, True, (255, 255, 255)), core.font.render(names[0], True, (255, 255, 255)), core.font.render(names[1], True, (255, 255, 255))]
 		pos = [((winWidth / 2) - (text[0].get_size()[0] / 2), textDist), (0, textDist), (winWidth - text[2].get_size()[0], textDist)]
 	
-	# elif nb_players == 3: triangle tqt
+	elif core.custom_mod == "1V1V1V1":
+		pass
  
 	elif nb_players == 4:
 		score = str(core.players[0].score) + " - " + str(core.players[2].score)

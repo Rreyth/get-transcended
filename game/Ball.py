@@ -11,7 +11,7 @@ class Ball:
 		self.side = "none"
 		self.launch()
   
-		self.multiplier = 1.0
+		self.multiplier = 0
 		self.last_hit = 0
 
 	def initHitbox(self, borderless):
@@ -107,11 +107,11 @@ class Ball:
 						self.last_hit = player.nb
 						break
   
-	def update(self, walls, players, delta):
+	def update(self, walls, players, delta, mod):
 		self.speed = ball_speed_per_sec * delta * self.multiplier
 		self.move(players, walls)
 		self.collide(walls, players)
-		self.goal(players)
+		self.goal(players, mod)
 		self.unstuck()
 
 		if self.borderless:
@@ -141,7 +141,7 @@ class Ball:
 			else:
 				self.dir -= 5
 	
-	def goal(self, players):
+	def goal(self, players, mod):
 		for player in players:
 			if self.hitbox[0].colliderect(player.goal):
 				if players.__len__() == 2:
@@ -149,7 +149,16 @@ class Ball:
 						players[1].score += 1
 					else:
 						players[0].score += 1
-				#elif players.__len__() == 3: -> last_hit prend le point, si csc -1
+				elif mod == "1V1V1V1":
+					if player.nb == self.last_hit:
+						player.score -= 1
+					elif self.last_hit:
+						players[self.last_hit - 1].score += 1
+					else:
+						out = player.nb
+						for player in players:
+							if player.nb != out:
+								player.score += 1
 				elif players.__len__() == 4:
 					if player.nb == 1 or player.nb == 2:
 						players[2].score += 1
