@@ -82,6 +82,8 @@ class CustomMenu:
 		elif self.players_buttons[1].highlight and self.mod_buttons[3].highlight:
 			self.mod_buttons[0].highlight = True
 			self.mod_buttons[1].highlight = False
+		elif self.players_buttons[3].highlight:
+			self.mod_buttons[2].highlight = False
 
 
 	def start(self, core):
@@ -91,8 +93,7 @@ class CustomMenu:
 		core.max_score = self.score
 		self.initPlayers(core)
 		self.initWalls(core)
-		core.ball = Ball() #ajout d'un param pour le triangle
-		core.ballcpy = False
+		core.ball = Ball(True if "BORDERLESS" in self.mod_list else False)
 		core.state = "start"
 		if "AI OPPONENT" in self.mod_list and self.players_buttons[1].highlight:
 			core.mode = "solo"
@@ -158,6 +159,8 @@ class CustomMenu:
 	def initWalls(self, core):
 		if self.mod_buttons[2].highlight:
 			core.walls = False
+		# elif self.players_buttons[3].highlight:
+		# 	core.walls = [Wall("tri_left"), Wall("tri_right")]
 		else:
 			core.walls = [Wall("up"), Wall("down")]
 

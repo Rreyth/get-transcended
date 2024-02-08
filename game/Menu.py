@@ -37,8 +37,7 @@ def setValues(name, core):
 		core.max_score = 5
 		core.players = [Player(1, "Player1", 2, False), Player(2, "Player2", 2, False)]
 		core.walls = [Wall("up"), Wall("down")]
-		core.ball = Ball()
-		core.ballcpy = False
+		core.ball = Ball(False)
 		core.state = "start"
 		core.mode = "LOCAL"
 	if name == "SOLO":
@@ -46,8 +45,7 @@ def setValues(name, core):
 		core.players = [Player(1, "Player1", 2, False), Player(2, "AI", 2, False)]
 		core.ai.append(AI(core.players[1]))
 		core.walls = [Wall("up"), Wall("down")]
-		core.ball = Ball()
-		core.ballcpy = False
+		core.ball = Ball(False)
 		core.state = "start"
 		core.mode = "solo"
 	if name == "CUSTOM":

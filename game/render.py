@@ -7,11 +7,9 @@ def render_game(core):
 		player.draw(core.win)
 
 	if core.walls:
-		core.walls[0].draw(core.win)
-		core.walls[1].draw(core.win)
+		for wall in core.walls:
+			wall.draw(core.win)
 
-	if core.ballcpy:
-		core.ballcpy.draw(core.win)
 	core.ball.draw(core.win)
 
 	render_text(core, core.players.__len__())

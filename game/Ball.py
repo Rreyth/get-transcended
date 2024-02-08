@@ -2,10 +2,10 @@ from .config import *
 from random import randint
 
 class Ball:
-	def __init__(self):
+	def __init__(self, borderless):
+		self.borderless = borderless
 		self.radius = 7
-		center = [winWidth / 2, winHeight / 2]
-		self.hitbox = pg.Rect([center[0] - self.radius, center[1] - self.radius], [self.radius * 2, self.radius * 2])
+		self.initHitbox(borderless)
 
 		self.stick = 0
 		self.side = "none"
@@ -13,16 +13,14 @@ class Ball:
   
 		self.multiplier = 1.0
 		self.last_hit = 0
-		self.cpy = False
 
-	def copy(self, ball):
-		self.hitbox.centerx = ball.hitbox.centerx
-		self.hitbox.centery = ball.hitbox.centery
-		self.stick = ball.stick
-		self.dir = ball.dir
-		self.multiplier = ball.multiplier
-		self.last_hit = ball.last_hit
-		self.cpy = True
+	def initHitbox(self, borderless):
+		center = [winWidth / 2, winHeight / 2]
+		self.hitbox = [pg.Rect([center[0] - self.radius, center[1] - self.radius], [self.radius * 2, self.radius * 2])]
+		if borderless:
+			self.hitbox.append(pg.Rect([center[0] - self.radius, center[1] - self.radius - winHeight], [self.radius * 2, self.radius * 2]))
+			self.hitbox.append(pg.Rect([center[0] - self.radius, center[1] - self.radius + winHeight], [self.radius * 2, self.radius * 2]))
+
 
 	def move(self, players, walls):
 		if self.stick != 0:
@@ -30,33 +28,34 @@ class Ball:
 				if player.nb == self.stick:
 					self.side = player.side
 					if player.side == "left":
-						self.hitbox.center = (player.paddle[0].centerx + 25, player.paddle[0].centery)
+						self.hitbox[0].center = (player.paddle[0].centerx + 25, player.paddle[0].centery)
 					if player.side == "right":
-						self.hitbox.center = (player.paddle[0].centerx - 25, player.paddle[0].centery)
+						self.hitbox[0].center = (player.paddle[0].centerx - 25, player.paddle[0].centery)
 			return
 		rad = math.radians(self.dir)
 		if self.radius > self.speed:
-			new_x = self.hitbox.centerx + (self.speed * math.cos(rad))
-			new_y = self.hitbox.centery + (self.speed * math.sin(rad))
-			self.hitbox.center = (new_x, new_y)
+			new_x = self.hitbox[0].centerx + (self.speed * math.cos(rad))
+			new_y = self.hitbox[0].centery + (self.speed * math.sin(rad))
+			self.hitbox[0].center = (new_x, new_y)
 			return
 
 		tmp_speed = self.radius
 		collision = False
 		while not collision and tmp_speed <= self.speed:
-			tmp_x = self.hitbox.centerx + (tmp_speed * math.cos(rad))
-			tmp_y = self.hitbox.centery + (tmp_speed * math.sin(rad))
-			collision = try_collide(tmp_x, tmp_y, self.radius, players, walls)
-			if collision:
-				break
+			for hitbox in self.hitbox:
+				tmp_x = hitbox.centerx + (tmp_speed * math.cos(rad))
+				tmp_y = hitbox.centery + (tmp_speed * math.sin(rad))
+				collision = try_collide(tmp_x, tmp_y, self.radius, players, walls)
+				if collision:
+					break
 			tmp_speed += self.radius
 
 		if collision:
-			self.hitbox.center = (tmp_x, tmp_y)
+			self.hitbox[0].center = (tmp_x, tmp_y)
 		else:
-			new_x = self.hitbox.centerx + (self.speed * math.cos(rad))
-			new_y = self.hitbox.centery + (self.speed * math.sin(rad))
-			self.hitbox.center = (new_x, new_y)
+			new_x = self.hitbox[0].centerx + (self.speed * math.cos(rad))
+			new_y = self.hitbox[0].centery + (self.speed * math.sin(rad))
+			self.hitbox[0].center = (new_x, new_y)
   
 	def collide(self, walls, players):
 		rad = math.radians(self.dir)
@@ -64,47 +63,49 @@ class Ball:
 		dy = math.sin(rad)
 		if walls:
 			for wall in walls:
-				if self.hitbox.colliderect(wall.hitbox):
+				if self.hitbox[0].colliderect(wall.hitbox):
 					dy = -dy
-					while self.hitbox.colliderect(wall.hitbox):
+					while self.hitbox[0].colliderect(wall.hitbox):
 						if wall.pos == "up":
-							self.hitbox.centery += 1
+							self.hitbox[0].centery += 1
 						else:
-							self.hitbox.centery -= 1
+							self.hitbox[0].centery -= 1
 					rad = math.atan2(dy, dx)
 					self.dir = math.degrees(rad) % 360
 	
 		for player in players:
 			for paddle in player.paddle:
-				if self.hitbox.colliderect(paddle):
-					diff_x = (self.hitbox.center[0] - paddle.center[0]) / (paddle.size[0] / 2)
-					tmp = diff_x
-					if diff_x > 1 or diff_x < -1:
-						diff_x = diff_x % 1 if diff_x > 0 else diff_x % -1
-					if tmp != diff_x and diff_x == 0:
-						diff_x = 1 if tmp > 0 else -1 
-					diff_y = (self.hitbox.center[1] - paddle.center[1]) / (paddle.size[1] / 2)
+				for hitbox in self.hitbox:
+					if hitbox.colliderect(paddle):
+						diff_x = (hitbox.center[0] - paddle.center[0]) / (paddle.size[0] / 2)
+						tmp = diff_x
+						if diff_x > 1 or diff_x < -1:
+							diff_x = diff_x % 1 if diff_x > 0 else diff_x % -1
+						if tmp != diff_x and diff_x == 0:
+							diff_x = 1 if tmp > 0 else -1 
+						diff_y = (hitbox.center[1] - paddle.center[1]) / (paddle.size[1] / 2)
 
-					max = 45
-					if (diff_y >= 1):
-						self.dir = (max * (-diff_x)) + 90
-						while self.hitbox.colliderect(paddle):
-							self.hitbox.centery += 1
-					elif (diff_y <= -1):
-						self.dir = (max * diff_x) + 270
-						while self.hitbox.colliderect(paddle):
-							self.hitbox.centery -= 1
-					elif (diff_x >= 0):
-						self.dir = max * diff_y
-						while self.hitbox.colliderect(paddle):
-							self.hitbox.centerx += 1
-					else:
-						self.dir = (max * (-diff_y)) + 180
-						while self.hitbox.colliderect(paddle):
-							self.hitbox.centerx -= 1
-					if (self.multiplier < 5):
-						self.multiplier += 0.1
-					self.last_hit = player.nb
+						max = 45
+						if (diff_y >= 1):
+							self.dir = (max * (-diff_x)) + 90
+							while hitbox.colliderect(paddle):
+								hitbox.centery += 1
+						elif (diff_y <= -1):
+							self.dir = (max * diff_x) + 270
+							while hitbox.colliderect(paddle):
+								hitbox.centery -= 1
+						elif (diff_x >= 0):
+							self.dir = max * diff_y
+							while hitbox.colliderect(paddle):
+								hitbox.centerx += 1
+						else:
+							self.dir = (max * (-diff_y)) + 180
+							while hitbox.colliderect(paddle):
+								hitbox.centerx -= 1
+						if (self.multiplier < 5):
+							self.multiplier += 0.1
+						self.last_hit = player.nb
+						break
   
 	def update(self, walls, players, delta):
 		self.speed = ball_speed_per_sec * delta * self.multiplier
@@ -113,15 +114,20 @@ class Ball:
 		self.goal(players)
 		self.unstuck()
 
-		if not self.cpy:
-			if self.hitbox.centery < 0:
-				self.hitbox.centery += winHeight
-			if self.hitbox.centery >= winHeight:
-				self.hitbox.centery -= winHeight
+		if self.borderless:
+			if self.hitbox[0].centery < 0:
+				self.hitbox[0].centery += winHeight
+			if self.hitbox[0].centery >= winHeight:
+				self.hitbox[0].centery -= winHeight
+			self.hitbox[1].centerx = self.hitbox[0].centerx
+			self.hitbox[1].centery = self.hitbox[0].centery - winHeight
+			self.hitbox[2].centerx = self.hitbox[0].centerx
+			self.hitbox[2].centery = self.hitbox[0].centery + winHeight
 
   
 	def draw(self, win):
-		pg.draw.circle(win, (255, 255, 255), self.hitbox.center, self.radius)
+		for ball in self.hitbox:
+			pg.draw.circle(win, (255, 255, 255), ball.center, self.radius)
 
 	def unstuck(self):
 		if round(self.dir) % 360 in range(85, 96) or round(self.dir) % 360 in range(-275, -264):
@@ -136,10 +142,8 @@ class Ball:
 				self.dir -= 5
 	
 	def goal(self, players):
-		if self.cpy:
-			return
 		for player in players:
-			if self.hitbox.colliderect(player.goal):
+			if self.hitbox[0].colliderect(player.goal):
 				if players.__len__() == 2:
 					if player.nb == 1:
 						players[1].score += 1
