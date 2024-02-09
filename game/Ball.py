@@ -11,7 +11,7 @@ class Ball:
 		self.side = "none"
 		self.launch()
   
-		self.multiplier = 0
+		self.multiplier = 1.0
 		self.last_hit = 0
 
 	def initHitbox(self, borderless):
@@ -31,6 +31,10 @@ class Ball:
 						self.hitbox[0].center = (player.paddle[0].centerx + 25, player.paddle[0].centery)
 					if player.side == "right":
 						self.hitbox[0].center = (player.paddle[0].centerx - 25, player.paddle[0].centery)
+					if player.side == "up":
+						self.hitbox[0].center = (player.paddle[0].centerx, player.paddle[0].centery + 25)
+					if player.side == "down":
+						self.hitbox[0].center = (player.paddle[0].centerx, player.paddle[0].centery - 25)
 			return
 		rad = math.radians(self.dir)
 		if self.radius > self.speed:
@@ -112,7 +116,7 @@ class Ball:
 		self.move(players, walls)
 		self.collide(walls, players)
 		self.goal(players, mod)
-		self.unstuck()
+		self.unstuck(mod)
 
 		if self.borderless:
 			if self.hitbox[0].centery < 0:
@@ -129,7 +133,9 @@ class Ball:
 		for ball in self.hitbox:
 			pg.draw.circle(win, (255, 255, 255), ball.center, self.radius)
 
-	def unstuck(self):
+	def unstuck(self, mod):
+		if mod == "1V1V1V1":
+			return
 		if round(self.dir) % 360 in range(85, 96) or round(self.dir) % 360 in range(-275, -264):
 			if (self.last_hit == 1):
 				self.dir -= 5
@@ -156,9 +162,9 @@ class Ball:
 						players[self.last_hit - 1].score += 1
 					else:
 						out = player.nb
-						for player in players:
-							if player.nb != out:
-								player.score += 1
+						for other in players:
+							if other.nb != out:
+								other.score += 1
 				elif players.__len__() == 4:
 					if player.nb == 1 or player.nb == 2:
 						players[2].score += 1
@@ -178,6 +184,10 @@ class Ball:
 				self.dir = 0
 			elif self.side == "right":
 				self.dir = 180
+			elif self.side == "up":
+				self.dir = 90
+			elif self.side == "down":
+				self.dir = 270
 	  
 		self.stick = 0
   

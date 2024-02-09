@@ -3,7 +3,6 @@ from .config import *
 class Player:
 	def __init__(self, nb, name, nb_total, borderless, square):
 		self.borderless = borderless
-		# self.square = square
 		self.speed_per_sec = speed_per_sec
 		self.speed = self.speed_per_sec * 0.005
 		self.nb = nb
@@ -15,7 +14,7 @@ class Player:
   
 	def initPaddle(self, nb_total, borderless, square):
 		size = [winWidth * 0.007 ,winHeight * 0.1]
-		if nb_total == 2 or nb_total == 3: #pour l'instant gere aussi le 1v1v1 jusqu'a l'implementation du triangle
+		if nb_total == 2:
 			if (self.nb == 1):
 				pos = [winWidth * 0.02, (winHeight / 2) - (size[1] / 2)]
 				self.goal = pg.Rect((-50, 0), (50, winHeight))
@@ -90,6 +89,17 @@ class Player:
 			self.paddle[1].centery = self.paddle[0].centery - winHeight
 			self.paddle[2].centery = self.paddle[0].centery + winHeight
 
+	def moveLeft(self, walls):
+		self.paddle[0].x -= self.speed
+		while self.paddle[0].colliderect(walls[2].hitbox):
+			self.paddle[0].x += 1
+   
+	def moveRight(self, walls):
+		self.paddle[0].x += self.speed
+		while self.paddle[0].colliderect(walls[3].hitbox):
+			self.paddle[0].x -= 1
+
 	def draw(self, win):
 		for paddle in self.paddle:
 			pg.draw.rect(win, (255, 255, 255), paddle)
+		# pg.draw.rect(win, (255, 0, 0), self.goal)

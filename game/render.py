@@ -25,6 +25,9 @@ def render_text(core, nb_players):
 	
 	elif core.custom_mod == "1V1V1V1":
 		pass
+		# print("score:")
+		# for player in core.players:
+		# 	print(player.score)
  
 	elif nb_players == 4:
 		score = str(core.players[0].score) + " - " + str(core.players[2].score)
