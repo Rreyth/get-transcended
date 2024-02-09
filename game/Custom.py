@@ -5,6 +5,7 @@ from .Player import *
 from .Wall import *
 from .StartScreen import *
 from .AI import *
+from .Obstacle import *
 
 class CustomMenu:
 	def __init__(self):
@@ -101,7 +102,9 @@ class CustomMenu:
 			core.mode = "AI"
 		else:
 			core.mode = self.mod_list[0]
-		core.custom_mod = "1V1V1V1" if "1V1V1V1" in self.mod_list else False
+		if "1V1V1V1" in self.mod_list:
+			core.custom_mod = "1V1V1V1"
+			core.obstacle = Obstacle()
 		core.start_screen = StartScreen(core.mode) #adapt to nb players
 
 	def getMods(self):

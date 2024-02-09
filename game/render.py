@@ -10,6 +10,9 @@ def render_game(core):
 		for wall in core.walls:
 			wall.draw(core.win)
 
+	if core.obstacle:
+		core.obstacle.draw(core.win)
+
 	core.ball.draw(core.win)
 
 	render_text(core, core.players.__len__())

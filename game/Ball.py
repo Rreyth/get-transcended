@@ -3,6 +3,11 @@ from random import randint
 
 class Ball:
 	def __init__(self, borderless):
+     
+		#pos en vec2
+		#dir en vec2 (vec2(cos(rad), sin(rad))) # maybe only when calcul
+		#old dir devient angle ?
+
 		self.borderless = borderless
 		self.radius = 7
 		self.initHitbox(borderless)
