@@ -1,16 +1,15 @@
 from .config import *
+from .Vec2 import *
 from random import randint
 
 class Ball:
 	def __init__(self, borderless):
-     
-		#pos en vec2
-		#dir en vec2 (vec2(cos(rad), sin(rad))) # maybe only when calcul
-		#old dir devient angle ?
-
 		self.borderless = borderless
 		self.radius = 7
-		self.initHitbox(borderless)
+		self.center = [Vec2(winWidth / 2, winHeight / 2)]
+		if borderless:
+			self.center.append(Vec2(self.center[0].x, self.center[0].y + winHeight))
+			self.center.append(Vec2(self.center[0].x, self.center[0].y - winHeight))
 
 		self.stick = 0
 		self.side = "none"
@@ -19,124 +18,84 @@ class Ball:
 		self.multiplier = 1.0
 		self.last_hit = 0
 
-	def initHitbox(self, borderless):
-		center = [winWidth / 2, winHeight / 2]
-		self.hitbox = [pg.Rect([center[0] - self.radius, center[1] - self.radius], [self.radius * 2, self.radius * 2])]
-		if borderless:
-			self.hitbox.append(pg.Rect([center[0] - self.radius, center[1] - self.radius - winHeight], [self.radius * 2, self.radius * 2]))
-			self.hitbox.append(pg.Rect([center[0] - self.radius, center[1] - self.radius + winHeight], [self.radius * 2, self.radius * 2]))
 
-
-	def move(self, players, walls):
+	def move(self, players, walls, obstacle):
 		if self.stick != 0:
 			for player in players:
 				if player.nb == self.stick:
 					self.side = player.side
 					if player.side == "left":
-						self.hitbox[0].center = (player.paddle[0].centerx + 25, player.paddle[0].centery)
+						self.center[0] = Vec2((player.paddle[0].pos.x + (player.size[0] / 2)) + 25, player.paddle[0].pos.y + (player.size[1] / 2))
 					if player.side == "right":
-						self.hitbox[0].center = (player.paddle[0].centerx - 25, player.paddle[0].centery)
+						self.center[0] = Vec2((player.paddle[0].pos.x + (player.size[0] / 2)) - 25, player.paddle[0].pos.y + (player.size[1] / 2))
 					if player.side == "up":
-						self.hitbox[0].center = (player.paddle[0].centerx, player.paddle[0].centery + 25)
+						self.center[0] = Vec2(player.paddle[0].pos.x + (player.size[0] / 2), (player.paddle[0].pos.y + (player.size[1] / 2)) + 25)
 					if player.side == "down":
-						self.hitbox[0].center = (player.paddle[0].centerx, player.paddle[0].centery - 25)
+						self.center[0] = Vec2(player.paddle[0].pos.x + (player.size[0] / 2), (player.paddle[0].pos.y + (player.size[1] / 2)) - 25)
 			return
-		rad = math.radians(self.dir)
+
+		rad = radians(self.dir)
 		if self.radius > self.speed:
-			new_x = self.hitbox[0].centerx + (self.speed * math.cos(rad))
-			new_y = self.hitbox[0].centery + (self.speed * math.sin(rad))
-			self.hitbox[0].center = (new_x, new_y)
+			new_x = self.center[0].x + (self.speed * cos(rad))
+			new_y = self.center[0].y + (self.speed * sin(rad))
+			self.center[0].x = new_x
+			self.center[0].y = new_y
 			return
 
 		tmp_speed = self.radius
 		collision = False
 		while not collision and tmp_speed <= self.speed:
-			for hitbox in self.hitbox:
-				tmp_x = hitbox.centerx + (tmp_speed * math.cos(rad))
-				tmp_y = hitbox.centery + (tmp_speed * math.sin(rad))
-				collision = try_collide(tmp_x, tmp_y, self.radius, players, walls)
+			for center in self.center:
+				tmp_x = center.x + (tmp_speed * cos(rad))
+				tmp_y = center.y + (tmp_speed * sin(rad))
+				collision = try_collide(tmp_x, tmp_y, self.radius, players, walls, obstacle)
 				if collision:
 					break
 			tmp_speed += self.radius
 
 		if collision:
-			self.hitbox[0].center = (tmp_x, tmp_y)
+			new_x = tmp_x
+			new_y = tmp_y
 		else:
-			new_x = self.hitbox[0].centerx + (self.speed * math.cos(rad))
-			new_y = self.hitbox[0].centery + (self.speed * math.sin(rad))
-			self.hitbox[0].center = (new_x, new_y)
+			new_x = self.center[0].x + (self.speed * cos(rad))
+			new_y = self.center[0].y + (self.speed * sin(rad))
+
+		self.center[0].x = new_x
+		self.center[0].y = new_y
   
-	def collide(self, walls, players):
-		rad = math.radians(self.dir)
-		dx = math.cos(rad)
-		dy = math.sin(rad)
+	def collide(self, walls, players, obstacle):
+		if obstacle:
+			if getDist(self.center[0], obstacle.center) <= self.radius + obstacle.radius and obstacle.solid:
+				obstacle.collide(self)
 		if walls:
 			for wall in walls:
-				if self.hitbox[0].colliderect(wall.hitbox):
-					dy = -dy
-					while self.hitbox[0].colliderect(wall.hitbox):
-						if wall.pos == "up":
-							self.hitbox[0].centery += 1
-						else:
-							self.hitbox[0].centery -= 1
-					rad = math.atan2(dy, dx)
-					self.dir = math.degrees(rad) % 360
-	
-		for player in players:
-			for paddle in player.paddle:
-				for hitbox in self.hitbox:
-					if hitbox.colliderect(paddle):
-						diff_x = (hitbox.center[0] - paddle.center[0]) / (paddle.size[0] / 2)
-						tmp = diff_x
-						if diff_x > 1 or diff_x < -1:
-							diff_x = diff_x % 1 if diff_x > 0 else diff_x % -1
-						if tmp != diff_x and diff_x == 0:
-							diff_x = 1 if tmp > 0 else -1 
-						diff_y = (hitbox.center[1] - paddle.center[1]) / (paddle.size[1] / 2)
+				wall.collide(self)
 
-						max = 45
-						if (diff_y >= 1):
-							self.dir = (max * (-diff_x)) + 90
-							while hitbox.colliderect(paddle):
-								hitbox.centery += 1
-						elif (diff_y <= -1):
-							self.dir = (max * diff_x) + 270
-							while hitbox.colliderect(paddle):
-								hitbox.centery -= 1
-						elif (diff_x >= 0):
-							self.dir = max * diff_y
-							while hitbox.colliderect(paddle):
-								hitbox.centerx += 1
-						else:
-							self.dir = (max * (-diff_y)) + 180
-							while hitbox.colliderect(paddle):
-								hitbox.centerx -= 1
-						if (self.multiplier < 5):
-							self.multiplier += 0.1
-						self.last_hit = player.nb
-						break
+		for player in players:
+			player.collide(self)
+		
   
-	def update(self, walls, players, delta, mod):
+	def update(self, core, delta):
 		self.speed = ball_speed_per_sec * delta * self.multiplier
-		self.move(players, walls)
-		self.collide(walls, players)
-		self.goal(players, mod)
-		self.unstuck(mod)
+		self.move(core.players, core.walls, core.obstacle)
+		self.collide(core.walls, core.players, core.obstacle)
+		self.goal(core.players, core.custom_mod)
+		self.unstuck(core.custom_mod)
 
 		if self.borderless:
-			if self.hitbox[0].centery < 0:
-				self.hitbox[0].centery += winHeight
-			if self.hitbox[0].centery >= winHeight:
-				self.hitbox[0].centery -= winHeight
-			self.hitbox[1].centerx = self.hitbox[0].centerx
-			self.hitbox[1].centery = self.hitbox[0].centery - winHeight
-			self.hitbox[2].centerx = self.hitbox[0].centerx
-			self.hitbox[2].centery = self.hitbox[0].centery + winHeight
+			if self.center[0].y < 0:
+				self.center[0].y += winHeight
+			if self.center[0].y >= winHeight:
+				self.center[0].y -= winHeight
+			self.center[1].x = self.center[0].x
+			self.center[1].y = self.center[0].y - winHeight
+			self.center[2].x = self.center[0].x
+			self.center[2].y = self.center[0].y + winHeight
 
   
 	def draw(self, win):
-		for ball in self.hitbox:
-			pg.draw.circle(win, (255, 255, 255), ball.center, self.radius)
+		for center in self.center:
+			pg.draw.circle(win, (255, 255, 255), (center.x, center.y), self.radius)
 
 	def unstuck(self, mod):
 		if mod == "1V1V1V1":
@@ -153,8 +112,9 @@ class Ball:
 				self.dir -= 5
 	
 	def goal(self, players, mod):
+		ball_box = [self.center[0].x - self.radius, self.center[0].y - self.radius]
 		for player in players:
-			if self.hitbox[0].colliderect(player.goal):
+			if is_colliding(ball_box, [self.radius * 2, self.radius * 2], player.goal.pos, player.goal.size):
 				if players.__len__() == 2:
 					if player.nb == 1:
 						players[1].score += 1
@@ -197,16 +157,20 @@ class Ball:
 		self.stick = 0
   
   
-def try_collide(x, y, radius, players, walls):
-	tmp_rect = pg.Rect([x - radius, y - radius], [radius * 2, radius * 2])
+def try_collide(x, y, radius, players, walls, obstacle):
+	tmp = [x - radius, y - radius]
 	
 	for player in players:
 		for paddle in player.paddle:
-			if tmp_rect.colliderect(paddle):
+			if is_colliding(tmp, [radius * 2, radius * 2], paddle.pos, player.size):
 				return True
+
+	if obstacle and getDist(Vec2(x, y), obstacle.center) <= radius + obstacle.radius and obstacle.solid:
+		return True
+
 	if not walls:
 		return False
 	for wall in walls:
-		if tmp_rect.colliderect(wall.hitbox):
+		if is_colliding(tmp, [radius * 2, radius * 2], wall.hitbox.pos, wall.size):
 			return True
 	return False

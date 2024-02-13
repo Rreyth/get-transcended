@@ -5,7 +5,9 @@ from .Ball import *
 def update_all(core, delta):
 	if core.state == "game" and not core.pause[1].freeze:
 
-		core.ball.update(core.walls, core.players, delta, core.custom_mod)
+		core.ball.update(core, delta)
+		if core.obstacle:
+			core.obstacle.update()
 
 		for ai in core.ai:
 			ai.update(core, core.players[1]) #modif ai pour appel en loop avec les bons params

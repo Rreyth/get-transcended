@@ -1,15 +1,24 @@
 from math import *
 
 class Vec2:
-	def __init__(self, x, y):
-		self.x = x
-		self.y = y
+	def __init__(self, x = 0, y = 0, pos = False):
+		if pos:
+			self.x = pos[0]
+			self.y = pos[1]
+		else:
+			self.x = x
+			self.y = y
 	
 	def __add__(self, other):
 		return Vec2(self.x + other.x, self.y + other.y)
 
 	def __sub__(self, other):
 		return Vec2(self.x - other.x, self.y - other.y)
+
+	def __getitem__(self, key):
+		if key == 0:
+			return self.x
+		return self.y
 
 	def scale(self, nb):
 		self.x *= nb

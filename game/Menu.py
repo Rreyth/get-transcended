@@ -34,6 +34,7 @@ class Menu:
  
 def setValues(name, core):
 	core.custom_mod = False
+	core.obstacle = False
 	if name == "LOCAL":
 		core.max_score = 5
 		core.players = [Player(1, "Player1", 2, False, False), Player(2, "Player2", 2, False, False)]
