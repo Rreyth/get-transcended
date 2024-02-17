@@ -1,19 +1,91 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const appContainer = document.getElementById('app');
+import Home from "./pages/home.js";
+import About from "./pages/about.js";
 
-    const loadPage = (page) => {
-        fetch(`/static/js/pages/${page}.js`)
-            .then(response => response.text())
-            .then(script => {
-                appContainer.innerHTML = script;
-                history.pushState({ page }, null, page);
-            });
-    };
+const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
 
-    window.addEventListener('popstate', (event) => {
-        const page = event.state ? event.state.page : 'home';
-        loadPage(page);
+const getParams = match => {
+    const values = match.result.slice(1);
+    const keys = Array.from(match.route.path.matchAll(/:(\w+)/g)).map(result => result[1]);
+
+    return Object.fromEntries(keys.map((key, i) => {
+        return [key, values[i]];
+    }));
+};
+
+const navigateTo = url => {
+    history.pushState(null, null, url);
+    router();
+};
+
+const router = async () => {
+    const routes = [
+        { path: "/", view: Home },
+        { path: "/about", view: About },
+    ];
+
+    // Test each route for potential match
+    const potentialMatches = routes.map(route => {
+        return {
+            route: route,
+            result: location.pathname.match(pathToRegex(route.path)),
+            boo: console.log(location.pathname + " - " + route.path + " - " + pathToRegex(route.path))
+        };
     });
 
-    loadPage('home');
+    let match = potentialMatches.find(potentialMatch => potentialMatch.result !== null);
+
+    if (!match) {
+        match = {
+            route: routes[0],
+            result: [location.pathname]
+        };
+    }
+
+    const view = new match.route.view(getParams(match));
+
+    document.querySelector("#content").innerHTML = await view.getHtml();
+};
+
+window.addEventListener("popstate", router);
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.body.addEventListener("click", e => {
+        if (e.target.matches("[data-link]")) {
+            e.preventDefault();
+            navigateTo(e.target.href);
+        }
+    });
+
+    router();
 });
+
+
+
+// const routes =
+// [
+//     {path: "/", data: new Home()},
+//     {path: "/about", data: new About()},
+// ];
+
+// const potentialMatches = routes.map(route => {
+//     return {
+//         route: route,
+//         result: location.pathname
+//     };
+// });
+
+// let match = potentialMatches.find(potentialMatch => potentialMatch.result !== null);
+
+// if (!match) {
+//     match = {
+//         route: routes[0],
+//         result: [location.pathname]
+//     };
+// }
+
+
+// console.log(match.result);
+// console.log(match.route.path);
+// // const home = new Home();
+// document.getElementById("content").innerHTML = await match.route.data.getHtml();
+// // document.getElementById("content").innerHTML = await home.getHtml();

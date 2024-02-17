@@ -6,7 +6,7 @@ services:
       context: ./requirements/Django
     container_name: django
     image: django
-    # restart: always
+    restart: always
     volumes:
       - app:/app
     expose:
@@ -19,7 +19,7 @@ services:
       context: ./requirements/Daphne
     container_name: daphne
     image: daphne
-    # restart: always
+    restart: always
     volumes:
       - app:/app
     expose:
@@ -32,7 +32,7 @@ services:
       context: ./requirements/Nginx
     container_name: nginx
     image: nginx
-    # restart: always
+    restart: always
     ports:
       - "8080:8080"
     volumes:

@@ -7,7 +7,12 @@
     <title>SPA with Pure JS</title>
 </head>
 <body>
-    <div id="app"></div>
-    <script src="/static/js/main.js"></script>
+    <nav class="nav">
+        <a href="/" class="nav__link" data-link>Home</a>
+        <a href="/about" class="nav__link" data-link>Posts</a>
+        <a href="/settings" class="nav__link" data-link>Settings</a>
+    </nav>
+    <div id="content"></div>
+    <script type="module" src="/static/js/main.js"></script>
 </body>
 </html>

@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-zbpkg$%q^w(@20v+%r%4h-o^gj82q+$9t2q6k%tovw%wj(j5zt
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
 
 
 # Application definition
