@@ -34,7 +34,7 @@ services:
     image: nginx
     restart: always
     ports:
-      - "8080:8080"
+      - "44433:44433"
     volumes:
       - app:/app
     networks:

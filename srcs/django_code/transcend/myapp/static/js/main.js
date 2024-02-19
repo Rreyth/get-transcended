@@ -58,34 +58,3 @@ document.addEventListener("DOMContentLoaded", () => {
 
     router();
 });
-
-
-
-// const routes =
-// [
-//     {path: "/", data: new Home()},
-//     {path: "/about", data: new About()},
-// ];
-
-// const potentialMatches = routes.map(route => {
-//     return {
-//         route: route,
-//         result: location.pathname
-//     };
-// });
-
-// let match = potentialMatches.find(potentialMatch => potentialMatch.result !== null);
-
-// if (!match) {
-//     match = {
-//         route: routes[0],
-//         result: [location.pathname]
-//     };
-// }
-
-
-// console.log(match.result);
-// console.log(match.route.path);
-// // const home = new Home();
-// document.getElementById("content").innerHTML = await match.route.data.getHtml();
-// // document.getElementById("content").innerHTML = await home.getHtml();
