@@ -1,6 +1,17 @@
 version: '3'
 
 services:
+  postgres:
+    build:
+      context: ./requirements/Postgres
+    container_name: postgres
+    image: postgres
+    restart: always
+    volumes:
+      - db:/db
+    expose:
+      - "5432"
+
   django:
     build:
       context: ./requirements/Django
@@ -42,14 +53,19 @@ services:
 
 
 volumes:
-    app:
-        driver: local
-        name: app
-        driver_opts:
-            o: bind
-            type: none
-            device: ./django_code
-
+  app:
+    driver: local
+    name: app
+    driver_opts:
+      o: bind
+      type: none
+      device: ./django_code
+  db:
+    driver: local
+    name: db
+    driver_opts:
+      o: bind
+      type: none
 
 networks:
   transcendNetwork:
