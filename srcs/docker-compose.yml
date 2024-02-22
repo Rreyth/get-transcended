@@ -11,55 +11,65 @@ services:
       - db:/db
     expose:
       - '5432:5432'
+    networks:
+      - transcendNetwork
+    env_file:
+      - .env
 
-  #django:
-  #  build:
-  #    context: ./requirements/Django
-  #  container_name: django
-  #  image: django
-  #  restart: always
-  #  volumes:
-  #    - app:/app
-  #  expose:
-  #    - "8000"
-  #  networks:
-  #    - transcendNetwork
+  django:
+    build:
+      context: ./requirements/Django
+    container_name: django
+    image: django
+    restart: always
+    volumes:
+      - app:/app
+    expose:
+      - "8000"
+    networks:
+      - transcendNetwork
+    depends_on:
+      - postgres
 
-  #daphne:
-  #  build:
-  #    context: ./requirements/Daphne
-  #  container_name: daphne
-  #  image: daphne
-  #  restart: always
-  #  volumes:
-  #    - app:/app
-  #  expose:
-  #    - "8001"
-  #  networks:
-  #    - transcendNetwork
+  daphne:
+    build:
+      context: ./requirements/Daphne
+    container_name: daphne
+    image: daphne
+    restart: always
+    volumes:
+      - app:/app
+    expose:
+      - "8001"
+    networks:
+      - transcendNetwork
+    depends_on:
+      - postgres
 
-  #nginx:
-  #  build:
-  #    context: ./requirements/Nginx
-  #  container_name: nginx
-  #  image: nginx
-  #  restart: always
-  #  ports:
-  #    - "44433:44433"
-  #  volumes:
-  #    - app:/app
-  #  networks:
-  #    - transcendNetwork
+  nginx:
+    build:
+      context: ./requirements/Nginx
+    container_name: nginx
+    image: nginx
+    restart: always
+    ports:
+      - "44433:44433"
+    volumes:
+      - app:/app
+    networks:
+      - transcendNetwork
+    depends_on:
+      - postgres
 
 
 volumes:
-  #app:
-  #  driver: local
-  #  name: app
-  #  driver_opts:
-  #    o: bind
-  #    type: none
-  #    device: ./django_code
+  app:
+    driver: local
+    name: app
+    driver_opts:
+      o: bind
+      type: none
+      device: ./django_code
   db:
     driver: local
     name: db
@@ -67,7 +77,7 @@ volumes:
       o: bind
       type: none
 
-#networks:
-#  transcendNetwork:
-#    driver: bridge
-#    name: transcendNetwork
+networks:
+  transcendNetwork:
+    driver: bridge
+    name: transcendNetwork
