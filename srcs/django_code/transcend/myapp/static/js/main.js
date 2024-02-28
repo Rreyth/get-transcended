@@ -19,6 +19,7 @@ const navigateTo = url => {
 
 const router = async () => {
     const routes = [
+        // { path: "/404", view: NotFound },
         { path: "/", view: Home },
         { path: "/about", view: About },
     ];
