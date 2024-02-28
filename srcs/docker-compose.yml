@@ -30,6 +30,8 @@ services:
       - transcendNetwork
     depends_on:
       - postgres
+    env_file:
+      - .env
 
   daphne:
     build:
