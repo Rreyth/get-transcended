@@ -1,39 +1,35 @@
-import Home from "./pages/home.js";
-import About from "./pages/about.js";
 
-const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$");
+function loadPage(page) {
+    fetch(page)
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('content').innerHTML = html;
+        })
+        .catch(error => console.error('Error loading page:', error));
+}
 
-const getParams = match => {
-    const values = match.result.slice(1);
-    const keys = Array.from(match.route.path.matchAll(/:(\w+)/g)).map(result => result[1]);
-
-    return Object.fromEntries(keys.map((key, i) => {
-        return [key, values[i]];
-    }));
-};
 
 const navigateTo = url => {
     history.pushState(null, null, url);
     router();
 };
 
+
 const router = async () => {
     const routes = [
         // { path: "/404", view: NotFound },
-        { path: "/", view: Home },
-        { path: "/about", view: About },
+        { path: "/", link: "static/pages/home.html" },
+        { path: "/about", link: "static/pages/about.html" },
     ];
 
-    // Test each route for potential match
     const potentialMatches = routes.map(route => {
         return {
             route: route,
-            result: location.pathname.match(pathToRegex(route.path)),
-            boo: console.log(location.pathname + " - " + route.path + " - " + pathToRegex(route.path))
+            result: location.pathname == route.path,
         };
     });
 
-    let match = potentialMatches.find(potentialMatch => potentialMatch.result !== null);
+    let match = potentialMatches.find(potentialMatch => potentialMatch.result !== false);
 
     if (!match) {
         match = {
@@ -42,9 +38,7 @@ const router = async () => {
         };
     }
 
-    const view = new match.route.view(getParams(match));
-
-    document.querySelector("#content").innerHTML = await view.getHtml();
+    loadPage(match.route.link);
 };
 
 window.addEventListener("popstate", router);
