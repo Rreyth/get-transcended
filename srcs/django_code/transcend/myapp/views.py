@@ -33,7 +33,7 @@ def auth_42(request):
         # user = User.objects.get_or_create(username=user_data['login'], ...)
         # request.session['user_id'] = user.id
 
-        return JsonResponse({'message': 'Utilisateur authentifié avec succès'})
+        return JsonResponse(user_data)
 
     else:
         return JsonResponse({'error': 'Erreur lors de l\'authentification'}, status=401)
