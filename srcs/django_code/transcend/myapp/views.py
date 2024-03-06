@@ -6,6 +6,15 @@ from django.http import JsonResponse
 def index(request):
     return render(request, 'index.html')
 
+def home(request):
+	return render(request, 'home.html')
+
+def about(request):
+	return render(request, 'about.html')
+
+def login(request):
+	return render(request, 'login.html')
+
 
 def auth_42(request):
     # Récupérer le code d'authentification de la requête GET

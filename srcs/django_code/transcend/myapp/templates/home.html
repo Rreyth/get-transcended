@@ -1,8 +1,13 @@
+{% load static %}
+<!DOCTYPE html>
 <head>
     <title>Home</title>
+	<script type="module" src="{% static 'js/main.js' %}"></script>
 </head>
 <body>
-	{% include "navbar.html" %}
-	<p>Hey XD</p>
+	<div id="content">
+		{% include "navbar.html" %}
+		<p>Hey XD</p>
+	</div>
 </body>
 </html>

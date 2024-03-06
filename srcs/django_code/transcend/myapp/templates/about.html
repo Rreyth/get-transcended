@@ -1,11 +1,15 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
     <title>About</title>
+    <meta charset="UTF-8">
+	<script type="module" src="{% static 'js/main.js' %}"></script>
 </head>
 <body>
-	{% include "navbar.html" %}
-	<p>blou XP</p>
+	<div id="content">
+		{% include "navbar.html" %}
+		<p>blou XP</p>
+	</div>
 </body>
 </html>

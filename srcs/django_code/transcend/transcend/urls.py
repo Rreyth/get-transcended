@@ -18,7 +18,10 @@ from django.urls import path, re_path
 from myapp import views
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', views.home, name='home'),
+    path("home", views.home, name='home'),
+    path('about', views.about, name='about'),
+    path('login', views.login, name='login'),
     path('auth/42/', views.auth_42, name='auth_42'),
     re_path(r'^(?!auth/42/).*$', views.index),
     # path('admin/', admin.site.urls),

@@ -1,11 +1,10 @@
-
 function loadPage(page) {
     fetch(page)
         .then(response => response.text())
         .then(html => {
-            document.getElementById('content').innerHTML = html;
-        })
-        .catch(error => console.error('Error loading page:', error));
+				document.getElementById('content').innerHTML = html;
+		})
+			.catch(error => console.error('Error loading page:', error));
 }
 
 
@@ -19,6 +18,7 @@ const router = async () => {
     const routes = [
         // { path: "/404", view: NotFound },
         { path: "/", link:"home.html" },
+        { path: "/home", link:"home.html" },
         { path: "/about", link: "about.html" },
         { path: "/login", link: "login.html" },
     ];
@@ -38,19 +38,18 @@ const router = async () => {
             result: [location.pathname]
         };
     }
-
-    loadPage(match.route.link);
+    loadPage(match.route.path);
 };
+
+
 
 window.addEventListener("popstate", router);
 
 document.addEventListener("DOMContentLoaded", () => {
     document.body.addEventListener("click", e => {
-        if (e.target.matches("[data-link]")) {
-            e.preventDefault();
-            navigateTo(e.target.href);
-        }
+		e.preventDefault();
+		navigateTo(e.target.href);
+		//router();
+		console.log('Button clicked');
     });
-
-    router();
 });
