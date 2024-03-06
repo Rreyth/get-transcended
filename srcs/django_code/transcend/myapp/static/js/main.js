@@ -7,13 +7,6 @@ function loadPage(page) {
 			.catch(error => console.error('Error loading page:', error));
 }
 
-
-const navigateTo = url => {
-    history.pushState(null, null, url);
-    router();
-};
-
-
 const router = async () => {
     const routes = [
         // { path: "/404", view: NotFound },
@@ -42,14 +35,17 @@ const router = async () => {
 };
 
 
+const navigateTo = url => {
+	history.pushState(null, null, url);
+    router();
+};
 
-window.addEventListener("popstate", router);
+//window.addEventListener("popstate", router);
 
 document.addEventListener("DOMContentLoaded", () => {
     document.body.addEventListener("click", e => {
 		e.preventDefault();
 		navigateTo(e.target.href);
-		//router();
 		console.log('Button clicked');
     });
 });
