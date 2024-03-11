@@ -1,8 +1,8 @@
-async function loadPage(page) {
+async function loadPage(page, id) {
 	try {
 		var ftch = await fetch(page);
 		var resp = await ftch.text();
-		document.querySelector('body').innerHTML = resp;
+		document.querySelector(id).innerHTML = resp;
 	}
 	catch(error){
 		console.error('Error loading page:', error);
@@ -32,7 +32,7 @@ const router = async () => {
 			result: [location.pathname]
 		};
 	}
-	loadPage(match.route.link);
+	loadPage(match.route.link, 'body');
 };
 
 
@@ -47,11 +47,10 @@ window.addEventListener("popstate", router);
 
 document.addEventListener("DOMContentLoaded", () => {
 	document.body.addEventListener("click", e => {
-		if (!e.target.name){
+		if (e.target.localName == "a"){
 			e.preventDefault();
 			navigateTo(e.target.href);
 			console.log('Button clicked');
 		}
 	});
 });
-

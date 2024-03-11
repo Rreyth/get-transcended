@@ -1,22 +1,25 @@
-async function loadPage(page) {
+async function loadPage(page, id) {
 	try {
 		var ftch = await fetch(page);
 		var resp = await ftch.text();
-		document.querySelector('my-navbar').innerHTML = resp;
+		const rpl = document.createElement("div");
+		rpl.innerHTML = resp;
+		document.querySelector(id).replaceWith(rpl);
 	}
 	catch(error){
 		console.error('Error loading page:', error);
 	}
 }
 
-class Navbar extends HTMLElement{
+class loadfile extends HTMLElement{
 	constructor(){
 		super();
 	}
 
 	connectedCallback(){
-		loadPage("/static/html/navbar.html");
+		const file = this.getAttribute("file");
+		loadPage(file, "load-file");
 	}
 }
 
-customElements.define("my-navbar", Navbar)
+customElements.define("load-file", loadfile);
