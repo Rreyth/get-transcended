@@ -1,7 +1,7 @@
-async function loadPage(page, id) {
+async function loadPage(page, id, bool) {
 	try {
-		var ftch = await fetch(page);
-		var resp = await ftch.text();
+		let ftch = await fetch(page);
+		let resp = await ftch.text();
 		document.querySelector(id).innerHTML = resp;
 	}
 	catch(error){
@@ -47,7 +47,7 @@ window.addEventListener("popstate", router);
 
 document.addEventListener("DOMContentLoaded", () => {
 	document.body.addEventListener("click", e => {
-		if (e.target.localName == "a"){
+		if (e.target.localName == "a" && e.target.id != 1){
 			e.preventDefault();
 			navigateTo(e.target.href);
 			console.log('Button clicked');

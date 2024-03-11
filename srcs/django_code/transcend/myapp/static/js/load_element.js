@@ -1,8 +1,8 @@
-async function loadPage(page, id) {
+async function loadPage(page, id, replace_id) {
 	try {
-		var ftch = await fetch(page);
-		var resp = await ftch.text();
-		const rpl = document.createElement("div");
+		let ftch = await fetch(page);
+		let resp = await ftch.text();
+		const rpl = document.createElement(replace_id);
 		rpl.innerHTML = resp;
 		document.querySelector(id).replaceWith(rpl);
 	}
@@ -18,7 +18,7 @@ class loadfile extends HTMLElement{
 
 	connectedCallback(){
 		const file = this.getAttribute("file");
-		loadPage(file, "load-file");
+		loadPage(file, "load-file", "div");
 	}
 }
 
