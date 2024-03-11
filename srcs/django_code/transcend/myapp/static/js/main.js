@@ -1,6 +1,6 @@
 async function loadPage(page) {
 	try {
-		var ftch = await fetch("/" + page);
+		var ftch = await fetch(page);
 		var resp = await ftch.text();
 		document.querySelector('body').innerHTML = resp;
 	}
@@ -12,9 +12,9 @@ async function loadPage(page) {
 const router = async () => {
 	const routes = [
 		// { path: "/404", view: NotFound },
-		{ path: "/home", link:"static/html/home.html" },
-		{ path: "/about", link: "static/html/about.html" },
-		{ path: "/login", link: "static/html/login.html" },
+		{ path: "/home", link: "/static/html/home.html" },
+		{ path: "/about", link: "/static/html/about.html" },
+		{ path: "/login", link: "/static/html/login.html" },
 	];
 
 	const potentialMatches = routes.map(route => {
@@ -54,3 +54,4 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 	});
 });
+
