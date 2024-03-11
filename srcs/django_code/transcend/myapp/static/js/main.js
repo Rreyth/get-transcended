@@ -2,7 +2,7 @@ function loadPage(page) {
     fetch(page)
         .then(response => response.text())
         .then(html => {
-				document.getElementById('content').innerHTML = html;
+				document.querySelector('body').innerHTML = html;
 		})
 			.catch(error => console.error('Error loading page:', error));
 }
@@ -10,10 +10,10 @@ function loadPage(page) {
 const router = async () => {
     const routes = [
         // { path: "/404", view: NotFound },
-        { path: "/", link:"home.html" },
-        { path: "/home", link:"home.html" },
-        { path: "/about", link: "about.html" },
-        { path: "/login", link: "login.html" },
+        { path: "/", link:"static/html/home.html" },
+        { path: "/home", link:"static/html/home.html" },
+        { path: "/about", link: "static/html/about.html" },
+        { path: "/login", link: "static/html/login.html" },
     ];
 
     const potentialMatches = routes.map(route => {
@@ -31,7 +31,7 @@ const router = async () => {
             result: [location.pathname]
         };
     }
-    loadPage(match.route.path);
+    loadPage(match.route.link);
 };
 
 
@@ -40,12 +40,16 @@ const navigateTo = url => {
     router();
 };
 
-//window.addEventListener("popstate", router);
+window.onload = router();
+
+window.addEventListener("popstate", router);
 
 document.addEventListener("DOMContentLoaded", () => {
     document.body.addEventListener("click", e => {
-		e.preventDefault();
-		navigateTo(e.target.href);
-		console.log('Button clicked');
+		if (!e.target.name){
+			e.preventDefault();
+			navigateTo(e.target.href);
+			console.log('Button clicked');
+		}
     });
 });
