@@ -1,2 +1,2 @@
 import "./main.js"
-import "./navbar.js"
+import "./load_element.js"
