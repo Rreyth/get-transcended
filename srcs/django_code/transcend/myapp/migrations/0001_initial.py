@@ -15,7 +15,14 @@ class Migration(migrations.Migration):
             name='User',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('pseudo', models.TextField()),
+                ('pseudo', models.TextField(max_length=25)),
+                ('avatar', models.TextField(null=True)),
+                ('email', models.TextField(max_length=255)),
+                ('password', models.TextField()),
+                ('bot', models.BooleanField(default=False)),
+                ('token', models.TextField()),
+                ('created_at', models.DateTimeField(auto_now_add=True, blank=True)),
+                ('updated_at', models.DateTimeField(auto_now_add=True, blank=True)),
             ],
         ),
     ]
