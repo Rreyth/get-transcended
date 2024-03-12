@@ -18,6 +18,7 @@ from django.urls import path, re_path
 from myapp import views
 
 urlpatterns = [
+    #path('', views.home, name='home'),
     path('', views.index, name='index'),
     path('auth/42/', views.auth_42, name='auth_42'),
     re_path(r'^(?!auth/42/).*$', views.index),
