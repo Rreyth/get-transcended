@@ -1,5 +1,10 @@
 /* static/navbar.css */
 
+body {
+    font-family: Arial, sans-serif;
+	background-color: rgb(207, 207, 239);
+}
+
 .dropbtn{
 	background-color: rgb(168, 24, 24);
 	color: white;

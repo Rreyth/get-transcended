@@ -1,6 +1,9 @@
 from django.shortcuts import render
-import requests
 from django.http import JsonResponse
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
+
+from .forms import LoginForm
 
 # Create your views here.
 def home(request):
@@ -10,7 +13,26 @@ def about(request):
 	return render(request, 'base/about.html')
 
 def login(request):
-	return render(request, 'base/login.html')
+	if request.method == 'POST':
+		form = LoginForm(request.POST)
+		if form.is_valid():
+			username = form.cleaned_data.get('username')
+			password = form.cleaned_data.get('password')
+			user = authenticate(username=username, password=password)
+			if user is not None:
+				login(request, user)
+				return JsonResponse({'status': 'success', 'message': 'Logged in successfully'})
+			else:
+				return JsonResponse({'status': 'error', 'message': 'Invalid login credentials'})
+	else:
+		form = LoginForm()
+	return render(request, 'base/login.html', {'form': form})
+
+
+
+
+
+
 
 def auth_42(request):
     # Récupérer le code d'authentification de la requête GET

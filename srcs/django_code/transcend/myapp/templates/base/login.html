@@ -5,25 +5,28 @@
 <head>
 	<title>Login</title>
 	<script type="module" src="{% static 'js/import.js' %}"></script>
+	<link rel="stylesheet" href="{% static 'css/login.css' %}">
 </head>
 <body>
 	<div id="content">
-		<div class="loginbox">
-			<form>
-				<!--<h2>Login</h2>-->
-				<div class="box">
-					<input type="text" name="username" required="" autocomplete="username">
-					<label>Username</label>
-				</div>
-				<div class="box">
-					<input type="password" name="password" required="" autocomplete="password">
-					<label>Password</label>
-				</div>
-				<a href="#">
-					Connect
-				</a>
+		{% block content %}
+		<h2>Login</h2>
+		<form id="login-form" method="post">
+			{% csrf_token %}
+			{{ form.as_p }}
+			<button type="submit">Login</button>
+		</form>
+		{% if error %}
+		<p style="color: red;">{{ error }}</p>
+		{% endif %}
+		{% endblock %}
+		<!--<div class="loginbox">
+			<form action="/login/" method="post">
+				{% csrf_token %}
+				{{ form }}
+				<input type="submit" value="Submit">
 			</form>
-		</div>
+		</div>-->
 	</div>
 </body>
 </html>
