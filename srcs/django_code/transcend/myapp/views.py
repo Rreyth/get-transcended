@@ -3,8 +3,14 @@ import requests
 from django.http import JsonResponse
 
 # Create your views here.
-def index(request):
-    return render(request, 'index.html')
+def home(request):
+	return render(request, 'base/home.html')
+
+def about(request):
+	return render(request, 'base/about.html')
+
+def login(request):
+	return render(request, 'base/login.html')
 
 def auth_42(request):
     # Récupérer le code d'authentification de la requête GET

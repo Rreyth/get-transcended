@@ -1,4 +1,5 @@
-async function loadPage(page, id, bool) {
+async function loadPage(page, id) {
+	console.log(page, id);
 	try {
 		let ftch = await fetch(page);
 		let resp = await ftch.text();
@@ -32,7 +33,7 @@ const router = async () => {
 			result: [location.pathname]
 		};
 	}
-	loadPage(match.route.link, 'body');
+	loadPage(match.route.path, 'body');
 };
 
 
@@ -47,6 +48,7 @@ window.addEventListener("popstate", router);
 
 document.addEventListener("DOMContentLoaded", () => {
 	document.body.addEventListener("click", e => {
+		console.log("click");
 		if (e.target.localName == "a" && e.target.id != 1){
 			e.preventDefault();
 			navigateTo(e.target.href);
