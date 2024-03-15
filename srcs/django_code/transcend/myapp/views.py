@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login
 
 from .models import User
 
-from .forms import LoginForm
+from .forms import LoginForm, RegisterForm
 
 # Create your views here.
 def home(request):
@@ -17,10 +17,11 @@ def login(request):
 	if request.method == 'POST':
 		form = LoginForm(request.POST)
 		if form.is_valid():
-			username = form.cleaned_data.get('username')
+			pseudo = form.cleaned_data.get('pseudo')
 			password = form.cleaned_data.get('password')
-			user = form.save()
+			user = authenticate(request, pseudo=pseudo, password=password)
 			if user is not None:
+				auth_login(request, user)
 				return JsonResponse({'status': 'success', 'message': 'Logged in successfully'})
 			else:
 				return JsonResponse({'status': 'error', 'message': 'Invalid login credentials'})
@@ -29,7 +30,22 @@ def login(request):
 	return render(request, 'base/login.html', {'form': form})
 
 
-
+def register(request):
+	if request.method == 'POST':
+		form = RegisterForm(request.POST)
+		if form.is_valid():
+			username = form.cleaned_data.get('pseudo')
+			password = form.cleaned_data.get('password')
+			email = form.cleaned_data.get('email')
+			user = form.save()
+			if user is not None:
+				auth_login(request, user)
+				return JsonResponse({'status': 'success', 'message': 'Logged in successfully'})
+			else:
+				return JsonResponse({'status': 'error', 'message': 'Invalid login credentials'})
+	else:
+		form = RegisterForm()
+	return render(request, 'base/register.html', {'form': form})
 
 
 

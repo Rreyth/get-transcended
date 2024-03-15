@@ -7,7 +7,7 @@ body {
 	background-color: rgb(151, 151, 219);
 }
 
-.form {
+.loginbox {
 	position: absolute;
 	top: 50%;
 	left: 50%;
@@ -20,18 +20,18 @@ body {
 	border-radius: 10px;
 }
 
-.form h2{
+.loginbox h2{
 	margin: 0 0 30px;
 	padding: 0;
 	color: #fff;
 	text-align: center;
 }
 
-.form .p{
+.loginbox .p{
 	position: relative;
 }
 
-.form .p input{
+.loginbox .p input{
 	width: 100%;
 	padding: 10px 0;
 	font-size: 16px;
@@ -42,7 +42,7 @@ body {
 	outline: none;
 	background: transparent;
 }
-.form .p label{
+.loginbox .p label{
 	position: absolute;
 	top:0;
 	left: 0;
@@ -53,15 +53,15 @@ body {
 	transition: .5s;
 }
 
-.form .p input:focus ~label,
-.form .p input:valid ~label{
+.loginbox .p .submit:focus ~label,
+.loginbox .p .submit:valid ~label{
 	top: -20px;
 	left: 0;
 	color: #03e9f4;
 	font-size: 12px;
 }
 
-.form input{
+.loginbox .submit{
 	position: relative;
 	display: inline-block;
 	padding: 10px 20px;
@@ -75,7 +75,7 @@ body {
 	letter-spacing: 4px
 }
 
-.form input:hover{
+.loginbox .submit:hover{
 	background: #03e9f4;
 	color: #fff;
 	border-radius: 5px;

@@ -1,14 +1,5 @@
 import { router } from "./main.js";
 
-async function get_reponce(page) {
-	try{
-		let ftch = await fetch(page);
-	}
-	catch (error) {
-		console.error('Error login:', error);
-	}
-}
-
 document.addEventListener("DOMContentLoaded", async e => {
 	document.addEventListener('submit', e => {
 		e.preventDefault();
@@ -18,7 +9,7 @@ document.addEventListener("DOMContentLoaded", async e => {
 			console.log(entry);
 		});
 
-		fetch ('/login/', {
+		fetch ('/register/', {
 			method: 'POST',
 			body: formData,
 			headers: {

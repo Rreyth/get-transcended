@@ -19,9 +19,10 @@ from myapp import views
 
 urlpatterns = [
     #path('', views.home, name='home'),
-    path('login/', views.login, name='login'),
     path('home/', views.home, name='home'),
     path('about/', views.about, name='about'),
+    path('login/', views.login, name='login'),
+    path('register/', views.register, name='register'),
     path('auth/42/', views.auth_42, name='auth_42'),
     re_path(r'^(?!auth/42/).*$', views.home),
     # path('admin/', admin.site.urls),

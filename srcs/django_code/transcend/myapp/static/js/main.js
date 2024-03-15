@@ -18,16 +18,16 @@ const router = async () => {
         { path: "/home", fetch: "home/" },
         { path: "/about", fetch: "about/" },
         { path: "/login", fetch: "login/" },
+        { path: "/register", fetch: "register/" },
 	];
 
 	routes.forEach(route => {
 		if (location.pathname.startsWith(route.path)){
+			console.log(route)
 			loadPage(route.fetch, 'content');
+			return true;
 		}
 	})
-
-	//console.log(document.querySelector('title'))
-	//document.title = document.querySelector('title').value;
 };
 
 

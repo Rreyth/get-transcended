@@ -4,15 +4,14 @@
 {% block title%}Login{% endblock %}
 
 {% block content%}
-<link rel="stylesheet" href="{% static 'css/login.css' %}">
 <div id="content">
-	<div class="loginbox">
-		<form action="/login/" method="post" id="login-form">
-			{% csrf_token %}
-			{{ form }}
-			<input type="submit" value="Submit">
-		</form>
-	</div>
+	<link rel="stylesheet" href="{% static 'css/login.css' %}">
+	<script type="module" src="{% static 'js/login.js' %}"></script>
+	<form action="/login/" method="post" id="login-form" class="loginbox">
+		{% csrf_token %}
+		{{ form.as_p }}
+			<input type="submit" value="Submit" class="submit">
+	</form>
 </div>
 {% endblock %}
 

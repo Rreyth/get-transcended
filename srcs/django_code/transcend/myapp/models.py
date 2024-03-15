@@ -9,3 +9,4 @@ class User(models.Model):
 	token = models.TextField()
 	createdAt = models.DateTimeField(auto_now_add=True, blank=True)
 	updatedAt = models.DateTimeField(auto_now_add=True, blank=True)
+
