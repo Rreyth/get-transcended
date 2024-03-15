@@ -13,7 +13,7 @@ const router = async () => {
 	const routes = [
 		// { path: "/404", view: NotFound },
 		{ path: "/home", link: "/static/html/home.html" },
-		{ path: "/about", link: "/static/html/about.html" },
+		{ path: "/about", link: "/static/html/chat.html" },
 		{ path: "/login", link: "/static/html/login.html" },
 	];
 
