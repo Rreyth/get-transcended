@@ -2,7 +2,10 @@ async function loadPage(page, id) {
 	try {
 		let ftch = await fetch(page);
 		let resp = await ftch.text();
-		document.getElementById(id).innerHTML = resp;
+		let div = resp.substring(resp.indexOf("<div id=\"content\">") + 19, resp.lastIndexOf("</div>"))
+		document.getElementById(id).innerHTML = div;
+		let title = resp.substring(resp.indexOf("<title>") + 7, resp.lastIndexOf("</title>"))
+		document.title = title;
 	}
 	catch(error){
 		console.error('Error loading page:', error);
@@ -20,9 +23,11 @@ const router = async () => {
 	routes.forEach(route => {
 		if (location.pathname.startsWith(route.path)){
 			loadPage(route.fetch, 'content');
-			return;
 		}
 	})
+
+	//console.log(document.querySelector('title'))
+	//document.title = document.querySelector('title').value;
 };
 
 

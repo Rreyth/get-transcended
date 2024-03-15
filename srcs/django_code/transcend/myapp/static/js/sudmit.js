@@ -9,16 +9,14 @@ async function get_reponce(page) {
 	}
 }
 
-
 document.addEventListener("DOMContentLoaded", async e => {
-	const loginForm = document.getElementById('login-form');
-
 	document.addEventListener('submit', e => {
 		e.preventDefault();
-
-		cpons
-		const formData = new FormData();
-		//formData.append(loginForm.value)
+		const loginForm = document.getElementById("login-form");
+		const formData = new FormData(loginForm);
+		formData.forEach(entry => {
+			console.log(entry);
+		});
 
 		fetch ('/login/', {
 			method: 'POST',
@@ -29,7 +27,7 @@ document.addEventListener("DOMContentLoaded", async e => {
 		})
 		.then(response => response.json())
 		.then(data => {
-			if (data.status == 'succes'){
+			if (data.status == 'success'){
 				alert(data.message);
 				//window.history.pushState(null, null, "https://localhost:44433/home");
 				//window.history.replaceState(null, null, "https://localhost:44433/home");
@@ -40,23 +38,8 @@ document.addEventListener("DOMContentLoaded", async e => {
 			}
 		})
 		.catch(error => {
+			console.log(error);
 			console.error('An error occured: ', error);
 		});
 	});
 })
-
-
-
-
-	//e.preventDefault();
-	//const username = document.querySelector("input[name=username]").value;
-	//const password = document.querySelector("input[type=password]").value;
-	//console.log(username);
-	//console.log(password);
-
-	//let Json_responce = get_reponce();
-	//console.log(Json_responce);
-
-	//window.history.pushState(null, null, "https://localhost:44433/home");
-	//window.history.replaceState(null, null, "https://localhost:44433/home");
-	//router();

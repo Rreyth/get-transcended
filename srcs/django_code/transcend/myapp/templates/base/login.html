@@ -1,32 +1,18 @@
+{% extends "base/base.html" %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<title>Login</title>
-	<script type="module" src="{% static 'js/import.js' %}"></script>
-	<link rel="stylesheet" href="{% static 'css/login.css' %}">
-</head>
-<body>
-	<div id="content">
-		{% block content %}
-		<h2>Login</h2>
-		<form id="login-form" method="post">
+{% block title%}Login{% endblock %}
+
+{% block content%}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+<div id="content">
+	<div class="loginbox">
+		<form action="/login/" method="post" id="login-form">
 			{% csrf_token %}
-			{{ form.as_p }}
-			<button type="submit">Login</button>
+			{{ form }}
+			<input type="submit" value="Submit">
 		</form>
-		{% if error %}
-		<p style="color: red;">{{ error }}</p>
-		{% endif %}
-		{% endblock %}
-		<!--<div class="loginbox">
-			<form action="/login/" method="post">
-				{% csrf_token %}
-				{{ form }}
-				<input type="submit" value="Submit">
-			</form>
-		</div>-->
 	</div>
-</body>
-</html>
+</div>
+{% endblock %}
+

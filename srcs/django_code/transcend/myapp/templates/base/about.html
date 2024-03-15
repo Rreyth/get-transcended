@@ -1,17 +1,12 @@
-<!--<load-file file="/static/html/navbar.html"></load-file>-->
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<title>Home</title>
-	<link rel="stylesheet" href="{% static 'css/navbar.css' %}">
-	<script type="module" src="{% static 'js/import.js' %}"></script>
-</head>
-<body>
-	<dev id="content">
-		{% include "include/navbar.html" %}
-		About
-		<p>Consectetur adipiscing elit pellentesque habitant morbi. Proin nibh nisl condimentum id venenatis a condimentum vitae. Aliquam purus sit amet luctus venenatis lectus magna fringilla. Enim blandit volutpat maecenas volutpat blandit aliquam etiam erat. Aliquam sem et tortor consequat id porta nibh venenatis cras. Mauris vitae ultricies leo integer malesuada nunc vel risus. Aenean pharetra magna ac placerat vestibulum. Elementum nibh tellus molestie nunc non blandit. Tincidunt augue interdum velit euismod in pellentesque. Ut ornare lectus sit amet. Sit amet nisl suscipit adipiscing bibendum. Purus viverra accumsan in nisl nisi. Nibh cras pulvinar mattis nunc sed blandit libero volutpat.</p>
-	</dev>
-</body>
-</html>
+{% extends "base/base.html" %}
+
+{% block title%}About{% endblock %}
+
+
+{% block content%}
+<div id="content">
+	{% include "include/navbar.html" %}
+	About
+	<p>Consectetur adipiscing elit pellentesque habitant morbi. Proin nibh nisl condimentum id venenatis a condimentum vitae. Aliquam purus sit amet luctus venenatis lectus magna fringilla. Enim blandit volutpat maecenas volutpat blandit aliquam etiam erat. Aliquam sem et tortor consequat id porta nibh venenatis cras. Mauris vitae ultricies leo integer malesuada nunc vel risus. Aenean pharetra magna ac placerat vestibulum. Elementum nibh tellus molestie nunc non blandit. Tincidunt augue interdum velit euismod in pellentesque. Ut ornare lectus sit amet. Sit amet nisl suscipit adipiscing bibendum. Purus viverra accumsan in nisl nisi. Nibh cras pulvinar mattis nunc sed blandit libero volutpat.</p>
+</div>
+{% endblock %}
