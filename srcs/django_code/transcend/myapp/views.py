@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.contrib.auth import authenticate, login
+
 from .models import User
 
 from .forms import LoginForm
@@ -17,6 +19,7 @@ def login(request):
 		if form.is_valid():
 			username = form.cleaned_data.get('username')
 			password = form.cleaned_data.get('password')
+			user = form.save()
 			if user is not None:
 				return JsonResponse({'status': 'success', 'message': 'Logged in successfully'})
 			else:
