@@ -24,8 +24,6 @@ def login(request):
 				return JsonResponse({'status': 'success', 'message': 'Logged in successfully'})
 			else:
 				return JsonResponse({'status': 'error', 'message': 'Invalid login credentials'})
-		else:
-			return JsonResponse({'status': 'error', 'message': 'Invalid login credentials'})
 	else:
 		form = LoginForm()
 	return render(request, 'base/login.html', {'form': form})

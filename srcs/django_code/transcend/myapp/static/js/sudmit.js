@@ -29,9 +29,9 @@ document.addEventListener("DOMContentLoaded", async e => {
 		.then(data => {
 			if (data.status == 'success'){
 				alert(data.message);
-				//window.history.pushState(null, null, "https://localhost:44433/home");
-				//window.history.replaceState(null, null, "https://localhost:44433/home");
-				//router();
+				window.history.pushState(null, null, "https://localhost:44433/home");
+				window.history.replaceState(null, null, "https://localhost:44433/home");
+				router();
 			}
 			else {
 				alert(data.message);
