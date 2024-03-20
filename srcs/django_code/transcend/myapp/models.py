@@ -1,29 +1,30 @@
 from django.db import models
+from django.db.models.functions import Now
 
 class User(models.Model):
-	pseudo = models.TextField(max_length=25)
-	avatar = models.TextField(null=True)
-	email = models.TextField(max_length=255)
+	pseudo = models.CharField(max_length=25)
+	avatar = models.TextField(blank=True, default='')
+	email = models.CharField(max_length=255)
 	password = models.TextField()
-	bot = models.BooleanField(default=False)
+	bot = models.BooleanField(null=True, default=False)
 	token = models.TextField()
-	createdAt = models.DateTimeField(auto_now_add=True, blank=True)
-	updatedAt = models.DateTimeField(auto_now_add=True, blank=True)
+	created_at = models.DateTimeField(auto_now_add=True, blank=True)
+	updated_at = models.DateTimeField(auto_now=True, blank=True)
 
-class PrivateMessages(models.Model):
+class Private_Messages(models.Model):
 	content = models.TextField()
-	sender_id = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to="User")
-	recever_id = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to="User")
-	created_at = models.DateTimeField(auto_now_add=True, blank=True, default=Now())
+	sender_id = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to="User", related_name="sender")
+	recever_id = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to="User", related_name="recever")
+	created_at = models.DateTimeField(auto_now_add=True, blank=True)
 
-class Channel(models.Model):
+class Channels(models.Model):
 	name = models.CharField(max_length=25)
 	owner_id = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='User')
-	created_at = models.DateTimeField(auto_now_add=True, blank=True, default=Now())
-	updated_at = models.DateTimeField(auto_now_add=True, blank=True, default=Now())
+	created_at = models.DateTimeField(auto_now_add=True, blank=True)
+	updated_at = models.DateTimeField(auto_now=True, blank=True)
 
-class Message(models.Model):
+class Messages(models.Model):
 	content = models.TextField()
 	channel_id = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='channels')
 	user_id = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='User')
-	created_at = models.DateTimeField(auto_now_add=True, blank=True, default=Now())
+	created_at = models.DateTimeField(auto_now_add=True, blank=True)
