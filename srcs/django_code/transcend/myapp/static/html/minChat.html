@@ -8,15 +8,10 @@
 			Messages
 			<span class="icon-up"><i class="fa fa-chevron-up" aria-hidden="true"></i></span>
 		</button>
-		<!-- <ul class="dropdown-menu">
-			<li>Hello</li>
-			<li><hr class="dropdown-divider"></li>
-			<li><a class="dropdown-item" href="#">Menu item</a></li>
-			<li><a class="dropdown-item" href="#">Menu item</a></li>
-			<li><a class="dropdown-item" href="#">Menu item</a></li>
-		</ul> -->
+
 		<div class="dropdown-menu">
-			<div class="header-dropmenu">
+
+			<div class="header-dropmenu head1">
 				<span>Messages </span>
 				<div class="switch-chat">
 					<button class="headbt1 btn btn-outline-success mx-2 active" onclick="btswipe(this)">Amis</button>
@@ -24,19 +19,24 @@
 				</div>
 			</div>
 
+			<div class="header-dropmenu head2" style="display: none;">
+				<span>Messages de gigi</span>
+				<button onclick="displayConv(this, false);"> <- </button>
+			</div>
+
 			<hr class="dropdown-divider">
 
 			<div class="chat-body overflow-auto">
 
 				<div class="friends">
-					<div class="card mb-3" style="max-width: 540px;">
+					<div class="card mb-1" style="max-width: 540px;">
 						<div class="row g-0 mx-1">
-						  <div class="col-md-4 img" onclick="console.log('cc');">
+						  <div class="col-md-4 img" onclick="displayConv(this, true);">
 							<img src="/media/profile_default.jpg" class="img-fluid rounded-circle" alt="profile_img">
 						  </div>
 						  <div class="col-md-8">
 							<div class="card-body">
-							  <p class="card-text" onclick="console.log('cc');">Gigi</p>
+							  <p class="card-text" onclick="displayConv(this, true);">Gigi</p>
 							  <div class="dropdown" style="position: absolute; right: 8%; top: 35%;">
 							  <p class="more-dot card-text dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i style="font-size: 1.4em;" class="fa fa-ellipsis-v"></i></p>
 							  <ul class="dropdown-menu" style="width: 3.8em;">
@@ -45,11 +45,43 @@
 								<li><p class="dropdown-item">d'autre trucs</p></li>
 							  </ul>
 							</div>
-							  <p class="card-text" onclick="console.log('cc');"><small class="text-body-secondary">Last </small></p>
+							  <p class="card-text" onclick="displayConv(this, true);"><small class="text-body-secondary">Last </small></p>
 							</div>
 						  </div>
 						</div>
 					  </div>
+				</div>
+
+				<div class="conv" style="display: none;">
+					<div class="msg-body chat-body overflow-auto">
+
+						<div class="msgContainer">
+							<div class="recieveMsg">
+								<p>Hola boy</p>
+							</div>
+						</div>
+						<div class="msgContainer"></div>
+							<div class="sendMsg">
+								<p>Coucou</p>
+							</div>
+						</div>
+						<div class="msgContainer">
+							<div class="recieveMsg">
+								<p>Hola boy</p>
+							</div>
+						</div>
+						<div class="msgContainer"></div>
+							<div class="sendMsg">
+								<p>Coucou</p>
+							</div>
+						</div>
+
+					</div>
+					<div class="msgArea">
+						<hr class="dropdown-divider">
+						<textarea class="form-control msgBar"></textarea>
+						<span class="sendBtn"><i class="fa fa-paper-plane-o"></i></span>
+					</div>
 				</div>
 
 				<div class="group" style="display: none;">
@@ -62,28 +94,49 @@
 	</div>
 </div>
 
-			<script type="text/javascript">
-				function btswipe(element)
-				{
-					var classBtClicked = element.classList;
-					if (!classBtClicked.contains("active"))
-					{
-						if(classBtClicked.contains("headbt1"))
-						{
-							document.querySelector(".headbt2").classList.remove("active");
-							document.querySelector(".group").style.display="none";
-							document.querySelector(".friends").style.display="block";
-						}
-						else
-						{
-							document.querySelector(".headbt1").classList.remove("active");
-							document.querySelector(".friends").style.display="none";
-							document.querySelector(".group").style.display="block";
-						}
-						classBtClicked.add("active");
-					}
-				}
-			</script>
+<script type="text/javascript">
+	function btswipe(element)
+	{
+		var classBtClicked = element.classList;
+		if (!classBtClicked.contains("active"))
+		{
+			if(classBtClicked.contains("headbt1"))
+			{
+				document.querySelector(".headbt2").classList.remove("active");
+				document.querySelector(".group").style.display="none";
+				document.querySelector(".friends").style.display="block";
+			}
+			else
+			{
+				document.querySelector(".headbt1").classList.remove("active");
+				document.querySelector(".friends").style.display="none";
+				document.querySelector(".group").style.display="block";
+			}
+			classBtClicked.add("active");
+		}
+	}
+
+	function displayConv(element, boolAffiche)
+	{
+		if (boolAffiche == true)
+		{
+			document.querySelector(".head1").style.display="none";
+			document.querySelector(".friends").style.display="none";
+			document.querySelector(".head2").style.display="block";
+			document.querySelector(".conv").style.display="block";
+		}
+		else
+		{
+			document.querySelector(".head2").style.display="none";
+			document.querySelector(".conv").style.display="none";
+			document.querySelector(".head1").style.display="block";
+			document.querySelector(".friends").style.display="block";
+		}
+		var msgScrollBar = document.querySelector(".msg-body");
+		msgScrollBar.scrollTop = msgScrollBar.scrollHeight;
+	}
+
+</script>
 
 <style>
 	/* --- dropdown button --- */
@@ -189,8 +242,79 @@
 		width: 4em;
 		margin-top: 0.5em;
 	}
-	.more-dot::after
+	.more-dot.dropdown-toggle::after
 	{
 		content: none;
 	}
+	.more-dot
+	{
+		width: 1em;
+		text-align: center;
+	}
+
+	/* --- Message sender --- */
+	/* ** header ** */
+	/* ** body ** */
+	.msg-body
+	{
+		position: relative;
+		margin-top: 0;
+		height: 11.7em;
+	}
+	.msgContainer
+	{
+		width: 100%;
+		height: auto;
+		background-color: blueviolet;
+	}
+	.sendMsg
+	{
+		/* border-radius: 1.7em;
+		background-color: aqua;
+		display: inline-block;
+		padding-left: 1.4em;
+		padding-right: 1.4em;
+		position: fixed; */
+		float: right;
+		/* display: table-footer-group; */
+	}
+	.recieveMsg
+	{
+		/* border-radius: 1.7em;
+		background-color: aqua;
+		display: inline-block;
+		padding-left: 1.4em;
+		padding-right: 1.4em;
+		position: fixed; */
+		float: left;
+		/* display: table-footer-group; */
+	}
+
+	/* sendBar */
+	.msgArea
+	{
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 4em;
+	}
+	.msgBar
+	{
+		height: 3.8em;
+		width: 85%;
+		font-size: 0.7em;
+		resize: none;
+		display: inline-block;
+		margin-left: 0.2em;
+	}
+	.sendBtn
+	{
+		display: inline-block;
+		align-self: center;
+		position: fixed;
+		bottom: 0.8em;
+		margin-left: 0.5em;
+	}
+
 </style>
