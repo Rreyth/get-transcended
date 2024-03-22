@@ -4,7 +4,7 @@
 <div class="chat">
 	<div class="btn-group dropup">
 		<button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
-			data-bs-auto-close="false" aria-expanded="false">
+		data-bs-auto-close="false" aria-expanded="false">
 			Messages
 			<span class="icon-up"><i class="fa fa-chevron-up" aria-hidden="true"></i></span>
 		</button>
@@ -19,8 +19,8 @@
 			<div class="header-dropmenu">
 				<span>Messages </span>
 				<div class="switch-chat">
-					<button class="btn btn-outline-success mx-2 active" onclick="msgSwipe()">Amis</button>
-					<button class="btn btn-outline-success mx-2" onclick="msgSwipe()">Groups</button>
+					<button class="headbt1 btn btn-outline-success mx-2 active" onclick="btswipe(this)">Amis</button>
+					<button class="headbt2 btn btn-outline-success mx-2" onclick="btswipe(this)">Groups</button>
 				</div>
 			</div>
 
@@ -29,73 +29,61 @@
 			<div class="chat-body overflow-auto">
 
 				<div class="friends">
-					coucou
+					<div class="card mb-3" style="max-width: 540px;">
+						<div class="row g-0 mx-1">
+						  <div class="col-md-4 img" onclick="console.log('cc');">
+							<img src="/media/profile_default.jpg" class="img-fluid rounded-circle" alt="profile_img">
+						  </div>
+						  <div class="col-md-8">
+							<div class="card-body">
+							  <p class="card-text" onclick="console.log('cc');">Gigi</p>
+							  <div class="dropdown" style="position: absolute; right: 8%; top: 35%;">
+							  <p class="more-dot card-text dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i style="font-size: 1.4em;" class="fa fa-ellipsis-v"></i></p>
+							  <ul class="dropdown-menu" style="width: 3.8em;">
+								<li><p class="dropdown-item">Supp</p></li>
+								<li><p class="dropdown-item">jsp</p></li>
+								<li><p class="dropdown-item">d'autre trucs</p></li>
+							  </ul>
+							</div>
+							  <p class="card-text" onclick="console.log('cc');"><small class="text-body-secondary">Last </small></p>
+							</div>
+						  </div>
+						</div>
+					  </div>
 				</div>
-				<div class="friends">
-					coucou
+
+				<div class="group" style="display: none;">
+					group page
 				</div>
-				<div class="friends">
-					coucou
-				</div>
-				<div class="friends">
-					coucou
-				</div>
-				<div class="friends">
-					coucou
-				</div>
-				<div class="friends">
-					coucou
-				</div>
-				<div class="friends">
-					coucou
-				</div>
-				<div class="friends">
-					coucou
-				</div>
-				<div class="friends">
-					coucou
-				</div>
-				<div class="friends">
-					coucou
-				</div>
-				<div class="friends">
-					coucou
-				</div>
-				<div class="friends">
-					coucou
-				</div>
-				<div class="friends">
-					coucou
-				</div>
-				<div class="friends">
-					coucou
-				</div>
-				<div class="friends">
-					coucou
-				</div>
-				<div class="friends">
-					coucou
-				</div>
-				<div class="friends">
-					coucou
-				</div>
-				<div class="friends">
-					coucou
-				</div>
-				<div class="friends">
-					coucou
-				</div>
-				<div class="friends">
-					coucou
-				</div>
-				<div class="friends">
-					coucou
-				</div>
+				
 
 			</div>
 		</div>
 	</div>
 </div>
+
+			<script type="text/javascript">
+				function btswipe(element)
+				{
+					var classBtClicked = element.classList;
+					if (!classBtClicked.contains("active"))
+					{
+						if(classBtClicked.contains("headbt1"))
+						{
+							document.querySelector(".headbt2").classList.remove("active");
+							document.querySelector(".group").style.display="none";
+							document.querySelector(".friends").style.display="block";
+						}
+						else
+						{
+							document.querySelector(".headbt1").classList.remove("active");
+							document.querySelector(".friends").style.display="none";
+							document.querySelector(".group").style.display="block";
+						}
+						classBtClicked.add("active");
+					}
+				}
+			</script>
 
 <style>
 	/* --- dropdown button --- */
@@ -107,13 +95,13 @@
 		margin-right: 0.8em;
 		margin-bottom: 0.18em;
 	}
-
+	
 	.btn-group.dropup
 	{
 		width: 16em;
 		height: 3em;
 	}
-
+	
 	.btn-group.dropup button
 	{
 		font-size: 1em;
@@ -188,5 +176,21 @@
 		/* roundness of the scroll thumb */
 		border: 1.5px solid rgb(66, 66, 66);
 		/* creates padding around scroll thumb */
+	}
+
+
+	/* friends part */
+	.friends .card
+	{
+		height: 5em;
+	}
+	.img
+	{
+		width: 4em;
+		margin-top: 0.5em;
+	}
+	.more-dot::after
+	{
+		content: none;
 	}
 </style>

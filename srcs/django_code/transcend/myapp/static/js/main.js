@@ -3,6 +3,19 @@ async function loadPage(page, id, bool) {
 		let ftch = await fetch(page);
 		let resp = await ftch.text();
 		document.querySelector(id).innerHTML = resp;
+
+		const scriptTags = document.querySelector(id).getElementsByTagName('script');
+		for (let i = 0; i < scriptTags.length; i++) {
+			const src = scriptTags[i].getAttribute('src');
+			if (src) {
+			  const script = document.createElement('script');
+			  script.src = src;
+			  document.body.appendChild(script);
+			} else {
+			  // Exécuter les scripts inline directement
+			  eval(scriptTags[i].innerText);
+			}
+		  }
 	}
 	catch(error){
 		console.error('Error loading page:', error);
@@ -54,3 +67,31 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 	});
 });
+
+
+
+function addInPage(page, id) {
+	fetch(page)
+		.then(response => response.text())
+		.then(html => {
+			document.getElementById(id).innerHTML = html;
+
+
+			const scriptTags = document.getElementById(id).getElementsByTagName('script');
+			for (let i = 0; i < scriptTags.length; i++) {
+				const src = scriptTags[i].getAttribute('src');
+				if (src) {
+					const script = document.createElement('script');
+					script.src = src;
+					document.body.appendChild(script);
+				} else {
+					// Exécuter les scripts inline directement
+					const script = document.createElement('script');
+					script.textContent = scriptTags[i].innerText;
+					document.body.appendChild(script);
+
+				}
+			}
+		})
+		.catch(error => console.error('Error loading page:', error));
+}
