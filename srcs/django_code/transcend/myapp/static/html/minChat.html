@@ -20,8 +20,8 @@
 			</div>
 
 			<div class="header-dropmenu head2" style="display: none;">
+				<span class="arrow-back" onclick="displayConv(this, false);"><i class="fa fa-angle-double-left"></i></span>
 				<span>Messages de gigi</span>
-				<button onclick="displayConv(this, false);"> <- </button>
 			</div>
 
 			<hr class="dropdown-divider">
@@ -60,26 +60,26 @@
 								<p>Hola boy</p>
 							</div>
 						</div>
-						<div class="msgContainer"></div>
+						<div class="msgContainer">
 							<div class="sendMsg">
 								<p>Coucou</p>
 							</div>
 						</div>
 						<div class="msgContainer">
 							<div class="recieveMsg">
-								<p>Hola boy</p>
+								<p>Hola boysdfsdfsdfsdfsdfsdfsdfsdfsdfsfsdfsdfsdfsdfsdfsdfsdfsdfsdf</p>
 							</div>
 						</div>
-						<div class="msgContainer"></div>
+						<div class="msgContainer">
 							<div class="sendMsg">
-								<p>Coucou</p>
+								<p>Coucousfsdfsfsfsdfsdfsdfdsfsdf <br> sdfdfsdfsdfsdfsdf</p>
 							</div>
 						</div>
 
 					</div>
 					<div class="msgArea">
 						<hr class="dropdown-divider">
-						<textarea class="form-control msgBar"></textarea>
+						<textarea id="myTextarea" class="form-control msgBar"></textarea>
 						<span class="sendBtn"><i class="fa fa-paper-plane-o"></i></span>
 					</div>
 				</div>
@@ -133,8 +133,19 @@
 			document.querySelector(".friends").style.display="block";
 		}
 		var msgScrollBar = document.querySelector(".msg-body");
-		msgScrollBar.scrollTop = msgScrollBar.scrollHeight;
+		msgScrollBar.scrollTop = msgScrollBar.scrollHeight; // scrollbar en bas de msg par deffaut
 	}
+
+	// send with enter in msg
+
+	document.getElementById('myTextarea').addEventListener('keydown', function(event) {
+    	if (event.keyCode === 13 && !event.shiftKey)
+		{
+        	event.preventDefault();
+			console.log("sendmsg");
+    	}
+	});
+
 
 </script>
 
@@ -211,24 +222,19 @@
 	.chat-body::-webkit-scrollbar
 	{
 		width: 8px;
-		/* width of the entire scrollbar */
 	}
 
 	.chat-body::-webkit-scrollbar-track
 	{
 		background: rgb(148, 148, 148);
-		/* color of the tracking area */
 		border-radius: 20px;
 	}
 
 	.chat-body::-webkit-scrollbar-thumb
 	{
 		background-color: rgb(49, 49, 49);
-		/* color of the scroll thumb */
 		border-radius: 20px;
-		/* roundness of the scroll thumb */
 		border: 1.5px solid rgb(66, 66, 66);
-		/* creates padding around scroll thumb */
 	}
 
 
@@ -254,40 +260,48 @@
 
 	/* --- Message sender --- */
 	/* ** header ** */
+	.arrow-back
+	{
+		margin-left: 0.4em;
+		margin-right: 0.2em;
+	}
+	.arrow-back i
+	{
+		font-size: 1.4em;
+	}
+
 	/* ** body ** */
 	.msg-body
 	{
-		position: relative;
-		margin-top: 0;
 		height: 11.7em;
 	}
 	.msgContainer
 	{
-		width: 100%;
-		height: auto;
-		background-color: blueviolet;
+		display: flex;
 	}
 	.sendMsg
 	{
-		/* border-radius: 1.7em;
+		border-radius: 1.7em;
 		background-color: aqua;
-		display: inline-block;
-		padding-left: 1.4em;
-		padding-right: 1.4em;
-		position: fixed; */
-		float: right;
-		/* display: table-footer-group; */
+		padding: 0.4em;
+		max-width: 8.5em;
+		margin-left: auto;
+	}
+	.sendMsg p
+	{
+		word-wrap: break-word;
 	}
 	.recieveMsg
 	{
-		/* border-radius: 1.7em;
+		border-radius: 1.7em;
 		background-color: aqua;
-		display: inline-block;
-		padding-left: 1.4em;
-		padding-right: 1.4em;
-		position: fixed; */
-		float: left;
-		/* display: table-footer-group; */
+		padding: 0.4em;
+		max-width: 8.5em;
+		margin-right: auto;
+	}
+	.recieveMsg p
+	{
+		word-wrap: break-word;
 	}
 
 	/* sendBar */
