@@ -33,18 +33,18 @@ services:
     env_file:
       - .env
 
-  # daphne:
-  #   build:
-  #     context: ./requirements/Daphne
-  #   container_name: daphne
-  #   image: daphne
-  #   restart: always
-  #   volumes:
-  #     - app:/app
-  #   expose:
-  #     - "8001"
-  #   networks:
-  #     - transcendNetwork
+  daphne:
+    build:
+      context: ./requirements/Daphne
+    container_name: daphne
+    image: daphne
+    restart: always
+    volumes:
+      - app:/app
+    expose:
+      - "8001"
+    networks:
+      - transcendNetwork
 
   nginx:
     build:

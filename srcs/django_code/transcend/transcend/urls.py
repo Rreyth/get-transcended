@@ -16,6 +16,21 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path
 from myapp import views
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.auth import AuthMiddlewareStack
+from channels.security.websocket import AllowedHostsOriginValidator
+from django.core.asgi import get_asgi_application
+
+websocket_urlpatterns = [
+    path('ws/myapp/', views.MyConsumer.as_asgi()),
+]
+
+application = ProtocolTypeRouter({
+    # 'https': get_asgi_application(),
+    "websocket": AllowedHostsOriginValidator(
+            AuthMiddlewareStack(URLRouter(websocket_urlpatterns))
+        ),
+})
 
 urlpatterns = [
     #path('', views.home, name='home'),
