@@ -22,8 +22,8 @@ class Migration(migrations.Migration):
                 ('password', models.TextField()),
                 ('bot', models.BooleanField(null=True, default=False)),
                 ('token', models.TextField()),
-                ('created_at', models.DateTimeField(auto_now_add=True, blank=True, default=Now())),
-                ('updated_at', models.DateTimeField(auto_now_add=True, blank=True, default=Now())),
+                ('created_at', models.DateTimeField(auto_now_add=True, blank=True)),
+                ('updated_at', models.DateTimeField(auto_now_add=True, blank=True)),
             ],
         ),
     ]
