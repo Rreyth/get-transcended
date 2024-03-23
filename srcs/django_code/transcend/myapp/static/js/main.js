@@ -24,8 +24,8 @@ async function loadPage(page, id, bool) {
 
 const router = async () => {
 	const routes = [
-		// { path: "/404", view: NotFound },
-		{ path: "/home", link: "/static/html/home.html" },
+		{ path: "/404", link: "/static/html/404.html" },
+		{ path: "/", link: "/static/html/home.html" },
 		{ path: "/about", link: "/static/html/about.html" },
 		{ path: "/login", link: "/static/html/login.html" },
 	];
@@ -33,7 +33,7 @@ const router = async () => {
 	const potentialMatches = routes.map(route => {
 		return {
 			route: route,
-			result: location.pathname.startsWith(route.path),
+			result: location.pathname == route.path,
 		};
 	});
 
