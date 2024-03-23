@@ -1,0 +1,180 @@
+/* --- dropdown button --- */
+.chat
+{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin-right: 0.8em;
+    margin-bottom: 0.18em;
+}
+
+.btn-group.dropup
+{
+    width: 16em;
+    height: 3em;
+}
+
+.btn-group.dropup button
+{
+    font-size: 1em;
+    text-align: left;
+}
+
+.btn-group.dropup button::after
+{
+    content: none;
+}
+
+.icon-up
+{
+    float: right;
+}
+
+/* --- dropdown menu --- */
+.dropdown-menu
+{
+    width: 16em;
+}
+
+/* - dropdown menu header - */
+.header-dropmenu
+{
+    /* height: 2em; */
+}
+.switch-chat
+{
+    text-align: center;
+}
+.switch-chat button
+{
+    border-radius: 3em;
+    border-color: rgb(29, 102, 0);
+}
+.switch-chat button.active
+{
+    background-color: rgba(29, 102, 0, 0.55);
+}
+.switch-chat button:hover
+{
+    background-color: rgba(29, 102, 0, 0.55);
+}
+
+/* dropdown menu body */
+.chat-body
+{
+    height: 15em;
+}
+
+
+
+.chat-body::-webkit-scrollbar
+{
+    width: 8px;
+}
+
+.chat-body::-webkit-scrollbar-track
+{
+    background: rgb(148, 148, 148);
+    border-radius: 20px;
+}
+
+.chat-body::-webkit-scrollbar-thumb
+{
+    background-color: rgb(49, 49, 49);
+    border-radius: 20px;
+    border: 1.5px solid rgb(66, 66, 66);
+}
+
+
+/* friends part */
+.friends .card
+{
+    height: 5em;
+}
+.img
+{
+    width: 4em;
+    margin-top: 0.5em;
+}
+.more-dot.dropdown-toggle::after
+{
+    content: none;
+}
+.more-dot
+{
+    width: 1em;
+    text-align: center;
+}
+
+/* --- Message sender --- */
+/* ** header ** */
+.arrow-back
+{
+    margin-left: 0.4em;
+    margin-right: 0.2em;
+}
+.arrow-back i
+{
+    font-size: 1.4em;
+}
+
+/* ** body ** */
+.msg-body
+{
+    height: 11.7em;
+}
+.msgContainer
+{
+    display: flex;
+}
+.sendMsg
+{
+    border-radius: 1.7em;
+    background-color: aqua;
+    padding: 0.4em;
+    max-width: 8.5em;
+    margin-left: auto;
+}
+.sendMsg p
+{
+    word-wrap: break-word;
+}
+.recieveMsg
+{
+    border-radius: 1.7em;
+    background-color: aqua;
+    padding: 0.4em;
+    max-width: 8.5em;
+    margin-right: auto;
+}
+.recieveMsg p
+{
+    word-wrap: break-word;
+}
+
+/* sendBar */
+.msgArea
+{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4em;
+}
+.msgBar
+{
+    height: 3.8em;
+    width: 85%;
+    font-size: 0.7em;
+    resize: none;
+    display: inline-block;
+    margin-left: 0.2em;
+}
+.sendBtn
+{
+    display: inline-block;
+    align-self: center;
+    position: fixed;
+    bottom: 0.8em;
+    margin-left: 0.5em;
+}
