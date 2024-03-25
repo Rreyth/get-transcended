@@ -105,7 +105,7 @@ document.getElementById('myTextarea').addEventListener('keydown', function (even
 
 function sendMsg(msg)
 {
-	const socket = new WebSocket('wss://localhost:44433/ws/myapp/');
+	const socket = new WebSocket('wss://localhost:44433/api/chat');
 
 	socket.onopen = function (event) {
 		console.log('WebSocket connection established.');

@@ -22,7 +22,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'transcend.settings')
 # application = get_asgi_application()
 
 websocket_urlpatterns = [
-    path('ws/myapp/', views.MyConsumer.as_asgi()),
+    path('api/chat', views.MyConsumer.as_asgi()),
 ]
 application = ProtocolTypeRouter({
     'http': get_asgi_application(),
