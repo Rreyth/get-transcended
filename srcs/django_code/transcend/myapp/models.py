@@ -11,29 +11,35 @@ class User(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True, blank=True)
 	updated_at = models.DateTimeField(auto_now=True, blank=True)
 
+	class Meta:
+		db_table = "myapp_users"
+		constraints = [
+			models.UniqueConstraint(fields=['pseudo', 'email', 'token'], name="unique user")
+		]
+
 class PrivateMessage(models.Model):
 	content = models.TextField()
-	sender_id = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to="User", related_name="sender")
-	recever_id = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to="User", related_name="recever")
+	sender = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to="User", related_name="sender")
+	recever = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to="User", related_name="recever")
 	created_at = models.DateTimeField(auto_now_add=True, blank=True)
 
 	class Meta:
-		db_table = "private_messages" 
+		db_table = "myapp_private_messages" 
 
 class Channel(models.Model):
 	name = models.CharField(max_length=25)
-	owner_id = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='User')
+	owner = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='User')
 	created_at = models.DateTimeField(auto_now_add=True, blank=True)
 	updated_at = models.DateTimeField(auto_now=True, blank=True)
 
 	class Meta:
-		db_table = "channels"
+		db_table = "myapp_channels"
 
 class Message(models.Model):
 	content = models.TextField()
-	channel_id = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='Channel')
-	user_id = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='User')
+	channel = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='Channel')
+	user = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='User')
 	created_at = models.DateTimeField(auto_now_add=True, blank=True)
 
 	class Meta:
-		db_table = "messages"
+		db_table = "myapp_messages"

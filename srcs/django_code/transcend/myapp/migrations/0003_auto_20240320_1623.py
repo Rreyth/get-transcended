@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=25)),
-                ('owner_id', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='User')),
+                ('owner', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='users')),
                 ('created_at', models.DateTimeField(auto_now_add=True, blank=True, default=Now())),
                 ('updated_at', models.DateTimeField(auto_now_add=True, blank=True, default=Now())),
             ]

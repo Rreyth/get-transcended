@@ -14,8 +14,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='channel_user',
             fields=[
-                ('channel_id', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='channels')),
-                ('user_id', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='user')),
+                ('channel', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='channels')),
+                ('user', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='users')),
                 ('joined_at', models.DateTimeField(auto_now_add=True, blank=True, default=Now())),
             ]
         )

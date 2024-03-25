@@ -16,8 +16,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('content', models.TextField()),
-                ('sender_id', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to="User", related_name="sender")),
-                ('recever_id', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to="User")),
+                ('sender', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to="users", related_name="sender")),
+                ('recever', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to="users")),
                 ('created_at', models.DateTimeField(auto_now_add=True, blank=True, default=Now()))
             ]
         )
