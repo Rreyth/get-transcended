@@ -1,0 +1,27 @@
+body
+{
+	background-image: url("/media/bg.png");
+	background-position: center;
+	background-size: cover;
+	background-attachment: fixed;
+	color: white;
+	margin-top: 3em;
+}
+
+*::-webkit-scrollbar
+{
+    width: 8px;
+}
+
+*::-webkit-scrollbar-track
+{
+    background: rgb(148, 148, 148);
+    border-radius: 20px;
+}
+
+*::-webkit-scrollbar-thumb
+{
+    background-color: rgb(49, 49, 49);
+    border-radius: 20px;
+    border: 1.5px solid rgb(66, 66, 66);
+}

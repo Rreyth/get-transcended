@@ -5,6 +5,8 @@ async function loadPage(page, id, replace_id) {
 		const rpl = document.createElement(replace_id);
 		rpl.innerHTML = resp;
 		document.querySelector(id).replaceWith(rpl);
+
+		
 	}
 	catch(error){
 		console.error('Error loading page:', error);

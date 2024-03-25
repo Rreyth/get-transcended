@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 	'myapp',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -70,7 +71,13 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'transcend.wsgi.application'
+ASGI_APPLICATION = "transcend.asgi.application"
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

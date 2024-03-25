@@ -3,6 +3,19 @@ async function loadPage(page, id, bool) {
 		let ftch = await fetch(page);
 		let resp = await ftch.text();
 		document.querySelector(id).innerHTML = resp;
+
+		const scriptTags = document.querySelector(id).getElementsByTagName('script');
+		for (let i = 0; i < scriptTags.length; i++) {
+			const src = scriptTags[i].getAttribute('src');
+			if (src) {
+			  const script = document.createElement('script');
+			  script.src = src;
+			  document.body.appendChild(script);
+			} else {
+			  // Exécuter les scripts inline directement
+			  eval(scriptTags[i].innerText);
+			}
+		  }
 	}
 	catch(error){
 		console.error('Error loading page:', error);
@@ -11,8 +24,8 @@ async function loadPage(page, id, bool) {
 
 const router = async () => {
 	const routes = [
-		// { path: "/404", view: NotFound },
-		{ path: "/home", link: "/static/html/home.html" },
+		{ path: "/404", link: "/static/html/404.html" },
+		{ path: "/", link: "/static/html/home.html" },
 		{ path: "/about", link: "/static/html/about.html" },
 		{ path: "/login", link: "/static/html/login.html" },
 	];
@@ -20,7 +33,7 @@ const router = async () => {
 	const potentialMatches = routes.map(route => {
 		return {
 			route: route,
-			result: location.pathname.startsWith(route.path),
+			result: location.pathname == route.path,
 		};
 	});
 
@@ -54,3 +67,31 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 	});
 });
+
+
+
+function addInPage(page, id) {
+	fetch(page)
+		.then(response => response.text())
+		.then(html => {
+			document.getElementById(id).innerHTML = html;
+
+
+			const scriptTags = document.getElementById(id).getElementsByTagName('script');
+			for (let i = 0; i < scriptTags.length; i++) {
+				const src = scriptTags[i].getAttribute('src');
+				if (src) {
+					const script = document.createElement('script');
+					script.src = src;
+					document.body.appendChild(script);
+				} else {
+					// Exécuter les scripts inline directement
+					const script = document.createElement('script');
+					script.textContent = scriptTags[i].innerText;
+					document.body.appendChild(script);
+
+				}
+			}
+		})
+		.catch(error => console.error('Error loading page:', error));
+}
