@@ -14,4 +14,4 @@ RUN rm requirements
 EXPOSE 8001
 
 # Commande pour démarrer Daphne
-CMD ["daphne", "transcend.asgi:application", "-b", "0.0.0.0", "-p", "8001"]
+ENTRYPOINT ["daphne", "transcend.asgi:application", "-b", "0.0.0.0", "-p", "8001"]

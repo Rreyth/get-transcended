@@ -11,4 +11,4 @@ RUN rm requirements
 # RUN django-admin startproject transcend
 # RUN cd transcend && python manage.py startapp myapp
 
-CMD ["python", "transcend/manage.py", "runserver", "0.0.0.0:8000"]
+ENTRYPOINT ["python", "transcend/manage.py", "runserver", "0.0.0.0:8000"]

@@ -13,7 +13,7 @@
 
 .btn-group.dropup
 {
-    width: 16em;
+    width: 25em;
     height: 3em;
 }
 
@@ -39,7 +39,7 @@
 
 .dropdown-menu
 {
-    width: 16em;
+    width: 25em;
 }
 
 /* ----- dropdown menu header ----- */
@@ -68,7 +68,7 @@
 /* ----- dropdown menu body ----- */
 .chat-body
 {
-    height: 15em;
+    height: 25em;
 }
 
 /* .chat-body::-webkit-scrollbar

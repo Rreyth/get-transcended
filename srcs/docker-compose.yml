@@ -45,6 +45,8 @@ services:
       - "8001"
     networks:
       - transcendNetwork
+    depends_on:
+      - postgres
 
   nginx:
     build:
