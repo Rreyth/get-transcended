@@ -4,7 +4,7 @@
 
 .chat
 {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     right: 0;
     margin-right: 0.8em;
@@ -71,7 +71,7 @@
     height: 15em;
 }
 
-.chat-body::-webkit-scrollbar
+/* .chat-body::-webkit-scrollbar
 {
     width: 8px;
 }
@@ -87,7 +87,7 @@
     background-color: rgb(49, 49, 49);
     border-radius: 20px;
     border: 1.5px solid rgb(66, 66, 66);
-}
+} */
 
 /* ******************************************** */
 /* *************** friends part *************** */

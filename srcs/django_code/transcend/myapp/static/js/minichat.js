@@ -94,7 +94,8 @@ document.getElementById('myTextarea').addEventListener('keydown', function (even
 		event.preventDefault();
 		if (document.getElementById('myTextarea').value === '')
 			return;
-		sendMsg(escapeHtml(document.getElementById('myTextarea').value.replace(/\n/g, "<br>")));
+		let msg = escapeHtml(document.getElementById('myTextarea').value)
+		sendMsg(msg.replace(/\n/g, "<br>"));
 		document.getElementById('myTextarea').value = '';
 	}
 });
