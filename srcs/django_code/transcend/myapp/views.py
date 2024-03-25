@@ -2,10 +2,6 @@ from django.shortcuts import render
 import requests
 from django.http import JsonResponse
 
-# Create your views here.
-# def index(request):
-#     return render(request, 'index.html')
-
 def auth_42(request):
     # Récupérer le code d'authentification de la requête GET
     code = request.GET.get('code')
