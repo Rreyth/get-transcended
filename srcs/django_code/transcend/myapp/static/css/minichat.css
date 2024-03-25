@@ -1,4 +1,7 @@
-/* --- dropdown button --- */
+/* **************************************************** */
+/* *************** dropdown button main *************** */
+/* **************************************************** */
+
 .chat
 {
     position: absolute;
@@ -30,13 +33,16 @@
     float: right;
 }
 
-/* --- dropdown menu --- */
+/* ********************************************* */
+/* *************** dropdown menu *************** */
+/* ********************************************* */
+
 .dropdown-menu
 {
     width: 16em;
 }
 
-/* - dropdown menu header - */
+/* ----- dropdown menu header ----- */
 .header-dropmenu
 {
     /* height: 2em; */
@@ -59,13 +65,11 @@
     background-color: rgba(29, 102, 0, 0.55);
 }
 
-/* dropdown menu body */
+/* ----- dropdown menu body ----- */
 .chat-body
 {
     height: 15em;
 }
-
-
 
 .chat-body::-webkit-scrollbar
 {
@@ -85,8 +89,10 @@
     border: 1.5px solid rgb(66, 66, 66);
 }
 
+/* ******************************************** */
+/* *************** friends part *************** */
+/* ******************************************** */
 
-/* friends part */
 .friends .card
 {
     height: 5em;
@@ -106,8 +112,11 @@
     text-align: center;
 }
 
-/* --- Message sender --- */
-/* ** header ** */
+/* ********************************************** */
+/* *************** Message sender *************** */
+/* ********************************************** */
+
+/* ----- header ----- */
 .arrow-back
 {
     margin-left: 0.4em;
@@ -118,7 +127,7 @@
     font-size: 1.4em;
 }
 
-/* ** body ** */
+/* ----- body ----- */
 .msg-body
 {
     height: 11.7em;
@@ -152,7 +161,7 @@
     word-wrap: break-word;
 }
 
-/* sendBar */
+/* ----- sendBar ----- */
 .msgArea
 {
     position: absolute;
