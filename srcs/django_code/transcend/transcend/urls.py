@@ -22,7 +22,7 @@ from channels.security.websocket import AllowedHostsOriginValidator
 from django.core.asgi import get_asgi_application
 
 websocket_urlpatterns = [
-    path('ws/myapp/', views.MyConsumer.as_asgi()),
+    path('api/', views.MyConsumer.as_asgi()),
 ]
 
 application = ProtocolTypeRouter({
@@ -34,8 +34,8 @@ application = ProtocolTypeRouter({
 
 urlpatterns = [
     #path('', views.home, name='home'),
-    path('', views.index, name='index'),
+    # path('', views.index, name='index'),
     path('auth/42/', views.auth_42, name='auth_42'),
-    re_path(r'^(?!auth/42/).*$', views.index),
+    # re_path(r'^(?!auth/42/).*$', views.index),
     # path('admin/', admin.site.urls),
 ]
