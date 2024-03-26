@@ -1,6 +1,7 @@
 body
 {
-	background-image: url("/media/bg.png");
+	/* background-image: url("/media/bg.png"); */
+	background-image: url("/media/bg2.jpg");
 	background-position: center;
 	background-size: cover;
 	background-attachment: fixed;

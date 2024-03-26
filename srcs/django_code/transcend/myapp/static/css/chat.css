@@ -1,0 +1,255 @@
+/* ******************************** */
+/* ***** Dropdown button chat ***** */
+/* ******************************** */
+
+.chat
+{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin-right: 0.8em;
+    margin-bottom: 0.18em;
+}
+.btn-group.dropup
+{
+    width: 25em;
+    height: 3em;
+}
+
+.btn-group.dropup button
+{
+    font-size: 1em;
+    text-align: left;
+	background-color: rgba(88, 0, 190, 0.9);
+	border-radius: 1em;
+}
+
+.btn-group.dropup button::after
+{
+    content: none;
+}
+
+.icon-up
+{
+    float: right;
+}
+.dropdown-menu
+{
+	box-shadow: 0px 0px 23px 5px rgba(88, 70, 190, 0.85);
+	width: 25em;
+	height: 25em;
+}
+
+/* **************************** */
+/* ***** Friends left box ***** */
+/* **************************** */
+
+.select-chat
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 8.438em;
+	height: 25em;
+	border-right: 0.1em solid rgba(88, 0, 190, 0.5);
+	/* box-shadow: 0.05em 0.05em 0.05em rgba(88, 70, 190, 0.4); */
+	box-shadow: 0px 0px 23px 5px rgba(88, 70, 190, 0.85);
+}
+.select-body
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 22.8em;
+}
+
+/* ----- Footer button ----- */
+.select-footer
+{
+	border-top: 0.1em solid rgba(88, 0, 190, 0.5);
+	/* box-shadow: 0.1em 0.1em 0.1em rgba(88, 70, 190, 0.6); */
+	box-shadow: 0px 0px 23px 5px rgba(88, 70, 190, 0.85);
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 2.2em;
+}
+.switch-btn
+{
+	width: 100%;
+}
+.separator-btn
+{
+	position: absolute;
+	top: 20%;
+	left: 50%;
+	width: 0;
+	height: 60%;
+	border-left: 0.1em solid rgba(88, 0, 190, 0.8);
+	/* box-shadow: 0.1em 0.1em 0.1em rgba(88, 70, 190, 0.6); */
+	box-shadow: 0px 0px 23px 5px rgba(88, 70, 190, 0.85);
+}
+.user-btn
+{
+	position: absolute;
+	top: 18%;
+	left: 15%;
+}
+.group-btn
+{
+	position: absolute;
+	top: 18%;
+	right: 15%;
+}
+.switch-btn i
+{
+	border-radius: 20em;
+	padding: 0.1em;
+	border: 0.1em solid rgb(115, 115, 115);
+	background-color: rgba(155, 155, 155, 0.6);
+}
+.switch-btn .active i
+{
+	border: 0.1em solid rgb(0, 120, 136);
+	background-color: rgba(0, 135, 153, 0.6);
+}
+
+/* ******************** */
+/* ***** User box ***** */
+/* ******************** */
+
+.users
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: block;
+	text-align: center;
+}
+/* ----- User header ----- */
+.users-header
+{
+	position: relative;
+	width: 100%;
+	height: 2.2em;
+	/* background-color: blue; */
+}
+.add-btn
+{
+	border-radius: 2em;
+	box-shadow: 0px 0px 23px 5px rgba(211, 211, 211, 0.5);
+	background-color: lightgrey;
+	display: inline-block;
+	justify-content: center;
+	align-items: center;
+	padding-right: 0.3em;
+	padding-left: 0.3em;
+	margin-top: 0.2em;
+}
+.users-header i
+{
+	border-radius: 20em;
+	border: 0.1em solid rgba(0, 0, 0, 0.7);
+	padding: 0.1em;
+	font-size: 0.8em;
+}
+.users-header span
+{
+	font-size: 0.7em;
+}
+.separator-header
+{
+	position: absolute;
+	bottom: 0;
+	left: 20%;
+	width: 60%;
+	height: 0;
+	margin-top: 0.2em;
+	margin-bottom: 0.2em;
+	border-bottom: 0.1em solid rgba(88, 0, 190, 0.8);
+	/* box-shadow: 0.2em 0.2em 0.2em rgba(88, 70, 190, 0.6); */
+	box-shadow: 0px 0px 23px 5px rgba(88, 70, 190, 0.85);
+}
+/* ----- user card ----- */
+.users-body
+{
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+.users-card
+{
+	cursor: pointer;
+	width: 90%;
+	height: 2em;
+	border-radius: 2em;
+	box-shadow: 0px 0px 23px 5px rgba(211, 211, 211, 0.5);
+	background-color: grey;
+	display: flex;
+    justify-content: flex-start;
+	align-items: center;
+	padding-right: 0.3em;
+	padding-left: 0.3em;
+	margin-top: 0.2em;
+	margin-bottom: 0.3em;
+}
+.content-card
+{
+	display: flex;
+	align-items: center;
+}
+.content-card span
+{
+	margin-left: 0.5em;
+}
+
+/* ******************** */
+/* ***** User box ***** */
+/* ******************** */
+
+.groups
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: none;
+}
+
+/* ******************** */
+/* ***** Chat box ***** */
+/* ******************** */
+
+.msg
+{
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 16.562em;
+	height: 100%;
+	/* background-color: green; */
+}
+
+/* ----- header ----- */
+.msg-header
+{
+	background-color: red;
+	width: 100%;
+}
+/* ----- body ----- */
+.msg-body
+{
+	background-color: blue;
+	width: 100%;
+}
+/* ----- footer ----- */
+.msg-footer
+{
+	background-color: cadetblue;
+	width: 100%;
+}
