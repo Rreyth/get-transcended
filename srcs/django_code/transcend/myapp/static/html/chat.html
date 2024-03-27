@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="/static/css/chat.css">
+<script src="/static/js/chat.js"></script>
 <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
 
@@ -24,12 +25,14 @@
 						</div>
 						
 						<div class="users-body">
+
 							<div class="users-card active">
 								<div class="content-card">
 									<img class="rounded-circle" src="/media/profile_default.jpg" alt="profile" width="25" height="25">
 									<span>Swotex</span>
 								</div>
 							</div>
+
 							<div class="users-card">
 								<div class="content-card">
 									<img class="rounded-circle" src="/media/profile_default.jpg" alt="profile" width="25" height="25">
@@ -40,14 +43,16 @@
 						</div>
 					</div>
 
-					<div class="groups"></div>
+					<div class="groups">
+						coucou, ca c'est des groupes
+					</div>
 
 				</div>
 				<div class="select-footer">
 					<div class="switch-btn">
-						<div class="user-btn active"><i class='bx bx-user'></i></div>
+						<div class="user-btn active" onclick="switchConv(this)"><i class='bx bx-user'></i></div>
 						<span class="separator-btn"></span>
-						<div class="group-btn"><i class='bx bx-group' ></i></div>
+						<div class="group-btn" onclick="switchConv(this)"><i class='bx bx-group' ></i></div>
 					</div>
 				</div>
 
@@ -60,9 +65,9 @@
 				</div>
 				<div class="msg-body overflow-auto">
 
-					<div class="msg-container">
-						<div class="msg-sender">
-							<p>Moieee</p>
+					<div class="msg-sender">
+						<div class="msg-container">
+							<p class="msg-title">Moieee</p>
 							<div class="msg-content">
 								<p>
 									Ceci est mon Messages <br>
@@ -73,10 +78,48 @@
 						</div>
 					</div>
 
+					<div class="msg-recieve">
+						<div class="msg-container">
+							<p class="msg-title">Swotex</p>
+							<div class="msg-content">
+								<p>
+									Ceci est mon Mess ages 2 <br>
+									pute
+								</p>
+								<span>27/03/2024 12:40</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="msg-recieve">
+						<div class="msg-container">
+							<p class="msg-title">Swotex</p>
+							<div class="msg-content">
+								<p>
+									a
+								</p>
+								<span>27/03/2024 12:40</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="msg-sender">
+						<div class="msg-container">
+							<p class="msg-title">Moieee</p>
+							<div class="msg-content">
+								<p>
+									Moller moller les gencives la <br>
+									j'essaie juste la scrollbar
+								</p>
+								<span>27/03/2024 12:40</span>
+							</div>
+						</div>
+					</div>
+
 
 				</div>
 				<div class="msg-footer">
-					<textarea class="form-control"></textarea>
+					<textarea id="msg-area" class="form-control"></textarea>
 					<i class='bx bx-send'></i>
 					
 				</div>

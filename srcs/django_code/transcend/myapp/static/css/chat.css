@@ -109,6 +109,7 @@
 	padding: 0.1em;
 	border: 0.1em solid rgb(115, 115, 115);
 	background-color: rgba(155, 155, 155, 0.6);
+	cursor: pointer;
 }
 .switch-btn .active i
 {
@@ -213,7 +214,7 @@
 
 
 /* ******************** */
-/* ***** User box ***** */
+/* ***** Groups box ***** */
 /* ******************** */
 
 .groups
@@ -224,6 +225,7 @@
 	width: 100%;
 	height: 100%;
 	display: none;
+	text-align: center;
 }
 
 /* ******************** */
@@ -243,7 +245,7 @@
 /* ----- header ----- */
 .msg-header
 {
-	background-color: red;
+	/* background-color: red; */
 	width: 100%;
 	height: 10%;
 	display: flex;
@@ -265,40 +267,79 @@
 /* ----- body ----- */
 .msg-body
 {
-	background-color: blue;
+	/* background-color: blue; */
 	width: 100%;
 	height: 80%;
+	/* box-shadow: 0px 0px 9px 1px rgba(0,0,0,0.3); */
 	/* display: flex; */
 }
-.msg-container
+.msg-sender
 {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-end;
-	background-color: purple;
-	width: 100%;
+	margin-right: 0.5em;
+	/* background-color: purple; */
+	/* width: 100%; */
 	/* text-align: right; */
 	/* float: right; */
 }
+.msg-title
+{
+	font-size: 1em;
+	margin: 0;
+	padding: 0;
+	margin-left: 0.4em;
+	margin-right: 0.4em;
+	text-align: end;
+}
+.msg-recieve
+{
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	margin-left: 0.5em;
+}
+.msg-recieve .msg-title
+{
+	text-align: start;
+}
+.msg-recieve span
+{
+	text-align: end;
+}
 .msg-content
 {
-	background-color: green;
+	background-color: lightgreen;
 	border-radius: 1em;
-	max-width: 8.5em;
+	max-width: 9em;
 	padding: 0.2em;
+	display: flex;
+	flex-direction: column;
+}
+.msg-recieve .msg-content
+{
+	background-color: lightblue;
 }
 .msg-content span
 {
 	font-size: 0.6em;
+	margin-left: 0.4em;
+	margin-right: 0.4em;
+	color: grey;
 }
 .msg-content p
 {
 	font-size: 0.8em;
+	/* background-color: rgba(53, 123, 233, 0.8); */
+	margin: 0;
+	padding: 0;
+
 }
 /* ----- footer ----- */
 .msg-footer
 {
-	background-color: cadetblue;
+	/* background-color: cadetblue; */
 	width: 100%;
 	height: 10%;
 	display: flex;
