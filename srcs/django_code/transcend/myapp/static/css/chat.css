@@ -197,6 +197,10 @@
 	margin-top: 0.2em;
 	margin-bottom: 0.3em;
 }
+.users-card.active
+{
+	background-color: green;
+}
 .content-card
 {
 	display: flex;
@@ -206,6 +210,7 @@
 {
 	margin-left: 0.5em;
 }
+
 
 /* ******************** */
 /* ***** User box ***** */
@@ -240,16 +245,89 @@
 {
 	background-color: red;
 	width: 100%;
+	height: 10%;
+	display: flex;
+	flex-wrap: nowrap;
+    justify-content: space-between;
+	align-items: center;
+}
+.msg-header p
+{
+	height: 100%;
+	font-size: 2em;
+	margin-left: 0.6em;
+}
+.msg-header i
+{
+	margin-right: 0.8em;
+	margin-left: 0.8em;
 }
 /* ----- body ----- */
 .msg-body
 {
 	background-color: blue;
 	width: 100%;
+	height: 80%;
+	/* display: flex; */
+}
+.msg-container
+{
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	background-color: purple;
+	width: 100%;
+	/* text-align: right; */
+	/* float: right; */
+}
+.msg-content
+{
+	background-color: green;
+	border-radius: 1em;
+	max-width: 8.5em;
+	padding: 0.2em;
+}
+.msg-content span
+{
+	font-size: 0.6em;
+}
+.msg-content p
+{
+	font-size: 0.8em;
 }
 /* ----- footer ----- */
 .msg-footer
 {
 	background-color: cadetblue;
 	width: 100%;
+	height: 10%;
+	display: flex;
+    justify-content: flex-start;
+	align-items: center;
+}
+.msg-footer textarea
+{
+	height: 90%;
+	width: 100%;
+	resize: none;
+	border-radius: 3.125em;
+	margin-left: 0.3em;
+	margin-right: 0.2em;
+	font-size: 0.8em;
+	padding-left: 1em;
+	padding-right: 1em;
+}
+.msg-footer textarea:focus
+{
+	box-shadow: 0px 0px 23px 5px rgba(88, 70, 190, 0.5);
+}
+.msg-footer textarea::-webkit-scrollbar
+{
+	display: none;
+}
+.msg-footer i
+{
+	transform: rotate(-50deg);
+	margin-right: 0.2em;
+	margin-left: 0.2em;
 }
