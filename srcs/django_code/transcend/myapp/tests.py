@@ -1,5 +1,4 @@
 from django.test import TestCase
-from django.db import utils
 from myapp.models import *
 
 # Create your tests here.
