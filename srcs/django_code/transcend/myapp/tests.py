@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.db import utils
 from myapp.models import *
 
 # Create your tests here.
@@ -11,6 +12,14 @@ class UserTestCase(TestCase):
 
         self.assertIsNotNone(user)
         self.assertEquals(user.pseudo, "test")
+    
+    def testUniqueName(self):
+        try:
+            User.objects.create(pseudo="test", email="test@test.com", password="pass", token="tokenpass")
+
+            self.fail('Duplicate user')
+        except:
+            pass
 
 class PrivateMessageTestCase(TestCase):
 
@@ -20,7 +29,7 @@ class PrivateMessageTestCase(TestCase):
         self.user = User.objects.create(pseudo="test", email="test@test.com", password="pass", token="tokenpass")
         PrivateMessage.objects.create(content="Je suis un content", sender=self.user, recever=self.user)
     
-    def testGetPrivateMessage(self):
+    def testGetPrivateMessage(self) -> None:
         message = PrivateMessage.objects.get(sender=self.user)
 
         self.assertIsNotNone(message)
@@ -40,6 +49,19 @@ class ChannelTestCase(TestCase):
         self.assertIsNotNone(channel)
         self.assertEquals(channel.name, self.channelName)
         self.assertEquals(channel.owner, self.user)
+
+    def testUsersInChannel(self) -> None:
+        channel = Channel.objects.get(owner=self.user)
+        user = User.objects.create(pseudo="cool", email="cool@test.com", password="pass", token="tokenpasspass")
+
+        channel.addUser(user)
+
+        self.assertTrue(channel.contains(user))
+        self.assertTrue(channel.contains(self.user))
+
+        user = User.objects.create(pseudo="notcool", email="notcool@test.com", password="pass", token="tokenpasspasspass")
+
+        self.assertFalse(channel.contains(user))
 
 class MessageTestCase(TestCase):
     
