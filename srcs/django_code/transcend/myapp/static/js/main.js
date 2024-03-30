@@ -9,7 +9,7 @@ function loadPage(page, id) {
     fetch(page)
         .then(response => response.text())
         .then(html => {
-            document.querySelector(id).innerHTML = html;
+            document.querySelector(id).innerHTML += html;
 			const scriptTags = document.querySelector(id).getElementsByTagName('script');
 			for (let i = 0; i < scriptTags.length; i++) {
 				const src = scriptTags[i].getAttribute('src');
