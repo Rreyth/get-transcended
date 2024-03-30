@@ -1,3 +1,10 @@
+import { Component } from "./component.js"
+import { Navbar } from "../html/components/navbar.js";
+
+Component.loader([
+	Navbar,
+])
+
 function loadPage(page, id) {
     fetch(page)
         .then(response => response.text())
