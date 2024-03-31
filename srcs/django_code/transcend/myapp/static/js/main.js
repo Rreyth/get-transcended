@@ -1,8 +1,10 @@
 import { Component } from "./component.js"
 import { Navbar } from "../html/components/navbar.js";
+import { Minichat } from "../html/components/minichat.js";
 
 Component.loader([
 	Navbar,
+	Minichat,
 ])
 
 function loadPage(page, id) {
@@ -97,4 +99,39 @@ function addInPage(page, id) {
 			}
 		})
 		.catch(error => console.error('Error loading page:', error));
+}
+
+function sendMsg(msg)
+{
+	const socket = new WebSocket('wss://localhost:44433/api/chat');
+
+	socket.onopen = event => {
+		console.log('WebSocket connection established.');
+		socket.send(JSON.stringify({
+			'message': msg
+		}));
+	};
+
+	socket.onmessage = event => {
+		const data = JSON.parse(event.data);
+		console.log('Message from server:', data.message);
+		displayNewMsg(data.message, 'me');
+		displayNewMsg("Test response : " + data.message, 'nameOfSpeaker');
+	};
+}
+
+const textareas = document.querySelector('textarea');
+
+for (const key in textareas) {
+	key.addEventListener('keydown', function (event) {
+		if (event.key === 'Enter' && !event.shiftKey)
+		{
+			event.preventDefault();
+			if (document.getElementById('myTextarea').value === '')
+				return;
+			let msg = escapeHtml(document.getElementById('myTextarea').value)
+			sendMsg(msg.replace(/\n/g, "<br>"));
+			document.getElementById('myTextarea').value = '';
+		}
+	});
 }
