@@ -1,10 +1,14 @@
 import { Component } from "./component.js"
 import { Navbar } from "../html/components/navbar.js";
-import { Minichat } from "../html/components/minichat.js";
+import { Minichat } from "../html/components/minichat/minichat.js";
+import { Message } from "../html/components/minichat/message.js";
+import { Friend } from "../html/components/minichat/friend.js";
 
 Component.loader([
 	Navbar,
 	Minichat,
+	Message,
+	Friend
 ])
 
 function loadPage(page, id) {
@@ -72,34 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 	});
 });
-
-
-
-function addInPage(page, id) {
-	fetch(page)
-		.then(response => response.text())
-		.then(html => {
-			document.getElementById(id).innerHTML = html;
-
-
-			const scriptTags = document.getElementById(id).getElementsByTagName('script');
-			for (let i = 0; i < scriptTags.length; i++) {
-				const src = scriptTags[i].getAttribute('src');
-				if (src) {
-					const script = document.createElement('script');
-					script.src = src;
-					document.body.appendChild(script);
-				} else {
-					// Exécuter les scripts inline directement
-					const script = document.createElement('script');
-					script.textContent = scriptTags[i].innerText;
-					document.body.appendChild(script);
-
-				}
-			}
-		})
-		.catch(error => console.error('Error loading page:', error));
-}
 
 function sendMsg(msg)
 {
