@@ -59,3 +59,12 @@ class Message(models.Model):
 
 	class Meta:
 		db_table = "myapp_messages"
+
+class Game(models.Model):
+	winner = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='User', related_name='+')
+	looser = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='User', related_name='+')
+	name = models.CharField(max_length=255)
+	created_at = models.DateTimeField(auto_now_add=True, blank=True)
+
+	class Meta:
+		db_table = 'myapp_games'
