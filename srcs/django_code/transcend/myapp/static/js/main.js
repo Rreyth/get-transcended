@@ -3,12 +3,14 @@ import { Navbar } from "../html/components/navbar.js";
 import { Minichat } from "../html/components/minichat/minichat.js";
 import { Message } from "../html/components/minichat/message.js";
 import { Friend } from "../html/components/minichat/friend.js";
+import { ChatInput } from "../html/components/minichat/input.js";
 
 Component.loader([
 	Navbar,
 	Minichat,
 	Message,
 	Friend,
+	ChatInput,
 ])
 
 const router = async () => {
@@ -79,20 +81,4 @@ function sendMsg(msg)
 		displayNewMsg(data.message, 'me');
 		displayNewMsg("Test response : " + data.message, 'nameOfSpeaker');
 	};
-}
-
-const textareas = document.querySelector('textarea');
-
-for (const key in textareas) {
-	key.addEventListener('keydown', function (event) {
-		if (event.key === 'Enter' && !event.shiftKey)
-		{
-			event.preventDefault();
-			if (document.getElementById('myTextarea').value === '')
-				return;
-			let msg = escapeHtml(document.getElementById('myTextarea').value)
-			sendMsg(msg.replace(/\n/g, "<br>"));
-			document.getElementById('myTextarea').value = '';
-		}
-	});
 }

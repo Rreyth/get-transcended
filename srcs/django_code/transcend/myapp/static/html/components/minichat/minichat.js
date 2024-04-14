@@ -29,7 +29,7 @@ export class Minichat extends Component
                     </div>
 
                     <div class="header-dropmenu head2" style="display: none;">
-                        <span class="arrow-back">
+                        <span class="arrow-back" id="back-to-list">
                             <i class="fa fa-angle-double-left"></i>
                         </span>
                         <span>Messages de gigi</span>
@@ -48,11 +48,7 @@ export class Minichat extends Component
                                 <c-message content="oui" who="reciever"></c-message>
                                 <c-message content="coucou" who="sender"></c-message>
                             </div>
-                            <div class="msgArea">
-                                <hr class="dropdown-divider">
-                                <textarea id="myTextarea" class="form-control msgBar"></textarea>
-                                <span class="sendBtn"><i class="fa fa-paper-plane-o"></i></span>
-                            </div>
+                            <c-chat-input></c-chat-input>
                         </div>
 
                         <div class="group" style="display: none;">
@@ -62,8 +58,15 @@ export class Minichat extends Component
                     </div>
                 </div>
             </div>
-        </div>  
-       `;
+        </div>
+        `;
+
+        this.addClickEvent('#back-to-list', (e) => {
+            document.querySelector(".head1").style.display = "block";
+            document.querySelector(".friends").style.display = "block";
+            document.querySelector(".head2").style.display = "none";
+            document.querySelector(".conv").style.display = "none";
+        })
     }
 
     btswipe(element)
@@ -119,15 +122,6 @@ export class Minichat extends Component
 				</div>\
 			"
         }
-        endofscrollmsg();
-    }
-
-    displayConv()
-    {
-        document.querySelector(".head1").style.display = "none";
-        document.querySelector(".friends").style.display = "none";
-        document.querySelector(".head2").style.display = "block";
-        document.querySelector(".conv").style.display = "block";
         endofscrollmsg();
     }
 

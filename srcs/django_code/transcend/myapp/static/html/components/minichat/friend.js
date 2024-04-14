@@ -22,11 +22,11 @@ export class Friend extends Component
                     <div class="card-body">
                         <p class="card-text">Gigi</p>
                         <div class="dropdown" style="position: absolute; right: 8%; top: 35%;">
-                            <p class="more-dot card-text dropdown-toggle" type="button"
+                            <p id="cancel-click" class="more-dot card-text dropdown-toggle" type="button"
                             data-bs-toggle="dropdown" aria-expanded="false"><i style="font-size: 1.4em;"
                                                                                 class="fa fa-ellipsis-v"></i>
                             </p>
-                            <ul class="dropdown-menu" style="width: 3.8em;">
+                            <ul id="cancel-click" class="dropdown-menu" style="width: 3.8em;">
                                 <li><p class="dropdown-item">Supp</p></li>
                                 <li><p class="dropdown-item">jsp</p></li>
                                 <li><p class="dropdown-item">d'autre trucs</p></li>
@@ -43,5 +43,11 @@ export class Friend extends Component
 
     handleClick(ev)
     {
+        if (ev.target.id == "cancel-click") return
+
+        document.querySelector(".head1").style.display = "none";
+        document.querySelector(".friends").style.display = "none";
+        document.querySelector(".head2").style.display = "block";
+        document.querySelector(".conv").style.display = "block";
     }
 }

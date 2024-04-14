@@ -32,6 +32,11 @@ export class Component extends HTMLElement
     {
     }
 
+    addClickEvent(item, callback)
+    {
+        this.querySelector(item).addEventListener('click', callback);
+    }
+
     static getName()
     {
         throw new Error("Name is not define")
