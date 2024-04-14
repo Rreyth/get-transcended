@@ -28,8 +28,17 @@ export class ChatInput extends Component
                 e.preventDefault();
                 if (document.getElementById('myTextarea').value === '')
                     return;
-                let msg = escapeHtml(document.getElementById('myTextarea').value)
-                sendMsg(msg.replace(/\n/g, "<br>"));
+                let msg = document.getElementById('myTextarea').value
+
+                const socket = new WebSocket('wss://localhost:44433/api/chat')
+
+                socket.onopen = event => {
+                    console.log('WebSocket connection established.');
+                    socket.send(JSON.stringify({
+                        'message': msg.replace(/\n/g, "<br>")
+                    }));
+                };
+
                 document.getElementById('myTextarea').value = '';
             }
         })

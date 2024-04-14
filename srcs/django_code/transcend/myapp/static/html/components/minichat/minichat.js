@@ -44,7 +44,7 @@ export class Minichat extends Component
                         </div>
 
                         <div class="conv" style="display: none;">
-                            <div class="msg-body chat-body overflow-auto">
+                            <div id="messages" class="msg-body chat-body overflow-auto">
                                 <c-message content="oui" who="reciever"></c-message>
                                 <c-message content="coucou" who="sender"></c-message>
                             </div>
@@ -67,74 +67,15 @@ export class Minichat extends Component
             document.querySelector(".head2").style.display = "none";
             document.querySelector(".conv").style.display = "none";
         })
-    }
 
-    btswipe(element)
-    {
-        let classBtClicked = this.classList;
-        if (!classBtClicked.contains("active"))
-        {
-            if (classBtClicked.contains("headbt1"))
-            {
-                document.querySelector(".headbt2").classList.remove("active");
-                document.querySelector(".group").style.display = "none";
-                document.querySelector(".friends").style.display = "block";
-            }
-            else
-            {
-                document.querySelector(".headbt1").classList.remove("active");
-                document.querySelector(".friends").style.display = "none";
-                document.querySelector(".group").style.display = "block";
-            }
-            classBtClicked.add("active");
-        }
-    }
+        const socket = new WebSocket('wss://localhost:44433/api/chat')
 
-    endofscrollmsg()
-    {
-        var msgScrollBar = document.querySelector(".msg-body");
-        msgScrollBar.scrollTop = msgScrollBar.scrollHeight; // scrollbar en bas de msg par deffaut
-    }
+        socket.onmessage = event => {
+            const data = JSON.parse(event.data);
+            const messages = this.querySelector('#messages');
 
-    displayNewMsg(msg, from)
-    {
-        var msg_conv = document.querySelector(".msg-body");
-
-        if (from === 'me')
-        {
-            msg_conv.innerHTML = msg_conv.innerHTML +
-                "\
-                    <div class=\"msgContainer\">\
-                        <div class=\"sendMsg\">\
-                            <p>" + msg + "</p>\
-					</div>\
-				</div>\
-			"
-        }
-        else
-        {
-            msg_conv.innerHTML = msg_conv.innerHTML +
-                "\
-                    <div class=\"msgContainer\">\
-                        <div class=\"recieveMsg\">\
-                            <p>" + msg + "</p>\
-					</div>\
-				</div>\
-			"
-        }
-        endofscrollmsg();
-    }
-
-    escapeHtml(text)
-    {
-        var map = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#039;'
+            messages.innerHTML += `<c-message content="${data.message}" who="sender"></c-message>`
         };
-        return text.replace(/[&<>"']/g, function (m) { return map[m]; });
     }
 
 }
