@@ -61,6 +61,18 @@ services:
     depends_on:
       - postgres
 
+  pong:
+    build:
+      context: ./requirements/Pong-Server
+    container_name: pong
+    image: pong
+    restart: always
+    expose:
+      - "6669"
+    ports:
+      - "6669-6719:6669-6719"
+    networks:
+      - transcendNetwork
 
 volumes:
   app:
