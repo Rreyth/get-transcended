@@ -8,29 +8,8 @@ Component.loader([
 	Navbar,
 	Minichat,
 	Message,
-	Friend
+	Friend,
 ])
-
-function loadPage(page, id) {
-    fetch(page)
-        .then(response => response.text())
-        .then(html => {
-            document.querySelector(id).innerHTML += html;
-			const scriptTags = document.querySelector(id).getElementsByTagName('script');
-			for (let i = 0; i < scriptTags.length; i++) {
-				const src = scriptTags[i].getAttribute('src');
-				if (src) {
-				const script = document.createElement('script');
-				script.src = src;
-				document.body.appendChild(script);
-				} else {
-				// Exécuter les scripts inline directement
-				eval(scriptTags[i].innerText);
-				}
-			}
-        })
-        .catch(error => console.error('Error loading page:', error));
-}
 
 const router = async () => {
 	const routes = [
@@ -55,7 +34,13 @@ const router = async () => {
 			result: [location.pathname]
 		};
 	}
-	loadPage(match.route.link, 'body');
+
+	fetch(match.route.link)
+        .then(response => response.text())
+        .then(html => {
+            document.querySelector('content').innerHTML = html;
+        })
+        .catch(error => console.error('Error loading page:', error));
 };
 
 
