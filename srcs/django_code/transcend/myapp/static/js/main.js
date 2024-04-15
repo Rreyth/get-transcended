@@ -4,17 +4,17 @@ function loadPage(page, id) {
         .then(html => {
             document.querySelector(id).innerHTML = html;
 			const scriptTags = document.querySelector(id).getElementsByTagName('script');
-			for (let i = 0; i < scriptTags.length; i++) {
-				const src = scriptTags[i].getAttribute('src');
-				if (src) {
-				const script = document.createElement('script');
-				script.src = src;
-				document.body.appendChild(script);
-				} else {
-				// Exécuter les scripts inline directement
-				eval(scriptTags[i].innerText);
-				}
-			}
+			// for (let i = 0; i < scriptTags.length; i++) {
+			// 	const src = scriptTags[i].getAttribute('src');
+			// 	if (src) {
+			// 	const script = document.createElement('script');
+			// 	script.src = src;
+			// 	document.body.appendChild(script);
+			// 	} else {
+			// 	// Exécuter les scripts inline directement
+			// 	eval(scriptTags[i].innerText);
+			// 	}
+			// }
         })
         .catch(error => console.error('Error loading page:', error));
 }
@@ -25,6 +25,7 @@ const router = async () => {
 		{ path: "/", link: "/static/html/home.html" },
 		{ path: "/about", link: "/static/html/about.html" },
 		{ path: "/login", link: "/static/html/login.html" },
+		{ path: "/pong", link: "/static/html/pong.html" }
 	];
 
 	const potentialMatches = routes.map(route => {
