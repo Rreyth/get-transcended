@@ -60,11 +60,31 @@ class Message(models.Model):
 	class Meta:
 		db_table = "myapp_messages"
 
-class Game(models.Model):
-	winner = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='User', related_name='+')
-	looser = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='User', related_name='+')
-	name = models.CharField(max_length=255)
+class Matche(models.Model):
+	game = models.CharField(max_length=255) # name of the game
 	created_at = models.DateTimeField(auto_now_add=True, blank=True)
 
+	users = models.ManyToManyField(User, related_name="matche", related_query_name="matche", through='Player')
+
+	def addWinner(self, player: User):
+		Player.objects.create(user=player, matche=self, win=True)
+	
+	def addLooser(self, player: User):
+		Player.objects.create(user=player, matche=self, win=False)
+   
+	def getWinner(self):
+		return self.users.get(player__win=True, matche=self)
+
+	def getLooser(self):
+		return self.users.get(player__win=False, matche=self)
+
 	class Meta:
-		db_table = 'myapp_games'
+		db_table = 'myapp_matches'
+
+class Player(models.Model):
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	matche = models.ForeignKey(Matche, on_delete=models.CASCADE)
+	win = models.BooleanField()
+
+	class Meta:
+		db_table = "myapp_matche_user"
