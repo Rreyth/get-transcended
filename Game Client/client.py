@@ -6,6 +6,10 @@ import ssl
 import sys
 from game.core import *
 
+ssl_context = ssl.create_default_context()
+ssl_context.check_hostname = False
+ssl_context.verify_mode = ssl.CERT_NONE
+
 game = Game()
 
 async def try_connect(websocket):
@@ -117,7 +121,7 @@ async def wait_loop():
 		except asyncio.TimeoutError:
 			msg = {'type' : 'none'}
 	if game.is_running:
-		game.GameRoom = await websockets.connect(game.GameSocket)
+		game.GameRoom = await websockets.connect(game.GameSocket, ssl=ssl_context)
 		await game.GameRoom.send(json.dumps({'type' : 'join', 'name' : game.alias}))
 		infos : dict = json.loads(await game.GameRoom.recv())
 		while infos['type'] != 'start':
@@ -160,9 +164,7 @@ async def in_game(websocket):
 				await in_game(websocket)
 			game.pygame_quit()
 
-ssl_context = ssl.create_default_context()
-ssl_context.check_hostname = False
-ssl_context.verify_mode = ssl.CERT_NONE
+
 args = sys.argv
 
 async def main():

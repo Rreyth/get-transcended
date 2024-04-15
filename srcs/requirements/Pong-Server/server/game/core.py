@@ -3,6 +3,7 @@ import asyncio
 import websockets
 import signal
 import os
+import ssl
 
 from config import *
 from Player import *
@@ -10,6 +11,9 @@ from Wall import *
 from Ball import *
 from update import *
 from Obstacle import *
+
+ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+ssl_context.load_cert_chain("/certs/cert.pem")
 
 class Game:
 	def __init__(self):
@@ -243,7 +247,7 @@ async def main():
 	stop = loop.create_future()
 	loop.add_signal_handler(signal.SIGTERM, stop.set_result, None)
 
-	async with websockets.serve(handle_game, args[1], args[2]):
+	async with websockets.serve(handle_game, args[1], args[2], ssl=ssl_context):
 		await stop
 	print("Game room {} closed.".format(game.id))
 

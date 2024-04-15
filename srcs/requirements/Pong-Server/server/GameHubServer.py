@@ -36,7 +36,7 @@ class Room:
 	
 	async def cleanEmpty(self):
 		global used_port, used_id
-		async with websockets.connect("ws://{}:{}".format(self.host, self.port)) as gameSocket:
+		async with websockets.connect("wss://{}:{}".format(self.host, self.port), ssl=ssl_context_client) as gameSocket:
 			msg = {'type' : 'close'}
 			await gameSocket.send(json.dumps(msg))
 			await gameSocket.close()
@@ -105,7 +105,7 @@ async def run_game(id, websocket):
 	global rooms, used_port, used_id
 	for room in rooms.values():
 		if room.id == id:
-			async with websockets.connect("ws://{}:{}".format(room.host, room.port)) as gameSocket:
+			async with websockets.connect("wss://{}:{}".format(room.host, room.port), ssl=ssl_context_client) as gameSocket:
 				msg = {'type' : 'create', 'cmd' : room.type, 'mods' : room.mods, 'Room_id' : room.id, 'score' : room.score, 'ai' : room.ai_nb, 'players' : room.max_players}
 				await gameSocket.send(json.dumps(msg))
 				await asyncio.sleep(0.01)
@@ -136,7 +136,7 @@ async def handle_join(client_msg, websocket):
 			await room.sendAll({"type" : "join"})
 			room.players.add(websocket)
 			room.players_nb += 1
-			await websocket.send(json.dumps({'type' : 'joinResponse', 'success' : 'true', 'socket' : 'ws://{}:{}'.format(room.host, room.port), 'pos' : room.players_nb, 'max' : room.max_players, 'mode' : room.type, 'custom_mods' : room.mods}))
+			await websocket.send(json.dumps({'type' : 'joinResponse', 'success' : 'true', 'socket' : 'wss://{}:{}'.format(room.host, room.port), 'pos' : room.players_nb, 'max' : room.max_players, 'mode' : room.type, 'custom_mods' : room.mods}))
 			await full_room(room.id, websocket)
 			if client_msg['id'] in rooms.keys() and rooms[room.id].full:
 				await run_game(room.id, websocket)
@@ -165,7 +165,7 @@ async def handle_custom(client_msg, websocket):
 		rooms[room_id].ai_nb = client_msg['ai']
 		rooms[room_id].players.add(websocket)
 		rooms[room_id].players_nb = client_msg['ai'] + 1
-		await websocket.send(json.dumps({'type' : 'GameRoom', 'ID' : room_id, 'socket' : 'ws://{}:{}'.format(host, port), 'pos' : rooms[room_id].players_nb}))
+		await websocket.send(json.dumps({'type' : 'GameRoom', 'ID' : room_id, 'socket' : 'wss://{}:{}'.format(host, port), 'pos' : rooms[room_id].players_nb}))
 		await full_room(room_id, websocket)
 		if room_id in rooms.keys() and rooms[room_id].full:
 			await run_game(room_id, websocket)
@@ -186,7 +186,7 @@ async def handle_quickGame(client_msg, websocket):
 				await room.sendAll({"type" : "join"})
 				room.players.add(websocket)
 				room.players_nb += 1
-				await websocket.send(json.dumps({'type' : 'GameRoom', 'ID' : room.id, 'socket' : 'ws://{}:{}'.format(room.host, room.port), 'pos' : room.players_nb}))
+				await websocket.send(json.dumps({'type' : 'GameRoom', 'ID' : room.id, 'socket' : 'wss://{}:{}'.format(room.host, room.port), 'pos' : room.players_nb}))
 				id = room.id
 				await full_room(room.id, websocket)
 				if id in rooms.keys() and rooms[room.id].full:
@@ -205,7 +205,7 @@ async def handle_quickGame(client_msg, websocket):
 		rooms[room_id] = Room(room_id, host, port, 'quickGame', 2)
 		rooms[room_id].players.add(websocket)
 		rooms[room_id].players_nb = 1
-		await websocket.send(json.dumps({'type' : 'GameRoom', 'ID' : room_id, 'socket' : 'ws://{}:{}'.format(host, port), 'pos' : rooms[room_id].players_nb}))
+		await websocket.send(json.dumps({'type' : 'GameRoom', 'ID' : room_id, 'socket' : 'wss://{}:{}'.format(host, port), 'pos' : rooms[room_id].players_nb}))
 		await full_room(room_id, websocket)
 		if room_id in rooms.keys() and rooms[room_id].full:
 			await run_game(room_id, websocket)
