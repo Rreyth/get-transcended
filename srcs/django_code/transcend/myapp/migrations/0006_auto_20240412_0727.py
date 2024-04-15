@@ -12,16 +12,14 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='games',
+            name='matches',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('winner', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='users')),
-                ('looser', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='users')),
-                ('name', models.CharField(max_length=255)),
+                ('game', models.CharField(max_length=255)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
             ],
             options={
-                'db_table': 'myapp_games',
+                'db_table': 'myapp_matches',
             },
         ),
     ]
