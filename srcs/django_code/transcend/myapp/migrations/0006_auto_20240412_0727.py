@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             name='matches',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('game', models.CharField(max_length=255)),
+                ('mode', models.CharField(max_length=255)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
             ],
             options={

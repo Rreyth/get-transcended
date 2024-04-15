@@ -61,7 +61,7 @@ class Message(models.Model):
 		db_table = "myapp_messages"
 
 class Matche(models.Model):
-	game = models.CharField(max_length=255) # name of the game
+	mode = models.CharField(max_length=255) # name of the game
 	created_at = models.DateTimeField(auto_now_add=True, blank=True)
 
 	users = models.ManyToManyField(User, related_name="matche", related_query_name="matche", through='Player')
