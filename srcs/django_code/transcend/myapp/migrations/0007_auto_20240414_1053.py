@@ -11,15 +11,15 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='matche_user',
+            name='match_user',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('user', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='users')),
-                ('matche', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='matches')),
+                ('match', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='matches')),
                 ('win', models.BooleanField()),
             ],
             options={
-                'db_table': 'myapp_matche_user',
+                'db_table': 'myapp_match_user',
             },
         ),
     ]

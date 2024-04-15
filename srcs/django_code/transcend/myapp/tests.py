@@ -84,17 +84,17 @@ class MatchTestCase(TestCase):
     winner = None
     looser = None
     name = 'normal'
-    matche = None
+    match = None
 
     def setUp(self) -> None:
         self.winner = User.objects.create(pseudo="test1", email="test1@test.com", password="pass", token="tokenpass1")
         self.looser = User.objects.create(pseudo="test2", email="test2@test.com", password="pass", token="tokenpass2")
-        self.matche = Matche.objects.create(mode=self.name)
+        self.match = Match.objects.create(mode=self.name)
 
-        self.matche.addWinner(self.winner)
-        self.matche.addLooser(self.looser)
+        self.match.addWinner(self.winner)
+        self.match.addLooser(self.looser)
 
-    def testGetMatche(self):
-        self.assertIsNotNone(self.matche)
-        self.assertEquals(self.matche.getWinner(), self.winner)
-        self.assertEquals(self.matche.getLooser(), self.looser)
+    def testGetMatch(self):
+        self.assertIsNotNone(self.match)
+        self.assertEquals(self.match.getWinner(), self.winner)
+        self.assertEquals(self.match.getLooser(), self.looser)
