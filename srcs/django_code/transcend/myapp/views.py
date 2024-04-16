@@ -1,6 +1,26 @@
 from django.shortcuts import render
 import requests
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+from django.views.decorators.http import require_http_methods
+from django.views import View
+from myapp import models
+
+class AuthApi(View):
+    def get(self, request, *args, **kwargs):
+        email = request.GET.get('email')
+        password = request.GET.get('password')
+        
+        return JsonResponse(models.User.objects.get(email=email, password=password))
+    
+    def post(self, request, *args, **kwargs):
+        email = request.POST.get('email')
+        pseudo = request.POST.get('pseudo')
+        password = request.POST.get('password')
+        
+        user = models.User.objects.create(pseudo=pseudo, email=email, password=password, token=f"test-{pseudo}")
+        
+        return JsonResponse(user)
+        
 
 def auth_42(request):
     # Récupérer le code d'authentification de la requête GET

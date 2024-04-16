@@ -38,4 +38,5 @@ urlpatterns = [
     path('auth/42/', views.auth_42, name='auth_42'),
     # re_path(r'^(?!auth/42/).*$', views.index),
     # path('admin/', admin.site.urls),
+    path('api/auth/', views.AuthApi.as_view(), name='auth')
 ]
