@@ -1,6 +1,6 @@
 import { Router, render, route } from "../js/router.js";
 
-Router.set('/test', () => {
+Router.set('/', () => {
 	render('home')
 }).setName('home')
 
