@@ -16,6 +16,10 @@ ssl_context.load_cert_chain("/certs/cert.pem")
 ssl_context_client = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
 ssl_context_client.load_verify_locations("/certs/cert.pem")
 
+# ssl_context_client = ssl.create_default_context()
+# ssl_context_client.check_hostname = False
+# ssl_context_client.verify_mode = ssl.CERT_NONE
+
 class Room:
 	def __init__(self, id, host, port, type, max_players = 2):
 		self.id = id
@@ -236,15 +240,24 @@ async def handle_client(websocket):
 		clients.remove(websocket)
 		# print(f"disconnected from {websocket.remote_address[0]}:{websocket.remote_address[1]}")
 
-async def main():
-	loop = asyncio.get_running_loop()
-	stop = loop.create_future()
-	loop.add_signal_handler(signal.SIGINT, stop.set_result, None)
-	loop.add_signal_handler(signal.SIGTERM, stop.set_result, None)
+# async def main():
+# 	loop = asyncio.get_running_loop()
+# 	stop = loop.create_future()
+# 	loop.add_signal_handler(signal.SIGINT, stop.set_result, None)
+# 	loop.add_signal_handler(signal.SIGTERM, stop.set_result, None)
  
-	async with websockets.serve(handle_client, "0.0.0.0", 6669, ssl=ssl_context):
-		await stop
-	print("\nServer stopped")
+# 	async with websockets.serve(handle_client, "0.0.0.0", 6669, ssl=ssl_context):
+# 		await stop
+# 	print("\nServer stopped")
+
+async def main():
+
+	async with websockets.connect("wss://transcendence:44433/api/pong", ssl=ssl_context_client) as websocket:
+		websocket.send(json.dumps({'message' : "test de ses mort"}))
+		response : dict = json.loads(await websocket.recv())
+		print(response)
+		websocket.close()
+	print("connection closed")
 
 if __name__ == "__main__":
 	asyncio.run(main())

@@ -50,7 +50,9 @@ var GameHub;
 // var GameRoom = false
 
 function connect_hub() {
-	GameHub = new WebSocket("ws://localhost:6669/");
+	// const socket = "wss://" + window.location.hostname + ":6669";
+	const socket = "wss://166.168.169.1:9999"; //wrong ws for test
+	GameHub = new WebSocket(socket);
 	GameHub.onerror = hub_error;
 	GameHub.onopen = hub_open;
 	GameHub.onmessage = parse_msg;
