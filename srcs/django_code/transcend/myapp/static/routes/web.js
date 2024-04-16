@@ -1,12 +1,10 @@
-import { Router, render, route } from "../js/router.js";
+import { Router, render } from "../js/router.js";
 
 Router.set('/', () => {
 	render('home')
 }).setName('home')
 
 Router.set('/about', () => {
-    console.log(route('home'))
-
 	render('about')
 })
 
