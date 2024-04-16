@@ -7,14 +7,15 @@ import random
 import string
 import signal
 import ssl
+import sys
 
 starting_port = 6670
 
 ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 ssl_context.load_cert_chain("/certs/cert.pem")
 
-ssl_context_client = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-ssl_context_client.load_verify_locations("/certs/cert.pem")
+# ssl_context_client = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+# ssl_context_client.load_verify_locations("/certs/cert.pem")
 
 # ssl_context_client = ssl.create_default_context()
 # ssl_context_client.check_hostname = False
@@ -56,6 +57,7 @@ used_id = []
 fordiben_port = [8000, 8001, 44433, 5432, 6720]
 
 clients = set()
+django_socket = False
 
 async def send_to_DB(msg : dict): #add players infos + send to main serv for db
 	pass
@@ -219,6 +221,9 @@ async def parse_msg(message, websocket):
 	client_msg : dict = json.loads(message)
 
 	# print('client message : ', client_msg) #keep for logs / debug ?
+	if client_msg["type"] == "DJANGO":
+		django_socket = websocket
+		await websocket.send(json.dumps({'YAAAA': 'YEEEEEEEEEEEEEEEEEEEEET (it means success)'}))
 	if client_msg["type"] == "connect":
 		await connection_handler(client_msg, websocket)
 	if client_msg["type"] == "quickGame":
@@ -240,24 +245,14 @@ async def handle_client(websocket):
 		clients.remove(websocket)
 		# print(f"disconnected from {websocket.remote_address[0]}:{websocket.remote_address[1]}")
 
-# async def main():
-# 	loop = asyncio.get_running_loop()
-# 	stop = loop.create_future()
-# 	loop.add_signal_handler(signal.SIGINT, stop.set_result, None)
-# 	loop.add_signal_handler(signal.SIGTERM, stop.set_result, None)
- 
-# 	async with websockets.serve(handle_client, "0.0.0.0", 6669, ssl=ssl_context):
-# 		await stop
-# 	print("\nServer stopped")
-
 async def main():
-
-	async with websockets.connect("wss://transcendence:44433/api/pong", ssl=ssl_context_client) as websocket:
-		websocket.send(json.dumps({'message' : "test de ses mort"}))
-		response : dict = json.loads(await websocket.recv())
-		print(response)
-		websocket.close()
-	print("connection closed")
+	loop = asyncio.get_running_loop()
+	stop = loop.create_future()
+	loop.add_signal_handler(signal.SIGINT, stop.set_result, None)
+	loop.add_signal_handler(signal.SIGTERM, stop.set_result, None)
+	async with websockets.serve(handle_client, "0.0.0.0", 6669, ssl=ssl_context):
+		await stop
+	print("\nServer stopped", file=sys.stderr)
 
 if __name__ == "__main__":
 	asyncio.run(main())

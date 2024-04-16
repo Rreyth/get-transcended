@@ -6,7 +6,9 @@ WORKDIR /app
 
 # COPY utils/requirements /app/
 COPY utils/requirements .
+COPY utils/game_relay.py /game_relay.py
 RUN pip install --no-cache-dir -r requirements
+RUN pip install --no-cache-dir websockets
 RUN rm requirements
 
 # COPY . /app/

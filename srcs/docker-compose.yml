@@ -52,8 +52,6 @@ services:
     container_name: nginx
     image: nginx
     restart: always
-    expose:
-      - "44433"
     ports:
       - "44433:44433"
     volumes:
@@ -73,12 +71,8 @@ services:
       - "6669"
     ports:
       - "6669-6719:6669-6719"
-    volumes:
-      - app:/app
     networks:
       - transcendNetwork
-    depends_on:
-      - nginx
 
 volumes:
   app:
