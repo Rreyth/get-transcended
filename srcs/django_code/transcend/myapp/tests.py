@@ -78,3 +78,23 @@ class MessageTestCase(TestCase):
 
         self.assertIsNotNone(message)
         self.assertEquals(message.content, self.content)
+
+class MatchTestCase(TestCase):
+
+    winner = None
+    looser = None
+    name = 'normal'
+    match = None
+
+    def setUp(self) -> None:
+        self.winner = User.objects.create(pseudo="test1", email="test1@test.com", password="pass", token="tokenpass1")
+        self.looser = User.objects.create(pseudo="test2", email="test2@test.com", password="pass", token="tokenpass2")
+        self.match = Match.objects.create(mode=self.name)
+
+        self.match.addWinner(self.winner)
+        self.match.addLooser(self.looser)
+
+    def testGetMatch(self):
+        self.assertIsNotNone(self.match)
+        self.assertEquals(self.match.getWinner(), self.winner)
+        self.assertEquals(self.match.getLooser(), self.looser)

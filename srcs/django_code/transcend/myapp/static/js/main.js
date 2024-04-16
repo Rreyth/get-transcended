@@ -1,23 +1,17 @@
-function loadPage(page, id) {
-    fetch(page)
-        .then(response => response.text())
-        .then(html => {
-            document.querySelector(id).innerHTML = html;
-			const scriptTags = document.querySelector(id).getElementsByTagName('script');
-			// for (let i = 0; i < scriptTags.length; i++) {
-			// 	const src = scriptTags[i].getAttribute('src');
-			// 	if (src) {
-			// 	const script = document.createElement('script');
-			// 	script.src = src;
-			// 	document.body.appendChild(script);
-			// 	} else {
-			// 	// Exécuter les scripts inline directement
-			// 	eval(scriptTags[i].innerText);
-			// 	}
-			// }
-        })
-        .catch(error => console.error('Error loading page:', error));
-}
+import { Component } from "./component.js"
+import { Navbar } from "../html/components/navbar.js";
+import { Minichat } from "../html/components/minichat/minichat.js";
+import { Message } from "../html/components/minichat/message.js";
+import { Friend } from "../html/components/minichat/friend.js";
+import { ChatInput } from "../html/components/minichat/input.js";
+
+Component.loader([
+	Navbar,
+	Minichat,
+	Message,
+	Friend,
+	ChatInput,
+])
 
 const router = async () => {
 	const routes = [
@@ -43,7 +37,13 @@ const router = async () => {
 			result: [location.pathname]
 		};
 	}
-	loadPage(match.route.link, 'body');
+
+	fetch(match.route.link)
+        .then(response => response.text())
+        .then(html => {
+            document.querySelector('content').innerHTML = html;
+        })
+        .catch(error => console.error('Error loading page:', error));
 };
 
 
@@ -65,30 +65,29 @@ document.addEventListener("DOMContentLoaded", () => {
 	});
 });
 
+function sendMsg(msg)
+{
+	const socket = new WebSocket('wss://localhost:44433/api/chat');
 
+	socket.onopen = event => {
+		console.log('WebSocket connection established.');
+		socket.send(JSON.stringify({
+			'message': msg
+		}));
+	};
 
-function addInPage(page, id) {
-	fetch(page)
-		.then(response => response.text())
-		.then(html => {
-			document.getElementById(id).innerHTML = html;
-
-
-			const scriptTags = document.getElementById(id).getElementsByTagName('script');
-			for (let i = 0; i < scriptTags.length; i++) {
-				const src = scriptTags[i].getAttribute('src');
-				if (src) {
-					const script = document.createElement('script');
-					script.src = src;
-					document.body.appendChild(script);
-				} else {
-					// Exécuter les scripts inline directement
-					const script = document.createElement('script');
-					script.textContent = scriptTags[i].innerText;
-					document.body.appendChild(script);
-
-				}
-			}
-		})
-		.catch(error => console.error('Error loading page:', error));
+	socket.onmessage = event => {
+		const data = JSON.parse(event.data);
+		console.log('Message from server:', data.message);
+		displayNewMsg(data.message, 'me');
+		displayNewMsg("Test response : " + data.message, 'nameOfSpeaker');
+	};
 }
+
+const socket = new WebSocket('wss://localhost:44433/api/chat')
+
+socket.onmessage = event => {
+	const data = JSON.parse(event.data);
+
+	console.log("data")
+};
