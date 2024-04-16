@@ -70,8 +70,14 @@ export class Minichat extends Component
 
         const socket = new WebSocket('wss://localhost:44433/api/chat')
 
+        socket.onopen = event => {
+            console.log('WebSocket connection established.');
+        };
+
         socket.onmessage = event => {
             const data = JSON.parse(event.data);
+
+            console.log("data")
             const messages = this.querySelector('#messages');
 
             messages.innerHTML += `<c-message content="${data.message}" who="sender"></c-message>`

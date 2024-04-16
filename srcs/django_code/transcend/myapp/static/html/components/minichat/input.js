@@ -1,5 +1,7 @@
 import { Component } from "../../../js/component.js";
 
+const s = new WebSocket('wss://localhost:44433/api/chat')
+
 export class ChatInput extends Component
 {
 
@@ -30,14 +32,9 @@ export class ChatInput extends Component
                     return;
                 let msg = document.getElementById('myTextarea').value
 
-                const socket = new WebSocket('wss://localhost:44433/api/chat')
-
-                socket.onopen = event => {
-                    console.log('WebSocket connection established.');
-                    socket.send(JSON.stringify({
-                        'message': msg.replace(/\n/g, "<br>")
-                    }));
-                };
+                s.send(JSON.stringify({
+                    'message': msg.replace(/\n/g, "<br>")
+                }));
 
                 document.getElementById('myTextarea').value = '';
             }

@@ -8,24 +8,16 @@ export class Message extends Component
         return "message"
     }
 
-    rules()
-    {
-        return {
-            content: ['required'],
-            who: ['required']
-        }
-    }
-
     connectedCallback()
     {
         super.connectedCallback()
 
-        const who = this.who == "reciever" ? "recieveMsg" : "sendMsg"
+        const who = this.getAttribute('who') == "reciever" ? "recieveMsg" : "sendMsg"
 
         this.innerHTML = `
         <div class="msgContainer">
             <div class="${who}">
-                <p>${this.content}</p>
+                <p>${this.getAttribute('content')}</p>
             </div>
         </div>
         `

@@ -82,3 +82,11 @@ function sendMsg(msg)
 		displayNewMsg("Test response : " + data.message, 'nameOfSpeaker');
 	};
 }
+
+const socket = new WebSocket('wss://localhost:44433/api/chat')
+
+socket.onmessage = event => {
+	const data = JSON.parse(event.data);
+
+	console.log("data")
+};
