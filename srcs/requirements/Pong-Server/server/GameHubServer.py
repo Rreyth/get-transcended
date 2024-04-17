@@ -14,8 +14,12 @@ starting_port = 6670
 ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 ssl_context.load_cert_chain("/certs/cert.pem")
 
-ssl_context_client = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-ssl_context_client.load_verify_locations("/certs/cert.pem")
+# ssl_context_client = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+# ssl_context_client.load_verify_locations("/certs/cert.pem")
+
+ssl_context_client = ssl.create_default_context()
+ssl_context_client.check_hostname = False
+ssl_context_client.verify_mode = ssl.CERT_NONE
 
 class Room:
 	def __init__(self, id, host, port, type, max_players = 2):

@@ -47,7 +47,6 @@ var GameRoom = false
 
 export function connect_hub() {
 	const socket = "wss://" + window.location.hostname + ":6669";
-	// const socket = "wss://localhost:9999"; //wrong ws for test
 	GameHub = new WebSocket(socket);
 	GameHub.onerror = hub_error;
 	GameHub.onopen = hub_open;
@@ -62,9 +61,8 @@ function hub_error(error) {
 }
 
 function hub_open() {
+	console.log("open")
 	try_connect(GameHub)
-	// game.start(GameHub)
-	// gameInterval = setInterval(game_loop, 10)
 }
 
 function parse_msg(event) {
@@ -72,7 +70,8 @@ function parse_msg(event) {
 	if (msg.type == "connectionRpl") {
 		if (msg.success == "true") {
 			console.log("Connection success")
-			// game.alias = msg.alias
+			if (msg['alias'] !== undefined)
+				game.alias = msg.alias
 			game.start()
 			gameInterval = setInterval(game_loop, 10)
 		}
