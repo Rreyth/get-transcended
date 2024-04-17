@@ -45,6 +45,8 @@ services:
       - "8001"
     networks:
       - transcendNetwork
+    env_file:
+      - .env
 
   nginx:
     build:

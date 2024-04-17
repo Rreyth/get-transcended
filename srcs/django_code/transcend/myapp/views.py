@@ -1,25 +1,31 @@
 from django.shortcuts import render
+from django.core import serializers
 import requests
-from django.http import JsonResponse, HttpResponse
-from django.views.decorators.http import require_http_methods
+from django.http import JsonResponse
 from django.views import View
-from myapp import models
+from myapp.models import *
 
 class AuthApi(View):
     def get(self, request, *args, **kwargs):
         email = request.GET.get('email')
         password = request.GET.get('password')
         
-        return JsonResponse(models.User.objects.get(email=email, password=password))
-    
+        if email == None or password == None:
+            return JsonResponse({ 'non': 'oui' })
+
+        if User.objects.filter(email=email, password=password).exists():
+            return JsonResponse(User.objects.get(email=email, password=password))
+        
+        return JsonResponse({ 'message': 'Invalid email or password', 'code': 401 }, status=401)
+
     def post(self, request, *args, **kwargs):
         email = request.POST.get('email')
         pseudo = request.POST.get('pseudo')
         password = request.POST.get('password')
         
-        user = models.User.objects.create(pseudo=pseudo, email=email, password=password, token=f"test-{pseudo}")
+        user = User.objects.create(pseudo=pseudo, email=email, password=password, token="test-" + pseudo)
         
-        return JsonResponse(user)
+        return JsonResponse({ 'pseudo': user.pseudo, 'email': user.email, 'token': user.token, 'created_at': user.created_at })
         
 
 def auth_42(request):

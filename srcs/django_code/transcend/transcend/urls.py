@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, re_path
+from django.views.decorators.csrf import csrf_exempt
 from myapp import views
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
@@ -38,5 +39,5 @@ urlpatterns = [
     path('auth/42/', views.auth_42, name='auth_42'),
     # re_path(r'^(?!auth/42/).*$', views.index),
     # path('admin/', admin.site.urls),
-    path('api/auth/', views.AuthApi.as_view(), name='auth')
+    path('api/auth/', csrf_exempt(views.AuthApi.as_view()), name='auth')
 ]
