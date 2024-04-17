@@ -60,7 +60,7 @@ class Game:
 			self.walls = [Wall("up", False), Wall("down", False)]
 
     
-	def endMsg(self, id, reason = 'end'): #add reason for leaving the game ??
+	def endMsg(self, id, reason = 'end'):
 		msg = {'type' : 'endGame'}
 		if id != 0:
 			for player in self.players:

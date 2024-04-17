@@ -41,24 +41,18 @@ function try_connect(GameHub) {
 	GameHub.send(JSON.stringify(msg));
 }
 
-// let server_port = 6669
-// console.log("Connecting to ws://" + window.location.hostname + ":" + server_port + "/")
-// let GameHub = new WebSocket("ws://" + window.location.hostname + ":" + server_port + "/")
-//connect impossible without wss
 
-var GameHub;
-// var GameRoom = false
+var GameHub = false;
+var GameRoom = false
 
-function connect_hub() {
-	// const socket = "wss://" + window.location.hostname + ":6669";
-	const socket = "wss://166.168.169.1:9999"; //wrong ws for test
+export function connect_hub() {
+	const socket = "wss://" + window.location.hostname + ":6669";
+	// const socket = "wss://localhost:9999"; //wrong ws for test
 	GameHub = new WebSocket(socket);
 	GameHub.onerror = hub_error;
 	GameHub.onopen = hub_open;
 	GameHub.onmessage = parse_msg;
 }
-
-connect_hub();
 
 function hub_error(error) {
 	console.error("Connection failed: ", error)
@@ -79,8 +73,8 @@ function parse_msg(event) {
 		if (msg.success == "true") {
 			console.log("Connection success")
 			// game.alias = msg.alias
-			// game.start()
-			// gameInterval = setInterval(game_loop, 10)
+			game.start()
+			gameInterval = setInterval(game_loop, 10)
 		}
 		else
 			console.log("Connection failed") // + affichage on screen ?? is it even possible to fail connect from web ??

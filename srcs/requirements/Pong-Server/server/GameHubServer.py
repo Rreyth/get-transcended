@@ -44,7 +44,6 @@ class Room:
 		used_port.remove(self.port)
 		used_id.remove(self.id)
 
-
 rooms = {}
 
 used_port = []
@@ -52,7 +51,7 @@ used_id = []
 
 fordiben_port = [8000, 8001, 44433, 5432, 6720]
 
-clients = set()
+clients = {}
 django_socket = False
 
 async def send_to_DB(msg : dict): #add players infos + send to main serv for db
@@ -90,28 +89,24 @@ def id_generator():
 	return id
 
 async def connection_handler(client_msg, websocket):
-	global django_socket
-	# if client_msg['cmd'] == "username":
-	if django_socket:
+	global django_socket, clients
+	if client_msg["type"] == 'connectionRpl':
+		for key, val in clients.items():
+			if key == client_msg['id']:
+				await val.send(json.dumps(client_msg))
+				break
+	elif django_socket:
+		for key, val in clients.items():
+			if val == websocket:
+				client_msg['id'] = key
+				break
 		await django_socket.send(json.dumps(client_msg))
-		response = await django_socket.recv()
-		await websocket.send(response)
 	else:
 		msg = {'type' : 'connectionRpl', 'success' : 'true', 'error' : 'none'}
 		await websocket.send(json.dumps(msg))
-	# 	#demande serv principale de verifier les creds du user
-	# 	#if success
-	# 	print(f"CONNECT, user: {client_msg['username']}") # add : alias: {response['alias']}
-	# 	#if failure
-	# 	# msg = {'type' : 'connectionRpl', 'success' : 'false', 'error' : 'invalid username or password'}
-	# 	await websocket.send(json.dumps(msg))
-	# if client_msg['cmd'] == "token":
-	# 	#same same but different
-	# 	msg = {'type' : 'connectionRpl', 'success' : 'true', 'error' : 'none'} #add : 'alias' : {response['alias']}
-	# 	await websocket.send(json.dumps(msg))
 	
 async def run_game(id, websocket):
-	global rooms, used_port, used_id
+	global rooms, used_port, used_id, django_socket
 	for room in rooms.values():
 		if room.id == id:
 			async with websockets.connect("wss://{}:{}".format(room.host, room.port), ssl=ssl_context_client) as gameSocket:
@@ -122,8 +117,8 @@ async def run_game(id, websocket):
 				try:
 					async for message in gameSocket:
 						msg :dict = json.loads(message)
-						print(msg) #send it to serv for db stockage / histo
 						if msg['type'] == 'endGame':
+							await django_socket.send(message)
 							break
 
 				finally:
@@ -227,6 +222,8 @@ async def parse_msg(message, websocket):
 	# print('client message : ', client_msg) #keep for logs / debug ?
 	if client_msg["type"] == "DJANGO":
 		django_socket = websocket
+	if client_msg["type"] == "connectionRpl":
+		await connection_handler(client_msg, websocket)
 	if client_msg["type"] == "connect":
 		await connection_handler(client_msg, websocket)
 	if client_msg["type"] == "quickGame":
@@ -237,7 +234,7 @@ async def parse_msg(message, websocket):
 		await handle_custom(client_msg, websocket)
 
 async def handle_client(websocket):
-	clients.add(websocket)
+	clients[clients.__len__()] = websocket
 	# print(f"connected from {websocket.remote_address[0]}:{websocket.remote_address[1]}")
  
 	try:
@@ -245,7 +242,10 @@ async def handle_client(websocket):
 			await parse_msg(message, websocket)
 
 	finally:
-		clients.remove(websocket)
+		for key, value in clients.items():
+			if value == websocket:
+				clients.pop(key)
+				break
 		# print(f"disconnected from {websocket.remote_address[0]}:{websocket.remote_address[1]}")
 
 async def main():

@@ -13,12 +13,13 @@ ssl_context.verify_mode = ssl.CERT_NONE
 #verifie la validiter d'un user et renvoie les infos au game serv
 async def creds_verificator(message, websocket): #wait for db and user
 	if message['cmd'] == "username":
-		msg = {'type' : 'connectionRpl', 'success' : 'true', 'error' : 'none'} #add user name / pseudo
+		msg = {'type' : 'connectionRpl', 'success' : 'true', 'error' : 'none', 'id' : message['id']} #add user name / pseudo
 		# msg = {'type' : 'connectionRpl', 'success' : 'false', 'error' : 'invalid username or password'}
 	if message['cmd'] == "token":
-		msg = {'type' : 'connectionRpl', 'success' : 'true', 'error' : 'none'} #add user name / pseudo
+		msg = {'type' : 'connectionRpl', 'success' : 'true', 'error' : 'none', 'id' : message['id']} #add user name / pseudo
 		# msg = {'type' : 'connectionRpl', 'success' : 'false', 'error' : 'invalid token'}
 	await websocket.send(json.dumps(msg))
+	print("YES")
 
 
 #stock les infos de fin de game recu en db
@@ -26,6 +27,7 @@ def db_storage(message):
 	pass
 
 async def parse(message, websocket):
+	print(message)
 	if message['type'] == "connect":
 		await creds_verificator(message, websocket)
 	elif message['type'] == "endGame":
