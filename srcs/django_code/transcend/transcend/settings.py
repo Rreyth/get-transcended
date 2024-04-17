@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 	'myapp',
+    'users',
     'channels',
 ]
 
@@ -111,6 +112,10 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# Auth user
+
+# AUTH_USER_MODEL = "users.User"
 
 
 # Internationalization

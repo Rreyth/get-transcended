@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('content', models.TextField()),
                 ('channel', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='channels')),
-                ('user', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='users')),
+                ('user', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to=User)),
                 ('created_at', models.DateTimeField(auto_now_add=True, blank=True, default=Now())),
             ],
         ),
