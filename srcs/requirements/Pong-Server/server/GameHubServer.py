@@ -14,12 +14,8 @@ starting_port = 6670
 ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 ssl_context.load_cert_chain("/certs/cert.pem")
 
-# ssl_context_client = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-# ssl_context_client.load_verify_locations("/certs/cert.pem")
-
-# ssl_context_client = ssl.create_default_context()
-# ssl_context_client.check_hostname = False
-# ssl_context_client.verify_mode = ssl.CERT_NONE
+ssl_context_client = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+ssl_context_client.load_verify_locations("/certs/cert.pem")
 
 class Room:
 	def __init__(self, id, host, port, type, max_players = 2):
@@ -94,18 +90,25 @@ def id_generator():
 	return id
 
 async def connection_handler(client_msg, websocket):
-	if client_msg['cmd'] == "username":
-		#demande serv principale de verifier les creds du user
-		#if success
-		msg = {'type' : 'connectionRpl', 'success' : 'true', 'error' : 'none'} #add : 'alias' : {response['alias']}
-		print(f"CONNECT, user: {client_msg['username']}") # add : alias: {response['alias']}
-		#if failure
-		# msg = {'type' : 'connectionRpl', 'success' : 'false', 'error' : 'invalid username or password'}
+	global django_socket
+	# if client_msg['cmd'] == "username":
+	if django_socket:
+		await django_socket.send(json.dumps(client_msg))
+		response = await django_socket.recv()
+		await websocket.send(response)
+	else:
+		msg = {'type' : 'connectionRpl', 'success' : 'true', 'error' : 'none'}
 		await websocket.send(json.dumps(msg))
-	if client_msg['cmd'] == "token":
-		#same same but different
-		msg = {'type' : 'connectionRpl', 'success' : 'true', 'error' : 'none'} #add : 'alias' : {response['alias']}
-		await websocket.send(json.dumps(msg))
+	# 	#demande serv principale de verifier les creds du user
+	# 	#if success
+	# 	print(f"CONNECT, user: {client_msg['username']}") # add : alias: {response['alias']}
+	# 	#if failure
+	# 	# msg = {'type' : 'connectionRpl', 'success' : 'false', 'error' : 'invalid username or password'}
+	# 	await websocket.send(json.dumps(msg))
+	# if client_msg['cmd'] == "token":
+	# 	#same same but different
+	# 	msg = {'type' : 'connectionRpl', 'success' : 'true', 'error' : 'none'} #add : 'alias' : {response['alias']}
+	# 	await websocket.send(json.dumps(msg))
 	
 async def run_game(id, websocket):
 	global rooms, used_port, used_id
@@ -218,12 +221,12 @@ async def handle_quickGame(client_msg, websocket):
 
 
 async def parse_msg(message, websocket):
+	global django_socket
 	client_msg : dict = json.loads(message)
 
 	# print('client message : ', client_msg) #keep for logs / debug ?
 	if client_msg["type"] == "DJANGO":
 		django_socket = websocket
-		await websocket.send(json.dumps({'YAAAA': 'YEEEEEEEEEEEEEEEEEEEEET (it means success)'}))
 	if client_msg["type"] == "connect":
 		await connection_handler(client_msg, websocket)
 	if client_msg["type"] == "quickGame":

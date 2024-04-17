@@ -65,6 +65,7 @@ class Game:
 		if id != 0:
 			for player in self.players:
 				player.win = 'LOSE' if player.side == self.players[id - 1].side else 'WIN'
+		msg['players'] = [player.name for player in self.players]
 		msg['score'] = [player.score for player in self.players]
 		msg['win'] = [player.win for player in self.players]
 		msg['reason'] = reason

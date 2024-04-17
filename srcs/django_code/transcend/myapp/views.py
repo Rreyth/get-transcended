@@ -52,23 +52,3 @@ class MyConsumer(AsyncWebsocketConsumer):
 		await self.send(text_data=json.dumps({
 			'message': message
 		}))
-  
-
-class PongDB(AsyncWebsocketConsumer):
-	async def connect(self):
-		await self.accept()
-
-	async def disconnect(self, close_code):
-		await self.close()
-
-	async def receive(self, text_data):
-		text_data_json = json.loads(text_data)
-		message = text_data_json['message']
-
-		# if 'type' in text_data_json and text_data_json['type'] == "Database":
-			# game_to_db(text_data_json)
-
-		# Process message as needed
-		await self.send(text_data=json.dumps({
-			'message': message
-		}))
