@@ -2,6 +2,8 @@ FROM alpine:3.18
 
 RUN apk update && apk upgrade
 RUN apk add --no-cache python3 py3-pip
+COPY --chmod=777 utils/start.sh .
+
 WORKDIR /app/transcend
 
 COPY utils/requirements .
@@ -10,4 +12,4 @@ RUN rm requirements
 
 EXPOSE 8001
 
-CMD ["daphne", "transcend.asgi:application", "-b", "0.0.0.0", "-p", "8001"]
+CMD ["sh", "/start.sh"]
