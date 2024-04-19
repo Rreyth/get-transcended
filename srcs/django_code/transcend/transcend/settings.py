@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'rest_framework',
     'rest_framework_simplejwt',
+    'django_extensions',
 ]
 
 REST_FRAMEWORK = {

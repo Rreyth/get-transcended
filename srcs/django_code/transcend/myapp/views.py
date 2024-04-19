@@ -20,12 +20,12 @@ class AuthApi(View):
 
     def post(self, request, *args, **kwargs):
         email = request.POST.get('email')
-        pseudo = request.POST.get('pseudo')
+        username = request.POST.get('username')
         password = request.POST.get('password')
 
-        user = User.objects.create(pseudo=pseudo, email=email, password=password)
+        user = User.objects.create(username=username, email=email, password=password)
         
-        return JsonResponse({ 'pseudo': user.pseudo, 'email': user.email, 'created_at': user.created_at })
+        return JsonResponse({ 'username': user.username, 'email': user.email, 'created_at': user.created_at })
         
 
 def auth_42(request):
