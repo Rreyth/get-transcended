@@ -2,7 +2,6 @@
 
 from django.db import migrations, models
 from django.db.models.functions import Now
-from users.models import User
 
 
 class Migration(migrations.Migration):
@@ -16,7 +15,7 @@ class Migration(migrations.Migration):
             name='channel_user',
             fields=[
                 ('channel', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='channels')),
-                ('user', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to=User)),
+                ('user', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to="users.user")),
                 ('joined_at', models.DateTimeField(auto_now_add=True, blank=True, default=Now())),
             ]
         )

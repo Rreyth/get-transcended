@@ -4,6 +4,7 @@ import requests
 from django.http import JsonResponse
 from django.views import View
 from myapp.models import *
+import json
 
 class AuthApi(View):
     def get(self, request, *args, **kwargs):
@@ -14,7 +15,9 @@ class AuthApi(View):
             return JsonResponse({ 'non': 'oui' })
 
         if User.objects.filter(email=email, password=password).exists():
-            return JsonResponse(User.objects.get(email=email, password=password))
+            user = User.objects.get(email=email, password=password)
+
+            return JsonResponse(json.dumps(user))
         
         return JsonResponse({ 'message': 'Invalid email or password', 'code': 401 }, status=401)
 
@@ -23,9 +26,9 @@ class AuthApi(View):
         pseudo = request.POST.get('pseudo')
         password = request.POST.get('password')
         
-        user = User.objects.create(pseudo=pseudo, email=email, password=password, token="test-" + pseudo)
+        user = User.objects.create(pseudo=pseudo, email=email, password=password)
         
-        return JsonResponse({ 'pseudo': user.pseudo, 'email': user.email, 'token': user.token, 'created_at': user.created_at })
+        return JsonResponse({ 'pseudo': user.pseudo, 'email': user.email, 'created_at': user.created_at })
         
 
 def auth_42(request):

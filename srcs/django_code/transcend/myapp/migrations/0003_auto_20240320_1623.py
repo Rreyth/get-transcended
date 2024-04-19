@@ -2,7 +2,6 @@
 
 from django.db import migrations, models
 from django.db.models.functions import Now
-from users.models import User
 
 class Migration(migrations.Migration):
 
