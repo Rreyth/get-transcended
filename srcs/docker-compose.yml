@@ -2,10 +2,8 @@ version: '3'
 
 services:
   postgres:
-    build:
-      context: ./requirements/Postgres
+    image: postgres:latest
     container_name: postgres
-    image: postgres
     restart: always
     volumes:
       - db:/db
