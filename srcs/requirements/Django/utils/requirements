@@ -6,3 +6,4 @@ channels
 django-extensions
 djangorestframework
 djangorestframework-simplejwt
+tzdata
