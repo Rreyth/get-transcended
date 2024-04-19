@@ -45,7 +45,7 @@ urlpatterns = [
     # path('admin/', admin.site.urls),
     path('api/auth/login', csrf_exempt(views.AuthApi.as_view()), name='login'),
     path('api/auth/logout', csrf_exempt(views.AuthApi.as_view()), name='logout'),
-    path('api/auth/register', csrf_exempt(views.AuthApi.as_view()), name='register'),
+    path('api/auth/register', csrf_exempt(views.register), name='register'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

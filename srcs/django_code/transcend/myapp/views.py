@@ -1,14 +1,27 @@
 from django.shortcuts import render
 from django.core import serializers
+from django.contrib.auth.hashers import make_password
 import requests
 from django.http import JsonResponse
 from django.views import View
 from myapp.models import *
 
+def register(request):
+    email = request.POST.get('email')
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+
+    try:
+        user = User.objects.create(username=username, email=email, password=password)
+
+        return JsonResponse({ 'username': user.username, 'email': user.email, 'created_at': user.created_at })
+    except Exception as e:
+        return JsonResponse({ 'message': str(e), 'code': 401 }, status=401)
+
 class AuthApi(View):
     def get(self, request, *args, **kwargs):
         email = request.GET.get('email')
-        password = request.GET.get('password')
+        password = make_password(request.GET.get('password'))
         
         if email == None or password == None:
             return JsonResponse({ 'non': 'oui' })
