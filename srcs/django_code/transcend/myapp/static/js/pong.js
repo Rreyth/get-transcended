@@ -46,7 +46,7 @@ var GameHub = false;
 var GameRoom = false
 
 export function connect_hub() {
-	const socket = "wss://" + window.location.hostname + ":6669";
+	const socket = "wss://" + window.location.hostname + ":8765";
 	GameHub = new WebSocket(socket);
 	GameHub.onerror = hub_error;
 	GameHub.onopen = hub_open;

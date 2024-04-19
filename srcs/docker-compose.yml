@@ -65,12 +65,14 @@ services:
     container_name: pong
     image: pong
     restart: always
-    expose:
-      - "6669"
     ports:
-      - "6669-6719:6669-6719"
+      - "8765-8790:8765-8790"
     networks:
       - transcendNetwork
+    volumes:
+      - app:/app
+    depends_on:
+      - nginx
 
 volumes:
   app:

@@ -182,7 +182,7 @@ async def main():
 
 	ip = "localhost" if args.__len__() != 2 else args[1]
 	try:
-		async with websockets.connect("wss://{}:6669".format(ip), ssl=ssl_context) as websocket:
+		async with websockets.connect("wss://{}:8765".format(ip), ssl=ssl_context) as websocket:
 			await try_connect(websocket)
 			await in_game(websocket)
 	except ConnectionRefusedError as e:

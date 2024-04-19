@@ -9,7 +9,7 @@ import signal
 import ssl
 import sys
 
-starting_port = 6670
+starting_port = 8766
 
 ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 ssl_context.load_cert_chain("/certs/cert.pem")
@@ -257,7 +257,7 @@ async def main():
 	stop = loop.create_future()
 	loop.add_signal_handler(signal.SIGINT, stop.set_result, None)
 	loop.add_signal_handler(signal.SIGTERM, stop.set_result, None)
-	async with websockets.serve(handle_client, "0.0.0.0", 6669, ssl=ssl_context):
+	async with websockets.serve(handle_client, "0.0.0.0", 8765, ssl=ssl_context):
 		await stop
 	print("\nServer stopped", file=sys.stderr)
 
