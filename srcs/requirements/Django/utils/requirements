@@ -1,9 +1,0 @@
-Django==5.0.4
-daphne==4.1.2
-requests
-psycopg2-binary
-channels
-django-extensions
-djangorestframework
-djangorestframework-simplejwt
-tzdata
