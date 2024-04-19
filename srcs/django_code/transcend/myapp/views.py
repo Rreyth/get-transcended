@@ -4,10 +4,6 @@ import requests
 from django.http import JsonResponse
 from django.views import View
 from myapp.models import *
-<<<<<<< HEAD
-import json
-=======
->>>>>>> 16d6fb8 (merge conflict docker-compose.yml)
 
 class AuthApi(View):
     def get(self, request, *args, **kwargs):
@@ -18,13 +14,7 @@ class AuthApi(View):
             return JsonResponse({ 'non': 'oui' })
 
         if User.objects.filter(email=email, password=password).exists():
-<<<<<<< HEAD
-            user = User.objects.get(email=email, password=password)
-
-            return JsonResponse(json.dumps(user))
-=======
             return JsonResponse(User.objects.get(email=email, password=password))
->>>>>>> 16d6fb8 (merge conflict docker-compose.yml)
         
         return JsonResponse({ 'message': 'Invalid email or password', 'code': 401 }, status=401)
 
@@ -32,16 +22,10 @@ class AuthApi(View):
         email = request.POST.get('email')
         pseudo = request.POST.get('pseudo')
         password = request.POST.get('password')
-        
-<<<<<<< HEAD
+
         user = User.objects.create(pseudo=pseudo, email=email, password=password)
         
         return JsonResponse({ 'pseudo': user.pseudo, 'email': user.email, 'created_at': user.created_at })
-=======
-        user = User.objects.create(pseudo=pseudo, email=email, password=password, token="test-" + pseudo)
-        
-        return JsonResponse({ 'pseudo': user.pseudo, 'email': user.email, 'token': user.token, 'created_at': user.created_at })
->>>>>>> 16d6fb8 (merge conflict docker-compose.yml)
         
 
 def auth_42(request):
