@@ -1,5 +1,5 @@
-Django==3.2.8
-daphne==3.0.2
+Django==5.0.4
+daphne==4.1.2
 requests
-psycopg2
+psycopg2-binary
 channels
