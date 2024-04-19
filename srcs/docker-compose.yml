@@ -14,23 +14,6 @@ services:
     env_file:
       - .env
 
-  django:
-    build:
-      context: ./requirements/Django
-    container_name: django
-    image: django
-    restart: always
-    volumes:
-      - app:/app
-    expose:
-      - "8000"
-    networks:
-      - transcendNetwork
-    depends_on:
-      - postgres
-    env_file:
-      - .env
-
   daphne:
     build:
       context: ./requirements/Daphne
@@ -43,6 +26,10 @@ services:
       - "8001"
     networks:
       - transcendNetwork
+    depends_on:
+      - postgres
+    env_file:
+      - .env
 
   nginx:
     build:
