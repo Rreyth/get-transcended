@@ -15,6 +15,7 @@ export class Game {
 		this.end = new End();
 		this.players = false;
 		this.alias = "ALIAS";
+		this.inputs = {};
 	}
 
 	start(websocket) {
@@ -40,14 +41,13 @@ export class Game {
 		return msg;
 	}
 
-	keyboard_input = (event) => {
-		const key = event.key;
-		if (key === "Escape")
+	keyboard_input() {
+		if (this.inputs["Escape"])
 			input.escape_handler(this);
-		else if (this.state === "menu" && this.menu.buttons[5].highlight)
-			input.input_id(this, this.menu.buttons[5], key);
+		if (this.state === "menu" && this.menu.buttons[5].highlight)
+			input.input_id(this, this.menu.buttons[5], this.inputs);
 		else
-			input.input_handler(this, key);
+			input.input_handler(this, this.inputs);
 	}
 
 	mouse_input = (event) => {

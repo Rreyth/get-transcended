@@ -1,40 +1,45 @@
 import { Vec2 } from './Vec2.js';
 
-export function input_id(core, button, key) {
+export function input_id(core, button, inputs) {
 	const set = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-	if (set.includes(key) && button.name.length < 4)
-		button.name += key.toUpperCase();
-	else if (key == "Backspace")
-		button.name = button.name.slice(0, -1);
-	else if (key == "Enter")
-		core.menu.setValues("JOIN", core);
+	for (let key in inputs) {
+		if (set.includes(key) && button.name.length < 4)
+			button.name += key.toUpperCase();
+		else if (key == "Backspace")
+			button.name = button.name.slice(0, -1);
+		else if (key == "Enter")
+			core.menu.setValues("JOIN", core);
+		delete inputs[key];
+	}
 }
 
-function online_input(core, key) {
+function online_input(core, inputs) {
 	if (core.state === "game") {
-		if (core.players[core.id - 1].side === "left" || core.players[core.id - 1].side === "right") {
-			if (key == "ArrowUp" || key.toUpperCase() == "W") {
-				core.pressed.push("UP");
-				core.players[core.id - 1].moveUp(core.walls);
+		for (let key in inputs) {
+			if (core.players[core.id - 1].side === "left" || core.players[core.id - 1].side === "right") {
+				if (key == "ArrowUp" || key.toUpperCase() == "W") {
+					core.pressed.push("UP");
+					core.players[core.id - 1].moveUp(core.walls);
+				}
+				else if (key == "ArrowDown" || key.toUpperCase() == "S") {
+					core.pressed.push("DOWN");
+					core.players[core.id - 1].moveDown(core.walls);
+				}
 			}
-			else if (key == "ArrowDown" || key.toUpperCase() == "S") {
-				core.pressed.push("DOWN");
-				core.players[core.id - 1].moveDown(core.walls);
+			if (core.players[core.id - 1].side === "up" || core.players[core.id - 1].side === "down") {
+				if (key == "ArrowLeft" || key.toUpperCase() == "A") {
+					core.pressed.push("LEFT");
+					core.players[core.id - 1].moveLeft(core.walls);
+				}
+				else if (key == "ArrowRight" || key.toUpperCase() == "D") {
+					core.pressed.push("RIGHT");
+					core.players[core.id - 1].moveRight(core.walls);
+				}
 			}
-		}
-		if (core.players[core.id - 1].side === "up" || core.players[core.id - 1].side === "down") {
-			if (key == "ArrowLeft" || key.toUpperCase() == "A") {
-				core.pressed.push("LEFT");
-				core.players[core.id - 1].moveLeft(core.walls);
+			if (key == " " && core.ball.stick == core.id) {
+				core.pressed.push("LAUNCH");
+				core.ball.launch();
 			}
-			else if (key == "ArrowRight" || key.toUpperCase() == "D") {
-				core.pressed.push("RIGHT");
-				core.players[core.id - 1].moveRight(core.walls);
-			}
-		}
-		if (key == " " && core.ball.stick == core.id) {
-			core.pressed.push("LAUNCH");
-			core.ball.launch();
 		}
 	}
 	if (core.mode === "solo") {
@@ -43,16 +48,16 @@ function online_input(core, key) {
 	}
 }
 
-export function input_handler(core, key) {
+export function input_handler(core, inputs) {
 	if (core.online || (core.mode === "solo" && !core.pause[0]))
-		online_input(core, key);
+		online_input(core, inputs);
 	else {
 		if (core.state === "game" && !core.pause[0]) {
 			for (let player of core.players) {
 				if (player.name === "AI")
 					ai_moves(core, player);
 				else
-					player_moves(core, player, key);
+					player_moves(core, player, inputs);
 			}
 		}
 	}
@@ -93,54 +98,56 @@ function ai_moves(core, player) {
 	}
 }
 
-function player_moves(core, player, key) {
-	if (player.side === "left") {
-		if (player.nb == 1) {
-			if (key.toUpperCase() == "W")
-				player.moveUp(core.walls);
-			if (key.toUpperCase() == "S")
-				player.moveDown(core.walls);
+function player_moves(core, player, inputs) {
+	for (let key in inputs) {
+		if (player.side === "left") {
+			if (player.nb == 1) {
+				if (key.toUpperCase() == "W")
+					player.moveUp(core.walls);
+				if (key.toUpperCase() == "S")
+					player.moveDown(core.walls);
+			}
+			else {
+				if (key.toUpperCase() == "T")
+					player.moveUp(core.walls);
+				if (key.toUpperCase() == "G")
+					player.moveDown(core.walls);
+			}
+			if (key == " " && core.ball.stick == player.nb)
+				core.ball.launch();
 		}
-		else {
+		else if (player.side === "right") {
+			if (player.nb == 2 || player.nb == 4) {
+				if (key == "ArrowUp")
+					player.moveUp(core.walls);
+				if (key == "ArrowDown")
+					player.moveDown(core.walls);
+			}
+			else {
+				if (key == "8")
+					player.moveUp(core.walls);
+				if (key == "5")
+					player.moveDown(core.walls);
+			}
+			if (key == "0" && core.ball.stick == player.nb)
+				core.ball.launch();
+		}
+		else if (player.side === "up") {
 			if (key.toUpperCase() == "T")
-				player.moveUp(core.walls);
-			if (key.toUpperCase() == "G")
-				player.moveDown(core.walls);
+					player.moveLeft(core.walls);
+			if (key.toUpperCase() == "Y")
+					player.moveRight(core.walls);
+			if (key.toUpperCase() == "H" && core.ball.stick == player.nb)
+				core.ball.launch();
 		}
-		if (key == " " && core.ball.stick == player.nb)
-			core.ball.launch();
-	}
-	else if (player.side === "right") {
-		if (player.nb == 2 || player.nb == 4) {
-			if (key == "ArrowUp")
-				player.moveUp(core.walls);
-			if (key == "ArrowDown")
-				player.moveDown(core.walls);
-		}
-		else {
-			if (key == "8")
-				player.moveUp(core.walls);
-			if (key == "5")
-				player.moveDown(core.walls);
-		}
-		if (key == "0" && core.ball.stick == player.nb)
-			core.ball.launch();
-	}
-	else if (player.side === "up") {
-		if (key.toUpperCase() == "T")
+		else if (player.side === "down") {
+			if (key.toUpperCase() == "K")
 				player.moveLeft(core.walls);
-		if (key.toUpperCase() == "Y")
+			if (key.toUpperCase() == "L")
 				player.moveRight(core.walls);
-		if (key.toUpperCase() == "H" && core.ball.stick == player.nb)
-			core.ball.launch();
-	}
-	else if (player.side === "down") {
-		if (key.toUpperCase() == "K")
-			player.moveLeft(core.walls);
-		if (key.toUpperCase() == "L")
-			player.moveRight(core.walls);
-		if (key.toUpperCase() == "O" && core.ball.stick == player.nb)
-			core.ball.launch();
+			if (key.toUpperCase() == "O" && core.ball.stick == player.nb)
+				core.ball.launch();
+		}
 	}
 }
 
@@ -157,4 +164,5 @@ export function escape_handler(core) {
 		else
 			core.pause[1].freeze = false;
 	}
+	delete core.inputs["Escape"];
 }

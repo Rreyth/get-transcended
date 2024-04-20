@@ -28,9 +28,19 @@ function connect_loop() {
 
 var game = new Game();
 var gameInterval;
+
+window.addEventListener('keydown', (event) => {
+    game.inputs[event.key] = true;
+});
+
+window.addEventListener('keyup', (event) => {
+    delete game.inputs[event.key];
+});
+
+canvas.addEventListener("click", game.mouse_input);
+
 function game_loop() {
-	window.addEventListener("keydown", game.keyboard_input);
-	canvas.addEventListener("click", game.mouse_input);
+	game.keyboard_input()
 	game.tick();
 	game.render();
 }
