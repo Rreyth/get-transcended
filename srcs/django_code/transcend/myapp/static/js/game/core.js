@@ -72,8 +72,7 @@ export class Game {
 		let msg = {"type" : "input",
 					"player" : this.id,
 					"inputs" : this.pressed};
-
-		//send //py : GameRoom.send(json.dumps(msg))
+		this.GameRoom.send(JSON.stringify(msg));
 		this.pressed = [];
 	}
 

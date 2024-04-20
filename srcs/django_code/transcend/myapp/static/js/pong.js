@@ -5,10 +5,12 @@ import { Player } from "./game/Player.js";
 import { Wall } from "./game/Wall.js";
 import { Ball } from "./game/Ball.js";
 import { Obstacle } from "./game/Obstacle.js";
+import { StartScreen } from "./game/StartScreen.js";
+import { WaitScreen } from "./game/WaitScreen.js";
 
-var timer;
-var connect_last;
-var loginInterval;
+let timer;
+let connect_last;
+let loginInterval;
 function connect_loop() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	ctx.fillStyle = "rgb(255, 102, 102)";
@@ -26,8 +28,8 @@ function connect_loop() {
 	}
 }
 
-var game = new Game();
-var gameInterval;
+let game = new Game();
+let gameInterval;
 
 window.addEventListener('keydown', (event) => {
     game.inputs[event.key] = true;
@@ -52,8 +54,8 @@ function try_connect(GameHub) {
 }
 
 
-var GameHub = false;
-var GameRoom = false
+let GameHub = false;
+let GameRoom = false
 
 export function connect_hub() {
 	const socket = "wss://" + window.location.hostname + ":8765";
@@ -75,13 +77,15 @@ function hub_open() {
 }
 
 function parse_msg(event) {
-	var msg = JSON.parse(event.data)
+	let msg = JSON.parse(event.data)
+	let room_id = 0;
+	let wait_nb = 0;
 	if (msg.type == "connectionRpl") {
 		if (msg.success == "true") {
 			console.log("Connection success")
 			if (msg['alias'] !== undefined)
 				game.alias = msg.alias
-			game.start()
+			game.start(GameHub)
 			gameInterval = setInterval(game_loop, 10)
 		}
 		else
@@ -160,6 +164,37 @@ function parse_msg(event) {
 		if ("obstacle" in msg)
 			game.obstacle = new Obstacle();
 		game.state = "launch"; //start direct ??
+	}
+	else if (msg.type == "joinResponse") {
+		if (msg.success == 'false')
+			game.menu.err = "Room " + game.menu.buttons[5].name + " doesn't exist";
+		else {
+			room_id = game.menu.buttons[5].name;
+			game.id = msg.pos;
+			game.state = "waiting";
+			game.mode = "ONLINE";
+			game.online = true;
+			wait_nb = msg.max;
+			game.custom_mod = msg.custom_mods.includes("1V1V1V1") ? "1V1V1V1" : false;
+			game.start_screen = new StartScreen(msg.mode, game.online, msg.custom_mods.includes("1V1V1V1"), wait_nb);
+		}
+	}
+	else if (msg.type == "GameRoom") {
+		game.GameSocket = msg.socket;
+		room_id = msg["ID"];
+		game.mode = "ONLINE";
+		game.state = "waiting";
+		game.id = msg.pos;
+		game.online = true;
+		wait_nb = 2;
+	}
+	if ((msg.type == "GameRoom" || msg.type == "joinResponse") && game.mode != "none") {
+		game.menu.buttons[5].name = "";
+		game.menu.err = false;
+		if (!game.start_screen)
+			game.start_screen = new StartScreen(game.mode, game.online);
+		if (game.online && !game.wait_screen)
+			game.wait_screen = new WaitScreen(room_id, game.id, wait_nb, "QuickGame Online");
 	}
 }
 

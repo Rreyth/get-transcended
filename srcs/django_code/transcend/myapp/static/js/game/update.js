@@ -1,6 +1,3 @@
-import { AI } from "./AI.js";
-import { Ball } from "./Ball.js";
-
 export function update_all(core, delta) {
 	if (core.state === "game" && !core.pause[1].freeze) {
 		core.ball.update(core, delta);
@@ -19,8 +16,8 @@ export function update_all(core, delta) {
 			}
 			player.update(delta);
 		}
-		// if (core.state == "end" && !core.online)
-			// await core.GameHub.send(json.dumps(core.endMsg('end')))
+		if (core.state == "end" && !core.online)
+			core.GameHub.send(JSON.stringify(core.endMsg("end")));
 	}
 
 	if (core.state === "start") {

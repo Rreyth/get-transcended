@@ -56,6 +56,7 @@ used_id = []
 fordiben_port = [8000, 8001, 44433, 5432, 6720]
 
 clients = {}
+client_id = 0
 django_socket = False
 
 async def send_to_DB(msg : dict): #add players infos + send to main serv for db
@@ -238,7 +239,11 @@ async def parse_msg(message, websocket):
 		await handle_custom(client_msg, websocket)
 
 async def handle_client(websocket):
-	clients[clients.__len__()] = websocket
+	global clients
+	for id in range(10000):
+		if not id in clients:
+			clients[id] = websocket
+			break
 	# print(f"connected from {websocket.remote_address[0]}:{websocket.remote_address[1]}")
  
 	try:
@@ -248,7 +253,7 @@ async def handle_client(websocket):
 	finally:
 		for key, value in clients.items():
 			if value == websocket:
-				clients.pop(key)
+				del clients[key]
 				break
 		# print(f"disconnected from {websocket.remote_address[0]}:{websocket.remote_address[1]}")
 

@@ -25,10 +25,10 @@ export class WaitScreen {
 		if (is_colliding(pos, [0, 0], this.button.hitbox.pos, this.size)) {
 			core.state = "menu";
 			core.mode = "none"
-			// if (core.Gameroom)
-			// 	await core.GameRoom.send(json.dumps({'type' : 'quitGame', 'id' : core.id, 'cmd' : 'quitWait'}))
-			// else
-			// 	await core.GameHub.send(json.dumps({'type' : 'quitGame', 'id' : core.id, 'cmd' : 'quitWait'}))
+			if (core.GameRoom)
+				core.GameRoom.send(JSON.stringify({'type' : 'quitGame', 'id' : core.id, 'cmd' : 'quitWait'}));
+			else
+				core.GameHub.send(JSON.stringify({'type' : 'quitGame', 'id' : core.id, 'cmd' : 'quitWait'}));
 		}
 	}
 }

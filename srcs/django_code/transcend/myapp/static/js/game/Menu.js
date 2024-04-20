@@ -4,7 +4,6 @@ import { Wall } from "./Wall.js";
 import { Ball } from "./Ball.js";
 import { StartScreen } from "./StartScreen.js";
 import { WaitScreen } from "./WaitScreen.js";
-import { Pause } from "./Pause.js";
 import { AI } from "./AI.js";
 import { CustomMenu } from "./Custom.js";
 import { Button } from "./Button.js";
@@ -52,27 +51,27 @@ export class Menu {
 				this.err = "Room id is empty";
 				return;
 			}
-			// await core.GameHub.send(json.dumps({'type' : 'join', 'id' : self.buttons[5].name}))
+			core.GameHub.send(JSON.stringify({'type' : 'join', 'id' : self.buttons[5].name}));
 			// response : dict = json.loads(await core.GameHub.recv())
-			if (response['success'] == 'false')
-				this.err = "Room " + this.buttons[5].name + " doesn't exist";
-			else {
-				// core.GameSocket = response['socket']
-				room_id = this.buttons[5].name;
-				core.id = response['pos'];
-				core.state = "waiting";
-				core.mode = "ONLINE";
-				core.online = true;
-				wait_nb = response['max'];
-				core.custom_mod = (response['custom_mods'].includes("1V1V1V1")) ? "1V1V1V1" : false;
-				core.start_screen = new StartScreen(response['mode'], core.online, response['custom_mods'].includes("1V1V1V1"), wait_nb);
-			}
+			// if (response['success'] == 'false')
+			// 	this.err = "Room " + this.buttons[5].name + " doesn't exist";
+			// else {
+			// 	// core.GameSocket = response['socket']
+			// 	room_id = this.buttons[5].name;
+			// 	core.id = response['pos'];
+			// 	core.state = "waiting";
+			// 	core.mode = "ONLINE";
+			// 	core.online = true;
+			// 	wait_nb = response['max'];
+			// 	core.custom_mod = (response['custom_mods'].includes("1V1V1V1")) ? "1V1V1V1" : false;
+			// 	core.start_screen = new StartScreen(response['mode'], core.online, response['custom_mods'].includes("1V1V1V1"), wait_nb);
+			// }
 		}
 		if (name === this.buttons[5].name)
 			this.buttons[5].highlight = !this.buttons[5].highlight;
 		if (name === "LOCAL") {
-			// msg = {"type" : "quickGame", "cmd" : "join", "online" : "false"}
-			// await core.GameHub.send(json.dumps(msg))
+			const msg = {"type" : "quickGame", "cmd" : "join", "online" : "false"};
+			core.GameHub.send(JSON.stringify(msg));
 			core.players = [new Player(1, core.alias + "1", 2, false, false), new Player(2, core.alias + "2", 2, false, false)];
 			core.walls = [new Wall("up", false), new Wall("down", false)];
 			core.ball = new Ball(false);
@@ -80,8 +79,8 @@ export class Menu {
 			core.mode = "LOCAL";
 		}
 		if (name === "SOLO") {
-			// msg = {"type" : "quickGame", "cmd" : "join", "online" : "false"}
-			// await core.GameHub.send(json.dumps(msg))
+			const msg = {"type" : "quickGame", "cmd" : "join", "online" : "false"};
+			core.GameHub.send(JSON.stringify(msg));
 			core.players = [new Player(1, core.alias, 2, false, false), new Player(2, "AI", 2, false, false)];
 			core.ai.push(new AI(core.players[1]));
 			core.walls = [new Wall("up", false), new Wall("down", false)];
@@ -94,18 +93,18 @@ export class Menu {
 			core.state = "custom";
 		}
 		if (name === "ONLINE") {
-			// msg = {"type" : "quickGame", "cmd" : "join", "online" : "true"}
-			// await core.GameHub.send(json.dumps(msg))
-			// response : dict = json.loads(await core.GameHub.recv())
-			if ("socket" in response) {
-				core.GameSocket = response['socket'];
-				room_id = response['ID'];
-				core.mode = "ONLINE";
-				core.state = "waiting";
-				core.id = response['pos'];
-			}
-			core.online = true;
-			wait_nb = 2;
+			const msg = {"type" : "quickGame", "cmd" : "join", "online" : "true"};
+			core.GameHub.send(JSON.stringify(msg));
+			// response : dict = json.loads(await core.GameHub.recv()) //passage dans onmessage
+			// if ("socket" in response) {
+			// 	core.GameSocket = response['socket'];
+			// 	room_id = response['ID'];
+			// 	core.mode = "ONLINE";
+			// 	core.state = "waiting";
+			// 	core.id = response['pos'];
+			// }
+			// core.online = true;
+			// wait_nb = 2;
 		}
 		if (core.mode != "none") {
 			this.buttons[5].name = "";
