@@ -34,7 +34,7 @@ async def parse(message, websocket):
 		db_storage(message)
 
 async def main():
-	async with websockets.connect("wss://pong:6669", ssl=ssl_context) as websocket:
+	async with websockets.connect("wss://pong:8765", ssl=ssl_context) as websocket:
 		await websocket.send(json.dumps({'type' : "DJANGO"}))
 		try:
 			async for message in websocket:
