@@ -38,7 +38,7 @@ export class Vec2 {
 		this.y += (speed.y * dist);
 	}
 
-	normalise() {
+	normalize() {
 		const len = Math.sqrt((this.x * this.x) + (this.y * this.y));
 		this.div(len);
 	}

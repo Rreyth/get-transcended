@@ -40,7 +40,7 @@ export class Game {
 		return msg;
 	}
 
-	keyboard_input(event) {
+	keyboard_input = (event) => {
 		const key = event.key;
 		if (key === "Escape")
 			input.escape_handler(this);
@@ -50,7 +50,7 @@ export class Game {
 			input.input_handler(this, key);
 	}
 
-	mouse_input(event) {
+	mouse_input = (event) => {
 		const rect = canvas.getBoundingClientRect();
 		const pos = [event.clientX - rect.left, event.clientY - rect.top];
 		input.mouse_handler(this, pos);

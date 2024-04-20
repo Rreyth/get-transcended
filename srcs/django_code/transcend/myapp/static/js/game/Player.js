@@ -79,10 +79,10 @@ export class Player {
 				this.side = "right";
 			}
 		}
-		this.paddle = [new Hitbox(pos[0], pos[1], {size: this.size})];
+		this.paddle = [new Hitbox(pos[0], pos[1], this.size[0], this.size[1])];
 		if (borderless) {
-			this.paddle.push(new Hitbox(pos[0], pos[1] - canvas.height, {size: this.size}));
-			this.paddle.push(new Hitbox(pos[0], pos[1] + canvas.height, {size: this.size}));
+			this.paddle.push(new Hitbox(pos[0], pos[1] - canvas.height, this.size[0], this.size[1]));
+			this.paddle.push(new Hitbox(pos[0], pos[1] + canvas.height, this.size[0], this.size[1]));
 		}
 	}
 

@@ -198,7 +198,7 @@ export class CustomMenu {
 	initPlayers(core) {
 		core.players = [];
 		for (const key in this.players)
-			core.players.push(new Player(key, this.players[key], Object.keys(this.players).length, this.mod_list.includes("BORDERLESS"), this.mod_list.includes("1V1V1V1")));
+			core.players.push(new Player(parseInt(key), this.players[key], Object.keys(this.players).length, this.mod_list.includes("BORDERLESS"), this.mod_list.includes("1V1V1V1")));
 		for (let p of core.players)
 			if (p.name === "AI")
 				core.ai.push(new AI(p));

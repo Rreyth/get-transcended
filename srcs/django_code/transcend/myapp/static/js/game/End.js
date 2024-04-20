@@ -37,7 +37,6 @@ export class End {
 				text.push(core.players[3].name);
 				pos.push([pos[6][0] + this.size[0], pos[6][1]]);
 			}
-
 			text.push("_");
 			pos.push([canvas.width / 2, canvas.height * 0.465]);
 
@@ -77,7 +76,7 @@ export class End {
 	}
 
 	click(core, mousePos) {
-		const pos = Vec2(mousePos[0], mousePos[1]);
+		const pos = new Vec2(mousePos[0], mousePos[1]);
 		if (is_colliding(pos, [0, 0], this.button.hitbox.pos, this.size)) {
 			core.state = "menu";
 			core.mode = "none";

@@ -158,9 +158,10 @@ export class Ball {
 					else if (this.last_hit)
 						players[this.last_hit - 1].score += 1;
 					else
-						for (let other in players)
-							if (other.nb != player.nb)
+						for (let other of players)
+							if (other.nb != player.nb) {
 								other.score += 1;
+							}
 				}
 				else if (players.length === 4) {
 					if (player.nb === 1 || player.nb === 2)

@@ -16,14 +16,15 @@ export class Obstacle {
 	update() {
 		if (this.solid)
 			return;
-		if ((Date.now() / 1000) - this.start >= 4)
+		if ((Date.now() / 1000) - this.start >= 3.5)
 			this.solid = true;
 	}
 
 	collide(ball) {
 		let rad = ball.dir * Math.PI / 180;
 		let dir = new Vec2(Math.cos(rad), Math.sin(rad));
-		let norm = ball.center[0].sub(this.center).normalize();
+		let norm = ball.center[0].sub(this.center);
+		norm.normalize();
 		norm.scale(dotProduct(dir, norm) * 2);
 		const res = dir.sub(norm);
 		rad = Math.atan2(res.y, res.x);

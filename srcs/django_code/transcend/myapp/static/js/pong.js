@@ -61,7 +61,6 @@ function hub_error(error) {
 }
 
 function hub_open() {
-	console.log("open")
 	try_connect(GameHub)
 }
 
@@ -76,7 +75,7 @@ function parse_msg(event) {
 			gameInterval = setInterval(game_loop, 10)
 		}
 		else
-			console.log("Connection failed") // + affichage on screen ?? is it even possible to fail connect from web ??
+			console.log("Connection failed") // + invalid user token ?? is it even possible to fail connect from web ??
 	}
 	else if (msg.type == "join")
 		game.wait_screen.nb += 1;
@@ -158,11 +157,3 @@ function parse_msg(event) {
 // // GameHub.onclose = function() { //fusion avec on error ?
 // // 	console.log("Connection closed")
 // // }
-
-
-
-// socket.onmessage = parsefct
-// Et ta fonction sera lancée en asynchrone dès que tu reçois un message dans le websocket
-// , c'est en asynchrone, donc pas à chaque tic, sa se lance instant dès que le msg est là... Se qui permet de traiter plusieurs message en même temps
-// Dès que ton websocket est défini, ou dépendamment de comment tu fait ton JS...
-// En gros, tu dis juste à ton websocket si je reçoit un message, je lance cette fonction...

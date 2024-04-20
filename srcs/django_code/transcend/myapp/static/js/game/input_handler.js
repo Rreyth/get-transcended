@@ -2,10 +2,10 @@ import { Vec2 } from './Vec2.js';
 
 export function input_id(core, button, key) {
 	const set = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-	if (key in set && button.name.length < 4)
-		button.name += code.toUpperCase();
+	if (set.includes(key) && button.name.length < 4)
+		button.name += key.toUpperCase();
 	else if (key == "Backspace")
-		button.name.pop();
+		button.name = button.name.slice(0, -1);
 	else if (key == "Enter")
 		core.menu.setValues("JOIN", core);
 }
@@ -13,21 +13,21 @@ export function input_id(core, button, key) {
 function online_input(core, key) {
 	if (core.state === "game") {
 		if (core.players[core.id - 1].side === "left" || core.players[core.id - 1].side === "right") {
-			if (key == "ArrowUp" || key.toUpperCase == "W") {
+			if (key == "ArrowUp" || key.toUpperCase() == "W") {
 				core.pressed.push("UP");
 				core.players[core.id - 1].moveUp(core.walls);
 			}
-			else if (key == "ArrowDown" || key.toUpperCase == "S") {
+			else if (key == "ArrowDown" || key.toUpperCase() == "S") {
 				core.pressed.push("DOWN");
 				core.players[core.id - 1].moveDown(core.walls);
 			}
 		}
 		if (core.players[core.id - 1].side === "up" || core.players[core.id - 1].side === "down") {
-			if (key == "ArrowLeft" || key.toUpperCase == "A") {
+			if (key == "ArrowLeft" || key.toUpperCase() == "A") {
 				core.pressed.push("LEFT");
 				core.players[core.id - 1].moveLeft(core.walls);
 			}
-			else if (key == "ArrowRight" || key.toUpperCase == "D") {
+			else if (key == "ArrowRight" || key.toUpperCase() == "D") {
 				core.pressed.push("RIGHT");
 				core.players[core.id - 1].moveRight(core.walls);
 			}
@@ -86,7 +86,7 @@ function ai_moves(core, player) {
 				else if (move === "LAUNCH" && core.ball.stick === player.nb)
 					core.ball.launch();
 			}
-			ai.pos = new Vec2(pos=player.paddle[0].pos);
+			ai.pos = new Vec2(player.paddle[0].pos.x, player.paddle[0].pos.y);
 			ai.moves = [];
 			break;
 		}
@@ -96,15 +96,15 @@ function ai_moves(core, player) {
 function player_moves(core, player, key) {
 	if (player.side === "left") {
 		if (player.nb == 1) {
-			if (key.toUpperCase == "W")
+			if (key.toUpperCase() == "W")
 				player.moveUp(core.walls);
-			if (key.toUpperCase == "S")
+			if (key.toUpperCase() == "S")
 				player.moveDown(core.walls);
 		}
 		else {
-			if (key.toUpperCase == "T")
+			if (key.toUpperCase() == "T")
 				player.moveUp(core.walls);
-			if (key.toUpperCase == "G")
+			if (key.toUpperCase() == "G")
 				player.moveDown(core.walls);
 		}
 		if (key == " " && core.ball.stick == player.nb)
@@ -127,19 +127,19 @@ function player_moves(core, player, key) {
 			core.ball.launch();
 	}
 	else if (player.side === "up") {
-		if (key.toUpperCase == "T")
+		if (key.toUpperCase() == "T")
 				player.moveLeft(core.walls);
-		if (key.toUpperCase == "Y")
+		if (key.toUpperCase() == "Y")
 				player.moveRight(core.walls);
-		if (key.toUpperCase == "H" && core.ball.stick == player.nb)
+		if (key.toUpperCase() == "H" && core.ball.stick == player.nb)
 			core.ball.launch();
 	}
 	else if (player.side === "down") {
-		if (key.toUpperCase == "K")
+		if (key.toUpperCase() == "K")
 			player.moveLeft(core.walls);
-		if (key.toUpperCase == "L")
+		if (key.toUpperCase() == "L")
 			player.moveRight(core.walls);
-		if (key.toUpperCase == "O" && core.ball.stick == player.nb)
+		if (key.toUpperCase() == "O" && core.ball.stick == player.nb)
 			core.ball.launch();
 	}
 }

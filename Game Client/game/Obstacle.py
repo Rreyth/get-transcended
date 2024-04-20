@@ -12,7 +12,7 @@ class Obstacle:
 		pg.draw.circle(win, (255, 255, 255), (self.center.x, self.center.y), self.radius)
   
 	def update(self):
-		if not self.solid and time.time() - self.start >= 4:
+		if not self.solid and time.time() - self.start >= 3.5:
 			self.solid = True
   
 	def collide(self, ball):

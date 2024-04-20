@@ -38,7 +38,7 @@ export class Menu {
 	}
 
 	click(core, mousePos) {
-		const pos = Vec2(mousePos[0], mousePos[1]);
+		const pos = new Vec2(mousePos[0], mousePos[1]);
 		for (let b of this.buttons)
 			if (is_colliding(pos, [0, 0], b.hitbox.pos, this.button_size))
 				this.setValues(b.name, core);
@@ -55,7 +55,7 @@ export class Menu {
 			// await core.GameHub.send(json.dumps({'type' : 'join', 'id' : self.buttons[5].name}))
 			// response : dict = json.loads(await core.GameHub.recv())
 			if (response['success'] == 'false')
-				self.err = "Room " + self.buttons[5].name + " doesn't exist";
+				this.err = "Room " + this.buttons[5].name + " doesn't exist";
 			else {
 				// core.GameSocket = response['socket']
 				room_id = this.buttons[5].name;
