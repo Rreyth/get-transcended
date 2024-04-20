@@ -1,44 +1,26 @@
-from django.shortcuts import render
-from django.core import serializers
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth import authenticate
 import requests
 from django.http import JsonResponse
 from django.views import View
 from myapp.models import *
+from rest_framework.decorators import api_view
 
+@api_view(['POST'])
 def register(request):
     email = request.POST.get('email')
     username = request.POST.get('username')
     password = request.POST.get('password')
 
     try:
-        user = User.objects.create(username=username, email=email, password=password)
+        user = User.objects.create(username=username, email=email)
+        
+        user.set_password(password)
+        user.save()
 
-        return JsonResponse({ 'username': user.username, 'email': user.email, 'created_at': user.created_at })
+        return JsonResponse({ 'username': user.username, 'password': user.password, 'email': user.email, 'created_at': user.created_at })
     except Exception as e:
         return JsonResponse({ 'message': str(e), 'code': 401 }, status=401)
-
-class AuthApi(View):
-    def get(self, request, *args, **kwargs):
-        email = request.GET.get('email')
-        password = make_password(request.GET.get('password'))
-        
-        if email == None or password == None:
-            return JsonResponse({ 'non': 'oui' })
-
-        if User.objects.filter(email=email, password=password).exists():
-            return JsonResponse(User.objects.get(email=email, password=password))
-        
-        return JsonResponse({ 'message': 'Invalid email or password', 'code': 401 }, status=401)
-
-    def post(self, request, *args, **kwargs):
-        email = request.POST.get('email')
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        user = User.objects.create(username=username, email=email, password=password)
-        
-        return JsonResponse({ 'username': user.username, 'email': user.email, 'created_at': user.created_at })
         
 
 def auth_42(request):
