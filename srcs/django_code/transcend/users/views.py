@@ -10,7 +10,6 @@ class RegisterUserView(APIView):
     parser_classes = [JSONParser, MultiPartParser, FormParser]
     def post(self, request):
 
-        # if email is already in use
         if User.objects.filter(email=request.data['email']).exists():
             return Response({'error': 'Email already registered'}, status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -29,17 +28,8 @@ class UserView(APIView):
         serializer = UserProfileSerializer(request.user, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    # update user profile image
     def put(self, request):
         user = User.objects.get(email=request.user.email)
         user.avatar = request.data['avatar']
         user.save()
         return Response({'message': 'Image updated'}, status=status.HTTP_200_OK)
-
-class AllUsersView(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request):
-        users = User.objects.all()
-        serializer = UserProfileSerializer(users, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)

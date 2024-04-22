@@ -13,14 +13,12 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, re_path, include
-from django.views.decorators.csrf import csrf_exempt
+from django.urls import path
 from myapp import views
+from users.views import RegisterUserView, UserView
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from channels.security.websocket import AllowedHostsOriginValidator
-from django.core.asgi import get_asgi_application
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -37,8 +35,6 @@ application = ProtocolTypeRouter({
         ),
 })
 
-from users.views import AllUsersView, RegisterUserView, UserView
-
 urlpatterns = [
     #path('', views.home, name='home'),
     # path('', views.index, name='index'),
@@ -48,7 +44,6 @@ urlpatterns = [
     # path('api/auth/register', csrf_exempt(views.register), name='register'),
     # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/users', AllUsersView.as_view()),
     path('api/user/', UserView.as_view()),
     path('api/register/', RegisterUserView.as_view()),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
