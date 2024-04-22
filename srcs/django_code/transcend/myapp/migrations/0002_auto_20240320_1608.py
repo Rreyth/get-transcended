@@ -3,11 +3,10 @@
 from django.db import migrations, models
 from django.db.models.functions import Now
 
-
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('myapp', '0001_initial'),
+        ('users', '0001_initial')
     ]
 
     operations = [
@@ -16,8 +15,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('content', models.TextField()),
-                ('sender', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to="users", related_name="sender")),
-                ('recever', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to="users")),
+                ('sender', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='users.user', related_name="sender")),
+                ('recever', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='users.user')),
                 ('created_at', models.DateTimeField(auto_now_add=True, blank=True, default=Now()))
             ]
         )
