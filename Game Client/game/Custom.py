@@ -137,7 +137,7 @@ class CustomMenu:
 			msg = {"type" : 'custom', 'online' : 'true', 'mods' : self.mod_list, 'score' : self.score, 'ai' : self.ai_nb, 'players' : self.players.__len__()}
 			await core.GameHub.send(json.dumps(msg))
 			response : dict = json.loads(await core.GameHub.recv())
-			core.GameSocket = response['socket']
+			core.GamePort = response['port']
 			core.id = response['pos']
 			core.state = "waiting"
 			core.online = True

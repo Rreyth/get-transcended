@@ -28,6 +28,7 @@ services:
       - transcendNetwork
     depends_on:
       - postgres
+      - pong
     env_file:
       - .env
 

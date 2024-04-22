@@ -139,24 +139,25 @@ export class CustomMenu {
 			core.mode = "LOCAL";
 			if (this.mod_list.includes("OBSTACLE"))
 				core.obstacle = new Obstacle();
-			// const msg = {"type" : 'custom', 'online' : 'false'};
-			// await core.GameHub.send(json.dumps(msg)) // send to serv
+			const msg = {"type" : 'custom', 'online' : 'false'};
+			core.GameHub.send(JSON.stringify(msg));
 		}
 		else if (this.mod_list.includes("ONLINE")) {
-			core.mode = "ONLINE";
-			// msg = {"type" : 'custom', 'online' : 'true', 'mods' : self.mod_list, 'score' : self.score, 'ai' : self.ai_nb, 'players' : self.players.__len__()};
-			// await core.GameHub.send(json.dumps(msg))
+			// core.mode = "ONLINE";
+			const msg = {"type" : 'custom', 'online' : 'true', 'mods' : this.mod_list, 'score' : this.score, 'ai' : this.ai_nb, 'players' : Object.keys(this.players).length};
+			console.log(msg)
+			core.GameHub.send(JSON.stringify(msg));
 			// response : dict = json.loads(await core.GameHub.recv())
 			// core.GameSocket = response['socket']
 			// core.id = response['pos']
-			core.state = "waiting";
+			// core.state = "waiting";
 			core.online = true;
 			// core.wait_screen = new WaitScreen(response['ID'], core.id, this.players.length, "CUSTOM");
 		}
 		if (this.mod_list.includes("1V1V1V1"))
 			core.custom_mod = "1V1V1V1";
 
-		core.start_screen = new StartScreen("custom", core.online, (this.mod_list.includes("1V1V1V1")) ? true : false, this.players.length);
+		core.start_screen = new StartScreen("custom", core.online, (this.mod_list.includes("1V1V1V1")) ? true : false, Object.keys(this.players).length);
 	}
 
 	getMods(alias = "Player") {

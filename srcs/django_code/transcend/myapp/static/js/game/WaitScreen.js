@@ -29,6 +29,9 @@ export class WaitScreen {
 				core.GameRoom.send(JSON.stringify({'type' : 'quitGame', 'id' : core.id, 'cmd' : 'quitWait'}));
 			else
 				core.GameHub.send(JSON.stringify({'type' : 'quitGame', 'id' : core.id, 'cmd' : 'quitWait'}));
+			core.online = false;
+			core.wait_screen = false;
+			core.start_screen = false;
 		}
 	}
 }

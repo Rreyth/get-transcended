@@ -51,7 +51,7 @@ class Menu:
 			if response['success'] == 'false':
 				self.err = "Room " + self.buttons[5].name + " doesn't exist"
 			else:
-				core.GameSocket = response['socket']
+				core.GamePort = response['port']
 				room_id = self.buttons[5].name
 				core.id = response['pos']
 				core.state = "waiting"
@@ -93,8 +93,8 @@ class Menu:
 			msg = {"type" : "quickGame", "cmd" : "join", "online" : "true"}
 			await core.GameHub.send(json.dumps(msg))
 			response : dict = json.loads(await core.GameHub.recv())
-			if 'socket' in response.keys():
-				core.GameSocket = response['socket']
+			if 'port' in response.keys():
+				core.GamePort = response['port']
 				room_id = response['ID']
 				core.state = "waiting"
 				core.mode = "ONLINE"

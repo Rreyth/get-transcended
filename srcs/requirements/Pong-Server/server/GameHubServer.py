@@ -145,7 +145,7 @@ async def handle_join(client_msg, websocket):
 			await room.sendAll({"type" : "join"})
 			room.players.add(websocket)
 			room.players_nb += 1
-			await websocket.send(json.dumps({'type' : 'joinResponse', 'success' : 'true', 'socket' : 'wss://{}:{}'.format(room.host, room.port), 'pos' : room.players_nb, 'max' : room.max_players, 'mode' : room.type, 'custom_mods' : room.mods}))
+			await websocket.send(json.dumps({'type' : 'joinResponse', 'success' : 'true', 'port' : room.port, 'pos' : room.players_nb, 'max' : room.max_players, 'mode' : room.type, 'custom_mods' : room.mods}))
 			await full_room(room.id, websocket)
 			if client_msg['id'] in rooms.keys() and rooms[room.id].full:
 				await run_game(room.id, websocket)
@@ -164,17 +164,17 @@ async def handle_custom(client_msg, websocket):
 		while port in used_port or port in fordiben_port: port += 1
 		used_port.append(port)
 		host = '0.0.0.0'
-		os.system("python3 game/core.py {} {} &".format(host, port))
-		time.sleep(0.1)
 		room_id = id_generator()
 		used_id.append(room_id)
+		os.system("python3 game/core.py {} {} {} &".format(host, port, room_id))
+		time.sleep(0.1)
 		rooms[room_id] = Room(room_id, host, port, 'custom', client_msg['players'])
 		rooms[room_id].mods = client_msg['mods']
 		rooms[room_id].score = client_msg['score']
 		rooms[room_id].ai_nb = client_msg['ai']
 		rooms[room_id].players.add(websocket)
 		rooms[room_id].players_nb = client_msg['ai'] + 1
-		await websocket.send(json.dumps({'type' : 'GameRoom', 'ID' : room_id, 'socket' : 'wss://{}:{}'.format(host, port), 'pos' : rooms[room_id].players_nb}))
+		await websocket.send(json.dumps({'type' : 'GameRoom', 'ID' : room_id, 'port' : port, 'pos' : rooms[room_id].players_nb}))
 		await full_room(room_id, websocket)
 		if room_id in rooms.keys() and rooms[room_id].full:
 			await run_game(room_id, websocket)
@@ -195,7 +195,7 @@ async def handle_quickGame(client_msg, websocket):
 				await room.sendAll({"type" : "join"})
 				room.players.add(websocket)
 				room.players_nb += 1
-				await websocket.send(json.dumps({'type' : 'GameRoom', 'ID' : room.id, 'socket' : 'wss://{}:{}'.format(room.host, room.port), 'pos' : room.players_nb}))
+				await websocket.send(json.dumps({'type' : 'GameRoom', 'ID' : room.id, 'port' : room.port, 'pos' : room.players_nb}))
 				id = room.id
 				await full_room(room.id, websocket)
 				if id in rooms.keys() and rooms[room.id].full:
@@ -206,15 +206,15 @@ async def handle_quickGame(client_msg, websocket):
 		while port in used_port or port in fordiben_port: port += 1
 		used_port.append(port)
 		host = '0.0.0.0'
-		os.system("python3 game/core.py {} {} &".format(host, port))
-		time.sleep(0.1)
-
 		room_id = id_generator()
 		used_id.append(room_id)
+		os.system("python3 game/core.py {} {} {} &".format(host, port, room_id))
+		time.sleep(0.1)
+
 		rooms[room_id] = Room(room_id, host, port, 'quickGame', 2)
 		rooms[room_id].players.add(websocket)
 		rooms[room_id].players_nb = 1
-		await websocket.send(json.dumps({'type' : 'GameRoom', 'ID' : room_id, 'socket' : 'wss://{}:{}'.format(host, port), 'pos' : rooms[room_id].players_nb}))
+		await websocket.send(json.dumps({'type' : 'GameRoom', 'ID' : room_id, 'port' : port, 'pos' : rooms[room_id].players_nb}))
 		await full_room(room_id, websocket)
 		if room_id in rooms.keys() and rooms[room_id].full:
 			await run_game(room_id, websocket)
@@ -231,6 +231,7 @@ async def parse_msg(message, websocket):
 		await connection_handler(client_msg, websocket)
 	if client_msg["type"] == "connect":
 		await connection_handler(client_msg, websocket)
+	#stuck here if not connected ?
 	if client_msg["type"] == "quickGame":
 		await handle_quickGame(client_msg, websocket)
 	if client_msg["type"] == "join":

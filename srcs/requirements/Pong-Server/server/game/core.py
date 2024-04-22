@@ -242,12 +242,13 @@ clients = set()
 async def main():
 	global clients
 	global game
-	if args.__len__() != 3:
+	if args.__len__() != 4:
 		return
 	loop = asyncio.get_running_loop()
 	stop = loop.create_future()
 	loop.add_signal_handler(signal.SIGTERM, stop.set_result, None)
 
+	game.id = args[3]
 	async with websockets.serve(handle_game, args[1], args[2], ssl=ssl_context):
 		await stop
 	print("Game room {} closed.".format(game.id))

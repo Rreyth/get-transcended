@@ -106,7 +106,6 @@ async def local_run():
 async def wait_loop():
 	global game
 	game.render()
-	
 	msg = {'type' : 'none'}
 	while game.is_running and msg['type'] != 'start':
 		await parse_msg(msg)
@@ -121,7 +120,8 @@ async def wait_loop():
 		except asyncio.TimeoutError:
 			msg = {'type' : 'none'}
 	if game.is_running:
-		game.GameRoom = await websockets.connect(game.GameSocket, ssl=ssl_context)
+		socket = "wss://" + ip + ":" + str(game.GamePort)
+		game.GameRoom = await websockets.connect(socket, ssl=ssl_context)
 		await game.GameRoom.send(json.dumps({'type' : 'join', 'name' : game.alias}))
 		infos : dict = json.loads(await game.GameRoom.recv())
 		while infos['type'] != 'start':
@@ -166,6 +166,7 @@ async def in_game(websocket):
 
 
 args = sys.argv
+ip = "localhost" if args.__len__() != 2 else args[1]
 
 async def main():
 	global game
@@ -180,7 +181,6 @@ async def main():
 	signal.signal(signal.SIGINT, lambda sig, frame: asyncio.create_task(sig_handler(sig, frame)))
 	signal.signal(signal.SIGTERM, lambda sig, frame: asyncio.create_task(sig_handler(sig, frame)))
 
-	ip = "localhost" if args.__len__() != 2 else args[1]
 	try:
 		async with websockets.connect("wss://{}:8765".format(ip), ssl=ssl_context) as websocket:
 			await try_connect(websocket)

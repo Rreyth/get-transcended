@@ -51,7 +51,7 @@ export class Menu {
 				this.err = "Room id is empty";
 				return;
 			}
-			core.GameHub.send(JSON.stringify({'type' : 'join', 'id' : self.buttons[5].name}));
+			core.GameHub.send(JSON.stringify({'type' : 'join', 'id' : this.buttons[5].name}));
 			// response : dict = json.loads(await core.GameHub.recv())
 			// if (response['success'] == 'false')
 			// 	this.err = "Room " + this.buttons[5].name + " doesn't exist";

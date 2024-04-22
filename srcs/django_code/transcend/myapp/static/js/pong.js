@@ -45,6 +45,8 @@ function game_loop() {
 	game.keyboard_input()
 	game.tick();
 	game.render();
+	// if (game.state == "start")
+	// 	clearInterval(gameInterval);
 }
 
 function try_connect(GameHub) {
@@ -55,7 +57,7 @@ function try_connect(GameHub) {
 
 
 let GameHub = false;
-let GameRoom = false
+// let GameRoom = false
 
 export function connect_hub() {
 	const socket = "wss://" + window.location.hostname + ":8765";
@@ -77,23 +79,23 @@ function hub_open() {
 }
 
 function parse_msg(event) {
-	let msg = JSON.parse(event.data)
+	let msg = JSON.parse(event.data);
 	let room_id = 0;
 	let wait_nb = 0;
 	if (msg.type == "connectionRpl") {
 		if (msg.success == "true") {
-			console.log("Connection success")
+			console.log("Connection success");
 			if (msg['alias'] !== undefined)
-				game.alias = msg.alias
-			game.start(GameHub)
-			gameInterval = setInterval(game_loop, 10)
+				game.alias = msg.alias;
+			game.start(GameHub);
+			gameInterval = setInterval(game_loop, 10);
 		}
 		else
-			console.log("Connection failed") // + invalid user token ?? is it even possible to fail connect from web ??
+			console.log("Connection failed"); // + invalid user token ?? is it even possible to fail connect from web ??
 	}
 	else if (msg.type == "join")
 		game.wait_screen.nb += 1;
-	else if (msg.type == "start")
+	else if (msg.type == "start" && game.state != "waiting")
 		game.state = "start";
 	else if (msg.type == "update") {
 		if ("timer" in msg) {
@@ -113,7 +115,7 @@ function parse_msg(event) {
 			game.obstacle.solid = msg.obstacle;
 	}
 	else if (msg.type == "endGame") {
-		if ("cmd" in msg && msg.cmd == "quitwait") {
+		if ("cmd" in msg && msg.cmd == "quitWait") {
 			if (msg.id == game.id) {
 				game.state = "menu";
 				if (game.GameRoom) {
@@ -141,9 +143,10 @@ function parse_msg(event) {
 	}
 	else if (msg.type == "start" && game.state == "waiting") {
 		if (!game.GameRoom) {
-			game.GameRoom = new WebSocket(game.GameSocket);
+			const socket = "wss://" + window.location.hostname + ":" + game.GamePort;
+			game.GameRoom = new WebSocket(socket);
 			game.GameRoom.onerror = function() {
-				console.log("Connection to room failed")
+				console.log("Connection to room failed");
 			}
 			game.GameRoom.onopen = function() {
 				game.GameRoom.send(JSON.stringify({"type" : "join", "name" : game.alias}));
@@ -169,6 +172,7 @@ function parse_msg(event) {
 		if (msg.success == 'false')
 			game.menu.err = "Room " + game.menu.buttons[5].name + " doesn't exist";
 		else {
+			game.GamePort = msg.port;
 			room_id = game.menu.buttons[5].name;
 			game.id = msg.pos;
 			game.state = "waiting";
@@ -180,13 +184,16 @@ function parse_msg(event) {
 		}
 	}
 	else if (msg.type == "GameRoom") {
-		game.GameSocket = msg.socket;
+		game.GamePort = msg.port;
 		room_id = msg["ID"];
 		game.mode = "ONLINE";
 		game.state = "waiting";
 		game.id = msg.pos;
 		game.online = true;
 		wait_nb = 2;
+		if (game.state == "custom") {
+			game.wait_screen = new WaitScreen(room_id, game.id, game.custom_menu.players.length, "CUSTOM");
+		}
 	}
 	if ((msg.type == "GameRoom" || msg.type == "joinResponse") && game.mode != "none") {
 		game.menu.buttons[5].name = "";

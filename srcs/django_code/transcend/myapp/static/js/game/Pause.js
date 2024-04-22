@@ -29,13 +29,14 @@ export class Pause {
 					core.mode = "none";
 					if (!core.online) {
 						core.GameHub.send(JSON.stringify(core.endMsg("quit")));
-						core.start_screen = false;
-						core.wait_screen = false;
 						core.ai = [];
 						core.max_score = 10;
 					}
 					else
 						core.GameRoom.send(JSON.stringify({'type' : 'quitGame', 'id' : core.id}));
+					core.online = false;
+					core.wait_screen = false;
+					core.start_screen = false;
 				}
 				core.pause[0] = false;
 				this.freeze = false;
