@@ -52,20 +52,6 @@ export class Menu {
 				return;
 			}
 			core.GameHub.send(JSON.stringify({'type' : 'join', 'id' : this.buttons[5].name}));
-			// response : dict = json.loads(await core.GameHub.recv())
-			// if (response['success'] == 'false')
-			// 	this.err = "Room " + this.buttons[5].name + " doesn't exist";
-			// else {
-			// 	// core.GameSocket = response['socket']
-			// 	room_id = this.buttons[5].name;
-			// 	core.id = response['pos'];
-			// 	core.state = "waiting";
-			// 	core.mode = "ONLINE";
-			// 	core.online = true;
-			// 	wait_nb = response['max'];
-			// 	core.custom_mod = (response['custom_mods'].includes("1V1V1V1")) ? "1V1V1V1" : false;
-			// 	core.start_screen = new StartScreen(response['mode'], core.online, response['custom_mods'].includes("1V1V1V1"), wait_nb);
-			// }
 		}
 		if (name === this.buttons[5].name)
 			this.buttons[5].highlight = !this.buttons[5].highlight;
@@ -95,16 +81,6 @@ export class Menu {
 		if (name === "ONLINE") {
 			const msg = {"type" : "quickGame", "cmd" : "join", "online" : "true"};
 			core.GameHub.send(JSON.stringify(msg));
-			// response : dict = json.loads(await core.GameHub.recv()) //passage dans onmessage
-			// if ("socket" in response) {
-			// 	core.GameSocket = response['socket'];
-			// 	room_id = response['ID'];
-			// 	core.mode = "ONLINE";
-			// 	core.state = "waiting";
-			// 	core.id = response['pos'];
-			// }
-			// core.online = true;
-			// wait_nb = 2;
 		}
 		if (core.mode != "none") {
 			this.buttons[5].name = "";

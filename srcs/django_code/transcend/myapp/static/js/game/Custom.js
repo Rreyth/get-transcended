@@ -4,7 +4,6 @@ import { Wall } from "./Wall.js";
 import { Player } from "./Player.js";
 import { Obstacle } from "./Obstacle.js";
 import { Ball } from "./Ball.js";
-import { WaitScreen } from "./WaitScreen.js";
 import { StartScreen } from "./StartScreen.js";
 import { AI } from "./AI.js";
 import { Vec2 } from "./Vec2.js";
@@ -143,16 +142,9 @@ export class CustomMenu {
 			core.GameHub.send(JSON.stringify(msg));
 		}
 		else if (this.mod_list.includes("ONLINE")) {
-			// core.mode = "ONLINE";
 			const msg = {"type" : 'custom', 'online' : 'true', 'mods' : this.mod_list, 'score' : this.score, 'ai' : this.ai_nb, 'players' : Object.keys(this.players).length};
-			console.log(msg)
 			core.GameHub.send(JSON.stringify(msg));
-			// response : dict = json.loads(await core.GameHub.recv())
-			// core.GameSocket = response['socket']
-			// core.id = response['pos']
-			// core.state = "waiting";
 			core.online = true;
-			// core.wait_screen = new WaitScreen(response['ID'], core.id, this.players.length, "CUSTOM");
 		}
 		if (this.mod_list.includes("1V1V1V1"))
 			core.custom_mod = "1V1V1V1";

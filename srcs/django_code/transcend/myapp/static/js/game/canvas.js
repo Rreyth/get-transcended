@@ -16,6 +16,7 @@ ctx.textAlign = "center";
 ctx.lineWidth = 2;
 
 function resizeCanvas() {
+	//save old sizes to update pos of objects
 	canvas.width = window.innerWidth * 0.80;
 	canvas.height = Math.floor(canvas.width * 0.482);
 	canvas.style.left = (window.innerWidth - canvas.width) / 2 + "px";

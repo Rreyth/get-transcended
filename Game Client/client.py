@@ -43,9 +43,9 @@ async def parse_msg(msg : dict):
 		else:
 			game.state = 'game'
 			for i in range(game.players.__len__()):
-				game.players[i].paddle[0].pos = Vec2(pos=msg['players'][i])
+				game.players[i].paddle[0].pos = Vec2(msg['players'][i][0] * winWidth, msg['players'][i][1] * winHeight)
 				game.players[i].score = msg['score'][i]
-			game.ball.center[0] = Vec2(msg['ball'][0], msg['ball'][1])
+			game.ball.center[0] = Vec2(msg['ball'][0] * winWidth, msg['ball'][1] * winHeight)
 			game.ball.stick = msg['ball'][2]
 			game.ball.speed = msg['ball'][3]
 			game.ball.dir = msg['ball'][4]

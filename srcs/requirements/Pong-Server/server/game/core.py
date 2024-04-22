@@ -101,8 +101,8 @@ class Game:
 			msg = {'type' : 'update', 'timer' : self.start[0]}
 		else:
 			msg = {'type' : 'update',
-					'players' : [[player.paddle[0].pos.x, player.paddle[0].pos.y] for player in self.players],
-					'ball' : [self.ball.center[0].x, self.ball.center[0].y, self.ball.stick, self.ball.speed, self.ball.dir],
+					'players' : [[player.paddle[0].pos.x / winWidth, player.paddle[0].pos.y / winHeight] for player in self.players],
+					'ball' : [self.ball.center[0].x / winWidth, self.ball.center[0].y / winHeight, self.ball.stick, self.ball.speed, self.ball.dir],
 					'score' : [player.score for player in self.players]}
 			if self.obstacle:
 				msg['obstacle'] = self.obstacle.solid

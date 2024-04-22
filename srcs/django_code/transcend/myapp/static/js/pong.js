@@ -45,8 +45,6 @@ function game_loop() {
 	game.keyboard_input()
 	game.tick();
 	game.render();
-	// if (game.state == "start")
-	// 	clearInterval(gameInterval);
 }
 
 function try_connect(GameHub) {
@@ -55,9 +53,7 @@ function try_connect(GameHub) {
 	GameHub.send(JSON.stringify(msg));
 }
 
-
 let GameHub = false;
-// let GameRoom = false
 
 export function connect_hub() {
 	const socket = "wss://" + window.location.hostname + ":8765";
@@ -104,10 +100,10 @@ function parse_msg(event) {
 		}
 		game.state = "game";
 		for (let i = 0; i < game.players.length; i++) {
-			game.players[i].paddle[0].pos = new Vec2(msg.players[i][0], msg.players[i][1]);
+			game.players[i].paddle[0].pos = new Vec2(msg.players[i][0] * canvas.width, msg.players[i][1] * canvas.height);
 			game.players[i].score = msg.score[i];
 		}
-		game.ball.center[0] = new Vec2(msg.ball[0], msg.ball[1]);
+		game.ball.center[0] = new Vec2(msg.ball[0] * canvas.width, msg.ball[1] * canvas.height);
 		game.ball.stick = msg.ball[2];
 		game.ball.speed = msg.ball[3];
 		game.ball.dir = msg.ball[4];
@@ -187,13 +183,13 @@ function parse_msg(event) {
 		game.GamePort = msg.port;
 		room_id = msg["ID"];
 		game.mode = "ONLINE";
-		game.state = "waiting";
 		game.id = msg.pos;
 		game.online = true;
 		wait_nb = 2;
 		if (game.state == "custom") {
-			game.wait_screen = new WaitScreen(room_id, game.id, game.custom_menu.players.length, "CUSTOM");
+			game.wait_screen = new WaitScreen(room_id, game.id, Object.keys(game.custom_menu.players).length, "CUSTOM");
 		}
+		game.state = "waiting";
 	}
 	if ((msg.type == "GameRoom" || msg.type == "joinResponse") && game.mode != "none") {
 		game.menu.buttons[5].name = "";
