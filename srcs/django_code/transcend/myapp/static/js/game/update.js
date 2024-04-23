@@ -40,16 +40,16 @@ export function update_sizes(core, old_sizes) {
 		core.start_screen.responsive();
 	if (core.ball)
 		core.ball.responsive(old_sizes);
-	// if (core.players) {
-	// 	for (let player of core.players)
-	// 		player.responsive(old_sizes);
-	// 	for (let ai of core.ai)
-	// 		ai.responsive(core.players, old_sizes);
-	// }
-	// if (core.walls)
-	// 	for (let wall of core.walls)
-	// 		wall.responsive();
-	// if (core.obstacle)
-	// 	core.obstacle.responsive();
+	if (core.players) {
+		for (let player of core.players)
+			player.responsive(old_sizes);
+		for (let ai of core.ai)
+			ai.responsive(core.players, old_sizes);
+	}
+	if (core.walls)
+		for (let wall of core.walls)
+			wall.responsive();
+	if (core.obstacle)
+		core.obstacle.responsive();
 	core.render();
 }

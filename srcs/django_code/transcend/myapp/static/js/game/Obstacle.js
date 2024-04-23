@@ -30,4 +30,9 @@ export class Obstacle {
 		rad = Math.atan2(res.y, res.x);
 		ball.dir = rad * (180 / Math.PI);
 	}
+
+	responsive() {
+		this.radius = Math.floor(canvas.height * 0.193);
+		this.center = new Vec2(canvas.width / 2, canvas.height / 2);
+	}
 }

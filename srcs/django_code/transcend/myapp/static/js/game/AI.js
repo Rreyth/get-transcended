@@ -18,7 +18,7 @@ export class AI {
 			this.hitbox = new Hitbox(0, this.pos.y - 1, canvas.width, player.size[1] + 2)
 	}
 
-	update(core, core_delta) {
+	update(core, core_delta) { //add smth to suppress wobble
 		if (core.ball.stick === this.id)
 			this.moves.push("LAUNCH");
 		else {
@@ -75,6 +75,24 @@ export class AI {
 			this.moves.push("UP");
 		else if (this.target.y > this.pos.y)
 			this.moves.push("DOWN");
+	}
+
+	responsive(players, old_sizes) {
+		for (let player of players) {
+			if (this.id == player.nb) {
+				this.size = player.size;
+				this.pos = new Vec2(player.paddle[0].pos.x, player.paddle[0].pos.y);
+				break;
+			}
+		}
+		let pos_ratio = [this.center.x / old_sizes[0], this.center.y / old_sizes[1]];
+		this.center = new Vec2(pos_ratio[0] * canvas.width, pos_ratio[1] * canvas.height);
+		pos_ratio = [this.target.x / old_sizes[0], this.target.y / old_sizes[1]];
+		this.target = new Vec2(pos_ratio[0] * canvas.width, pos_ratio[1] * canvas.height);
+		if (this.side === "left" || this.side === "right")
+			this.hitbox = new Hitbox(this.pos.x - 1, 0, this.size[0] + 2,  canvas.height)
+		else
+			this.hitbox = new Hitbox(0, this.pos.y - 1, canvas.width, this.size[1] + 2)
 	}
 }
 

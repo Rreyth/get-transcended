@@ -7,7 +7,7 @@ export class StartScreen {
 		this.online = online;
 		this.square = square;
 		this.nb_players = nb_players;
-		this.timer = 300;
+		this.timer = 3;
 		this.time = Date.now() / 1000;
 		this.size = [canvas.width * 0.1, canvas.height * 0.1];
 		this.player_input = {};

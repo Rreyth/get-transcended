@@ -18,9 +18,6 @@ export class Ball {
 		this.stick = 0;
 		this.side = "none";
 		this.launch();
-
-		this.multiplier = 1.0;
-		this.last_hit = 0;
 	}
 
 	copy(ai_hitbox = false) {
@@ -208,8 +205,8 @@ export class Ball {
 	responsive(old_sizes) {
 		this.speed_per_sec = canvas.width / 3;
 		this.radius = Math.floor(canvas.height * 0.01);
-		const pos_ratio = [this.center.x / old_sizes[0], this.center.y / old_sizes[1]];
-		this.center = [new Vec2(pos_ratio[0] * canvas.width, pos_ratio[1] * canvas.height)];
+		const pos_ratio = [this.center[0].x / old_sizes[0], this.center[0].y / old_sizes[1]];
+		this.center[0] = new Vec2(pos_ratio[0] * canvas.width, pos_ratio[1] * canvas.height);
 		if (this.borderless) {
 			if (this.center[0].y < 0)
 				this.center[0].y += canvas.height;

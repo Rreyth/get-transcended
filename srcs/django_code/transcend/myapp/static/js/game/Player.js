@@ -8,6 +8,7 @@ export class Player {
 		this.speed = this.speed_per_sec * 0.01;
 		this.nb = nb;
 		this.name = name;
+		this.square = square;
 		this.borderless = borderless;
 		this.win = "LOSE";
 		this.score = 0;
@@ -30,14 +31,15 @@ export class Player {
 			}
 		}
 		else if (square) {
+			const goal_size = canvas.height * 0.0125;
 			if (this.nb == 1) {
 				pos = [canvas.width * 0.02, (canvas.height / 2) - (this.size[1] / 2)];
-				this.goal = new Hitbox(-43, 0, 50, canvas.height);
+				this.goal = new Hitbox(-50 + goal_size, 0, 50, canvas.height);
 				this.side = "left";
 			}
 			else if (this.nb == 2) {
 				pos = [canvas.width * 0.98 - this.size[0], (canvas.height / 2) - (this.size[1] / 2)];
-				this.goal = new Hitbox(canvas.width - 7, 0, 50, canvas.height);
+				this.goal = this.goal = new Hitbox(canvas.width - goal_size, 0, 50, canvas.height);
 				this.side = "right";
 			}
 			else if (this.nb == 3) {
@@ -45,7 +47,7 @@ export class Player {
 				this.size[0] = canvas.width * 0.1;
 				this.speed_per_sec = canvas.width;
 				pos = [(canvas.width / 2) - (this.size[0] / 2), canvas.height * 0.02];
-				this.goal = new Hitbox(0, -43, canvas.width, 50);
+				this.goal = new Hitbox(0, -50 + goal_size, canvas.width, 50);
 				this.side = "up";
 			}
 			else {
@@ -53,7 +55,7 @@ export class Player {
 				this.size[0] = canvas.width * 0.1;
 				this.speed_per_sec = canvas.width;
 				pos = [(canvas.width / 2) - (this.size[0] / 2), canvas.height * 0.98 - this.size[1]];
-				this.goal = new Hitbox(0, canvas.height - 7, canvas.width, 50);
+				this.goal = new Hitbox(0, canvas.height - goal_size, canvas.width, 50);
 				this.side = "down";
 			}
 		}
@@ -200,5 +202,38 @@ export class Player {
 			this.paddle[2].pos.y = this.paddle[0].pos.y + canvas.height;
 		}
 		this.speed = this.speed_per_sec * delta;
+	}
+
+	responsive(old_sizes) {
+		this.speed_per_sec = canvas.height;
+		this.size = [canvas.width * 0.007, canvas.height * 0.1];
+		if (this.side == "up" || this.side == "down") {
+			this.size.reverse();
+			this.size[0] = canvas.width * 0.1;
+		}
+		if (this.square) {
+			const goal_size = canvas.height * 0.0125;
+			if (this.side == "left")
+				this.goal = new Hitbox(-50 + goal_size, 0, 50, canvas.height);
+			else if (this.side == "right")
+				this.goal = new Hitbox(canvas.width - goal_size, 0, 50, canvas.height);
+			else if (this.side == "up")
+				this.goal = new Hitbox(0, -50 + goal_size, canvas.width, 50);
+			else
+				this.goal = new Hitbox(0, canvas.height - goal_size, canvas.width, 50);
+		}
+		else {
+			if (this.side == "left")
+				this.goal = new Hitbox(-50, 0, 50, canvas.height);
+			else
+				this.goal = new Hitbox(canvas.width, 0, 50, canvas.height);
+		}
+
+		const pos_ratio = [this.paddle[0].pos.x / old_sizes[0], this.paddle[0].pos.y / old_sizes[1]];
+		this.paddle[0] = new Hitbox(pos_ratio[0] * canvas.width, pos_ratio[1] * canvas.height, this.size[0], this.size[1]);
+		if (this.borderless) {
+			this.paddle[1] = new Hitbox(this.paddle[0].pos.x, this.paddle[0].pos.y - canvas.height, this.size[0], this.size[1]);
+			this.paddle[2] = new Hitbox(this.paddle[0].pos.x, this.paddle[0].pos.y + canvas.height, this.size[0], this.size[1]);
+		}
 	}
 }

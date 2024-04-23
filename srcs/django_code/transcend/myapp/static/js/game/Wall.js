@@ -45,4 +45,33 @@ export class Wall {
 			return;
 		this.Hitbox.collideWall(ball, this.pos);
 	}
+
+	responsive() {
+		this.size = [canvas.width, canvas.height * 0.0075];
+		if (this.square) {
+			if (this.pos == "up")
+				this.visual = new Vec2(0, 0);
+			else if (this.pos == "down")
+				this.visual = new Vec2(0, canvas.height - this.size[1]);
+			else if (this.pos == "left") {
+				this.size.reverse();
+				this.visual = new Vec2(0, 0);
+			}
+			else if (this.pos == "right") {
+				this.size.reverse();
+				this.visual = new Vec2(canvas.width - this.size[0], 0);
+			}
+			this.Hitbox = new Hitbox(this.visual.x, this.visual.y, this.size[0], this.size[1]);
+		}
+		else {
+			if (this.pos == "up") {
+				this.visual = new Vec2(0, (canvas.height * 0.05) - (this.size[1] / 2));
+				this.Hitbox = new Hitbox(this.visual.x, this.visual.y + 2, this.size[0], this.size[1]);
+			}
+			else if (this.pos == "down") {
+				this.visual = new Vec2(0, canvas.height - (canvas.height * 0.05) - (this.size[1] / 2));
+				this.Hitbox = new Hitbox(this.visual.x, this.visual.y - 3, this.size[0], this.size[1]);
+			}
+		}
+	}
 }
