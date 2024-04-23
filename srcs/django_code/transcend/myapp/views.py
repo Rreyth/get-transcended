@@ -42,7 +42,8 @@ class MyConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):
-        await self.close()
+        # await self.close()
+        pass
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
@@ -50,5 +51,7 @@ class MyConsumer(AsyncWebsocketConsumer):
 
         # Process message as needed
         await self.send(text_data=json.dumps({
-            'message': message
+            'message': message,
+            'username': 'swotex',
+            'date': "27/03/2024 12:40"
         }))

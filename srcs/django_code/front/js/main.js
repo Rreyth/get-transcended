@@ -1,6 +1,7 @@
 import { Component } from "./component.js"
 import { Router } from "./router.js";
 import { Navbar } from "../components/navbar.js";
+import { Chat } from "../components/chat.js";
 import { Minichat } from "../components/minichat/minichat.js";
 import { Message } from "../components/minichat/message.js";
 import { Friend } from "../components/minichat/friend.js";
@@ -12,6 +13,7 @@ Component.loader([
 	Message,
 	Friend,
 	ChatInput,
+	Chat,
 ])
 
 const navigateTo = url => {
