@@ -1,10 +1,10 @@
 import { Component } from "./component.js"
 import { Router } from "./router.js";
-import { Navbar } from "../html/components/navbar.js";
-import { Minichat } from "../html/components/minichat/minichat.js";
-import { Message } from "../html/components/minichat/message.js";
-import { Friend } from "../html/components/minichat/friend.js";
-import { ChatInput } from "../html/components/minichat/input.js";
+import { Navbar } from "../components/navbar.js";
+import { Minichat } from "../components/minichat/minichat.js";
+import { Message } from "../components/minichat/message.js";
+import { Friend } from "../components/minichat/friend.js";
+import { ChatInput } from "../components/minichat/input.js";
 
 Component.loader([
 	Navbar,
