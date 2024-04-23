@@ -27,3 +27,29 @@ export function update_all(core, delta) {
 			core.state = "game";
 	}
 }
+
+export function update_sizes(core, old_sizes) {
+	core.menu.responsive();
+	core.pause[1].responsive();
+	core.end.responsive();
+	if (core.custom_menu)
+		core.custom_menu.responsive();
+	if (core.wait_screen)
+		core.wait_screen.responsive();
+	if (core.start_screen)
+		core.start_screen.responsive();
+	if (core.ball)
+		core.ball.responsive(old_sizes);
+	// if (core.players) {
+	// 	for (let player of core.players)
+	// 		player.responsive(old_sizes);
+	// 	for (let ai of core.ai)
+	// 		ai.responsive(core.players, old_sizes);
+	// }
+	// if (core.walls)
+	// 	for (let wall of core.walls)
+	// 		wall.responsive();
+	// if (core.obstacle)
+	// 	core.obstacle.responsive();
+	core.render();
+}

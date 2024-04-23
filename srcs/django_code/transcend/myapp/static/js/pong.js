@@ -1,4 +1,4 @@
-import { canvas, ctx } from "./game/canvas.js";
+import { canvas, ctx, resize_canvas } from "./game/canvas.js";
 import { Game } from "./game/core.js";
 import { Vec2 } from "./game/Vec2.js";
 import { Player } from "./game/Player.js";
@@ -7,6 +7,7 @@ import { Ball } from "./game/Ball.js";
 import { Obstacle } from "./game/Obstacle.js";
 import { StartScreen } from "./game/StartScreen.js";
 import { WaitScreen } from "./game/WaitScreen.js";
+import { update_sizes } from "./game/update.js";
 
 let timer;
 let connect_last;
@@ -205,3 +206,12 @@ function parse_msg(event) {
 // // GameHub.onclose = function() { //fusion avec on error ?
 // // 	console.log("Connection closed")
 // // }
+
+
+window.addEventListener("resize", resize_all);
+
+function resize_all() {
+	const old_sizes = [canvas.width, canvas.height];
+	resize_canvas();
+	update_sizes(game, old_sizes);
+}

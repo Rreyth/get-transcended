@@ -37,10 +37,17 @@ export class Pause {
 					core.online = false;
 					core.wait_screen = false;
 					core.start_screen = false;
+					core.custom_menu = false;
 				}
 				core.pause[0] = false;
 				this.freeze = false;
 			}
 		}
+	}
+
+	responsive() {
+		this.size = [canvas.width * 0.2, canvas.height * 0.1];
+		this.buttons = [new Button("RESUME", canvas.width / 2 - this.size[0] / 2, canvas.height / 2 - this.size[1] / 2, this.size[0], this.size[1]),
+			new Button("BACK TO MENU", canvas.width / 2 - this.size[0] / 2, (canvas.height / 3 * 2) - this.size[1] / 2, this.size[0], this.size[1])];
 	}
 }

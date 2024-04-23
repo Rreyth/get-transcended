@@ -13,6 +13,7 @@ export class Game {
 		this.menu = new Menu();
 		this.pause = [false, new Pause()];
 		this.end = new End();
+		this.custom_menu = false;
 		this.players = false;
 		this.alias = "ALIAS";
 		this.inputs = {};

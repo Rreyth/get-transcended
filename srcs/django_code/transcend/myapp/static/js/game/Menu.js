@@ -91,4 +91,14 @@ export class Menu {
 				core.wait_screen = new WaitScreen(room_id, core.id, wait_nb, "QuickGame Online");
 		}
 	}
+
+	responsive() {
+		this.button_size = [canvas.width * 0.1, canvas.height * 0.1];
+		this.buttons = [new Button("SOLO", (canvas.width / 3) - (this.button_size[0] / 2), (canvas.height / 2) - this.button_size[1], this.button_size[0], this.button_size[1]),
+				  new Button("LOCAL", (canvas.width / 3 * 2) - (this.button_size[0] / 2), (canvas.height / 2) - this.button_size[1], this.button_size[0], this.button_size[1]),
+				  new Button("ONLINE", (canvas.width / 3) - (this.button_size[0] / 2), (canvas.height / 3 * 2), this.button_size[0], this.button_size[1]),
+				  new Button("CUSTOM", (canvas.width / 3 * 2) - (this.button_size[0] / 2), (canvas.height / 3 * 2), this.button_size[0], this.button_size[1]),
+				  new Button("JOIN", (canvas.width * 0.01), (canvas.height * 0.875), this.button_size[0], this.button_size[1]),
+				  new Button("", (canvas.width * 0.12), (canvas.height * 0.875), this.button_size[0], this.button_size[1])];
+	}
 }

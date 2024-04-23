@@ -15,8 +15,7 @@ ctx.textBaseline = "middle";
 ctx.textAlign = "center";
 ctx.lineWidth = 2;
 
-function resizeCanvas() {
-	//save old sizes to update pos of objects
+export function resize_canvas() {
 	canvas.width = window.innerWidth * 0.80;
 	canvas.height = Math.floor(canvas.width * 0.482);
 	canvas.style.left = (window.innerWidth - canvas.width) / 2 + "px";
@@ -27,10 +26,7 @@ function resizeCanvas() {
 	ctx.textBaseline = "middle";
 	ctx.textAlign = "center";
 	ctx.lineWidth = 2;
-	// update size and pos of everything + render
 }
-
-window.addEventListener("resize", resizeCanvas);
 
 export function roundRect(ctx, x, y, width, height, radius) {
 	ctx.beginPath();

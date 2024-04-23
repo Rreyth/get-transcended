@@ -84,9 +84,15 @@ export class End {
 			core.pause[1].freeze = false;
 			core.start_screen = false;
 			core.wait_screen = false;
+			core.custom_menu = false;
 			core.ai = [];
 			core.max_score = 10;
 			core.online = false;
 		}
+	}
+
+	responsive() {
+		this.size = [canvas.width * 0.2, canvas.height * 0.1];
+		this.button = new Button("BACK TO MENU", (canvas.width / 2) - (this.size[0] / 2), canvas.height * 0.8, this.size[0], this.size[1]);
 	}
 }

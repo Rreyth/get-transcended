@@ -16,8 +16,8 @@ export class CustomMenu {
 		this.score = 10;
 		this.ai_nb = 0;
 		this.max_ai = 2;
-		this.down_buttons = [new Button("BACK TO MENU", 25, canvas.height - this.size[1] - 25, this.size[0], this.size[1]),
-				new Button("START", canvas.width - this.size[0] - 25, canvas.height - this.size[1] - 25, this.size[0], this.size[1])];
+		this.down_buttons = [new Button("BACK TO MENU", this.size[0] * 0.1, canvas.height - (this.size[1] * 1.4), this.size[0], this.size[1]),
+				new Button("START", canvas.width - (this.size[0] * 1.1), canvas.height - (this.size[1] * 1.4), this.size[0], this.size[1])];
 		this.players_buttons = [new Button("AI VS AI", canvas.width / 5 - (this.mod_size[0] / 2), canvas.height / 4 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
        			new Button("1 VS 1", canvas.width / 5 * 2 - (this.mod_size[0] / 2), canvas.height / 4 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
           		new Button("2 VS 2", canvas.width / 5 * 3 - (this.mod_size[0] / 2), canvas.height / 4 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
@@ -58,6 +58,7 @@ export class CustomMenu {
 					core.state = "menu";
 					core.mode = "none";
 					core.max_score = 10;
+					core.custom_menu = false;
 					break;
 				}
 				else if (b.name === "START") {
@@ -228,5 +229,25 @@ export class CustomMenu {
 			}
 		}
 		return selected;
+	}
+
+	responsive() {
+		this.size = [canvas.width * 0.2, canvas.height * 0.1];
+		this.mod_size = [canvas.width * 0.11, canvas.height * 0.07];
+
+		this.down_buttons = [new Button("BACK TO MENU", this.size[0] * 0.1, canvas.height - (this.size[1] * 1.4), this.size[0], this.size[1]),
+				new Button("START", canvas.width - (this.size[0] * 1.1), canvas.height - (this.size[1] * 1.4), this.size[0], this.size[1])];
+		this.players_buttons = [new Button("AI VS AI", canvas.width / 5 - (this.mod_size[0] / 2), canvas.height / 4 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
+       			new Button("1 VS 1", canvas.width / 5 * 2 - (this.mod_size[0] / 2), canvas.height / 4 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
+          		new Button("2 VS 2", canvas.width / 5 * 3 - (this.mod_size[0] / 2), canvas.height / 4 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
+            	new Button("1V1V1V1", canvas.width / 5 * 4 - (this.mod_size[0] / 2), canvas.height / 4 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1])];
+		this.mod_buttons = [new Button("LOCAL", canvas.width / 5 - (this.mod_size[0] / 2), canvas.height / 2 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
+              	new Button("ONLINE", canvas.width / 5 * 2 - (this.mod_size[0] / 2), canvas.height / 2 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
+          		new Button("BORDERLESS", canvas.width / 5 * 3 - (this.mod_size[0] / 2), canvas.height / 2 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
+            	new Button("OBSTACLE", canvas.width / 5 * 4 - (this.mod_size[0] / 2), canvas.height / 2 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1])];
+		this.param_buttons = [new Button("-", canvas.width * 0.415, canvas.height / 4 * 3 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
+				new Button("+", canvas.width * 0.435, canvas.height / 4 * 3 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
+				new Button("-", canvas.width * 0.755, canvas.height / 4 * 3 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
+				new Button("+", canvas.width * 0.775, canvas.height / 4 * 3 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03)];
 	}
 }

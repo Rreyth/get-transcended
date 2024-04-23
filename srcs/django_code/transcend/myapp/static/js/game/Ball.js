@@ -204,6 +204,23 @@ export class Ball {
 		this.stick = 0;
 		this.multiplier = 1.0;
 	}
+
+	responsive(old_sizes) {
+		this.speed_per_sec = canvas.width / 3;
+		this.radius = Math.floor(canvas.height * 0.01);
+		const pos_ratio = [this.center.x / old_sizes[0], this.center.y / old_sizes[1]];
+		this.center = [new Vec2(pos_ratio[0] * canvas.width, pos_ratio[1] * canvas.height)];
+		if (this.borderless) {
+			if (this.center[0].y < 0)
+				this.center[0].y += canvas.height;
+			else if (this.center[0].y > canvas.height)
+				this.center[0].y -= canvas.height;
+			this.center[1].x = this.center[0].x;
+			this.center[1].y = this.center[0].y + canvas.height;
+			this.center[2].x = this.center[0].x;
+			this.center[2].y = this.center[0].y - canvas.height;
+		}
+	}
 }
 
 function randInt(min, max) {

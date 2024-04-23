@@ -156,6 +156,7 @@ export function escape_handler(core) {
 		core.state = "menu";
 		core.mode = "none";
 		core.max_score = 10;
+		core.custom_menu = false;
 	}
 	if (core.state === "game") {
 		core.pause[0] = !core.pause[0];

@@ -32,6 +32,12 @@ export class WaitScreen {
 			core.online = false;
 			core.wait_screen = false;
 			core.start_screen = false;
+			core.custom_menu = false;
 		}
+	}
+
+	responsive() {
+		this.size = [canvas.width * 0.2, canvas.height * 0.1];
+		this.button = new Button("BACK TO MENU", canvas.width / 2 - this.size[0] / 2, canvas.height - this.size[1] * 1.5, this.size[0], this.size[1]);
 	}
 }
