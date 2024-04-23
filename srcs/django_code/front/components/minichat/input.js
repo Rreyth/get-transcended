@@ -1,4 +1,4 @@
-import { Component } from "../../../js/component.js";
+import { Component } from "../../js/component.js";
 
 const s = new WebSocket('wss://localhost:44433/api/chat')
 
