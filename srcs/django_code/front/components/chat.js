@@ -48,19 +48,30 @@ export class Chat extends Component {
 	
 						<div class="users">
 							<div class="users-header my-auto">
-								<div class="add-btn">
-									<i class='bx bx-user-plus' ></i>
-									<span> ADD FRIENDS </span>
+								<div class="add-btn" id="setting-bt">
+									<i class='bx bx-cog'></i>
+									<span> FRIEND SETTINGS </span>
 								</div>
 								<span class="separator-header"></span>
 							</div>
 							
 							<div class="users-body">
+
+							<c-friend username="tutute fils de pute"></c-friend>
+							<c-friend username="Swotex"></c-friend>
+							<c-friend username="sd asd"></c-friend>
 															
 							</div>
 						</div>
 	
 						<div class="groups">
+							<div class="users-header my-auto">
+								<div class="add-btn">
+									<i class='bx bx-user-plus' ></i>
+									<span> GROUP SETTINGS </span>
+								</div>
+								<span class="separator-header"></span>
+							</div>
 							coucou, ca c'est des groupes
 						</div>
 	
@@ -115,6 +126,20 @@ export class Chat extends Component {
 					document.querySelector(".users").style.display = "block";
 				}
 				element.add("active");
+			}
+		})
+
+		this.addClickEvent('#setting-bt', (e) => {
+			let settingComponent = document.getElementById("setting-tag");
+			if (settingComponent)
+			{
+				document.getElementById("setting-tag").remove();
+				document.body.style.overflow = "scroll";
+			}
+			else
+			{
+				document.body.innerHTML += `<c-setting id="setting-tag"></c-setting>`;
+				document.body.style.overflow = "hidden";
 			}
 		})
 
