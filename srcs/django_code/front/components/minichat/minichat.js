@@ -1,4 +1,4 @@
-import { Component} from "../../../js/component.js";
+import { Component} from "../../js/component.js";
 
 export class Minichat extends Component
 {

@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
             name='match_user',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('user', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='users')),
+                ('user', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to="users.user")),
                 ('match', models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='matches')),
                 ('win', models.BooleanField()),
             ],

@@ -1,6 +1,6 @@
-from django.shortcuts import render
 import requests
 from django.http import JsonResponse
+from myapp.models import *
 
 def auth_42(request):
 	# Récupérer le code d'authentification de la requête GET

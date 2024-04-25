@@ -1,26 +1,11 @@
 from django.db import models
 from django.db.models.functions import Now
-
-class User(models.Model):
-	pseudo = models.CharField(max_length=25, unique=True)
-	avatar = models.TextField(blank=True, default='')
-	email = models.CharField(max_length=255, unique=True)
-	password = models.TextField()
-	bot = models.BooleanField(null=True, default=False)
-	token = models.TextField(unique=True)
-	created_at = models.DateTimeField(auto_now_add=True, blank=True)
-	updated_at = models.DateTimeField(auto_now=True, blank=True)
-
-	def __str__(self) -> str:
-		return self.pseudo
-
-	class Meta:
-		db_table = "myapp_users"
+from users.models import User 
 
 class PrivateMessage(models.Model):
 	content = models.TextField()
-	sender = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to="User", related_name="+")
-	recever = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to="User", related_name="+")
+	sender = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to=User, related_name="+")
+	recever = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to=User, related_name="+")
 	created_at = models.DateTimeField(auto_now_add=True, blank=True)
 
 	class Meta:
@@ -28,7 +13,7 @@ class PrivateMessage(models.Model):
 
 class Channel(models.Model):
 	name = models.CharField(max_length=25, unique=True)
-	owner = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='User', related_name='+')
+	owner = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to=User, related_name='+')
 	created_at = models.DateTimeField(auto_now_add=True, blank=True)
 	updated_at = models.DateTimeField(auto_now=True, blank=True)
 
@@ -53,8 +38,8 @@ class Membership(models.Model):
 
 class Message(models.Model):
 	content = models.TextField()
-	channel = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='Channel')
-	user = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to='User')
+	channel = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to=Channel)
+	user = models.ForeignKey(on_delete=models.deletion.DO_NOTHING, to=User)
 	created_at = models.DateTimeField(auto_now_add=True, blank=True)
 
 	class Meta:
