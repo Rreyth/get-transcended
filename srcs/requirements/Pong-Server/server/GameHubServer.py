@@ -245,18 +245,27 @@ async def handle_client(websocket):
 		if not id in clients:
 			clients[id] = websocket
 			break
-	# print(f"connected from {websocket.remote_address[0]}:{websocket.remote_address[1]}")
  
 	try:
 		async for message in websocket:
 			await parse_msg(message, websocket)
+
+	except websockets.exceptions.ConnectionClosedError:
+		for key, ws in clients.items():
+			if ws == websocket:
+				print(f"Game hub: Client {key}: Connection Closed Error", file=sys.stderr)
+				break
+	except websockets.exceptions.ConnectionClosedOK:
+		for key, ws in clients.items():
+			if ws == websocket:
+				print(f"Game hub: Client {key}: Closed connection", file=sys.stderr)
+				break
 
 	finally:
 		for key, value in clients.items():
 			if value == websocket:
 				del clients[key]
 				break
-		# print(f"disconnected from {websocket.remote_address[0]}:{websocket.remote_address[1]}")
 
 async def main():
 	loop = asyncio.get_running_loop()

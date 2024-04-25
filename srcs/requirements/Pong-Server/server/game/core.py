@@ -20,7 +20,7 @@ class Game:
 		self.winSize = [winWidth, winHeight]
 		self.last = time.time()
 		self.state = "wait"
-		self.clients = set()
+		self.clients = {}
 		self.is_running = True
 		self.start = [4, time.time()]
 		self.hub = False
@@ -82,7 +82,7 @@ class Game:
 		return msg
  
 	async def sendAll(self, msg : dict):
-		for client in self.clients:
+		for client in self.clients.values():
 			await client.send(json.dumps(msg))
 	
 	async def sendHub(self, msg : dict):
@@ -90,7 +90,7 @@ class Game:
 			await hub.send(json.dumps(msg))
  
 	async def closeAll(self):
-		for client in self.clients:
+		for client in self.clients.values():
 			await client.close()
 		await self.hub.close()
  
@@ -109,10 +109,11 @@ class Game:
 		await self.sendAll(msg)
  
 	async def join(self, websocket, name = "Player"):
-		self.clients.add(websocket)
+		# self.clients.add(websocket)
+		self.clients[self.clients.__len__() + 1] = websocket
 		self.players[self.clients.__len__() - 1].name = name
 		if self.clients.__len__() + self.ai.__len__() == self.requiered:
-			for i, client in enumerate(self.clients):
+			for i, client in enumerate(self.clients.values()):
 				await client.send(json.dumps(self.startMsg(i + 1)))
 			await self.sendAll({'type' : 'waiting'})
 			self.state = 'ready'
@@ -185,7 +186,25 @@ async def handle_game(websocket, path):
 				await game.sendAll({'type' : 'start'})
 				asyncio.create_task(run_game())
 
+	except websockets.exceptions.ConnectionClosedError:
+		for key, ws in game.clients.items():
+			if ws == websocket:
+				print(f"Game room: Client {key}: Connection Closed Error", file=sys.stderr)
+				break
+	except websockets.exceptions.ConnectionClosedOK:
+		for key, ws in game.clients.items():
+			if ws == websocket:
+				print(f"Game room: Client {key}: Closed connection", file=sys.stderr)
+				break
+
 	finally:
+		if game.state != 'end' and game.is_running:
+			for key, value in game.clients.items():
+				if value == websocket:
+					del game.clients[key]
+					await game.sendHub(json.dumps(game.endMsg(key, 'quit')))
+					await game.sendAll(game.endMsg(key, 'quit'))
+					break
 		game.is_running = False
 		clients.remove(websocket)
 		if clients.__len__() <= 0:
@@ -220,7 +239,7 @@ async def parse_msg(msg : dict, websocket):
 			await game.hub.send(json.dumps({'type' : 'endGame', 'cmd' : 'quitWait', 'nb' : game.clients.__len__(), 'id' : msg['id']}))
 			await game.sendAll({'type' : 'endGame', 'cmd' : 'quitWait', 'id': msg['id']})
 			await websocket.close()
-			game.clients.remove(websocket)
+			game.clients.pop(msg['id'])
 			if game.clients.__len__() == 0:
 				game.is_running = False
 		else:
