@@ -56,6 +56,7 @@ used_id = []
 fordiben_port = [8000, 8001, 44433, 5432, 6720]
 
 clients = {}
+registered = {}
 client_id = 0
 django_socket = False
 
@@ -94,21 +95,27 @@ def id_generator():
 	return id
 
 async def connection_handler(client_msg, websocket):
-	global django_socket, clients
+	global django_socket, clients, registered
 	if client_msg["type"] == 'connectionRpl':
-		for key, val in clients.items():
+		for key, ws in clients.items():
 			if key == client_msg['id']:
-				await val.send(json.dumps(client_msg))
+				await ws.send(json.dumps(client_msg))
+				if (client_msg['success'] == 'true'):
+					registered[key] = ws
 				break
 	elif django_socket:
-		for key, val in clients.items():
-			if val == websocket:
+		for key, ws in clients.items():
+			if ws == websocket:
 				client_msg['id'] = key
 				break
 		await django_socket.send(json.dumps(client_msg))
 	else:
 		msg = {'type' : 'connectionRpl', 'success' : 'true', 'error' : 'none'}
 		await websocket.send(json.dumps(msg))
+		for key, ws in clients.items():
+			if ws == websocket:
+				registered[key] = ws
+				break
 	
 async def run_game(id, websocket):
 	global rooms, used_port, used_id, django_socket
@@ -231,7 +238,10 @@ async def parse_msg(message, websocket):
 		await connection_handler(client_msg, websocket)
 	if client_msg["type"] == "connect":
 		await connection_handler(client_msg, websocket)
-	#stuck here if not connected ?
+  
+	if not is_registered(websocket):
+		return
+
 	if client_msg["type"] == "quickGame":
 		await handle_quickGame(client_msg, websocket)
 	if client_msg["type"] == "join":
@@ -240,12 +250,12 @@ async def parse_msg(message, websocket):
 		await handle_custom(client_msg, websocket)
 
 async def handle_client(websocket):
-	global clients
+	global clients, registered
 	for id in range(10000):
 		if not id in clients:
 			clients[id] = websocket
 			break
- 
+
 	try:
 		async for message in websocket:
 			await parse_msg(message, websocket)
@@ -265,7 +275,18 @@ async def handle_client(websocket):
 		for key, value in clients.items():
 			if value == websocket:
 				del clients[key]
+				if is_registered(websocket):
+					del registered[key]
 				break
+
+def is_registered(websocket):
+	global registered
+
+	for ws in registered.values():
+		if ws == websocket:
+			return True
+	return False
+
 
 async def main():
 	loop = asyncio.get_running_loop()

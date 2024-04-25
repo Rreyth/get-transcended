@@ -28,7 +28,8 @@ export class Menu {
 		ctx.font = Math.floor(canvas.height * 0.05) + "px pong-teko";
 		if (this.err) {
 			ctx.fillStyle = "rgb(255, 102, 102)";
-			ctx.fillText(this.err, this.buttons[5].x + this.button_size[0] * 1.7, this.buttons[5].y + this.button_size[1] * 0.55);
+			let pos = this.err.length * 0.005
+			ctx.fillText(this.err, this.buttons[5].x + this.button_size[0] + canvas.width * pos, this.buttons[5].y + this.button_size[1] * 0.55);
 			ctx.fillStyle = "white";
 		}
 		ctx.font = Math.floor(canvas.height * 0.085) + "px pong-teko";

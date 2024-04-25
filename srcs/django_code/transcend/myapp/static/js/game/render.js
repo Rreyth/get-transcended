@@ -55,7 +55,7 @@ function render_text(core, nb_players) {
 		}
 		let names_pos = [];
 		for (let i = 1; i < 5; i++)
-			names_pos.push(text[i].length * 0.005);
+			names_pos.push((text[i].length > 3) ? text[i].length * 0.005 : text[i].length * 0.015);
 		pos.push([canvas.width / 2, canvas.height * 0.03],
 				[canvas.width * names_pos[0], canvas.height * 0.03],
 				[canvas.width * (names_pos[1] * 3), canvas.height * 0.03],
