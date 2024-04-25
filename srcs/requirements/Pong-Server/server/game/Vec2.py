@@ -21,7 +21,7 @@ class Vec2:
 		return self.y
 
 	def __ne__(self, other):
-		return self.x != other.x or self.y != other.y
+		return int(self.x) != int(other.x) or int(self.y) != int(other.y)
 
 	def __eq__(self, other):
 		return self.x == other.x and self.y == other.y

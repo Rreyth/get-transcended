@@ -18,7 +18,7 @@ export class AI {
 			this.hitbox = new Hitbox(0, this.pos.y - 1, canvas.width, player.size[1] + 2)
 	}
 
-	update(core, core_delta) { //add smth to suppress wobble
+	update(core, core_delta) {
 		if (core.ball.stick === this.id)
 			this.moves.push("LAUNCH");
 		else {
@@ -31,6 +31,9 @@ export class AI {
 			if (this.target.notEqual(this.pos))
 				this.move();
 		}
+		if (this.target.notEqual(this.pos))
+			if (this.closeEnough())
+				this.target = new Vec2(this.pos.x, this.pos.y);
 	}
 
 	predict(core, delta) {
@@ -58,7 +61,7 @@ export class AI {
 
 		if (is_colliding(ball_box, [ball_cpy.radius * 2, ball_cpy.radius * 2], this.pos, this.size))
 			this.target = new Vec2(this.pos.x, this.pos.y);
-		else if (this.target != this.center || (this.target == this.center && collided)) {
+		else if (this.target.notEqual(this.center) || (this.target.equal(this.center) && collided)) {
 			if (this.side === "left" || this.side === "right")
 				this.target.y += randHit(this.size[1]);
 			else
@@ -94,10 +97,22 @@ export class AI {
 		else
 			this.hitbox = new Hitbox(0, this.pos.y - 1, canvas.width, this.size[1] + 2)
 	}
+
+	closeEnough() {
+		if (this.side === "left" || this.side === "right") {
+			if (Math.abs(this.target.y - this.pos.y) < (this.size[1] * 0.05))
+				return true;
+		}
+		else {
+			if (Math.abs(this.target.x - this.pos.x) < (this.size[0] * 0.05))
+				return true;
+		}
+		return false;
+	}
 }
 
 function randHit(size) {
-	const max = size / 2 - (size * 0.05);
+	const max = size / 2 - (size * 0.07);
 	const min = -max;
 	return Math.floor(Math.random() * (max - min + 1) + min);
 }

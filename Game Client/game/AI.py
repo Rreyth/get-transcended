@@ -1,6 +1,7 @@
 from .config import *
 from .Vec2 import *
 from .Hitbox import *
+import math
 
 class AI:
 	def __init__(self, player):
@@ -29,7 +30,9 @@ class AI:
 			
 			if self.target != self.pos:
 				self.move()
-
+		if self.target != self.pos:
+			if self.closeEnough():
+				self.target = Vec2(self.pos.x, self.pos.y)
 
 	def predict(self, core, delta):
 		sec_to_predict = 5
@@ -57,9 +60,9 @@ class AI:
 			self.target = Vec2(pos=self.pos)
 		elif self.target != self.center or (self.target == self.center and collided):
 			if self.side == "left" or self.side == "right":
-				self.target.y += randint(-(self.size[1] // 2 - 5), (self.size[1] // 2 - 5))
+				self.target.y += randint(-(self.size[1] // 2 - int(self.size[1] * 0.07)), (self.size[1] // 2 - int(self.size[1] * 0.07)))
 			else:
-				self.target.x += randint(-(self.size[0] // 2 - 5), (self.size[0] // 2 - 5))
+				self.target.x += randint(-(self.size[0] // 2 - int(self.size[0] * 0.07)), (self.size[0] // 2 - int(self.size[0] * 0.07)))
   
 
 	def move(self):
@@ -71,3 +74,12 @@ class AI:
 			self.moves.append("UP")
 		elif self.target.y > self.pos.y:	
 			self.moves.append("DOWN")
+   
+	def closeEnough(self):
+		if self.side == "left" or self.side == "right":
+			if abs(self.target.y - self.pos.y) < math.ceil(self.size[1] * 0.07):
+				return True
+		else:
+			if abs(self.target.x - self.pos.x) < math.ceil(self.size[0] * 0.07):
+				return True
+		return False
