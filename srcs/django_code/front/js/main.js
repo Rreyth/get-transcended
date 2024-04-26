@@ -4,7 +4,6 @@ import { Navbar } from "../components/navbar.js";
 import { Chat } from "../components/chat.js";
 import { Message } from "../components/minichat/message.js";
 import { Friend } from "../components/minichat/friend.js";
-import { ChatInput } from "../components/minichat/input.js";
 import { Setting } from "../components/minichat/setting.js";
 
 Component.loader([

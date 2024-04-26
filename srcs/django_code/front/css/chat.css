@@ -52,8 +52,7 @@
 	width: 8.438em;
 	height: 25em;
 	border-right: 0.1em solid rgba(88, 0, 190, 0.5);
-	/* box-shadow: 0.05em 0.05em 0.05em rgba(88, 70, 190, 0.4); */
-	box-shadow: 0px 0px 23px 5px rgba(88, 70, 190, 0.85);
+	/* box-shadow: 0px 0px 23px 5px rgba(88, 70, 190, 0.85); */
 }
 .select-body
 {
@@ -68,8 +67,7 @@
 .select-footer
 {
 	border-top: 0.1em solid rgba(88, 0, 190, 0.5);
-	/* box-shadow: 0.1em 0.1em 0.1em rgba(88, 70, 190, 0.6); */
-	box-shadow: 0px 0px 23px 5px rgba(88, 70, 190, 0.85);
+	/* box-shadow: 0px 0px 23px 5px rgba(88, 70, 190, 0.85); */
 	position: absolute;
 	bottom: 0;
 	left: 0;
@@ -88,8 +86,7 @@
 	width: 0;
 	height: 60%;
 	border-left: 0.1em solid rgba(88, 0, 190, 0.8);
-	/* box-shadow: 0.1em 0.1em 0.1em rgba(88, 70, 190, 0.6); */
-	box-shadow: 0px 0px 23px 5px rgba(88, 70, 190, 0.85);
+	/* box-shadow: 0px 0px 23px 5px rgba(88, 70, 190, 0.85); */
 }
 .user-btn
 {
@@ -142,7 +139,7 @@
 .add-btn
 {
 	border-radius: 2em;
-	box-shadow: 0px 0px 23px 5px rgba(211, 211, 211, 0.5);
+	/* box-shadow: 0px 0px 23px 5px rgba(211, 211, 211, 0.5); */
 	background-color: lightgrey;
 	display: inline-block;
 	justify-content: center;
@@ -173,8 +170,7 @@
 	margin-top: 0.2em;
 	margin-bottom: 0.2em;
 	border-bottom: 0.1em solid rgba(88, 0, 190, 0.8);
-	/* box-shadow: 0.2em 0.2em 0.2em rgba(88, 70, 190, 0.6); */
-	box-shadow: 0px 0px 23px 5px rgba(88, 70, 190, 0.85);
+	/* box-shadow: 0px 0px 23px 5px rgba(88, 70, 190, 0.85); */
 }
 /* ----- user card ----- */
 .users-body
@@ -190,7 +186,7 @@
 	width: 7em;
 	height: 2em;
 	border-radius: 2em;
-	box-shadow: 0px 0px 23px 5px rgba(211, 211, 211, 0.5);
+	/* box-shadow: 0px 0px 23px 5px rgba(211, 211, 211, 0.5); */
 	background-color: grey;
 	display: flex;
     justify-content: flex-start;
@@ -384,7 +380,7 @@
 }
 .msg-footer textarea:focus
 {
-	box-shadow: 0px 0px 23px 5px rgba(88, 70, 190, 0.5);
+	/* box-shadow: 0px 0px 23px 5px rgba(88, 70, 190, 0.5); */
 }
 .msg-footer textarea::-webkit-scrollbar
 {

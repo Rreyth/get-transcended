@@ -19,8 +19,7 @@ export class Friend extends Component
             </div>
         </div>
         `
-        document.addEventListener("DOMContentLoaded", function() {
-            let span = document.querySelector('.scroll-on-hover');
+        let span = this.querySelector('.scroll-on-hover');
             span.addEventListener("mouseover", function() {
                 this.classList.add('scrolling');
                 span.style.overflow = 'visible';
@@ -31,7 +30,6 @@ export class Friend extends Component
                 span.style.overflow = 'hidden';
                 span.style.textOverflow = 'ellipsis';
             });
-        });
     }
 
     handleClick(ev)
