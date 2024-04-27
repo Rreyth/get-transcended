@@ -33,4 +33,3 @@ class Pause:
 						await core.GameRoom.send(json.dumps({'type' : 'quitGame', 'id' : core.id}))
 				core.pause[0] = False
 				self.freeze = False
-	 

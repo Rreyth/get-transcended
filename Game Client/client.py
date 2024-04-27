@@ -22,7 +22,8 @@ async def try_connect(websocket):
 	response : dict = json.loads(await websocket.recv())
 	if response["success"] == "true":
 		print("Connection success")
-		#game.alias = response['alias']
+		if 'alias' in response.keys():
+			game.alias = response['alias']
 	else:
 		print(f"Connection failed: {response['error']}")
 		exit(1)
