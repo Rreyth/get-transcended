@@ -46,6 +46,19 @@ services:
     depends_on:
       - postgres
 
+  adminer:
+    build:
+      context: ./requirements/Adminer
+    container_name: adminer
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - transcendNetwork
+    depends_on:
+      - postgres
+
 
 volumes:
   app:
