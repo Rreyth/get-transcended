@@ -24,7 +24,7 @@ from myapp import views
 # application = get_asgi_application()
 
 websocket_urlpatterns = [
-    path('api/chat', views.MyConsumer.as_asgi()),
+    path('api/chat', views.MyConsumer.as_asgi())
 ]
 application = ProtocolTypeRouter({
     'http': get_asgi_application(),
