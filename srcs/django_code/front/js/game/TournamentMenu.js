@@ -4,10 +4,10 @@ import { Wall } from "./Wall.js";
 import { Player } from "./Player.js";
 import { Obstacle } from "./Obstacle.js";
 import { Ball } from "./Ball.js";
-import { StartScreen } from "./StartScreen.js";
 import { AI } from "./AI.js";
 import { Vec2 } from "./Vec2.js";
 import { is_colliding } from "./Hitbox.js";
+import { Tournament } from "./Tournament.js";
 
 export class TournamentMenu {
 	constructor() {
@@ -55,11 +55,11 @@ export class TournamentMenu {
 					core.state = "menu";
 					core.mode = "none";
 					core.max_score = 10;
-					core.custom_menu = false;
+					core.tournament_menu = false;
 					break;
 				}
 				else if (b.name === "START") {
-					// this.start(core);
+					this.start(core);
 					break;
 				}
 			}
@@ -83,8 +83,11 @@ export class TournamentMenu {
 						this.score += 1;
 				}
 				else if (b === this.param_buttons[2] || b === this.param_buttons[3]) {
-					if (b.name === "-" && this.nb_players > 2)
+					if (b.name === "-" && this.nb_players > 2) {
 						this.nb_players -= 1;
+						if (this.ai_nb > this.nb_players)
+							this.ai_nb = this.nb_players;
+					}
 					else if (b.name === "+")
 						this.nb_players += 1;
 					this.max_ai = this.nb_players;
@@ -113,22 +116,20 @@ export class TournamentMenu {
 			this.initPlayers(core);
 			this.initWalls(core);
 			core.ball = new Ball((this.mod_list.includes("BORDERLESS")) ? true : false);
-			core.state = "start";
+			core.state = "tournament";
 			core.mode = "LOCAL";
 			if (this.mod_list.includes("OBSTACLE"))
 				core.obstacle = new Obstacle();
-			const msg = {"type" : 'custom', 'online' : 'false'};
+			const msg = {"type" : 'tournament', 'online' : 'false'};
 			core.GameHub.send(JSON.stringify(msg));
 		}
 		else if (this.mod_list.includes("ONLINE")) {
-			const msg = {"type" : 'custom', 'online' : 'true', 'mods' : this.mod_list, 'score' : this.score, 'ai' : this.ai_nb, 'players' : Object.keys(this.players).length};
+			const msg = {"type" : 'tournament', 'online' : 'true', 'mods' : this.mod_list, 'score' : this.score, 'ai' : this.ai_nb, 'players' : Object.keys(this.players).length};
 			core.GameHub.send(JSON.stringify(msg));
 			core.online = true;
 		}
-		if (this.mod_list.includes("1V1V1V1"))
-			core.custom_mod = "1V1V1V1";
 
-		core.start_screen = new StartScreen("custom", core.online, (this.mod_list.includes("1V1V1V1")) ? true : false, Object.keys(this.players).length);
+		core.tournament = new Tournament(this.mod_list, this.nb_players, this.ai_nb, core.online);
 	}
 
 	getMods(alias = "Player") {
@@ -137,40 +138,16 @@ export class TournamentMenu {
 			if (b.highlight)
 				this.mod_list.push(b.name);
 		}
-
 		this.players = {};
-		for (let b of this.players_buttons) {
-			if (b.highlight) {
-				if (b.name === "AI VS AI") {
-					this.players[1] = "AI";
-					this.players[2] = "AI";
-				}
-				else if (b.name === "1 VS 1") {
-					this.players[1] = (this.ai_nb < 2) ? alias + "1" : "AI";
-					this.players[2] = (this.ai_nb < 1) ? alias + "2" : "AI";
-				}
-				else if (b.name === "2 VS 2") {
-					this.players[1] = (this.ai_nb < 4) ? alias + "1" : "AI";
-					this.players[2] = (this.ai_nb < 3) ? alias + "2" : "AI";
-					this.players[3] = (this.ai_nb < 2) ? alias + "3" : "AI";
-					this.players[4] = (this.ai_nb < 1) ? alias + "4" : "AI";
-				}
-				else if (b.name === "1V1V1V1") {
-					this.mod_list.push("1V1V1V1");
-					this.players[1] = (this.ai_nb < 4) ? alias + "1" : "AI";
-					this.players[2] = (this.ai_nb < 3) ? alias + "2" : "AI";
-					this.players[3] = (this.ai_nb < 2) ? alias + "3" : "AI";
-					this.players[4] = (this.ai_nb < 1) ? alias + "4" : "AI";
-				}
-				break;
-			}
+		for (let i = 0; i < this.nb_players; i++) {
+			this.players[i + 1] = (this.ai_nb < this.nb_players - i) ? alias + (i + 1).toString() : "AI";
 		}
 	}
 
 	initPlayers(core) {
 		core.players = [];
 		for (const key in this.players)
-			core.players.push(new Player(parseInt(key), this.players[key], Object.keys(this.players).length, this.mod_list.includes("BORDERLESS"), this.mod_list.includes("1V1V1V1")));
+			core.players.push(new Player(parseInt(key), this.players[key], Object.keys(this.players).length, this.mod_list.includes("BORDERLESS"), false));
 		for (let p of core.players)
 			if (p.name === "AI")
 				core.ai.push(new AI(p));
@@ -179,8 +156,6 @@ export class TournamentMenu {
 	initWalls(core) {
 		if (this.mod_list.includes("BORDERLESS"))
 			core.walls = false;
-		else if (this.mod_list.includes("1V1V1V1"))
-			core.walls = [new Wall("up", true), new Wall("down", true), new Wall("left", true), new Wall("right", true)];
 		else
 			core.walls = [new Wall("up", false), new Wall("down", false)];
 	}
