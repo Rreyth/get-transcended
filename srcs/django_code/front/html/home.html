@@ -1,14 +1,26 @@
-<div class="d-flex align-items-center justify-content-center vh-100">
-    <div class="form-group">
-      <label for=""></label>
-      <input type="text"
-        class="form-control" name="" id="" aria-describedby="helpId" placeholder="">
-      <small id="helpId" class="form-text text-muted">Help text</small>
+<div class="d-flex align-items-center justify-content-center vh-100" id="sing-in-form">
+    <div class="form-group flex-column d-flex row-gap-5">
+        <div class="flex-column d-flex row-gap-4">
+            <input class="form-control" type="text" placeholder="Username">
+            <input class="form-control" type="password" placeholder="Password">
+        </div>
+        <button type="button" class="btn btn-primary">Sing in</button>
+    </div>
+</div>
+
+<div class="d-none d-flex align-items-center justify-content-center vh-100" id="sing-up-form">
+    <div class="form-group flex-column d-flex row-gap-5">
+        <div class="flex-column d-flex row-gap-4">
+            <input class="form-control" type="text" placeholder="Username">
+            <input class="form-control" type="email" placeholder="Email">
+            <input class="form-control" type="password" placeholder="Password">
+        </div>
+        <button type="button" class="btn btn-primary">Sing up</button>
     </div>
 </div>
 
 <div class="d-flex flex-column position-absolute fixed-bottom row-gap-3 ms-4 mb-4" style="width: 14em;">
-    <div class="d-flex">
+    <div class="d-flex" id="sing-in-switch">
         <div class="d-flex flex-row align-items-center gap-2 fs-3">
             <div class="d-flex justify-center align-items-center rounded-circle bg-secondary p-2">
                 <i class='bx bx-user bx-lg'></i>
@@ -17,7 +29,7 @@
         </div>
     </div>
 
-    <div class="d-flex">
+    <div class="d-flex" id="sing-up-switch">
         <div class="d-flex flex-row align-items-center gap-2 fs-3">
             <div class="d-flex justify-center align-items-center rounded-circle bg-secondary p-2">
                 <i class='bx bx-user bx-lg'></i>
