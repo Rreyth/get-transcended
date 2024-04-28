@@ -62,6 +62,18 @@ services:
     depends_on:
       - nginx
 
+  adminer:
+    image: adminer:latest
+    container_name: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - transcendNetwork
+    depends_on:
+      - postgres
+
+
 volumes:
   app:
     driver: local
