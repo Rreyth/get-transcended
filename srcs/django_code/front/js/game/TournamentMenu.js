@@ -9,40 +9,37 @@ import { AI } from "./AI.js";
 import { Vec2 } from "./Vec2.js";
 import { is_colliding } from "./Hitbox.js";
 
-export class CustomMenu {
+export class TournamentMenu {
 	constructor() {
 		this.size = [canvas.width * 0.2, canvas.height * 0.1];
 		this.mod_size = [canvas.width * 0.11, canvas.height * 0.07];
 		this.score = 10;
 		this.ai_nb = 0;
 		this.max_ai = 2;
+		this.nb_players = 2;
 		this.down_buttons = [new Button("BACK TO MENU", this.size[0] * 0.1, canvas.height - (this.size[1] * 1.4), this.size[0], this.size[1]),
 				new Button("START", canvas.width - (this.size[0] * 1.1), canvas.height - (this.size[1] * 1.4), this.size[0], this.size[1])];
-		this.players_buttons = [new Button("AI VS AI", canvas.width / 5 - (this.mod_size[0] / 2), canvas.height / 4 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
-       			new Button("1 VS 1", canvas.width / 5 * 2 - (this.mod_size[0] / 2), canvas.height / 4 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
-          		new Button("2 VS 2", canvas.width / 5 * 3 - (this.mod_size[0] / 2), canvas.height / 4 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
-            	new Button("1V1V1V1", canvas.width / 5 * 4 - (this.mod_size[0] / 2), canvas.height / 4 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1])];
-		this.mod_buttons = [new Button("LOCAL", canvas.width / 5 - (this.mod_size[0] / 2), canvas.height / 2 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
-              	new Button("ONLINE", canvas.width / 5 * 2 - (this.mod_size[0] / 2), canvas.height / 2 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
-          		new Button("BORDERLESS", canvas.width / 5 * 3 - (this.mod_size[0] / 2), canvas.height / 2 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
-            	new Button("OBSTACLE", canvas.width / 5 * 4 - (this.mod_size[0] / 2), canvas.height / 2 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1])];
-		this.param_buttons = [new Button("-", canvas.width * 0.415, canvas.height / 4 * 3 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
-				new Button("+", canvas.width * 0.435, canvas.height / 4 * 3 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
-				new Button("-", canvas.width * 0.755, canvas.height / 4 * 3 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
-				new Button("+", canvas.width * 0.775, canvas.height / 4 * 3 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03)];
-		this.players_buttons[1].highlight = true;
+		this.mod_buttons = [new Button("LOCAL", canvas.width / 5 - (this.mod_size[0] / 2), canvas.height / 3 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
+              	new Button("ONLINE", canvas.width / 5 * 2 - (this.mod_size[0] / 2), canvas.height / 3 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
+          		new Button("BORDERLESS", canvas.width / 5 * 3 - (this.mod_size[0] / 2), canvas.height / 3 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
+            	new Button("OBSTACLE", canvas.width / 5 * 4 - (this.mod_size[0] / 2), canvas.height / 3 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1])];
+		this.param_buttons = [new Button("-", canvas.width * 0.335, canvas.height / 3 * 2 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
+				new Button("+", canvas.width * 0.355, canvas.height / 3 * 2 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
+				new Button("-", canvas.width * 0.56, canvas.height / 3 * 2 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
+				new Button("+", canvas.width * 0.58, canvas.height / 3 * 2 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
+				new Button("-", canvas.width * 0.835, canvas.height / 3 * 2 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
+				new Button("+", canvas.width * 0.855, canvas.height / 3 * 2 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03)];
 		this.mod_buttons[0].highlight = true;
 	}
 
 	draw() {
-		ctx.fillText("CUSTOM", canvas.width / 2, canvas.height * 0.1);
+		ctx.fillText("TOURNAMENT", canvas.width / 2, canvas.height * 0.1);
 		for (let b of this.down_buttons)
 			b.draw();
 		ctx.font = Math.floor(canvas.height * 0.06) + "px pong-teko";
-		ctx.fillText("MAX SCORE = " + this.score, canvas.width / 3, canvas.height / 4 * 3);
-		ctx.fillText("AI OPPONENTS = " + this.ai_nb, canvas.width / 3 * 2, canvas.height / 4 * 3);
-		for (let b of this.players_buttons)
-			b.draw();
+		ctx.fillText("MATCH SCORE = " + this.score, canvas.width / 4, canvas.height / 3 * 2);
+		ctx.fillText("PLAYERS = " + this.nb_players, canvas.width / 2, canvas.height / 3 * 2);
+		ctx.fillText("AI OPPONENTS = " + this.ai_nb, canvas.width / 4 * 3, canvas.height / 3 * 2);
 		for (let b of this.mod_buttons)
 			b.draw();
 		for (let b of this.param_buttons)
@@ -62,20 +59,9 @@ export class CustomMenu {
 					break;
 				}
 				else if (b.name === "START") {
-					this.start(core);
+					// this.start(core);
 					break;
 				}
-			}
-		}
-		for (let b of this.players_buttons) {
-			if (is_colliding(pos, [0, 0], b.hitbox.pos, this.mod_size)) {
-				if (!b.highlight)
-					for (let other of this.players_buttons)
-						other.highlight = false;
-				b.highlight = !b.highlight;
-				this.max_ai = (b.name === "AI VS AI" || b.name === "1 VS 1") ? 2 : 4;
-				this.ai_nb = 0;
-				break;
 			}
 		}
 		for (let b of this.mod_buttons) {
@@ -91,10 +77,17 @@ export class CustomMenu {
 		for (let b of this.param_buttons) {
 			if (is_colliding(pos, [0, 0], b.hitbox.pos, [b.width, b.height])) {
 				if (b === this.param_buttons[0] || b === this.param_buttons[1]) {
-					if (b.name === "-" && this.score > 0)
+					if (b.name === "-" && this.score > 1)
 						this.score -= 1;
 					else if (b.name === "+")
 						this.score += 1;
+				}
+				else if (b === this.param_buttons[2] || b === this.param_buttons[3]) {
+					if (b.name === "-" && this.nb_players > 2)
+						this.nb_players -= 1;
+					else if (b.name === "+")
+						this.nb_players += 1;
+					this.max_ai = this.nb_players;
 				}
 				else {
 					if (b.name === "-" && this.ai_nb > 0)
@@ -105,24 +98,9 @@ export class CustomMenu {
 				break;
 			}
 		}
-
-		if (this.players_buttons[0].highlight) {
-			this.ai_nb = 2;
-			this.mod_buttons[0].highlight = true;
+		if (this.ai_nb >= this.nb_players - 1) {
 			this.mod_buttons[1].highlight = false;
-		}
-		else if (this.players_buttons[1].highlight && this.ai_nb > 0) {
 			this.mod_buttons[0].highlight = true;
-			this.mod_buttons[1].highlight = false;
-		}
-		else if (this.players_buttons[3].highlight)
-			this.mod_buttons[2].highlight = false;
-
-		if (this.players_buttons[2].highlight || this.players_buttons[3].highlight) {
-			if (this.ai_nb >= 3) {
-				this.mod_buttons[0].highlight = true;
-				this.mod_buttons[1].highlight = false;
-			}
 		}
 	}
 
@@ -208,27 +186,15 @@ export class CustomMenu {
 	}
 
 	validStart() {
-		let selected = false;
-		for (let b of this.players_buttons) {
-			if (b.highlight) {
-				selected = true;
-				break;
-			}
-		}
-		if (!selected)
-			return false;
-		selected = false;
 		for (let b of this.mod_buttons) {
 			if (b.highlight && b.name === "LOCAL") {
-				selected = true;
-				break;
+				return true;
 			}
 			if (b.highlight && b.name === "ONLINE") {
-				selected = true;
-				break;
+				return true;
 			}
 		}
-		return selected;
+		return false;
 	}
 
 	responsive() {
@@ -237,19 +203,16 @@ export class CustomMenu {
 
 		this.down_buttons = [new Button("BACK TO MENU", this.size[0] * 0.1, canvas.height - (this.size[1] * 1.4), this.size[0], this.size[1]),
 				new Button("START", canvas.width - (this.size[0] * 1.1), canvas.height - (this.size[1] * 1.4), this.size[0], this.size[1])];
-		this.players_buttons = [new Button("AI VS AI", canvas.width / 5 - (this.mod_size[0] / 2), canvas.height / 4 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
-       			new Button("1 VS 1", canvas.width / 5 * 2 - (this.mod_size[0] / 2), canvas.height / 4 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
-          		new Button("2 VS 2", canvas.width / 5 * 3 - (this.mod_size[0] / 2), canvas.height / 4 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
-            	new Button("1V1V1V1", canvas.width / 5 * 4 - (this.mod_size[0] / 2), canvas.height / 4 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1])];
-		this.mod_buttons = [new Button("LOCAL", canvas.width / 5 - (this.mod_size[0] / 2), canvas.height / 2 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
-              	new Button("ONLINE", canvas.width / 5 * 2 - (this.mod_size[0] / 2), canvas.height / 2 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
-          		new Button("BORDERLESS", canvas.width / 5 * 3 - (this.mod_size[0] / 2), canvas.height / 2 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
-            	new Button("OBSTACLE", canvas.width / 5 * 4 - (this.mod_size[0] / 2), canvas.height / 2 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1])];
-		this.param_buttons = [new Button("-", canvas.width * 0.415, canvas.height / 4 * 3 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
-				new Button("+", canvas.width * 0.435, canvas.height / 4 * 3 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
-				new Button("-", canvas.width * 0.755, canvas.height / 4 * 3 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
-				new Button("+", canvas.width * 0.775, canvas.height / 4 * 3 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03)];
-		this.players_buttons[1].highlight = true;
+		this.mod_buttons = [new Button("LOCAL", canvas.width / 5 - (this.mod_size[0] / 2), canvas.height / 3 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
+              	new Button("ONLINE", canvas.width / 5 * 2 - (this.mod_size[0] / 2), canvas.height / 3 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
+          		new Button("BORDERLESS", canvas.width / 5 * 3 - (this.mod_size[0] / 2), canvas.height / 3 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1]),
+            	new Button("OBSTACLE", canvas.width / 5 * 4 - (this.mod_size[0] / 2), canvas.height / 3 - (this.mod_size[1] / 2), this.mod_size[0], this.mod_size[1])];
+		this.param_buttons = [new Button("-", canvas.width * 0.335, canvas.height / 3 * 2 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
+				new Button("+", canvas.width * 0.355, canvas.height / 3 * 2 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
+				new Button("-", canvas.width * 0.56, canvas.height / 3 * 2 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
+				new Button("+", canvas.width * 0.58, canvas.height / 3 * 2 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
+				new Button("-", canvas.width * 0.835, canvas.height / 3 * 2 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
+				new Button("+", canvas.width * 0.855, canvas.height / 3 * 2 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03)];
 		this.mod_buttons[0].highlight = true;
 	}
 }

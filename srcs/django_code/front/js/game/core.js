@@ -92,5 +92,7 @@ export class Game {
 			render.render_pause(this);
 		else if (this.state === "game")
 			render.render_game(this);
+		else if (this.state === "tournament menu" || this.state === "tournament")
+			render.tournament(this);
 	}
 }

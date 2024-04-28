@@ -51,5 +51,7 @@ export function update_sizes(core, old_sizes) {
 			wall.responsive();
 	if (core.obstacle)
 		core.obstacle.responsive();
+	if (core.tournament_menu)
+		core.tournament_menu.responsive();
 	core.render();
 }
