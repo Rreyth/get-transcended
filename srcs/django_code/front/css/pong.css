@@ -1,0 +1,18 @@
+html, body {
+	height: 100%;
+	margin: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+canvas {
+	border: 1px solid black;
+}
+
+@font-face {
+	font-family: 'pong-teko';
+	src: url("Teko-Regular.ttf") format("truetype");
+	font-weight: normal;
+	font-style: normal;
+}

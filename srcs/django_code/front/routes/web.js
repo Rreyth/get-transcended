@@ -12,6 +12,13 @@ Router.set('/login', () => {
 	render('login')
 })
 
+Router.set('/pong', () => {
+	render('pong')
+	import("../js/pong.js").then(m => {
+		m.connect_hub()
+	})
+})
+
 Router.notFound(() => {
     render('404')
 })
