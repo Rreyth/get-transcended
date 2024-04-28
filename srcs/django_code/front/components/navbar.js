@@ -1,12 +1,16 @@
-import {Component} from "../js/component.js";
+import { Component } from "../js/component.js";
+import { user } from "../js/helpers.js";
 
 export class Navbar extends Component {
     static getName() {
         return "nav";
     }
 
-    connectedCallback() {
-        this.innerHTML = content;
+    async connectedCallback() {
+        if (await user() != null)
+        {
+            this.innerHTML = content;
+        }
     }
 }
 
