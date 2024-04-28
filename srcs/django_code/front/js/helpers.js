@@ -30,32 +30,20 @@ export const api = async (method, path, data = {}, token = null) => {
 }
 
 export const user = async () => {
-    let u = await cookieStore.get("user")
+    const token = await user_token()
 
-    if (u == null)
+    if (token == null)
     {
-        const token = await user_token()
-
-        if (token == null)
-        {
-            return undefined
-        }
-
-        const response = await api('GET', '/user', {}, token)
-
-        if (response.ok)
-        {
-            const json = await response.json()
-
-            cookieStore.set({ name: "user", value: JSON.stringify(json) })
-
-            return json
-        }
-
         return undefined
     }
 
-    return JSON.parse(u.value)
+    let base64Url = token.split('.')[1];
+    let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    let jsonPayload = decodeURIComponent(window.atob(base64).split('').map((c) => {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
 }
 
 export const auth = async (username, password) => {
