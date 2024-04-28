@@ -2,6 +2,18 @@ import { Router, render } from "../js/router.js";
 
 Router.set('/', () => {
 	render('home')
+
+	console.log(document)
+
+	document.querySelector('#sing-in-switch').addEventListener('click', (e) => {
+		document.querySelector("#sing-in-form").classList.remove("d-none")
+		document.querySelector("#sing-up-form").classList.add("d-none")
+	})
+
+	document.querySelector("#sing-up-switch").addEventListener('click', (e) => {
+		document.querySelector("#sing-in-form").classList.add("d-none")
+		document.querySelector("#sing-up-form").classList.remove("d-none")
+	})
 }).setName('home')
 
 Router.set('/about', () => {
