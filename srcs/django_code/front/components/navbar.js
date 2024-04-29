@@ -14,7 +14,7 @@ export class Navbar extends Component {
     }
 }
 
-const content = `
+const content = /*html*/`
 
 <!-- new navbar ? -->
 <!-- https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_navbar_hide_scroll -->
