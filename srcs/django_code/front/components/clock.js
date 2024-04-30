@@ -22,7 +22,7 @@ export class Clock extends Component {
 }
 
 const content = /*html*/`
-	<div style="font-size: 5em;">
-		<p id="clock-time"></p>
+	<div>
+		<span style="font-size: 5em;" id="clock-time"></span>
 	</div>
 `;
