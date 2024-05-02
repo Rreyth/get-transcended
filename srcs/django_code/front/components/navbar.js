@@ -10,78 +10,59 @@ export class Navbar extends Component {
     }
 }
 
-const content = `
+const content = /* html */ `
+    <nav class="navbar fixed-bottom navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid text-center">
 
-<!-- new navbar ? -->
-<!-- https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_navbar_hide_scroll -->
-<nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/">Transcendence</a>
-        <button
-                class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarText"
-                aria-controls="navbarText"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-        >
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarText">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" href="/">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/about">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Pricing</a>
-                </li>
-            </ul>
-            <span class="navbar-text">
-        <button
-                type="button"
-                class="btn btn-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#exampleModal"
-        >
-          Login
-        </button>
-      </span>
-        </div>
-    </div>
-</nav>
 
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="log-content modal-content">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-            <div class="loginbox">
-                <form>
-                    <!--<h2>Login</h2>-->
-                    <div class="box">
-                        <input type="text" name="username" required="" autocomplete="username">
-                        <label>Username</label>
+            <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+
+                <div class="d-flex align-items-center justify-content-center">
+                    <div class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4" style="cursor: pointer; width: 3em; height: 3em;">
+                        <i class='bx bxs-cog bx-md'></i>
                     </div>
-                    <div class="box">
-                        <input type="password" name="password" required="" autocomplete="password">
-                        <label>Password</label>
+                    <div class="px-2">
+
+                        <div class="form-outline">
+                            <input type="text" class="form-control ps-5 rounded-4" placeholder="User" style="height: 3em;"/>
+                            <i class="bx bx-search-alt bx-md ms-3 text-primary"
+                                style="position: absolute; transform: translate(-385%,-125%); pointer-events: none;"></i>
+                        </div>
+
                     </div>
-                    <div style="width: 100%; text-align: center; display: inline-block;">
-                        <a href="https://google.com" class="mx-1">
-                            Connect
-                        </a>
-                        <a id="1"
-                           href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-b87436860473c1cf2dcaf70686636bad4bb15a2af3ec8ab615615dba0014102c&redirect_uri=https%3A%2F%2F127.0.0.1%3A44433%2Fauth%2F42%2F&response_type=code"
-                           class="mx-1">
-                            42 Login
-                        </a>
+                </div>
+                <div class="d-flex align-items-center justify-content-center">
+                    <div class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4" style="cursor: pointer; width: 3em; height: 3em;">
+                        <i class='bx bx-history bx-md'></i>
                     </div>
-                </form>
+                    <div class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4" style="cursor: pointer; width: 3em; height: 3em;">
+                        <i class='bx bx-joystick bx-md'></i>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4" style="cursor: pointer; width: 3em; height: 3em;">
+                        <i class='bx bx-info-circle bx-md'></i>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-center">
+                    <div class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4" style="width: 14em; height: 3em;">
+                        <i class='bx bx-chat bx-md' ></i>
+                        <span class="w-100">MESSAGES</span>
+                    </div>
+                    <div class="bg-secondary px-2 mx-2 rounded-4" style="width: 3em; height: 3em;">
+                        <i class='bx bxs-cog'></i>
+                    </div>
+                </div>
+
+
+
             </div>
+
+
         </div>
-    </div>
-</div>
+    </nav>
 `;
