@@ -76,6 +76,8 @@ export function mouse_handler(core, pos) {
 		core.wait_screen.click(core, pos);
 	else if (core.state === "tournament menu")
 		core.tournament_menu.click(core, pos);
+	else if (core.state === "tournament")
+		core.tournament.click(core, pos);
 }
 
 function ai_moves(core, player) {

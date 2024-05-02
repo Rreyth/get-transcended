@@ -54,6 +54,6 @@ export function update_sizes(core, old_sizes) {
 	if (core.tournament_menu)
 		core.tournament_menu.responsive();
 	if (core.tournament)
-		core.tournament.responsive();
+		core.tournament.responsive(old_sizes);
 	core.render();
 }
