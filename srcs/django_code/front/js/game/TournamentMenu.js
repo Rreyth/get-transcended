@@ -129,7 +129,7 @@ export class TournamentMenu {
 			core.online = true;
 		}
 
-		core.tournament = new Tournament(this.mod_list, this.nb_players, this.ai_nb, core.online);
+		core.tournament = new Tournament(this.mod_list, this.nb_players, this.ai_nb, this.score, core.online);
 	}
 
 	getMods(alias = "Player") {
