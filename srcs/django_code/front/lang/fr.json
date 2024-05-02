@@ -1,3 +1,6 @@
 {
-    "word": "mot"
+    "word": "mot",
+    "home": {
+        "welcome": "bienvenue"
+    }
 }

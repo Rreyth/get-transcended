@@ -12,12 +12,12 @@ export const translate = async (key) => {
 
     if (response.ok)
     {
-        const value = (await response.json())[key]
+        let keys = key.split(".")
+        let value = null
 
-        if (value == null)
+        for (let k of keys)
         {
-            cookieStore.set({ name: "lang", value: default_lang })
-            return await translate(key)
+            value = value == null ? (await response.json())[k] : value[k]
         }
 
         return value
