@@ -5,24 +5,29 @@ export class Clock extends Component {
         return "clock";
     }
 
-    connectedCallback() {
-		this.innerHTML = content;
-
-
-		setInterval(() => {
-			let date = new Date();
+	getHours()
+	{
+		let date = new Date();
 			let heures = (date.getHours() < 10) ? '0' + date.getHours() : date.getHours();
 			let minutes = (date.getMinutes() < 10) ? '0' + date.getMinutes() : date.getMinutes();
 			// let format = heures + ':' + minutes;
 			let format = `${heures} : ${minutes}`;
 	
-			this.querySelector('#clock-time').innerHTML = format;
+			return format;
+	}
+
+    connectedCallback() {
+		this.innerHTML = content;
+
+		this.querySelector('#clock-time').innerHTML = this.getHours();
+
+		setInterval(() => {
+			this.querySelector('#clock-time').innerHTML = this.getHours();
 		}, 500);
     }
 }
 
 const content = /*html*/`
-	<div>
-		<span style="font-size: 5em;" id="clock-time"></span>
-	</div>
+	<p style="font-size: 5em;" id="clock-time"></p>
+	<p style="font-size: 2em;" id="clock-date"></p>
 `;
