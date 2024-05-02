@@ -24,6 +24,12 @@ export class Tournament {
 	}
 
 	draw() {
+		ctx.fillText("ID : TODO", canvas.width * 0.06, canvas.height * 0.1);
+		ctx.font = Math.floor(canvas.height * 0.06) + "px pong-teko";
+		this.button.draw();
+		this.leftBox();
+		this.rightBox();
+		ctx.font = Math.floor(canvas.height * 0.085) + "px pong-teko";
 		for (let b of this.visual) {
 			b.draw();
 		}
@@ -31,12 +37,6 @@ export class Tournament {
 			for (let arrow of this.arrows)
 				arrow.draw()
 		}
-		ctx.fillText("ID : TODO", canvas.width * 0.06, canvas.height * 0.1);
-		ctx.font = Math.floor(canvas.height * 0.06) + "px pong-teko";
-		this.button.draw();
-		this.leftBox();
-		this.rightBox();
-		ctx.font = Math.floor(canvas.height * 0.085) + "px pong-teko";
 	}
 
 	rightBox() {
@@ -45,11 +45,15 @@ export class Tournament {
 		const gap = canvas.height * 0.04;
 		let pos = this.start_names;
 		for (let i = 0; i < this.nb_players; i++) {
-			ctx.fillText("PLAYER", canvas.width * 0.88, pos);
-			ctx.fillText("STATE", canvas.width * 0.94, pos);
+			ctx.fillText("PLAYER", canvas.width * 0.88, pos); //max 8 carac else 8 + '.'
+			ctx.fillText("(STATE)", canvas.width * 0.94, pos);
 			pos += gap;
 		}
 		ctx.textAlign = "center";
+		ctx.fillStyle = "rgb(0, 0, 0)";
+		ctx.fillRect(this.visual[1].x, 0, this.visual[1].width, this.visual[1].y);
+		ctx.fillRect(this.visual[1].x, this.visual[1].y + this.size[1], this.visual[1].width, this.visual[1].y);
+		ctx.fillStyle = "white";
 	}
 
 	leftBox() {
@@ -96,6 +100,7 @@ export class Tournament {
 			core.state = "menu";
 			core.mode = "none";
 			core.max_score = 10;
+			core.online = false;
 			core.tournament_menu = false;
 			core.tournament = false;
 			//add leave state + msg for others

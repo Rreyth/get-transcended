@@ -40,11 +40,14 @@ window.addEventListener('keyup', (event) => {
     delete game.inputs[event.key];
 });
 
-// const container = document.getElementById('canvasContainer');
-// console.log(container);
-// container.addEventListener('scroll', function() {
-// 	console.log("scrolled");
-// });
+canvas.addEventListener('wheel', (event) => {
+	if (game.state === "tournament") {
+		if (event.deltaY > 0)
+			game.tournament.scroll("down");
+		else 
+			game.tournament.scroll("up");
+	}
+});
 
 canvas.addEventListener("click", game.mouse_input);
 

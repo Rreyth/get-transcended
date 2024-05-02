@@ -80,6 +80,9 @@ export class Menu {
 		if (name === "CUSTOM") {
 			core.custom_menu = new CustomMenu();
 			core.state = "custom";
+			this.buttons[5].name = "";
+			this.buttons[5].highlight = false;
+			this.err = false;
 		}
 		if (name === "ONLINE") {
 			const msg = {"type" : "quickGame", "cmd" : "join", "online" : "true"};
@@ -88,9 +91,13 @@ export class Menu {
 		if (name === "TOURNAMENT") {
 			core.tournament_menu = new TournamentMenu();
 			core.state = "tournament menu";
+			this.buttons[5].name = "";
+			this.buttons[5].highlight = false;
+			this.err = false;
 		}
 		if (core.mode != "none") {
 			this.buttons[5].name = "";
+			this.buttons[5].highlight = false;
 			this.err = false;
 			if (!core.start_screen)
 				core.start_screen = new StartScreen(core.mode, core.online);
