@@ -1,10 +1,11 @@
-export const trans = async (key) => {
+export const translate = async (key) => {
+    const default_lang = "en"
     let lang = await cookieStore.get("lang")
 
     if (lang == null)
     {
-        cookieStore.set({ name: "lang", value: "fr" })
-        lang = { value: "fr" }
+        cookieStore.set({ name: "lang", value: default_lang })
+        lang = { value: default_lang }
     }
 
     const response = await fetch(`https://${location.hostname}:${location.port}/static/lang/${lang.value}.json`)
@@ -13,8 +14,15 @@ export const trans = async (key) => {
     {
         const value = (await response.json())[key]
 
-        return value == null ? key : value;
+        if (value == null)
+        {
+            cookieStore.set({ name: "lang", value: default_lang })
+            return await translate(key)
+        }
+
+        return value
     }
 
-    return key;
+    cookieStore.set({ name: "lang", value: default_lang })
+    return await translate(key);
 }
