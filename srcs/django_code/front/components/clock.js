@@ -10,7 +10,6 @@ export class Clock extends Component {
 		let date = new Date();
 			let heures = (date.getHours() < 10) ? '0' + date.getHours() : date.getHours();
 			let minutes = (date.getMinutes() < 10) ? '0' + date.getMinutes() : date.getMinutes();
-			// let format = heures + ':' + minutes;
 			let format = `${heures} : ${minutes}`;
 	
 			return format;
@@ -28,6 +27,6 @@ export class Clock extends Component {
 }
 
 const content = /*html*/`
-	<p style="font-size: 5em;" id="clock-time"></p>
-	<p style="font-size: 2em;" id="clock-date"></p>
+	<span style="font-size: 8em; font-family: 'pong-teko';" id="clock-time"></span>
+	<span style="font-size: 3em; margin-top: -1.3em; font-family: 'pong-teko';" id="clock-date">02 MAI 2024</span>
 `;
