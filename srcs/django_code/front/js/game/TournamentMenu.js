@@ -27,8 +27,8 @@ export class TournamentMenu {
 				new Button("+", canvas.width * 0.355, canvas.height / 3 * 2 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
 				new Button("-", canvas.width * 0.56, canvas.height / 3 * 2 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
 				new Button("+", canvas.width * 0.58, canvas.height / 3 * 2 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
-				new Button("-", canvas.width * 0.835, canvas.height / 3 * 2 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
-				new Button("+", canvas.width * 0.855, canvas.height / 3 * 2 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03)];
+				new Button("-", canvas.width * 0.785, canvas.height / 3 * 2 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
+				new Button("+", canvas.width * 0.805, canvas.height / 3 * 2 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03)];
 		this.mod_buttons[0].highlight = true;
 	}
 
@@ -39,7 +39,7 @@ export class TournamentMenu {
 		ctx.font = Math.floor(canvas.height * 0.06) + "px pong-teko";
 		ctx.fillText("MATCH SCORE = " + this.score, canvas.width / 4, canvas.height / 3 * 2);
 		ctx.fillText("PLAYERS = " + this.nb_players, canvas.width / 2, canvas.height / 3 * 2);
-		ctx.fillText("AI OPPONENTS = " + this.ai_nb, canvas.width / 4 * 3, canvas.height / 3 * 2);
+		ctx.fillText("AI = " + this.ai_nb, canvas.width / 4 * 3, canvas.height / 3 * 2);
 		for (let b of this.mod_buttons)
 			b.draw();
 		for (let b of this.param_buttons)
@@ -129,7 +129,9 @@ export class TournamentMenu {
 			core.online = true;
 		}
 
-		core.tournament = new Tournament(this.mod_list, this.nb_players, this.ai_nb, this.score, core.online);
+		core.tournament = new Tournament(this.mod_list, this.nb_players, this.ai_nb, this.score, core.online, new Player(1, core.alias,  this.nb_players, this.mod_list.includes("BORDERLESS"), false));
+		if (!core.online)
+			core.tournament.initPlayers(core.players);
 	}
 
 	getMods(alias = "Player") {

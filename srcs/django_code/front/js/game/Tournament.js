@@ -5,7 +5,7 @@ import { canvas, ctx } from "./canvas.js";
 import { is_colliding } from "./Hitbox.js";
 
 export class Tournament {
-	constructor(mods, nb_players, nb_ai, max_score, online) { //state = (waiting, ongoing, interlude, end) //receive room id //add spec state ?
+	constructor(mods, nb_players, nb_ai, max_score, online, creator) { //state = (waiting, ongoing, interlude, end) //receive room id //add spec state ?
 		this.id = 1234;
 		this.button = new Button("LEAVE", canvas.width * 0.015, canvas.height * 0.9, canvas.width * 0.11, canvas.height * 0.07);
 		this.size = [canvas.width * 0.2, canvas.height * 0.4];
@@ -26,12 +26,22 @@ export class Tournament {
 		this.timer = [5, Date.now() / 1000];
 		if (nb_players > 20) {
 			this.arrows = [new Arrow("", canvas.width * 0.977, canvas.height / 2 - (this.size[1] * 0.49), canvas.width * 0.02, canvas.height * 0.02, "up"),
-							new Arrow("", canvas.width * 0.977, canvas.height / 2 + (this.size[1] * 0.465), canvas.width * 0.02, canvas.height * 0.02, "down")];
+			new Arrow("", canvas.width * 0.977, canvas.height / 2 + (this.size[1] * 0.465), canvas.width * 0.02, canvas.height * 0.02, "down")];
 		}
 		this.nb_match = nb_players - 1;
+		this.players = new Map();
+		this.players.set(creator, "(SPEC)");
+	}
+
+	initPlayers(players) {
+		this.players = new Map();
+		for (const player of players) {
+			this.players.set(player, "(SPEC)");
+		}
 	}
 
 	update() { // update next match players //winner ?
+		//set match list -> if someone left or lose -> skip it (if leave after matchmaking -> forfeit)
 		if (this.state === "interlude") {
 			const tmp = Date.now() / 1000;
 			if (tmp - this.timer[1] >= 1) {
@@ -86,7 +96,7 @@ export class Tournament {
 			ctx.fillText("P1 - P2", canvas.width / 2, canvas.height * 0.5); // replace with players alias
 			ctx.fillText(this.timer[0].toString(), canvas.width / 2, canvas.height * 0.6);
 		}
-		else if (this.state === "ongoing") {
+		else if (this.state === "ongoing") { //add spec state ??
 			ctx.fillText("ONGOING MATCH", canvas.width / 2, canvas.height / 2);
 			//render_game with a ratio and a pos (if spec) (only online)
 			//render_game (if playing)
@@ -103,9 +113,9 @@ export class Tournament {
 		ctx.textAlign = "left";
 		const gap = canvas.height * 0.04;
 		let pos = this.start_names;
-		for (let i = 0; i < this.nb_players; i++) {
-			ctx.fillText("PLAYER", canvas.width * 0.86, pos); //max 9 carac else 9 + '.'
-			ctx.fillText("(STATE)", canvas.width * 0.93, pos); //player state = (left, play, spec, lose, win)
+		for (const [player, state] of this.players) {
+			ctx.fillText(player.name, canvas.width * 0.86, pos); //max 9 carac else 9 + '.'
+			ctx.fillText(state, canvas.width * 0.93, pos); //player state = (left, play, spec, lose, win)
 			pos += gap;
 		}
 		ctx.textAlign = "center";
@@ -182,5 +192,7 @@ export class Tournament {
 			this.arrows = [new Arrow("", canvas.width * 0.977, canvas.height / 2 - (this.size[1] * 0.49), canvas.width * 0.02, canvas.height * 0.02, "up"),
 							new Arrow("", canvas.width * 0.977, canvas.height / 2 + (this.size[1] * 0.465), canvas.width * 0.02, canvas.height * 0.02, "down")];
 		}
+		const spec_size = [canvas.width  * 0.65, canvas.height * 0.65];
+		this.spec_screen = new Button("", (canvas.width / 2) - (spec_size[0] / 2), (canvas.height / 2) - (spec_size[1] / 2), spec_size[0], spec_size[1], true);
 	}
 }
