@@ -26,6 +26,9 @@ export function update_all(core, delta) {
 		if (core.start_screen.timer === 0)
 			core.state = "game";
 	}
+	if (core.state === "tournament") {
+		core.tournament.update();
+	}
 }
 
 export function update_sizes(core, old_sizes) {

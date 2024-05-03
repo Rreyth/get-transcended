@@ -5,7 +5,8 @@ import { canvas, ctx } from "./canvas.js";
 import { is_colliding } from "./Hitbox.js";
 
 export class Tournament {
-	constructor(mods, nb_players, nb_ai, max_score, online) { //state = (waiting, ongoing, end)
+	constructor(mods, nb_players, nb_ai, max_score, online) { //state = (waiting, ongoing, interlude, end) //receive room id //add spec state ?
+		this.id = 1234;
 		this.button = new Button("LEAVE", canvas.width * 0.015, canvas.height * 0.9, canvas.width * 0.11, canvas.height * 0.07);
 		this.size = [canvas.width * 0.2, canvas.height * 0.4];
 		this.visual = [new Button("", -(canvas.width * 0.05), canvas.height / 2 - (this.size[1] / 2), this.size[0], this.size[1], true)];
@@ -21,7 +22,8 @@ export class Tournament {
 		this.nb_players = (online) ? 1 : nb_players;
 		this.mods = mods;
 		this.online = online;
-		this.state = (online) ? "waiting" : "ongoing";
+		this.state = (online) ? "waiting" : "interlude";
+		this.timer = [5, Date.now() / 1000];
 		if (nb_players > 20) {
 			this.arrows = [new Arrow("", canvas.width * 0.977, canvas.height / 2 - (this.size[1] * 0.49), canvas.width * 0.02, canvas.height * 0.02, "up"),
 							new Arrow("", canvas.width * 0.977, canvas.height / 2 + (this.size[1] * 0.465), canvas.width * 0.02, canvas.height * 0.02, "down")];
@@ -29,10 +31,35 @@ export class Tournament {
 		this.nb_match = nb_players - 1;
 	}
 
-	draw(id = 0) { //add top and bot text
+	update() { // update next match players //winner ?
+		if (this.state === "interlude") {
+			const tmp = Date.now() / 1000;
+			if (tmp - this.timer[1] >= 1) {
+				this.timer[0]--;
+				this.timer[1] = tmp;
+			}
+			if (this.timer[0] <= 0) {
+				this.timer[0] = 5;
+				this.state = "ongoing";
+			}
+		}
+	}
+
+	draw() {
 		if (this.online)
-			ctx.fillText("ID : " + id, canvas.width * 0.06, canvas.height * 0.1);
+			ctx.fillText("ID : " + this.id, canvas.width * 0.06, canvas.height * 0.1);
+		ctx.font = Math.floor(canvas.height * 0.15) + "px pong-teko";
+		ctx.fillText("TOURNAMENT", canvas.width / 2, canvas.height * 0.1);
 		ctx.font = Math.floor(canvas.height * 0.06) + "px pong-teko";
+		if (this.state === "ongoing") {
+			ctx.fillText("SPECTATING", canvas.width / 2, canvas.height * 0.87);
+			ctx.textAlign = "left";
+			ctx.fillText("PLAYER1", this.spec_screen.x, canvas.height * 0.94); //player alias
+			ctx.textAlign = "right";
+			ctx.fillText("PLAYER2", this.spec_screen.x + this.spec_screen.width, canvas.height * 0.94); //player alias
+			ctx.textAlign = "center";
+			ctx.fillText("VS", canvas.width / 2, canvas.height * 0.94);
+		}
 		this.button.draw();
 		this.leftBox();
 		this.rightBox();
@@ -47,12 +74,27 @@ export class Tournament {
 		}
 	}
 
-	centerBox() { //add end state (winner is), ongoing state (next match in + spec mode)
-		ctx.font = Math.floor(canvas.height * 0.085) + "px pong-teko"; //default for now (text in center Box)
+	centerBox() {
+		ctx.font = Math.floor(canvas.height * 0.085) + "px pong-teko";
 		this.spec_screen.draw();
 		if (this.state === "waiting") {
 			ctx.fillText("WAITING FOR PLAYERS", canvas.width / 2, canvas.height * 0.45);
 			ctx.fillText(this.nb_players + "/" + this.max_players, canvas.width / 2, canvas.height * 0.55);
+		}
+		else if (this.state === "interlude") {
+			ctx.fillText("NEXT MATCH", canvas.width / 2, canvas.height * 0.4);
+			ctx.fillText("P1 - P2", canvas.width / 2, canvas.height * 0.5); // replace with players alias
+			ctx.fillText(this.timer[0].toString(), canvas.width / 2, canvas.height * 0.6);
+		}
+		else if (this.state === "ongoing") {
+			ctx.fillText("ONGOING MATCH", canvas.width / 2, canvas.height / 2);
+			//render_game with a ratio and a pos (if spec) (only online)
+			//render_game (if playing)
+		}
+		else if (this.state === "end") { //modif later
+			ctx.fillText("WINNER", canvas.width / 2, canvas.height * 0.4);
+			ctx.fillText("(insert img ?)", canvas.width / 2, canvas.height * 0.5);
+			ctx.fillText("NAME", canvas.width / 2, canvas.height * 0.6);
 		}
 	}
 
@@ -63,7 +105,7 @@ export class Tournament {
 		let pos = this.start_names;
 		for (let i = 0; i < this.nb_players; i++) {
 			ctx.fillText("PLAYER", canvas.width * 0.86, pos); //max 9 carac else 9 + '.'
-			ctx.fillText("(STATE)", canvas.width * 0.93, pos);
+			ctx.fillText("(STATE)", canvas.width * 0.93, pos); //player state = (left, play, spec, lose, win)
 			pos += gap;
 		}
 		ctx.textAlign = "center";
@@ -73,7 +115,7 @@ export class Tournament {
 		ctx.fillStyle = "white";
 	}
 
-	leftBox() { // add match score
+	leftBox() {
 		ctx.font = Math.floor(canvas.height * 0.05) + "px pong-teko";
 		ctx.textAlign = "left";
 		ctx.fillText((this.online) ? "ONLINE" : "LOCAL", canvas.width * 0.005, canvas.height * 0.35);

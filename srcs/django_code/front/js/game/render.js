@@ -121,5 +121,5 @@ export function tournament(core) {
 		core.tournament_menu.draw();
 		return;
 	}
-	core.tournament.draw(core.id);
+	core.tournament.draw();
 }
