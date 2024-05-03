@@ -18,7 +18,7 @@ const content = /*html*/`
 <ul class="dropdown-menu dropdown-menu-end" style="width: 1em;">
   <li class="dropdown-item active">FR</li>
   <li class="dropdown-item">EN</li>
-  <li class="dropdown-item">RS</li>
+  <li class="dropdown-item">ES</li>
 </ul>
 </div>
 <style>
