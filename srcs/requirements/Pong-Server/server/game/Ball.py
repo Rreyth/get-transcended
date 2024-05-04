@@ -15,9 +15,6 @@ class Ball:
 		self.stick = 0
 		self.side = "none"
 		self.launch()
-  
-		self.multiplier = 1.0
-		self.last_hit = 0
 
 
 	def copy(self, ai_hitbox = False):
@@ -41,13 +38,13 @@ class Ball:
 				if player.nb == self.stick:
 					self.side = player.side
 					if player.side == "left":
-						self.center[0] = Vec2((player.paddle[0].pos.x + (player.size[0] / 2)) + 25, player.paddle[0].pos.y + (player.size[1] / 2))
+						self.center[0] = Vec2((player.paddle[0].pos.x + (player.size[0] / 2)) + (self.radius * 4), player.paddle[0].pos.y + (player.size[1] / 2))
 					if player.side == "right":
-						self.center[0] = Vec2((player.paddle[0].pos.x + (player.size[0] / 2)) - 25, player.paddle[0].pos.y + (player.size[1] / 2))
+						self.center[0] = Vec2((player.paddle[0].pos.x + (player.size[0] / 2)) - (self.radius * 4), player.paddle[0].pos.y + (player.size[1] / 2))
 					if player.side == "up":
-						self.center[0] = Vec2(player.paddle[0].pos.x + (player.size[0] / 2), (player.paddle[0].pos.y + (player.size[1] / 2)) + 25)
+						self.center[0] = Vec2(player.paddle[0].pos.x + (player.size[0] / 2), (player.paddle[0].pos.y + (player.size[1] / 2)) + (self.radius * 4))
 					if player.side == "down":
-						self.center[0] = Vec2(player.paddle[0].pos.x + (player.size[0] / 2), (player.paddle[0].pos.y + (player.size[1] / 2)) - 25)
+						self.center[0] = Vec2(player.paddle[0].pos.x + (player.size[0] / 2), (player.paddle[0].pos.y + (player.size[1] / 2)) - (self.radius * 4))
 			return
 
 		rad = radians(self.dir)
@@ -175,7 +172,8 @@ class Ball:
 				self.dir = 90
 			elif self.side == "down":
 				self.dir = 270
-	  
+    
+		self.last_hit = self.stick
 		self.multiplier = 1.0
 		self.stick = 0
   

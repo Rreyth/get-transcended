@@ -39,7 +39,7 @@ export class Player {
 			}
 			else if (this.nb == 2) {
 				pos = [canvas.width * 0.98 - this.size[0], (canvas.height / 2) - (this.size[1] / 2)];
-				this.goal = this.goal = new Hitbox(canvas.width - goal_size, 0, 50, canvas.height);
+				this.goal = new Hitbox(canvas.width - goal_size, 0, 50, canvas.height);
 				this.side = "right";
 			}
 			else if (this.nb == 3) {
