@@ -28,6 +28,7 @@ services:
       - transcendNetwork
     depends_on:
       - postgres
+      - pong
     env_file:
       - .env
 
@@ -41,6 +42,32 @@ services:
       - "44433:44433"
     volumes:
       - app:/app
+    networks:
+      - transcendNetwork
+    depends_on:
+      - postgres
+
+  pong:
+    build:
+      context: ./requirements/Pong-Server
+    container_name: pong
+    image: pong
+    restart: always
+    ports:
+      - "8765-8790:8765-8790"
+    networks:
+      - transcendNetwork
+    volumes:
+      - app:/app
+    depends_on:
+      - nginx
+
+  adminer:
+    image: adminer:latest
+    container_name: adminer
+    restart: always
+    ports:
+      - "8080:8080"
     networks:
       - transcendNetwork
     depends_on:
