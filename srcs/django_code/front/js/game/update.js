@@ -16,6 +16,10 @@ export function update_all(core, delta) {
 			}
 			player.update(delta);
 		}
+		if (core.state === "end" && core.tournament) {
+			core.state = "tournament";
+			core.tournament.endMatch(core.players);
+		}
 		if (core.state == "end" && !core.online)
 			core.GameHub.send(JSON.stringify(core.endMsg("end")));
 	}

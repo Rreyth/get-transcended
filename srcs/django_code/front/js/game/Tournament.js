@@ -19,10 +19,9 @@ export class Tournament {
 		this.nb_ai = nb_ai;
 		this.max_players = nb_players;
 		this.max_score = max_score;
-		this.nb_players = (online) ? 1 : nb_players;
 		this.mods = mods;
 		this.online = online;
-		this.state = (online) ? "waiting" : "interlude";
+		this.state = "waiting";
 		this.timer = [5, Date.now() / 1000];
 		if (nb_players > 20) {
 			this.arrows = [new Arrow("", canvas.width * 0.977, canvas.height / 2 - (this.size[1] * 0.49), canvas.width * 0.02, canvas.height * 0.02, "up"),
@@ -38,17 +37,64 @@ export class Tournament {
 		for (const player of players) {
 			this.players.set(player, "(SPEC)");
 		}
+		if (this.players.size === this.max_players) {
+			this.initMatches();
+		}
 	}
 
-	update() { // update next match players //winner ?
-		//set match list -> if someone left or lose -> skip it (if leave after matchmaking -> forfeit)
+	initMatches() {
+		let index = 1;
+		this.matches = {};
+		this.matches[index] = [];
+		for (const [player, state] of this.players) {
+			if (this.matches[index].length == 2) {
+				index++;
+				this.matches[index] = [];
+			}
+			if (state != "(LOSE)" && state != "(LEFT)") {
+				this.matches[index].push(player);
+			}
+		}
+		this.match_index = 1;
+		this.state = "interlude";
+		this.timer = [5, Date.now() / 1000];
+	}
+
+	checkMatch() {
+		if (!(this.match_index in this.matches))
+			return;
+		const match = this.matches[this.match_index];
+		for (const p of match) {
+			for (const [player, state] of this.players) {
+				if (p.nb === player.nb && state === "(LEFT)") {
+					this.match_index++;
+					this.timer = [5, Date.now() / 1000];
+					break;
+				}
+			}
+			if (match != this.matches[this.match_index])
+				break;
+		}
+	}
+
+	endMatch(players) {
+		//find who played with nb (match -> matches[index]) -> update player and state(if lose)
+		this.match_index++;
+		this.state = "interlude";
+	}
+
+	update() { // update next match players //winner ? //receive core
+		//match list -> if leave after matchmaking -> forfeit
 		if (this.state === "interlude") {
+			this.checkMatch();
+			if (!(this.match_index in this.matches))
+				this.initMatches();
 			const tmp = Date.now() / 1000;
 			if (tmp - this.timer[1] >= 1) {
 				this.timer[0]--;
 				this.timer[1] = tmp;
 			}
-			if (this.timer[0] <= 0) {
+			if (this.timer[0] <= 0) { //match players -> state = (PLAY) // core.state -> game
 				this.timer[0] = 5;
 				this.state = "ongoing";
 			}
@@ -62,11 +108,12 @@ export class Tournament {
 		ctx.fillText("TOURNAMENT", canvas.width / 2, canvas.height * 0.1);
 		ctx.font = Math.floor(canvas.height * 0.06) + "px pong-teko";
 		if (this.state === "ongoing") {
+			const match = this.matches[this.match_index];
 			ctx.fillText("SPECTATING", canvas.width / 2, canvas.height * 0.87);
 			ctx.textAlign = "left";
-			ctx.fillText("PLAYER1", this.spec_screen.x, canvas.height * 0.94); //player alias
+			ctx.fillText(match[0].name, this.spec_screen.x, canvas.height * 0.94);
 			ctx.textAlign = "right";
-			ctx.fillText("PLAYER2", this.spec_screen.x + this.spec_screen.width, canvas.height * 0.94); //player alias
+			ctx.fillText(match[1].name, this.spec_screen.x + this.spec_screen.width, canvas.height * 0.94);
 			ctx.textAlign = "center";
 			ctx.fillText("VS", canvas.width / 2, canvas.height * 0.94);
 		}
@@ -89,11 +136,12 @@ export class Tournament {
 		this.spec_screen.draw();
 		if (this.state === "waiting") {
 			ctx.fillText("WAITING FOR PLAYERS", canvas.width / 2, canvas.height * 0.45);
-			ctx.fillText(this.nb_players + "/" + this.max_players, canvas.width / 2, canvas.height * 0.55);
+			ctx.fillText(this.players.size + "/" + this.max_players, canvas.width / 2, canvas.height * 0.55);
 		}
 		else if (this.state === "interlude") {
 			ctx.fillText("NEXT MATCH", canvas.width / 2, canvas.height * 0.4);
-			ctx.fillText("P1 - P2", canvas.width / 2, canvas.height * 0.5); // replace with players alias
+			const names = this.matches[this.match_index][0].name + "   -   " + this.matches[this.match_index][1].name;
+			ctx.fillText(names, canvas.width / 2, canvas.height * 0.5);
 			ctx.fillText(this.timer[0].toString(), canvas.width / 2, canvas.height * 0.6);
 		}
 		else if (this.state === "ongoing") { //add spec state ??
@@ -115,7 +163,7 @@ export class Tournament {
 		let pos = this.start_names;
 		for (const [player, state] of this.players) {
 			ctx.fillText(player.name, canvas.width * 0.86, pos); //max 9 carac else 9 + '.'
-			ctx.fillText(state, canvas.width * 0.93, pos); //player state = (left, play, spec, lose, win)
+			ctx.fillText(state, canvas.width * 0.93, pos); //player state = (left, play, spec, lose, win) //win ??
 			pos += gap;
 		}
 		ctx.textAlign = "center";
@@ -145,9 +193,9 @@ export class Tournament {
 	}
 
 	scroll(dir) {
-		if (this.nb_players <= 20)
+		if (this.players.size <= 20)
 			return;
-		const last_pos = this.start_names + ((canvas.height * 0.04) * (this.nb_players - 1)); 
+		const last_pos = this.start_names + ((canvas.height * 0.04) * (this.players.size - 1)); 
 		if (dir === "up" && this.start_names < this.init_pos) {
 			this.start_names += canvas.height * 0.02;
 		}
