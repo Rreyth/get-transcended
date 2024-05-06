@@ -57,8 +57,8 @@ const content = /* html */ `
                         <i class='bx bx-chat bx-md' ></i>
                         <span class="w-100">MESSAGES</span>
                     </div>
-                    <div class="bg-secondary px-2 mx-2 rounded-4" style="width: 3em; height: 3em;">
-                        <i class='bx bxs-cog'></i>
+                    <div class="mx-2" style="height: 3em; width: 3em;">
+						<c-langbtn></c-langbtn>
                     </div>
                 </div>
 
