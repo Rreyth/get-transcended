@@ -4,7 +4,6 @@ import { Wall } from "./Wall.js";
 import { Player } from "./Player.js";
 import { Obstacle } from "./Obstacle.js";
 import { Ball } from "./Ball.js";
-import { AI } from "./AI.js";
 import { Vec2 } from "./Vec2.js";
 import { is_colliding } from "./Hitbox.js";
 import { Tournament } from "./Tournament.js";
@@ -150,9 +149,6 @@ export class TournamentMenu {
 		core.players = [];
 		for (const key in this.players)
 			core.players.push(new Player(parseInt(key), this.players[key], Object.keys(this.players).length, this.mod_list.includes("BORDERLESS"), false));
-		for (let p of core.players)
-			if (p.name === "AI")
-				core.ai.push(new AI(p));
 	}
 
 	initWalls(core) {

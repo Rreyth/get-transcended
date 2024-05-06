@@ -7,6 +7,7 @@ import { StartScreen } from "./StartScreen.js";
 import { Player } from "./Player.js";
 import { Obstacle } from "./Obstacle.js";
 import { Ball } from "./Ball.js";
+import { AI } from "./AI.js";
 
 export class Tournament {
 	constructor(mods, nb_players, nb_ai, max_score, online, creator) { //state = (waiting, ongoing, interlude, end) //receive room id //add spec state ?
@@ -51,7 +52,7 @@ export class Tournament {
 		this.matches = {};
 		this.matches[index] = [];
 		for (const [player, state] of this.players) {
-			if (this.matches[index].length == 2) {
+			if (this.matches[index].length == 2 && (state != "(LOSE)" && state != "(LEFT)")) {
 				index++;
 				this.matches[index] = [];
 			}
@@ -108,7 +109,17 @@ export class Tournament {
 			}
 		}
 		this.match_index++;
-		//check impair for next match
+		if ((this.match_index in this.matches) && (this.matches[this.match_index].length === 1)) {
+			for (let player of this.matches[this.match_index - 1]) {
+				for (const [p, state] of this.players) {
+					if (p.nb === player.nb) {
+						if (state === "(SPEC)")
+							this.matches[this.match_index].push(player);
+						break;
+					}
+				}
+			}
+		}
 		this.state = "interlude";
 	}
 
@@ -116,6 +127,7 @@ export class Tournament {
 		this.timer[0] = 5;
 		this.state = "ongoing";
 		core.players = [];
+		core.ai = [];
 		let i = 1;
 		for (const player of this.matches[this.match_index]) {
 			for (const [p] of this.players) {
@@ -126,6 +138,8 @@ export class Tournament {
 			}
 			core.players.push(new Player(i, player.name, 2, this.mods.includes("BORDERLESS"), false));
 			core.players[i - 1].tournament = player.nb;
+			if (player.name === "AI")
+				core.ai.push(new AI(core.players[i - 1]));
 			i++;
 		}
 		core.start_screen = new StartScreen((this.online) ? "ONLINE" : "LOCAL", core.online);
