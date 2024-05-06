@@ -3,6 +3,10 @@ import { Arrow } from "./Arrow.js";
 import { Vec2 } from "./Vec2.js";
 import { canvas, ctx } from "./canvas.js";
 import { is_colliding } from "./Hitbox.js";
+import { StartScreen } from "./StartScreen.js";
+import { Player } from "./Player.js";
+import { Obstacle } from "./Obstacle.js";
+import { Ball } from "./Ball.js";
 
 export class Tournament {
 	constructor(mods, nb_players, nb_ai, max_score, online, creator) { //state = (waiting, ongoing, interlude, end) //receive room id //add spec state ?
@@ -91,6 +95,7 @@ export class Tournament {
 	}
 
 	endMatch(players) {
+		this.nb_match--;
 		for (let player of players) {
 			for (const [p] of this.players) {
 				if (p.nb === player.tournament) {
@@ -103,16 +108,34 @@ export class Tournament {
 			}
 		}
 		this.match_index++;
+		//check impair for next match
 		this.state = "interlude";
 	}
 
-	startMatch() { //match players -> state = (PLAY) // core.state -> game
+	startMatch(core) { 
 		this.timer[0] = 5;
 		this.state = "ongoing";
-
+		core.players = [];
+		let i = 1;
+		for (const player of this.matches[this.match_index]) {
+			for (const [p] of this.players) {
+				if (player.nb === p.nb) {
+					this.players.set(p, "(PLAY)");
+					break;
+				}
+			}
+			core.players.push(new Player(i, player.name, 2, this.mods.includes("BORDERLESS"), false));
+			core.players[i - 1].tournament = player.nb;
+			i++;
+		}
+		core.start_screen = new StartScreen((this.online) ? "ONLINE" : "LOCAL", core.online);
+		if (this.mods.includes("OBSTACLE"))
+			core.obstacle = new Obstacle();
+		core.ball = new Ball(this.mods.includes("BORDERLESS"));
+		core.state = "start";
 	}
 
-	update() { //receive core
+	update(core) {
 		if (this.state === "interlude") {
 			this.checkMatch();
 			if (!(this.match_index in this.matches))
@@ -123,7 +146,7 @@ export class Tournament {
 				this.timer[1] = tmp;
 			}
 			if (this.timer[0] <= 0) {
-				this.startMatch();
+				this.startMatch(core);
 			}
 		}
 	}

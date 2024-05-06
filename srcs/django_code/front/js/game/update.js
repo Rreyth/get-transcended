@@ -31,7 +31,7 @@ export function update_all(core, delta) {
 			core.state = "game";
 	}
 	if (core.state === "tournament") {
-		core.tournament.update();
+		core.tournament.update(core);
 	}
 }
 
