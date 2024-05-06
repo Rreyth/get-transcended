@@ -58,6 +58,9 @@ export class Tournament {
 		this.match_index = 1;
 		this.state = "interlude";
 		this.timer = [5, Date.now() / 1000];
+		if (index === 1 && this.matches[index].length === 1) {
+			this.endTournament();
+		}
 	}
 
 	checkMatch() {
@@ -77,14 +80,39 @@ export class Tournament {
 		}
 	}
 
+	endTournament() { //(send end to hub)
+		for (const [p, state] of this.players) {
+			if (state != "(LOSE)" && state != "(LEFT)") {
+				this.players.set(p, "(WIN)");
+				break;
+			}
+		}
+		this.state = "end";
+	}
+
 	endMatch(players) {
-		//find who played with nb (match -> matches[index]) -> update player and state(if lose)
+		for (let player of players) {
+			for (const [p] of this.players) {
+				if (p.nb === player.tournament) {
+					if (player.win === "LOSE")
+						this.players.set(p, "(LOSE)");
+					else
+						this.players.set(p, "(SPEC)");
+					break;
+				}
+			}
+		}
 		this.match_index++;
 		this.state = "interlude";
 	}
 
-	update() { // update next match players //winner ? //receive core
-		//match list -> if leave after matchmaking -> forfeit
+	startMatch() { //match players -> state = (PLAY) // core.state -> game
+		this.timer[0] = 5;
+		this.state = "ongoing";
+
+	}
+
+	update() { //receive core
 		if (this.state === "interlude") {
 			this.checkMatch();
 			if (!(this.match_index in this.matches))
@@ -94,9 +122,8 @@ export class Tournament {
 				this.timer[0]--;
 				this.timer[1] = tmp;
 			}
-			if (this.timer[0] <= 0) { //match players -> state = (PLAY) // core.state -> game
-				this.timer[0] = 5;
-				this.state = "ongoing";
+			if (this.timer[0] <= 0) {
+				this.startMatch();
 			}
 		}
 	}
@@ -149,10 +176,15 @@ export class Tournament {
 			//render_game with a ratio and a pos (if spec) (only online)
 			//render_game (if playing)
 		}
-		else if (this.state === "end") { //modif later
-			ctx.fillText("WINNER", canvas.width / 2, canvas.height * 0.4);
-			ctx.fillText("(insert img ?)", canvas.width / 2, canvas.height * 0.5);
-			ctx.fillText("NAME", canvas.width / 2, canvas.height * 0.6);
+		else if (this.state === "end") {
+			ctx.fillText("WINNER", canvas.width / 2, canvas.height * 0.3);
+			ctx.fillText("(insert img ?)", canvas.width / 2, canvas.height * 0.5); //TODO
+			for (const [player, state] of this.players) {
+				if (state === "(WIN)") {
+					ctx.fillText(player.name, canvas.width / 2, canvas.height * 0.7);
+					break;
+				}
+			}
 		}
 	}
 
@@ -162,8 +194,9 @@ export class Tournament {
 		const gap = canvas.height * 0.04;
 		let pos = this.start_names;
 		for (const [player, state] of this.players) {
-			ctx.fillText(player.name, canvas.width * 0.86, pos); //max 9 carac else 9 + '.'
-			ctx.fillText(state, canvas.width * 0.93, pos); //player state = (left, play, spec, lose, win) //win ??
+			const name = (player.name.length <= 9) ? player.name : player.name.slice(0, 9) + '.';
+			ctx.fillText(name, canvas.width * 0.86, pos);
+			ctx.fillText(state, canvas.width * 0.93, pos); //player state = (left, play, spec, lose, win) //win ?? end only
 			pos += gap;
 		}
 		ctx.textAlign = "center";
@@ -234,8 +267,8 @@ export class Tournament {
 		this.start_names = tmp * canvas.height;
 		tmp = this.init_pos / old_sizes[1];
 		this.init_pos = tmp * canvas.height;
-		this.size[1] = (this.max_players <= 20) ? canvas.height * 0.04 * this.max_players : canvas.height * 0.04 * 20;	
-		this.visual.push(new Button("", canvas.width * 0.87, canvas.height / 2 - (this.size[1] / 2), this.size[0], this.size[1], true));
+		this.size[1] = (this.max_players <= 20) ? canvas.height * 0.04 * this.max_players : canvas.height * 0.04 * 20;
+		this.visual.push(new Button("", canvas.width * 0.85, canvas.height / 2 - (this.size[1] / 2), this.size[0], this.size[1], true));
 		if (this.max_players > 20) {
 			this.arrows = [new Arrow("", canvas.width * 0.977, canvas.height / 2 - (this.size[1] * 0.49), canvas.width * 0.02, canvas.height * 0.02, "up"),
 							new Arrow("", canvas.width * 0.977, canvas.height / 2 + (this.size[1] * 0.465), canvas.width * 0.02, canvas.height * 0.02, "down")];
