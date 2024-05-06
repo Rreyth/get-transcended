@@ -15,10 +15,10 @@ export class LangBtn extends Component {
 
     async connectedCallback() {
 		this.innerHTML = content;
-		
+
 		let lang = await cookieStore.get("lang");
 		if (lang == null)
-    		lang = { value: "en" };
+			lang = { value: "en" };
 
 		this.setLang(lang.value);
 
