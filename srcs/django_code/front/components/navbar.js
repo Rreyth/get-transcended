@@ -7,15 +7,15 @@ export class Navbar extends Component {
     }
 
     async connectedCallback() {
-        if (await user() != null)
-        {
+        // if (await user() != null)
+        // {
             this.innerHTML = content;
-        }
+        // }
     }
 }
 
 const content = /* html */ `
-    <nav class="navbar fixed-bottom navbar-expand-lg bg-body-tertiary">
+    <nav class="navbar fixed-bottom navbar-expand-lg bg-body-tertiary user-select-none">
         <div class="container-fluid text-center">
 
 
