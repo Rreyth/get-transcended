@@ -20,6 +20,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'transcend.settings')
 django.setup()
 
 from myapp import views
+from users.middleware import JwtAuthMiddlewareStack
 
 # application = get_asgi_application()
 
@@ -29,6 +30,8 @@ websocket_urlpatterns = [
 application = ProtocolTypeRouter({
     'http': get_asgi_application(),
     "websocket": AllowedHostsOriginValidator(
-            AuthMiddlewareStack(URLRouter(websocket_urlpatterns))
+            JwtAuthMiddlewareStack(
+                URLRouter(websocket_urlpatterns)
+            )
         ),
 })

@@ -48,9 +48,9 @@ class MyConsumer(AsyncWebsocketConsumer):
 		text_data_json = json.loads(text_data)
 		message = text_data_json['message']
     
-    # Process message as needed
-    await self.send(text_data=json.dumps({
-      'message': message,
-      'username': 'swotex',
-      'date': "27/03/2024 12:40"
-    }))
+    	# Process message as needed
+		await self.send(text_data=json.dumps({
+		'message': message,
+		'username': 'swotex',
+		'date': "27/03/2024 12:40"
+		}))

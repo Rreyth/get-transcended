@@ -11,7 +11,7 @@ export class Chat extends Component {
 		const socket = new WebSocket(
 			'wss://'
 			+ window.location.host
-			+ '/api/chat'
+			+ '/api/chat?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE1MDE4OTU3LCJpYXQiOjE3MTUwMDgxNTcsImp0aSI6IjhkN2Y4YjUxZGFmNjQ1MTJiZWU0MTdhNjgxYzRiNDgzIiwidXNlcl9pZCI6Mn0.QYZp4jNa7DV2BM5tNRYgZbuUOUIMYfEEox_p6TzV-Ro'
 		);
 
 		socket.onopen = function (event) {
