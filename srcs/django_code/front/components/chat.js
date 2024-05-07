@@ -8,10 +8,13 @@ export class Chat extends Component {
 	}
 
 	static sendMsg(msg) {
+		// const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE1MTEwNzk2LCJpYXQiOjE3MTUwOTk5OTYsImp0aSI6IjA4NmYzYmU5OTQzODQ3MWI5ODgwMjBmN2UwMjgyMzg0IiwidXNlcl9pZCI6Mn0.yMI2n-EohpKT5CieM2k7VKiPVPBKcmyAHK76SRCyOW8"
+		const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE1MTEwNzk2LCJpYXQiOjE3MTUwOTk5OTYsImp0aSI6IjA4NmYzYmU5OTQzODQ3MWI5ODgwMjBmN2UwMjgyMzg0IiwidXNlcl9pZCI6MX0.UiMJGIVLWIk8BqW4iHuXsuv7dqIuYhleJgudyuyu5tQ"
 		const socket = new WebSocket(
 			'wss://'
 			+ window.location.host
-			+ '/api/chat?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE1MDE4OTU3LCJpYXQiOjE3MTUwMDgxNTcsImp0aSI6IjhkN2Y4YjUxZGFmNjQ1MTJiZWU0MTdhNjgxYzRiNDgzIiwidXNlcl9pZCI6Mn0.QYZp4jNa7DV2BM5tNRYgZbuUOUIMYfEEox_p6TzV-Ro'
+			+ '/api/chat?token='
+			+ token
 		);
 
 		socket.onopen = function (event) {
