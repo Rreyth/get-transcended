@@ -3,9 +3,9 @@
         "model": "users.user",
         "pk": 1,
         "fields": {
-          "username": "IA",
-          "created_at": "2000-01-01 01:00",
-          "updated_at": "2000-01-01 01:00"
+          "username": "AI",
+          "created_at": "2024-05-07 18:00",
+          "updated_at": "2024-05-07 18:00"
         }
     }
 ]
