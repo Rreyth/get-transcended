@@ -79,7 +79,7 @@ async def full_room(id, websocket):
 				await rooms[id].sendAll({'type' : 'endGame', 'cmd' : 'quitWait', 'id': msg['id']})
 			if rooms[id].players.__len__() == 0:
 				await rooms[id].cleanEmpty()
-				rooms.pop(id)
+				del rooms[id]
 			break
 		if rooms[id].players_nb == rooms[id].max_players:
 			rooms[id].full = True
@@ -133,7 +133,7 @@ async def run_game(id, websocket):
 
 				finally:
 					if id in rooms.keys():
-						rooms.pop(room.id)
+						del rooms[room.id]
 						used_id.remove(room.id)
 						used_port.remove(room.port)
 					break
@@ -276,6 +276,21 @@ async def handle_client(websocket):
 				if is_registered(websocket):
 					del registered[key]
 				break
+		await quit_room(websocket)
+
+async def quit_room(websocket):
+	global rooms, used_port, used_id
+	for id, room in rooms.items():
+		if websocket in room.players:
+			if not room.full:
+				rooms[id].players.remove(websocket)
+				rooms[id].players_nb -= 1
+				await rooms[id].sendAll({'type' : 'endGame', 'cmd' : 'quitWait', 'id': 4})
+			if rooms[id].players.__len__() == 0:
+				await rooms[id].cleanEmpty()
+				del rooms[id]
+			break
+
 
 def is_registered(websocket):
 	global registered
