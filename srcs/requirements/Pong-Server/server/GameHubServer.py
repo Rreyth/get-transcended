@@ -50,7 +50,7 @@ rooms = {}
 used_port = []
 used_id = []
 
-fordiben_port = [8000, 8001, 44433, 5432, 6720]
+forbiden_port = [8000, 8001, 44433, 5432, 6720]
 
 clients = {}
 registered = {}
@@ -156,6 +156,34 @@ async def handle_join(client_msg, websocket):
 				await run_game(room.id, websocket)
 			return
 
+async def handle_tournament(client_msg, websocket):
+	global rooms, used_port, used_id
+	if client_msg['online']	== 'false':
+		msg : dict = json.loads(await websocket.recv())
+		while msg['type'] != 'endGame':
+			msg : dict = json.loads(await websocket.recv())
+		print(msg) #send it to serv for db stockage / histo
+  
+	else:
+		port = starting_port
+		while port in used_port or port in forbiden_port: port += 1
+		used_port.append(port)
+		host = '0.0.0.0'
+		room_id = id_generator()
+		used_id.append(room_id)
+		os.system("python3 game/core.py {} {} {} &".format(host, port, room_id))
+		time.sleep(0.1)
+		rooms[room_id] = Room(room_id, host, port, 'tournament', client_msg['players'])
+		rooms[room_id].mods = client_msg['mods']
+		rooms[room_id].score = client_msg['score']
+		rooms[room_id].ai_nb = client_msg['ai']
+		rooms[room_id].players.add(websocket)
+		rooms[room_id].players_nb = client_msg['ai'] + 1
+		await websocket.send(json.dumps({'type' : 'GameRoom', 'ID' : room_id, 'port' : port, 'pos' : rooms[room_id].players_nb}))
+		await full_room(room_id, websocket)
+		if room_id in rooms.keys() and rooms[room_id].full:
+			await run_game(room_id, websocket)
+
 async def handle_custom(client_msg, websocket):
 	global rooms, used_port, used_id
 	if client_msg['online']	== 'false':
@@ -166,7 +194,7 @@ async def handle_custom(client_msg, websocket):
   
 	else:
 		port = starting_port
-		while port in used_port or port in fordiben_port: port += 1
+		while port in used_port or port in forbiden_port: port += 1
 		used_port.append(port)
 		host = '0.0.0.0'
 		room_id = id_generator()
@@ -208,7 +236,7 @@ async def handle_quickGame(client_msg, websocket):
 				return
 
 		port = starting_port
-		while port in used_port or port in fordiben_port: port += 1
+		while port in used_port or port in forbiden_port: port += 1
 		used_port.append(port)
 		host = '0.0.0.0'
 		room_id = id_generator()
