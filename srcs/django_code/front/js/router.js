@@ -2,7 +2,7 @@ export const render = (file) => {
     fetch(`/static/html/${file}.html`)
         .then(response => response.text())
         .then(html => {
-            document.querySelector('content').innerHTML = html;
+            document.querySelector('#content').innerHTML = html;
         })
         .catch(error => console.error('Error loading page:', error));
 }

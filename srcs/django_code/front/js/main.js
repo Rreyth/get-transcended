@@ -5,6 +5,12 @@ import { Chat } from "../components/chat.js";
 import { Message } from "../components/minichat/message.js";
 import { Friend } from "../components/minichat/friend.js";
 import { Setting } from "../components/minichat/setting.js";
+import { ChatInput } from "../components/minichat/input.js";
+import { Clock } from "../components/clock.js";
+import { Login } from "../components/sign/login.js";
+import { SSign } from "../components/sign/switchSign.js";
+import { SignUp } from "../components/sign/signUp.js";
+import { LangBtn } from "../components/lang.js";
 
 Component.loader([
 	Navbar,
@@ -12,6 +18,12 @@ Component.loader([
 	Friend,
 	Chat,
 	Setting,
+	ChatInput,
+	Clock,
+	Login,
+	SSign,
+	SignUp,
+	LangBtn,
 ])
 
 const navigateTo = url => {
