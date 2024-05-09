@@ -1,5 +1,5 @@
 import { Component } from "../js/component.js";
-import { user } from "../js/helpers.js";
+import { user, translate } from "../js/helpers.js";
 
 export class Navbar extends Component {
 	static getName() {
@@ -14,16 +14,29 @@ export class Navbar extends Component {
 		document.addEventListener("click", (e) => {
 			if (e.target.id == "seach-user")
 			{
+				this.querySelector(".dropdown-menu").innerHTML = `<c-search content="${e.target.value}"></c-search>`;
 				this.querySelector(".dropdown-toggle").click();
 			}
+			else if (e.target.classList.contains("bx"))
+			{
+				if (e.target.parentNode.classList.contains("dropdown-toggle"))
+				{
+					this.querySelector(".dropdown-menu").innerHTML = "";
+				}
+			}
+			// else if (e.target.classList.contains("dropdown-toggle"))
+			// {
+			// 	this.querySelector(".dropdown-menu").innerHTML = "";
+			// 	console.log("moi")
+			// }
 		})
+
 
 
 		this.querySelector("#seach-user").addEventListener("input", (e) => {
 			let content = this.querySelector(".dropdown-menu");
 			content.innerHTML = `<c-search content="${e.target.value}"></c-search>`;
 		})
-		// }
 	}
 }
 
@@ -42,7 +55,7 @@ const content = /* html */ `
 					<div class="d-flex align-items-center justify-content-center p-2 mx-2" style="width: 3em; height: 3em;">
 						<div class="btn-group dropup">
 							<span class="d-flex align-items-center justify-content-center bg-secondary rounded-4 dropdown-toggle" id="content-none" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside" style="cursor: pointer; width: 3em; height: 3em;">
-								<i class='bx bxs-cog bx-md'></i>
+								<i class='bx bx-user bx-md'></i>
 							</span>
 							<div class="dropdown-menu mb-2" style="margin-left: -1.5em; height: 25em; width: 22em;">
 								<!-- User menu or search -->
@@ -52,8 +65,8 @@ const content = /* html */ `
 					<div class="px-2">
 
 						<div class="form-outline">
-							<input id="seach-user" type="text" class="form-control ps-5 rounded-4" placeholder="User" style="height: 3em;"/>
-							<i class="bx bx-search-alt bx-md ms-3 text-primary" style="position: absolute; transform: translate(-385%,-125%); pointer-events: none;"></i>
+							<input id="seach-user" type="text" class="form-control ps-5 rounded-4" placeholder="${await translate('nav.user')}" style="height: 3em;"/>
+							<i class="bx bx-search-alt bx-md ms-3 text-primary" style="position: absolute; transform: translate(-385%,-118%); pointer-events: none;"></i>
 						</div>
 
 					</div>
