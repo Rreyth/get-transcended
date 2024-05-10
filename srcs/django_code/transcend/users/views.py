@@ -33,3 +33,13 @@ class UserView(APIView):
         user.avatar = request.data['avatar']
         user.save()
         return Response({'message': 'Image updated'}, status=status.HTTP_200_OK)
+
+class ReseachUserView(APIView):
+	permission_classes = (IsAuthenticated,)
+	parser_classes = [JSONParser, MultiPartParser, FormParser]
+
+	def get(self, request):
+		username_prefix = request.query_params.get('username_prefix', '')
+		users = User.objects.filter(username__icontains=username_prefix)[:10]
+		usernames = [user.username for user in users]
+		return Response(usernames, status=status.HTTP_200_OK)

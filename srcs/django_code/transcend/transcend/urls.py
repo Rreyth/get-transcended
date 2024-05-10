@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.urls import path
 from myapp import views
-from users.views import RegisterUserView, UserView
+from users.views import RegisterUserView, UserView, ReseachUserView
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from channels.security.websocket import AllowedHostsOriginValidator
@@ -45,6 +45,7 @@ urlpatterns = [
     # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/user/', UserView.as_view()),
+	path('api/user/search/', ReseachUserView.as_view()),
     path('api/register/', RegisterUserView.as_view()),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

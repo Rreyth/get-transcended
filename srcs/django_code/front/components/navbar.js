@@ -7,8 +7,8 @@ export class Navbar extends Component {
 	}
 
 	async connectedCallback() {
-		// if (await user() != null)
-		// {
+		if (await user() != null)
+		{
 		this.innerHTML = content;
 
 		document.addEventListener("click", (e) => {
@@ -37,11 +37,12 @@ export class Navbar extends Component {
 			let content = this.querySelector(".dropdown-menu");
 			content.innerHTML = `<c-search content="${e.target.value}"></c-search>`;
 		})
+		}
 	}
 }
 
 const content = /* html */ `
-	<nav class="navbar fixed-bottom navbar-expand-lg bg-body-tertiary user-select-none">
+	<nav class="navbar fixed-bottom navbar-expand bg-body-tertiary user-select-none">
 		<div class="container-fluid text-center">
 
 
