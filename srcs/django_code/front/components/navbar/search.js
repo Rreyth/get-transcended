@@ -1,5 +1,5 @@
 import { Component } from "../../js/component.js";
-import { user, translate, auth, api } from "../../js/helpers.js";
+import { user, translate, user_token, api } from "../../js/helpers.js";
 
 export class Search extends Component {
     static getName() {
@@ -7,57 +7,34 @@ export class Search extends Component {
     }
 
 
-    async connectedCallback() {
+	async connectedCallback() {
 		super.connectedCallback();
-		// if (await user() != null)
-        // {
-		let token = await cookieStore.get("token");
-		let attrContent = this.getAttribute('content');
+		if (await user() != null) {
+			let token = await user_token();
+			let attrContent = this.getAttribute('content');
 
-		let cc = await apiConnect("/user/search/?username_prefix=" + attrContent, "GET", null, token.value);
-		cc = (await cc.json());
-		console.log(cc);
 
 			if (this.getAttribute('content') === "")
 				this.innerHTML = emptySearch;
-			else
-			{
-        	this.innerHTML = /* html */ `
-			<div class="w-100 h-100 d-flex align-items-center flex-column overflow-auto">
+			else {
+				let response = await api("/user/search/?username_prefix=" + attrContent, "GET", null, token);
+				response = (await response.json());
 
-				
-
-				${cc.map(item => {return createUserCard("test_img_user.png", item)}).join('')}
-
-			</div>
-			<style>
-				.user-search-card:hover
-				{
-					border-color: blue;
-				}
-			</style>
-		`;
+				this.innerHTML = /* html */ `
+					<div class="w-100 h-100 d-flex align-items-center flex-column overflow-auto">
+						${response.map(item => { return createUserCard("test_img_user.png", item) }).join('')}
+					</div>
+					<style>
+						.user-search-card:hover
+						{
+							border-color: blue;
+						}
+					</style>
+				`;
+			}
 		}
-		// }
-    }
+	}
 
-}
-
-async function apiConnect(path, method, formdata, token = null)
-{
-	const url = `https://${location.hostname}:${location.port}/api${path}`;
-	const myHeader = new Headers();
-	myHeader.append("Authorization", `Bearer ${token}`);
-	let requestOptions = {
-			method: method,
-			redirect: 'follow',
-			headers: myHeader
-		};
-	if (method != "GET")
-		requestOptions.body = formdata;
-
-	let save = await fetch(url, requestOptions);
-	return (save)
 }
 
 function createUserCard(imgName, name)
