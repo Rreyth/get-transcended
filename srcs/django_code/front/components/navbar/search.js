@@ -46,8 +46,14 @@ function createUserCard(imgName, name)
 					<img src="/media/${imgName}" class="img-fluid rounded-start" alt="...">
 				</div>
 				<div class="col-md-8">
-					<div class="card-body d-flex align-items-center justify-content-center h-100">
+					<div class="card-body d-flex align-items-center justify-content-center" style="height: 67%;">
 						<span class="text-truncate" style="font-size: 1.5em;">${name}</span>
+					</div>
+					<div class="d-flex align-items-start justify-content-evenly btns btns-${name}" style="height: 33%;">
+						<i class='bx bxs-user-detail rounded-circle bg-light border border-dark p-1' id="bt-profile" style="cursor: pointer;"></i>
+						<i class='bx bx-user-plus rounded-circle bg-light border border-dark p-1' style="cursor: pointer;"></i>
+						<i class='bx bx-message-dots rounded-circle bg-light border border-dark p-1' style="cursor: pointer;"></i>
+						<i class='bx bx-joystick rounded-circle bg-light border border-dark p-1' style="cursor: pointer;"></i>
 					</div>
 				</div>
 			</div>

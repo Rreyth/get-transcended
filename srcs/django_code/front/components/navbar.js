@@ -24,11 +24,6 @@ export class Navbar extends Component {
 					this.querySelector(".dropdown-menu").innerHTML = "";
 				}
 			}
-			// else if (e.target.classList.contains("dropdown-toggle"))
-			// {
-			// 	this.querySelector(".dropdown-menu").innerHTML = "";
-			// 	console.log("moi")
-			// }
 		})
 
 
