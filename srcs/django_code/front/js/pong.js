@@ -163,12 +163,12 @@ function parse_msg(event) {
 			game.GameRoom = false;
 		}
 	}
-	else if (msg.type == "start" && game.state == "waiting") {
+	else if (msg.type == "start" && (game.state == "waiting" || game.state == "tournament")) {
 		if (!game.GameRoom) {
 			const socket = "wss://" + window.location.hostname + ":" + game.GamePort;
 			game.GameRoom = new WebSocket(socket);
 			game.GameRoom.onerror = function() {
-				console.log("Connection to room failed");
+				console.error("Connection to room failed");
 			}
 			game.GameRoom.onopen = function() {
 				game.GameRoom.send(JSON.stringify({"type" : "join", "name" : game.alias}));
@@ -188,7 +188,10 @@ function parse_msg(event) {
 		game.ball = new Ball(msg.ball);
 		if ("obstacle" in msg)
 			game.obstacle = new Obstacle();
-		game.state = "launch";
+		if (game.state == "tournament")
+			game.tournament.initPlayers(game.players);
+		else
+			game.state = "launch";
 	}
 	else if (msg.type == "joinResponse") {
 		if (msg.success == 'false')
