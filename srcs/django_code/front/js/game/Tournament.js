@@ -34,7 +34,8 @@ export class Tournament {
 		}
 		this.nb_match = nb_players - 1;
 		this.players = new Map();
-		this.players.set(creator, "(SPEC)");
+		if (creator)
+			this.players.set(creator, "(SPEC)");
 	}
 
 	initPlayers(players) {
@@ -47,7 +48,7 @@ export class Tournament {
 		}
 	}
 
-	initMatches() {
+	initMatches(core = undefined) {
 		let index = 1;
 		this.matches = {};
 		this.matches[index] = [];
@@ -64,7 +65,7 @@ export class Tournament {
 		this.state = "interlude";
 		this.timer = [5, Date.now() / 1000];
 		if (index === 1 && this.matches[index].length === 1) {
-			this.endTournament();
+			this.endTournament(core);
 		}
 	}
 
@@ -85,14 +86,22 @@ export class Tournament {
 		}
 	}
 
-	endTournament() { //(send end to hub)
+	endTournament(core) {
+		let winner;
 		for (const [p, state] of this.players) {
 			if (state != "(LOSE)" && state != "(LEFT)") {
 				this.players.set(p, "(WIN)");
+				winner = p.nb;
 				break;
 			}
 		}
 		this.state = "end";
+		console.log(winner); ///TESTING
+		console.log(core)
+		if (core) {
+			const msg = {"type" : "endGame", "winner" : winner, "players" : this.max_players};
+			core.GameHub.send(JSON.stringify(msg));
+		}
 	}
 
 	endMatch(players) {
@@ -153,7 +162,7 @@ export class Tournament {
 		if (this.state === "interlude") {
 			this.checkMatch();
 			if (!(this.match_index in this.matches))
-				this.initMatches();
+				this.initMatches(core);
 			const tmp = Date.now() / 1000;
 			if (tmp - this.timer[1] >= 1) {
 				this.timer[0]--;

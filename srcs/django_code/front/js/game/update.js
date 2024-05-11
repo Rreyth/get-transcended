@@ -16,7 +16,7 @@ export function update_all(core, delta) {
 			}
 			player.update(delta);
 		}
-		if (core.state === "end" && core.tournament) {
+		if (core.state === "end" && core.tournament && !core.online) {
 			core.state = "tournament";
 			core.tournament.endMatch(core.players);
 		}
@@ -30,7 +30,7 @@ export function update_all(core, delta) {
 		if (core.start_screen.timer === 0)
 			core.state = "game";
 	}
-	if (core.state === "tournament") {
+	if (core.state === "tournament" && !core.online) {
 		core.tournament.update(core);
 	}
 }

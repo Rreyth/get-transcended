@@ -126,6 +126,7 @@ export class TournamentMenu {
 			const msg = {"type" : 'tournament', 'online' : 'true', 'mods' : this.mod_list, 'score' : this.score, 'ai' : this.ai_nb, 'players' : Object.keys(this.players).length};
 			core.GameHub.send(JSON.stringify(msg));
 			core.online = true;
+			core.players = [new Player(1, core.alias, 2, this.mod_list.includes("BORDERLESS"), false)];
 		}
 
 		core.tournament = new Tournament(this.mod_list, this.nb_players, this.ai_nb, this.score, core.online, new Player(1, core.alias,  this.nb_players, this.mod_list.includes("BORDERLESS"), false));

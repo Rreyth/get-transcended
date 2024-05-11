@@ -8,6 +8,7 @@ import { Obstacle } from "./game/Obstacle.js";
 import { StartScreen } from "./game/StartScreen.js";
 import { WaitScreen } from "./game/WaitScreen.js";
 import { update_sizes } from "./game/update.js";
+import { Tournament } from "./game/Tournament.js";
 
 let timer;
 let connect_last;
@@ -99,11 +100,17 @@ function parse_msg(event) {
 		else
 			console.log("Connection failed"); // + invalid user token ?? is it even possible to fail connect from web ??
 	}
-	else if (msg.type == "join")
-		game.wait_screen.nb += 1;
+	else if (msg.type == "join") {
+		if (game.state == "tournament") {
+			game.players.push(new Player(game.players.length + 1, msg.alias, 2, false, false));
+			game.tournament.initPlayers(game.players);
+		}
+		else
+			game.wait_screen.nb += 1;
+	}
 	else if (msg.type == "start" && game.state != "waiting")
 		game.state = "start";
-	else if (msg.type == "update") {
+	else if (msg.type == "update") { //add tournament management
 		if ("timer" in msg) {
 			game.start_screen.timer = msg.timer;
 			return;
@@ -132,7 +139,16 @@ function parse_msg(event) {
 			else {
 				if (game.id > msg.id)
 					game.id -= 1;
-				game.wait_screen.nb -= 1;
+				if (game.state == "tournament") {
+					game.players = game.players.filter(player => player.nb != msg.id);
+					for (let player of game.players) {
+						if (player.nb > msg.id)
+							player.nb--;
+					}
+					game.tournament.initPlayers(game.players);
+				}
+				else
+					game.wait_screen.nb -= 1;
 			}
 			return;
 		}
@@ -172,7 +188,7 @@ function parse_msg(event) {
 		game.ball = new Ball(msg.ball);
 		if ("obstacle" in msg)
 			game.obstacle = new Obstacle();
-		game.state = "launch"; //start direct ??
+		game.state = "launch";
 	}
 	else if (msg.type == "joinResponse") {
 		if (msg.success == 'false')
@@ -181,12 +197,23 @@ function parse_msg(event) {
 			game.GamePort = msg.port;
 			room_id = game.menu.buttons[5].name;
 			game.id = msg.pos;
-			game.state = "waiting";
-			game.mode = "ONLINE";
 			game.online = true;
-			wait_nb = msg.max;
-			game.custom_mod = msg.custom_mods.includes("1V1V1V1") ? "1V1V1V1" : false;
-			game.start_screen = new StartScreen(msg.mode, game.online, msg.custom_mods.includes("1V1V1V1"), wait_nb);
+			game.mode = "ONLINE";
+			if (msg.mode == "tournament") {
+				game.tournament = new Tournament(msg.custom_mods, msg.max, msg.ai, msg.score, true, false);
+				game.players = [];
+				for (let i = 0; i < msg.players.length; i++) {
+					game.players.push(new Player(i + 1, msg.players[i], 2, msg.custom_mods.includes("BORDERLESS"), false));
+				}
+				game.tournament.initPlayers(game.players);
+				game.state = "tournament";
+			}
+			else {
+				game.state = "waiting";
+				wait_nb = msg.max;
+				game.custom_mod = msg.custom_mods.includes("1V1V1V1") ? "1V1V1V1" : false;
+				game.start_screen = new StartScreen(msg.mode, game.online, msg.custom_mods.includes("1V1V1V1"), wait_nb);
+			}
 		}
 	}
 	else if (msg.type == "GameRoom") {
@@ -201,16 +228,23 @@ function parse_msg(event) {
 		}
 		game.state = "waiting";
 	}
-	if ((msg.type == "GameRoom" || msg.type == "joinResponse") && game.mode != "none") {
+	else if (msg.type == "TournamentRoom") {
+		game.GamePort = msg.port;
+		room_id = msg["ID"];
+		game.mode = "ONLINE";
+		game.state = "tournament";
+		game.id = msg.pos;
+		game.online = true;
+	}
+	if ((msg.type == "GameRoom" || msg.type == "joinResponse" || msg.type == "TournamentRoom") && game.mode != "none") {
 		game.menu.buttons[5].name = "";
 		game.menu.err = false;
 		if (!game.start_screen)
 			game.start_screen = new StartScreen(game.mode, game.online);
-		if (game.online && !game.wait_screen)
+		if (game.online && !game.wait_screen && game.state != "tournament")
 			game.wait_screen = new WaitScreen(room_id, game.id, wait_nb, "QuickGame Online");
 	}
 }
-
 
 // // GameHub.onclose = function() { //fusion avec on error ?
 // // 	console.log("Connection closed")
