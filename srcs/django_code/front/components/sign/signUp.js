@@ -7,11 +7,133 @@ export class SignUp extends Component {
 
     connectedCallback() {
 		this.innerHTML = content;
+		const popover_container = document.querySelector("#popover-container");
+		const dropdownMenu = document.getElementById('dropdownMenu');
+		const inputEmail = this.querySelector("#input-email");
+
+		this.querySelector("#input-user").addEventListener("input", (e) => {
+			if (e.target.value.length > lengthUserMax)
+			{
+				this.querySelector("#input-user").style.color = "#a51221";
+				if (this.querySelector(".popover-user") === null)
+				{
+					const popover = new bootstrap.Popover(e.target, {
+						container: popover_container,
+						content: "Le nom d'utilisateur ne peux pas depasser 10 charactere",
+						placement: "right",
+						trigger: "manual",
+						boundary: "viewport",
+						customClass: "popover-user"
+					  });
+					  popover.show();
+				}
+			}
+			else
+			{
+				this.querySelector("#input-user").style.color = "black";
+				popover_container.innerHTML = "";
+			}
+		})
+		this.querySelector("#input-user").addEventListener("blur", (e) => {
+			const responseUser = "requetteDB";
+			if (responseUser === e.target.value)
+			{
+				this.querySelector("#input-user").style.color = "#a51221";
+				if (this.querySelector(".popover-user") === null)
+				{
+					const popover = new bootstrap.Popover(e.target, {
+						container: popover_container,
+						content: "Le nom d'utilisateur existe deja",
+						placement: "right",
+						trigger: "manual",
+						boundary: "viewport",
+						customClass: "popover-user"
+					  });
+					  popover.show();
+				}
+			}
+			else
+			{
+				popover_container.innerHTML = "";
+			}
+		})
+		this.querySelector("#input-user").addEventListener("focus", (e) => {
+			popover_container.innerHTML = "";
+		})
+
+
+
+		inputEmail.addEventListener("input", (e) => {
+			const inputEmail = document.getElementById('input-email');
+			const inputRect = inputEmail.getBoundingClientRect();
+			dropdownMenu.style.top = (inputRect.top + inputRect.height) + 'px';
+			dropdownMenu.innerHTML = `
+				<span class="dropdown-item">${e.target.value}@gmail.com</span>
+				<span class="dropdown-item">${e.target.value}@hotmail.com</span>
+				<span class="dropdown-item">${e.target.value}@orange.fr</span>
+			`;
+
+			dropdownMenu.classList.add('show');
+			
+		})
+
+			dropdownMenu.addEventListener('click', (e) => {
+			  e.preventDefault();
+
+			  if (e.target.classList.contains('dropdown-item'))
+			  {
+				console.log(e.target);
+				inputEmail.value = e.target.innerHTML;
+				dropdownMenu.classList.remove('show');
+				if (emailIsAlreadyUsed(inputEmail.value))
+				{
+					inputEmail.style.color = '#a51221';
+					
+					if (this.querySelector(".popover-user") === null)
+					{
+						const popover = new bootstrap.Popover(inputEmail, {
+							container: popover_container,
+							content: "Le nom d'utilisateur existe deja",
+							placement: "right",
+							trigger: "manual",
+							boundary: "viewport",
+							customClass: "popover-email"
+						});
+						popover.show();
+					}
+
+				}
+			  }
+			});
+
+
     }
 }
 
+function emailIsAlreadyUsed (tryEmail) {
+	const responseUser = true;
+
+	return (responseUser);
+}
+
+// function createPopover (target, content)
+// {
+// 	const popover_container = document.querySelector("#popover-container");
+// 	let popover = new bootstrap.Popover(target, {
+// 		container: popover_container,
+// 		content: content,
+// 		placement: "right",
+// 		trigger: "manual",
+// 		boundary: "viewport",
+// 		customClass: "popover-user"
+// 	  });
+// 	  return (popover);
+// }
+
+const lengthUserMax = 10;
+
 const content = /*html*/`
-	<div class="d-flex align-items-center justify-content-center" id="sing-up-form">
+	<div class="d-flex align-self-center" id="sing-up-form">
 		<div class="form-group flex-column d-flex row-gap-5">
 
 			<div class="d-flex align-self-center justify-center align-items-center rounded-circle bg-secondary p-2" style="width: 10em; height: 10em;">
@@ -22,11 +144,39 @@ const content = /*html*/`
 				</div>
 
 			<div class="flex-column d-flex row-gap-4">
-				<input class="form-control" type="text" placeholder="Username">
-				<input class="form-control" type="email" placeholder="Email">
-				<input class="form-control" type="password" placeholder="Password">
+				<input class="form-control" id="input-user" type="text" placeholder="Username">
+				<input class="form-control" id="input-email" type="email" placeholder="Email">
+				<div class="dropdown-menu" id="dropdownMenu">
+					<!-- Contenu du dropdown -->
+					<a class="dropdown-item" href="#">Option 1</a>
+					<a class="dropdown-item" href="#">Option 2</a>
+					<a class="dropdown-item" href="#">Option 3</a>
+				</div>
+				<input class="form-control" id="input-pass" type="password" placeholder="Password">
 			</div>
 			<button type="button" class="btn btn-primary">Sing up</button>
 		</div>
-	</div>
+		</div>
+		<div class="red-popover" id="popover-container"></div>
+	<style>
+    /* Style CSS pour le Popover rouge */
+    .red-popover .popover {
+        //background-color: #f8d7da27;
+        border-color: #f5c6cb;
+    }
+	.red-popover .popover-body
+	{
+		color: #721c24;
+	}
+	.red-popover {
+		filter: drop-shadow(1px 0px 0px #f8d7da)
+        drop-shadow(-1px 0px 0px #f8d7da)
+        drop-shadow(0px 1px 0px #f8d7da)
+        drop-shadow(0px -1px 0px #f8d7da)
+        drop-shadow(1px 1px 0px #f8d7da)
+        drop-shadow(-1px -1px 0px #f8d7da)
+        drop-shadow(-1px 1px 0px #f8d7da)
+        drop-shadow(1px -1px 0px #f8d7da)
+    }
+</style>
 `;
