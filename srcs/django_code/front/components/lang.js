@@ -5,20 +5,47 @@ export class LangBtn extends Component {
         return "langbtn";
     }
 
-    connectedCallback() {
+	setLang(choice)
+	{
+		cookieStore.set({ name: "lang", value: choice });
+		this.querySelector(".active").classList.remove("active");
+		this.querySelector(`#${choice}-lang`).classList.add('active');
+		this.querySelector("#title-lang").innerHTML = choice.toUpperCase();
+	}
+
+    async connectedCallback() {
 		this.innerHTML = content;
+
+		let lang = await cookieStore.get("lang");
+		if (lang == null)
+			lang = { value: "en" };
+
+		this.setLang(lang.value);
+
+		this.addClickEvent('#en-lang', (e) => {
+			this.setLang("en");
+			location.reload();
+		})
+		this.addClickEvent('#fr-lang', (e) => {
+			this.setLang("fr");
+			location.reload();
+		})
+		this.addClickEvent('#es-lang', (e) => {
+			this.setLang("es");
+			location.reload();
+		})
     }
 }
 
 const content = /*html*/`
 <div class="dropup">
 <div class="d-flex align-items-center justify-content-center bg-secondary dropdown-toggle rounded-4" id="langBtn" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer; width: 3.5em; height: 3.5em;">
-	<i style="font-size: 1.5em; color: white;">FR</i>
+	<i style="font-size: 1.5em; color: white;" id="title-lang">EN</i>
 </div>
 <ul class="dropdown-menu dropdown-menu-end" style="width: 1em;">
-  <li class="dropdown-item active">FR</li>
-  <li class="dropdown-item">EN</li>
-  <li class="dropdown-item">ES</li>
+	<li class="dropdown-item active" id="en-lang">EN</li>
+	<li class="dropdown-item" id="fr-lang">FR</li>
+	<li class="dropdown-item" id="es-lang">ES</li>
 </ul>
 </div>
 <style>

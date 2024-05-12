@@ -37,24 +37,22 @@ export const user_token = async () => {
     return token
 }
 
-export const api = async (method, path, data = {}, token = null) => {
-    const url = `https://${location.hostname}:${location.port}/api${path}`
-    const init = {
-        method: method,
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        },
-    }
+export const api = async (path, method, formdata, token = null) => {
+	const url = `https://${location.hostname}:${location.port}/api${path}`;
+	const myHeader = new Headers();
+	
+	myHeader.append("Authorization", `Bearer ${token}`);
+	let requestOptions = {
+			method: method,
+			redirect: 'follow',
+			headers: myHeader
+		};
 
-    if (Object.keys(data).length > 0)
-    {
-        init.body = JSON.stringify(data)
-    }
+	if (method != "GET")
+		requestOptions.body = formdata;
 
-    let response = await fetch(url, init)
-
-    return response
+	const response = await fetch(url, requestOptions);
+	return (response)
 }
 
 export const user = async () => {
@@ -75,7 +73,7 @@ export const user = async () => {
 }
 
 export const auth = async (username, password) => {
-    const response = await api('POST', '/token/', {
+    const response = await api('/token/', 'POST', {
         username: username,
         password: password
     })
