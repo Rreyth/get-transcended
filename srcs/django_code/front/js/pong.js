@@ -87,6 +87,7 @@ function hub_open() {
 
 function parse_msg(event) {
 	let msg = JSON.parse(event.data);
+	console.log(msg, game.state)
 	let room_id = 0;
 	let wait_nb = 0;
 	if (msg.type == "connectionRpl") {
@@ -108,9 +109,13 @@ function parse_msg(event) {
 		else
 			game.wait_screen.nb += 1;
 	}
-	else if (msg.type == "start" && game.state != "waiting")
-		game.state = "start";
-	else if (msg.type == "update") { //add tournament management
+	else if (msg.type == "start" && game.state != "waiting" && game.state != "tournament")
+		game.state = (game.tournament) ? "tournament" : "start";
+	else if (msg.type == "update") {
+		if ('tournament' in msg) {
+			game.tournament.onlineUpdate(msg);
+			return;
+		}
 		if ("timer" in msg) {
 			game.start_screen.timer = msg.timer;
 			return;
@@ -190,8 +195,7 @@ function parse_msg(event) {
 			game.obstacle = new Obstacle();
 		if (game.state == "tournament")
 			game.tournament.initPlayers(game.players);
-		else
-			game.state = "launch";
+		game.state = "launch";
 	}
 	else if (msg.type == "joinResponse") {
 		if (msg.success == 'false')
@@ -209,6 +213,7 @@ function parse_msg(event) {
 					game.players.push(new Player(i + 1, msg.players[i], 2, msg.custom_mods.includes("BORDERLESS"), false));
 				}
 				game.tournament.initPlayers(game.players);
+				game.tournament.id = room_id;
 				game.state = "tournament";
 			}
 			else {
@@ -238,6 +243,7 @@ function parse_msg(event) {
 		game.state = "tournament";
 		game.id = msg.pos;
 		game.online = true;
+		game.tournament.id = room_id;
 	}
 	if ((msg.type == "GameRoom" || msg.type == "joinResponse" || msg.type == "TournamentRoom") && game.mode != "none") {
 		game.menu.buttons[5].name = "";

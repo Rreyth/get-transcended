@@ -1,11 +1,9 @@
 from config import *
-from AI import *
-from Ball import *
 
 async def update_all(core, delta):
 	if core.state == "game":
-
 		core.ball.update(core, delta)
+
 		if core.obstacle:
 			core.obstacle.update()
 
@@ -17,6 +15,11 @@ async def update_all(core, delta):
 				core.state = "end"
 				player.win = "WIN"
 			player.speed = player.speed_per_sec * delta
+   
+		if core.state == "end" and core.tournament:
+			core.state = "tournament"
+			core.tournament.endMatch(core.players)
+
 		if core.state == "end":
 			await core.sendHub(core.endMsg(0, 'end'))
 			await core.sendAll(core.endMsg(0, 'end'))
@@ -31,3 +34,5 @@ async def update_all(core, delta):
 		if core.start[0] == 0:
 			core.state = "game"
 
+	if core.state == "tournament":
+		core.tournament.update(core)

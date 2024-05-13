@@ -4,7 +4,7 @@ from Ball import *
 from AI import *
 
 class Tournament :
-	def __init__(self, mods, nb_players, nb_ai, score, players):
+	def __init__(self, mods, nb_players, nb_ai, score):
 		self.mods = mods
 		self.max_players = nb_players #useless ?
 		self.nb_ai = nb_ai
@@ -12,13 +12,12 @@ class Tournament :
 		self.timer = [5, time.time()]
 		self.state = 'waiting'
 		self.nb_match = nb_players - 1
-		self.initPlayers(players)
-		self.initMatches()
   
 	def initPlayers(self, players):
 		self.players = {}
 		for player in players:
 			self.players[player] = "(SPEC)"
+		self.initMatches()
    
 	def initMatches(self, core = False):
 		index = 1
@@ -49,18 +48,18 @@ class Tournament :
 			if match != self.matches[self.match_index]:
 				break
 
-	def endTournament(self, core):
+	def endTournament(self, core):  #send msg ?
 		for player, state in self.players.items():
 			if state != "(LOSE)" and state != "(LEFT)":
 				self.players[player] = "(WIN)"
 				winner = player.nb
 				break
 		self.state = "end"
-		if core: #TMPPP
+		if core: #TMPPP #endMsg with only winner infos ?
 			msg = {"type" : "endGame", "winner" : winner, "players" : self.max_players}
 			core.sendHub(msg)
    
-	def endMatch(self, players):
+	def endMatch(self, players): #send msg ?
 		self.nb_match -= 1
 		for player in players:
 			for p in self.players.keys():
@@ -81,8 +80,9 @@ class Tournament :
 						break
   
 		self.state = "interlude"
-  
-	def startMatch(self, core):
+
+
+	def startMatch(self, core): #send msg ?
 		self.timer[0] = 5
 		self.state = "ongoing"
 		core.players = []
@@ -113,3 +113,15 @@ class Tournament :
 				self.timer[1] = tmp
 			if self.timer[0] <= 0:
 				self.startMatch(core)
+	
+	def updateMsg(self):
+		matches = {}
+		for id, players in self.matches.items():
+			matches[id] = [players[0].nb, players[1].nb]
+		msg = {'type' : 'update',
+			'tournament' : True,
+			'state' : self.state,
+			'timer' : self.timer[0],
+			'matches' : matches,
+			'index' : self.match_index}
+		return msg

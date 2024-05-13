@@ -96,8 +96,6 @@ export class Tournament {
 			}
 		}
 		this.state = "end";
-		console.log(winner); ///TESTING
-		console.log(core)
 		if (core) {
 			const msg = {"type" : "endGame", "winner" : winner, "players" : this.max_players};
 			core.GameHub.send(JSON.stringify(msg));
@@ -172,6 +170,21 @@ export class Tournament {
 				this.startMatch(core);
 			}
 		}
+	}
+
+	onlineUpdate(msg) {
+		for (let [id, players] of Object.entries(msg.matches)) {
+			this.matches[id] = [];
+			for (const [p] of this.players) {
+				if (p.nb == players[0] || p.nb == players[1])
+					this.matches[id].push(p);
+				if (this.matches[id].length == 2)
+					break
+			}
+		}
+		this.state = msg.state;
+		this.timer[0] = msg.timer;
+		this.match_index = msg.index;
 	}
 
 	draw() {

@@ -10,7 +10,9 @@ from Player import *
 from Wall import *
 from Ball import *
 from update import *
+from AI import *
 from Obstacle import *
+from Tournament import *
 
 ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 ssl_context.load_cert_chain("/certs/cert.pem")
@@ -30,6 +32,7 @@ class Game:
 
 		self.obstacle = False
 		self.custom_mod = False
+		self.tournament = False
 
     
 	def initQuickGame(self):
@@ -41,10 +44,10 @@ class Game:
     
 	def initCustom(self, msg : dict):
 		self.requiered = msg['players']
-		self.ball = Ball(True if "BORDERLESS" in msg['mods'] else False)
+		self.ball = Ball("BORDERLESS" in msg['mods'])
 		self.players = []
 		for i in range(msg['players']):
-			self.players.append(Player(i + 1, "Player{}".format(i + 1) if msg['ai'] < msg['players'] - i else 'AI', msg['players'], True if "BORDERLESS" in msg['mods'] else False, True if "1V1V1V1" in msg['mods'] else False))
+			self.players.append(Player(i + 1, "Player{}".format(i + 1) if msg['ai'] < msg['players'] - i else 'AI', msg['players'], "BORDERLESS" in msg['mods'], "1V1V1V1" in msg['mods']))
 		for player in self.players:
 			if player.name == 'AI':
 				self.ai.append(AI(player))
@@ -58,6 +61,20 @@ class Game:
 			self.walls = [Wall("up", True), Wall("down", True), Wall("left", True), Wall("right", True)]
 		elif "BORDERLESS" not in msg['mods']:
 			self.walls = [Wall("up", False), Wall("down", False)]
+
+
+	def initTournament(self, msg : dict):
+		self.requiered = msg['players']
+		self.ball = Ball("BORDERLESS" in msg['mods'])
+		self.players = []
+		for i in range(msg['players']):
+			self.players.append(Player(i + 1, "Player{}".format(i + 1) if msg['ai'] < msg['players'] - i else 'AI', msg['players'], "BORDERLESS" in msg['mods'], False))
+
+		self.max_score = msg['score']
+		self.walls = False
+		if "BORDERLESS" not in msg['mods']:
+			self.walls = [Wall("up", False), Wall("down", False)]
+		self.tournament = Tournament(msg['mods'], msg['players'], msg['ai'], msg['score'])
 
     
 	def endMsg(self, id, reason = 'end'):
@@ -97,7 +114,9 @@ class Game:
 	async def sendUpdate(self):
 		if not self.is_running:
 			return
-		if self.state == "start":
+		if self.state == "tournament":
+			msg = self.tournament.updateMsg()
+		elif self.state == "start":
 			msg = {'type' : 'update', 'timer' : self.start[0]}
 		else:
 			msg = {'type' : 'update',
@@ -117,6 +136,8 @@ class Game:
 				await client.send(json.dumps(self.startMsg(i + 1)))
 			await self.sendAll({'type' : 'waiting'})
 			self.state = 'ready'
+			if self.tournament:
+				self.tournament.initPlayers(self.players)
 
 			
 	def input(self, player_id, inputs):
@@ -162,7 +183,7 @@ class Game:
 
 async def run_game():
 	global game
-	game.state = "start"
+	game.state = "tournament" if game.tournament else "start"
 	while game.is_running:
 		await game.tick()
 		if not game.is_running:
@@ -219,13 +240,15 @@ async def parse_msg(msg : dict, websocket):
 		else:
 			game.hub = set()
 			game.hub.add(websocket)	
+			game.id = msg['Room_id']
 			if msg['cmd'] == 'quickGame':
-				game.id = msg['Room_id']
 				game.initQuickGame()
 				await websocket.send(json.dumps({'type' : 'CreationSuccess'}))
 			if msg['cmd'] == 'custom':
-				game.id = msg['Room_id']
 				game.initCustom(msg)
+				await websocket.send(json.dumps({'type' : 'CreationSuccess'}))
+			if msg['cmd'] == 'tournament':
+				game.initTournament(msg)
 				await websocket.send(json.dumps({'type' : 'CreationSuccess'}))
 
 	if msg['type'] == 'join':
