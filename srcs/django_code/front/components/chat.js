@@ -7,32 +7,14 @@ export class Chat extends Component {
 		return "chat-body"
 	}
 
-	static sendMsg(msg) {
-		// const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE1MTEwNzk2LCJpYXQiOjE3MTUwOTk5OTYsImp0aSI6IjA4NmYzYmU5OTQzODQ3MWI5ODgwMjBmN2UwMjgyMzg0IiwidXNlcl9pZCI6Mn0.yMI2n-EohpKT5CieM2k7VKiPVPBKcmyAHK76SRCyOW8"
-		const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE1MTEwNzk2LCJpYXQiOjE3MTUwOTk5OTYsImp0aSI6IjA4NmYzYmU5OTQzODQ3MWI5ODgwMjBmN2UwMjgyMzg0IiwidXNlcl9pZCI6MX0.UiMJGIVLWIk8BqW4iHuXsuv7dqIuYhleJgudyuyu5tQ"
-		const socket = new WebSocket(
-			'wss://'
-			+ window.location.host
-			+ '/api/chat?token='
-			+ token
-		);
+	static sendMsg(socket, msg) {
 
-		socket.onopen = function (event) {
-			console.log('WebSocket connection established.');
-			socket.send(JSON.stringify({
-				'message': msg
-			}));
-		};
+		console.log(socket)
 
-		socket.onmessage = function (event) {
-			const data = JSON.parse(event.data);
-			console.log('Message from server:', data.message);
-			document.querySelector("#messages").innerHTML += `<c-message who="${data.username}" date="${data.date}" content="${data.message}"></c-message>`
-			
-			// displayNewMsg(data, 'me');
-			// displayNewMsg(data, 'nameOfSpeaker');
-			// scrollbarToEnd(".msg-body");
-		};
+		socket.send(JSON.stringify({
+			'message': msg,
+			'recever_id': '2'
+		}));
 	}
 
 	connectedCallback() {
@@ -59,11 +41,9 @@ export class Chat extends Component {
 							</div>
 							
 							<div class="users-body">
-
-							<c-friend username="tutute fils de pute"></c-friend>
-							<c-friend username="Swotex"></c-friend>
-							<c-friend username="sd asd"></c-friend>
-															
+								<c-friend user-id="3" username="tutute fils de pute"></c-friend>
+								<c-friend user-id="3" username="Swotex"></c-friend>
+								<c-friend user-id="3" username="sd asd"></c-friend>
 							</div>
 						</div>
 	
@@ -146,13 +126,36 @@ export class Chat extends Component {
 			}
 		})
 
+		// const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE1MTEwNzk2LCJpYXQiOjE3MTUwOTk5OTYsImp0aSI6IjA4NmYzYmU5OTQzODQ3MWI5ODgwMjBmN2UwMjgyMzg0IiwidXNlcl9pZCI6Mn0.yMI2n-EohpKT5CieM2k7VKiPVPBKcmyAHK76SRCyOW8"
+		const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE1NjgyODIyLCJpYXQiOjE3MTU2NzIwMjIsImp0aSI6IjU2MmI4ZTZmNzY1YTRjZGM4YzhlOTYzN2NkMDZiY2M2IiwidXNlcl9pZCI6Mn0.15BgOQjplU0kxyzo5NE7AK3iZ8lb-Zds7r_kU7Rn1ys"
+		const socket = new WebSocket(
+			'wss://'
+			+ window.location.host
+			+ '/api/chat?token='
+			+ token
+		);
+
+		socket.onopen = function (event) {
+			console.log('WebSocket connection established.');
+		};
+
+		socket.onmessage = function (event) {
+			const data = JSON.parse(event.data);
+			console.log('Message from server:', data.message);
+			document.querySelector("#messages").innerHTML += `<c-message who="${data.username}" date="${data.date}" content="${data.message}"></c-message>`
+			
+			// displayNewMsg(data, 'me');
+			// displayNewMsg(data, 'nameOfSpeaker');
+			// scrollbarToEnd(".msg-body");
+		};
+
 		document.getElementById('msg-area').addEventListener('keydown', function (event) {
 			if (event.key === 'Enter' && !event.shiftKey) {
 				event.preventDefault();
 				if (document.getElementById('msg-area').value === '')
 					return;
 				let msg = escapeHtml(document.getElementById('msg-area').value)
-				Chat.sendMsg(msg.replace(/\n/g, "<br>"));
+				Chat.sendMsg(socket, msg.replace(/\n/g, "<br>"));
 				document.getElementById('msg-area').value = '';
 			}
 		});
