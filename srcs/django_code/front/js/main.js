@@ -2,6 +2,10 @@ import { Component } from "./component.js"
 import { Router } from "./router.js";
 import { Navbar } from "../components/navbar.js";
 import { Chat } from "../components/chat.js";
+<<<<<<< HEAD
+=======
+import { Minichat } from "../components/minichat/minichat.js";
+>>>>>>> a27a5e6 (start implement new chat)
 import { Message } from "../components/minichat/message.js";
 import { Friend } from "../components/minichat/friend.js";
 import { Setting } from "../components/minichat/setting.js";
@@ -24,6 +28,7 @@ Component.loader([
 	SSign,
 	SignUp,
 	LangBtn,
+	Chat,
 ])
 
 const navigateTo = url => {
