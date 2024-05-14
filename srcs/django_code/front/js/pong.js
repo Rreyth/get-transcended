@@ -113,14 +113,18 @@ function parse_msg(event) {
 		game.state = (game.tournament) ? "tournament" : "start";
 	else if (msg.type == "update") {
 		if ('tournament' in msg) {
-			game.tournament.onlineUpdate(msg);
+			game.tournament.onlineUpdate(msg, game);
 			return;
 		}
 		if ("timer" in msg) {
-			game.start_screen.timer = msg.timer;
+			if (game.state === "tournament")
+				game.tournament.timer[0] = msg.timer;
+			else
+				game.start_screen.timer = msg.timer;
 			return;
 		}
-		game.state = "game";
+		if (game.state != "tournament")
+			game.state = "game";
 		for (let i = 0; i < game.players.length; i++) {
 			game.players[i].paddle[0].pos = new Vec2(msg.players[i][0] * canvas.width, msg.players[i][1] * canvas.height);
 			game.players[i].score = msg.score[i];
@@ -131,6 +135,8 @@ function parse_msg(event) {
 		game.ball.dir = msg.ball[4];
 		if (game.obstacle)
 			game.obstacle.solid = msg.obstacle;
+		if (game.state === "tournament")
+			game.tournament.resizeSpec(game);
 	}
 	else if (msg.type == "endGame") {
 		if ("cmd" in msg && msg.cmd == "quitWait") {
@@ -193,8 +199,10 @@ function parse_msg(event) {
 		game.ball = new Ball(msg.ball);
 		if ("obstacle" in msg)
 			game.obstacle = new Obstacle();
-		if (game.state == "tournament")
+		if (game.state == "tournament") {
 			game.tournament.initPlayers(game.players);
+			game.tournament_id = game.id;
+		}
 		game.state = "launch";
 	}
 	else if (msg.type == "joinResponse") {

@@ -13,13 +13,13 @@ class Tournament :
 		self.state = 'waiting'
 		self.nb_match = nb_players - 1
   
-	def initPlayers(self, players):
+	async def initPlayers(self, players):
 		self.players = {}
 		for player in players:
 			self.players[player] = "(SPEC)"
-		self.initMatches()
+		await self.initMatches()
    
-	def initMatches(self, core = False):
+	async def initMatches(self, core = False):
 		index = 1
 		self.matches = {}
 		self.matches[index] = []
@@ -33,7 +33,7 @@ class Tournament :
 		self.state = "interlude"
 		self.timer = [5, time.time()]
 		if index == 1 and self.matches[index].__len__() == 1:
-			self.endTournament(core)
+			await self.endTournament(core)
    
 	def checkMatch(self):
 		if self.match_index not in self.matches:
@@ -48,18 +48,19 @@ class Tournament :
 			if match != self.matches[self.match_index]:
 				break
 
-	def endTournament(self, core):  #send msg ?
+	async def endTournament(self, core):  #send msg ?
 		for player, state in self.players.items():
 			if state != "(LOSE)" and state != "(LEFT)":
 				self.players[player] = "(WIN)"
 				winner = player.nb
 				break
 		self.state = "end"
-		if core: #TMPPP #endMsg with only winner infos ?
-			msg = {"type" : "endGame", "winner" : winner, "players" : self.max_players}
-			core.sendHub(msg)
+		await core.sendAll(self.stateMsg("EndTournament"))
+		# if core: #TMPPP #endMsg with only winner infos ?
+			# msg = {"type" : "endGame", "winner" : winner, "players" : self.max_players}
+			# core.sendHub(msg)
    
-	def endMatch(self, players): #send msg ?
+	async def endMatch(self, players, core):
 		self.nb_match -= 1
 		for player in players:
 			for p in self.players.keys():
@@ -80,9 +81,10 @@ class Tournament :
 						break
   
 		self.state = "interlude"
+		await core.sendAll(self.stateMsg('EndMatch'))
 
-
-	def startMatch(self, core): #send msg ?
+	async def startMatch(self, core):
+		core.start[0] = 3
 		self.timer[0] = 5
 		self.state = "ongoing"
 		core.players = []
@@ -101,27 +103,40 @@ class Tournament :
 			core.obstacle = Obstacle()
 		core.ball = Ball("BORDERLESS" in self.mods)
 		core.state = "start"
+		await core.sendAll(self.stateMsg('StartMatch'))
   
-	def update(self, core):
+	async def update(self, core):
 		if self.state == "interlude":
 			self.checkMatch()
 			if self.match_index not in self.matches:
-				self.initMatches(core)
+				await self.initMatches(core)
 			tmp = time.time()
 			if (tmp - self.timer[1] >= 1):
 				self.timer[0] -= 1
 				self.timer[1] = tmp
 			if self.timer[0] <= 0:
-				self.startMatch(core)
+				await self.startMatch(core)
 	
 	def updateMsg(self):
 		matches = {}
 		for id, players in self.matches.items():
-			matches[id] = [players[0].nb, players[1].nb]
+			matches[id] = []
+			for player in players:
+				matches[id].append(player.nb)
 		msg = {'type' : 'update',
 			'tournament' : True,
 			'state' : self.state,
 			'timer' : self.timer[0],
 			'matches' : matches,
 			'index' : self.match_index}
+		return msg
+
+	def stateMsg(self, cmd):
+		states = {}
+		for player, state in self.players.items():
+			states[player.nb] = state		
+		msg = {'type' : 'update',
+			'tournament' : True,
+			'cmd' : cmd,
+			'states' : states}
 		return msg

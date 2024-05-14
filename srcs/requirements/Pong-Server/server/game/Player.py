@@ -70,6 +70,11 @@ class Player:
 				pos = [winWidth * 0.98 - self.size[0] - 50, (winHeight / 2)]
 				self.goal = Hitbox(winWidth, 0, 50, winHeight)
 				self.side = "right"
+    
+		else: #tournament start
+			pos = [winWidth * 0.02, (winHeight / 2) - (self.size[1] / 2)]
+			self.goal = Hitbox(-50, 0, 50, winHeight)
+			self.side = "left"
      
 		self.paddle = [Hitbox(pos=Vec2(pos=pos), size=self.size)]
 		if borderless:

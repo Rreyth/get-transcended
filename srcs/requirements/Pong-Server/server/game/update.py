@@ -18,7 +18,7 @@ async def update_all(core, delta):
    
 		if core.state == "end" and core.tournament:
 			core.state = "tournament"
-			core.tournament.endMatch(core.players)
+			await core.tournament.endMatch(core.players, core)
 
 		if core.state == "end":
 			await core.sendHub(core.endMsg(0, 'end'))
@@ -35,4 +35,4 @@ async def update_all(core, delta):
 			core.state = "game"
 
 	if core.state == "tournament":
-		core.tournament.update(core)
+		await core.tournament.update(core)

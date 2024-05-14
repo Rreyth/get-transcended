@@ -137,7 +137,7 @@ class Game:
 			await self.sendAll({'type' : 'waiting'})
 			self.state = 'ready'
 			if self.tournament:
-				self.tournament.initPlayers(self.players)
+				await self.tournament.initPlayers(self.players)
 
 			
 	def input(self, player_id, inputs):

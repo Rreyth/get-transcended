@@ -2,15 +2,16 @@ import { Button } from "./Button.js";
 import { Arrow } from "./Arrow.js";
 import { Vec2 } from "./Vec2.js";
 import { canvas, ctx } from "./canvas.js";
-import { is_colliding } from "./Hitbox.js";
+import { Hitbox, is_colliding } from "./Hitbox.js";
 import { StartScreen } from "./StartScreen.js";
 import { Player } from "./Player.js";
 import { Obstacle } from "./Obstacle.js";
 import { Ball } from "./Ball.js";
 import { AI } from "./AI.js";
+import { Wall } from "./Wall.js";
 
 export class Tournament {
-	constructor(mods, nb_players, nb_ai, max_score, online, creator) { //state = (waiting, ongoing, interlude, end) //receive room id //add spec state ?
+	constructor(mods, nb_players, nb_ai, max_score, online, creator) {
 		this.id = 1234;
 		this.button = new Button("LEAVE", canvas.width * 0.015, canvas.height * 0.9, canvas.width * 0.11, canvas.height * 0.07);
 		this.size = [canvas.width * 0.2, canvas.height * 0.4];
@@ -172,14 +173,21 @@ export class Tournament {
 		}
 	}
 
-	onlineUpdate(msg) {
+	onlineUpdate(msg, core) {
+		if ('cmd' in msg) {
+			if (msg.cmd === 'StartMatch')
+				this.onlineStart(msg.states, core);
+			else if (msg.cmd === 'EndMatch' || msg.cmd === 'EndTournament')
+				this.onlineEnd(msg, core);
+			return;
+		}
 		for (let [id, players] of Object.entries(msg.matches)) {
 			this.matches[id] = [];
 			for (const [p] of this.players) {
 				if (p.nb == players[0] || p.nb == players[1])
 					this.matches[id].push(p);
 				if (this.matches[id].length == 2)
-					break
+					break;
 			}
 		}
 		this.state = msg.state;
@@ -187,13 +195,102 @@ export class Tournament {
 		this.match_index = msg.index;
 	}
 
-	draw() {
+	onlineStart(states, core) {
+		for (const [p] of this.players) {
+			this.players.set(p, states[p.nb]);
+		}
+		this.state = "ongoing";
+		core.players = [];
+		core.ai = [];
+		let i = 1;
+		for (const [player, state] of this.players) {
+			if (state === "(PLAY)") {
+				core.players.push(new Player(i, player.name, 2, this.mods.includes("BORDERLESS"), false));
+				core.players[i - 1].tournament = player.nb;
+				i++;
+			}
+			if (i == 3)
+				break;
+		}
+		core.walls = false;
+		if (!this.mods.includes("BORDERLESS")) {
+			core.walls = [new Wall("up", false),
+						new Wall ("down", false)];
+		}
+		if (this.mods.includes("OBSTACLE"))
+			core.obstacle = new Obstacle();
+		core.ball = new Ball(this.mods.includes("BORDERLESS"));
+		for (const player of core.players) {
+			if (core.tournament_id == player.tournament) {
+				core.state = "start";
+				core.start_screen = new StartScreen("ONLINE", core.online);
+				break;
+			}
+		}
+		if (core.state === "tournament")
+			this.resizeSpec(core);
+	}
+
+	resizeSpec(core) {
+		const spec_size = [this.spec_screen.width, this.spec_screen.height];
+		const spec_pos = [this.spec_screen.x, this.spec_screen.y];
+		let new_pos;
+		for (let player of core.players) {
+			player.paddle[0].size = [spec_size[0] * 0.007, spec_size[1] * 0.1];
+			new_pos = [((player.paddle[0].pos.x / canvas.width) * spec_size[0]) + spec_pos[0],
+						((player.paddle[0].pos.y / canvas.height) * spec_size[1]) + spec_pos[1]];
+			player.paddle[0].pos = new Vec2(new_pos[0], new_pos[1]);
+			if (player.borderless) {
+				player.paddle[1].size = player.paddle[0].size;
+				player.paddle[1].pos = new Vec2(new_pos[0], new_pos[1] - spec_size[1]);
+				player.paddle[2].size = player.paddle[0].size;
+				player.paddle[2].pos = new Vec2(new_pos[0], new_pos[1] + spec_size[1]);
+			}
+		}
+		// if (core.walls) {
+		// 	for (let wall of core.walls) {
+		// 		wall.size = [spec_size[0], spec_size[1] * 0.0075];
+		// 		new_pos = [((wall.visual.x / canvas.width) * spec_size[0]) + spec_pos[0],
+		// 					((wall.visual.y / canvas.height) * spec_size[1]) + spec_pos[1]];
+		// 		wall.visual = new Vec2(new_pos[0], new_pos[1]);
+		// 		wall.Hitbox = new Hitbox(new_pos[0], new_pos[1], wall.size[0], wall.size[1]);
+		// 	}
+		// }
+		core.ball.radius = Math.floor(spec_size[1] * 0.01);
+		new_pos = [((core.ball.center[0].x / canvas.width) * spec_size[0]) + spec_pos[0],
+					((core.ball.center[0].y / canvas.height) * spec_size[1]) + spec_pos[1]];
+		core.ball.center[0] = new Vec2(new_pos[0], new_pos[1]);
+		if (core.ball.borderless) {
+			core.ball.center[1] = new Vec2(new_pos[0], new_pos[1] + spec_size[1]);
+			core.ball.center[2] = new Vec2(new_pos[0], new_pos[1] - spec_size[1]);	
+		}
+		if (core.obstacle) {
+			core.obstacle.radius = Math.floor(spec_size[1] * 0.193);
+		}		
+	}
+
+	onlineEnd(msg, core) {
+		for (const [p] of this.players) {
+			this.players.set(p, msg.states[p.nb]);
+		}
+		if (msg.cmd == "EndMatch") {
+			this.state = "interlude";
+			this.nb_match--;
+		}
+		else {
+			this.state = "end";
+		}
+		core.state = "tournament";
+	}
+
+	draw(core) {
 		if (this.online)
 			ctx.fillText("ID : " + this.id, canvas.width * 0.06, canvas.height * 0.1);
 		ctx.font = Math.floor(canvas.height * 0.15) + "px pong-teko";
 		ctx.fillText("TOURNAMENT", canvas.width / 2, canvas.height * 0.1);
 		ctx.font = Math.floor(canvas.height * 0.06) + "px pong-teko";
 		if (this.state === "ongoing") {
+			//add score to top
 			const match = this.matches[this.match_index];
 			ctx.fillText("SPECTATING", canvas.width / 2, canvas.height * 0.87);
 			ctx.textAlign = "left";
@@ -206,7 +303,7 @@ export class Tournament {
 		this.button.draw();
 		this.leftBox();
 		this.rightBox();
-		this.centerBox();
+		this.centerBox(core);
 		ctx.font = Math.floor(canvas.height * 0.085) + "px pong-teko";
 		for (let b of this.visual) {
 			b.draw();
@@ -217,7 +314,7 @@ export class Tournament {
 		}
 	}
 
-	centerBox() {
+	centerBox(core) {
 		ctx.font = Math.floor(canvas.height * 0.085) + "px pong-teko";
 		this.spec_screen.draw();
 		if (this.state === "waiting") {
@@ -230,10 +327,8 @@ export class Tournament {
 			ctx.fillText(names, canvas.width / 2, canvas.height * 0.5);
 			ctx.fillText(this.timer[0].toString(), canvas.width / 2, canvas.height * 0.6);
 		}
-		else if (this.state === "ongoing") { //add spec state ??
-			ctx.fillText("ONGOING MATCH", canvas.width / 2, canvas.height / 2);
-			//render_game with a ratio and a pos (if spec) (only online)
-			//render_game (if playing)
+		else if (this.state === "ongoing") {
+			this.specDraw(core);
 		}
 		else if (this.state === "end") {
 			ctx.fillText("WINNER", canvas.width / 2, canvas.height * 0.3);
@@ -244,6 +339,24 @@ export class Tournament {
 					break;
 				}
 			}
+		}
+	}
+
+	specDraw(core) {
+		for (const player of core.players)
+			player.draw();
+		if (core.walls)
+			for (const w of core.walls)
+				w.draw();
+		if (core.obstacle)
+			core.obstacle.draw();
+		core.ball.draw();
+
+		if (this.timer[0] > 0) {
+			ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+			ctx.fillRect(this.spec_screen.x, this.spec_screen.y, this.spec_screen.width, this.spec_screen.height);
+			ctx.fillStyle = "white";
+			ctx.fillText(this.timer[0].toString(), canvas.width / 2, canvas.height / 2);
 		}
 	}
 
