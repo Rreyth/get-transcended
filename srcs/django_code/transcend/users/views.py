@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from users.models import User
-from .serializer import UserProfileSerializer
+from .serializer import UserSerializer
 
 class RegisterUserView(APIView):
     parser_classes = [JSONParser, MultiPartParser, FormParser]
@@ -13,7 +13,7 @@ class RegisterUserView(APIView):
         if User.objects.filter(email=request.data['email']).exists():
             return Response({'error': 'Email already registered'}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            serializer = UserProfileSerializer(data=request.data)
+            serializer = UserSerializer(data=request.data)
 
         if serializer.is_valid():
             serializer.save()
@@ -25,7 +25,7 @@ class UserView(APIView):
     parser_classes = [JSONParser, MultiPartParser, FormParser]
 
     def get(self, request):
-        serializer = UserProfileSerializer(request.user, many=False)
+        serializer = UserSerializer(request.user, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request):
@@ -33,3 +33,22 @@ class UserView(APIView):
         user.avatar = request.data['avatar']
         user.save()
         return Response({'message': 'Image updated'}, status=status.HTTP_200_OK)
+
+import sys
+
+class FriendView(APIView):
+    permission_classes = (IsAuthenticated,)
+    parser_classes = [JSONParser,]
+
+    def get(self, request):
+        serializer = UserSerializer(request.user.friends, many=True)
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        try:
+            request.user.friends.add(request.data['user'])
+
+            return Response({'message': 'Friend add'}, status=status.HTTP_201_CREATED)
+        except KeyError:
+            return Response({'error': 'user field is required'}, status=status.HTTP_400_BAD_REQUEST)
