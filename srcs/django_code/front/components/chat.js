@@ -124,7 +124,7 @@ export class Chat extends Component {
 		})
 
 		// const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE1MTEwNzk2LCJpYXQiOjE3MTUwOTk5OTYsImp0aSI6IjA4NmYzYmU5OTQzODQ3MWI5ODgwMjBmN2UwMjgyMzg0IiwidXNlcl9pZCI6Mn0.yMI2n-EohpKT5CieM2k7VKiPVPBKcmyAHK76SRCyOW8"
-		const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE1NzY1MTEzLCJpYXQiOjE3MTU3NTQzMTMsImp0aSI6IjE5ZDJiYjVjNzlkNzQwNjliMGI0YWI3YmM3ODJjNmI3IiwidXNlcl9pZCI6Mn0.vUc2C7sTBcifoUj0UNgT1Vy7_BvyU80ZjcrE5ImPGrg"
+		const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE1NzcxNzY5LCJpYXQiOjE3MTU3NjA5NjksImp0aSI6ImRlODgwM2JjMzc3NzQ0NDk5MmI2ZDU0ZDdhYWE2YzZlIiwidXNlcl9pZCI6Mn0.bKUmJCxZXknj_5qRNnNC38iC3dNha7ngrgTYyYfWDGY"
 		const socket = new WebSocket(
 			'wss://'
 			+ window.location.host
