@@ -22,6 +22,7 @@ class User(AbstractBaseUser):
 	username = models.CharField(max_length=25, unique=True)
 	avatar = models.TextField(blank=True, default='')
 	email = models.EmailField(max_length=255, unique=True, validators=[validate_email])
+	friends = models.ManyToManyField("self")
 	created_at = models.DateTimeField(default=timezone.now)
 	updated_at = models.DateTimeField(default=timezone.now)
  
