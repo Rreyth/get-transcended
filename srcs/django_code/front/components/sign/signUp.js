@@ -10,6 +10,7 @@ export class SignUp extends Component {
 		const popover_container = document.querySelector("#popover-container");
 		const dropdownMenu = document.getElementById('dropdownMenu');
 		const inputEmail = this.querySelector("#input-email");
+		const inputPass = this.querySelector("#input-pass");
 
 		this.querySelector("#input-user").addEventListener("input", (e) => {
 			if (e.target.value.length > lengthUserMax)
@@ -52,7 +53,7 @@ export class SignUp extends Component {
 					  popover.show();
 				}
 			}
-			else
+			else if (e.target.value.length <= lengthUserMax)
 			{
 				popover_container.innerHTML = "";
 			}
@@ -62,34 +63,38 @@ export class SignUp extends Component {
 		})
 
 
-
 		inputEmail.addEventListener("input", (e) => {
 			const inputEmail = document.getElementById('input-email');
 			const inputRect = inputEmail.getBoundingClientRect();
 			dropdownMenu.style.top = (inputRect.top + inputRect.height) + 'px';
-			dropdownMenu.innerHTML = `
-				<span class="dropdown-item">${e.target.value}@gmail.com</span>
-				<span class="dropdown-item">${e.target.value}@hotmail.com</span>
-				<span class="dropdown-item">${e.target.value}@orange.fr</span>
-			`;
-
-			dropdownMenu.classList.add('show');
+			if (e.target.value.includes("@") === false && e.target.value != "")
+			{
+				dropdownMenu.innerHTML = `
+					<span class="dropdown-item">${e.target.value}@gmail.com</span>
+					<span class="dropdown-item">${e.target.value}@hotmail.com</span>
+					<span class="dropdown-item">${e.target.value}@orange.fr</span>
+				`;
+				dropdownMenu.classList.add('show');
+			}
+			else
+			{
+				dropdownMenu.classList.remove('show');
+			}
 			
 		})
 
-			dropdownMenu.addEventListener('click', (e) => {
-			  e.preventDefault();
+		dropdownMenu.addEventListener('click', (e) => {
+			e.preventDefault();
 
-			  if (e.target.classList.contains('dropdown-item'))
-			  {
-				console.log(e.target);
+			if (e.target.classList.contains('dropdown-item'))
+			{
 				inputEmail.value = e.target.innerHTML;
 				dropdownMenu.classList.remove('show');
 				if (emailIsAlreadyUsed(inputEmail.value))
 				{
 					inputEmail.style.color = '#a51221';
 					
-					if (this.querySelector(".popover-user") === null)
+					if (this.querySelector(".popover-email") === null)
 					{
 						const popover = new bootstrap.Popover(inputEmail, {
 							container: popover_container,
@@ -103,32 +108,128 @@ export class SignUp extends Component {
 					}
 
 				}
-			  }
-			});
+			}
+		});
 
+		inputEmail.addEventListener("blur", (e) => {
+			if (emailIsAlreadyUsed(inputEmail.value))
+			{
+				inputEmail.style.color = '#a51221';
+				
+				if (this.querySelector(".popover-email") === null)
+				{
+					const popover = new bootstrap.Popover(inputEmail, {
+						container: popover_container,
+						content: "Le nom d'utilisateur existe deja",
+						placement: "right",
+						trigger: "manual",
+						boundary: "viewport",
+						customClass: "popover-email"
+					});
+					popover.show();
+				}
+
+			}
+			else
+			{
+				inputEmail.style.color = 'black';
+				if (this.querySelector(".popover-email") != null)
+				{
+					this.querySelector(".popover-email").remove();
+				}
+			}
+		});
+
+		inputPass.addEventListener("input", (e) => {
+			const passwordIsGood = passwordCheck(e.target.value);
+
+			if (passwordIsGood.includes(false))
+			{
+				inputPass.style.color = "#a51221";
+				if (this.querySelector(".popover-pass") === null)
+				{
+					const popover = new bootstrap.Popover(inputPass, {
+						container: popover_container,
+						content: "f",
+						placement: "right",
+						trigger: "manual",
+						boundary: "viewport",
+						customClass: "popover-pass"
+					});
+					popover.show();
+				}
+				setPopoverContent("popover-pass", passPopoverContent);
+				if (passwordIsGood[0] == true)
+					this.querySelector("#passContent1").style.color = "green";
+				if (passwordIsGood[1] == true)
+					this.querySelector("#passContent2").style.color = "green";
+				if (passwordIsGood[2] == true)
+					this.querySelector("#passContent3").style.color = "green";
+				if (passwordIsGood[3] == true)
+					this.querySelector("#passContent4").style.color = "green";
+			}
+			else
+			{
+				inputPass.style.color = "black";
+				if (this.querySelector(".popover-pass") != null)
+				{
+					this.querySelector(".popover-pass").remove();
+				}
+			}
+		});
 
     }
 }
 
+const passPopoverContent = /* html */ `
+	<p id="passContent1">doit contenir une maj</p>
+	<p id="passContent2">doit contenir une min</p>
+	<p id="passContent3">doit contenir un nombre</p>
+	<p id="passContent4">doit etre >=8</p>
+
+`;
+
+function setPopoverContent (className, newContent)
+{
+	const popoverElement = document.querySelector('.' + className);
+    if (popoverElement)
+	{
+      const popoverBody = popoverElement.querySelector('.popover-body');
+      if (popoverBody)
+	  {
+        popoverBody.innerHTML = newContent;
+      }
+    }
+}
+
+function passwordCheck(password)
+{
+	let errorTest = [true, true, true, true];
+
+	if ((/[A-Z]/.test(password)) === false)
+		errorTest[0] = false;
+	if ((/[a-z]/.test(password)) === false)
+		errorTest[1] = false;
+	if ((/[0-9]/.test(password)) === false)
+		errorTest[2] = false;
+	if (password.length < 8)
+		errorTest[3] = false;
+
+	return (errorTest);
+}
+
 function emailIsAlreadyUsed (tryEmail) {
+
 	const responseUser = true;
+
+	if (tryEmail === "swotex@gmail.com")
+		return (true);
+	else
+		return (false);
 
 	return (responseUser);
 }
 
-// function createPopover (target, content)
-// {
-// 	const popover_container = document.querySelector("#popover-container");
-// 	let popover = new bootstrap.Popover(target, {
-// 		container: popover_container,
-// 		content: content,
-// 		placement: "right",
-// 		trigger: "manual",
-// 		boundary: "viewport",
-// 		customClass: "popover-user"
-// 	  });
-// 	  return (popover);
-// }
 
 const lengthUserMax = 10;
 
@@ -148,9 +249,6 @@ const content = /*html*/`
 				<input class="form-control" id="input-email" type="email" placeholder="Email">
 				<div class="dropdown-menu" id="dropdownMenu">
 					<!-- Contenu du dropdown -->
-					<a class="dropdown-item" href="#">Option 1</a>
-					<a class="dropdown-item" href="#">Option 2</a>
-					<a class="dropdown-item" href="#">Option 3</a>
 				</div>
 				<input class="form-control" id="input-pass" type="password" placeholder="Password">
 			</div>
