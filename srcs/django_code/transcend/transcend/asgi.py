@@ -12,21 +12,19 @@ import django
 
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
-from channels.auth import AuthMiddlewareStack
 from channels.security.websocket import AllowedHostsOriginValidator
 from django.urls import path
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'transcend.settings')
 django.setup()
 
-from myapp import views
+from myapp.consumers import ChatConsumer
 from users.middleware import JwtAuthMiddlewareStack
 
-# application = get_asgi_application()
-
 websocket_urlpatterns = [
-    path('api/chat', views.MyConsumer.as_asgi())
+    path('ws/messages', ChatConsumer.as_asgi())
 ]
+
 application = ProtocolTypeRouter({
     'http': get_asgi_application(),
     "websocket": AllowedHostsOriginValidator(

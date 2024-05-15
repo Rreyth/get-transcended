@@ -8,9 +8,6 @@ export class Chat extends Component {
 	}
 
 	static sendMsg(socket, msg) {
-
-		console.log(socket)
-
 		socket.send(JSON.stringify({
 			'message': msg,
 			'recever_id': '2'
@@ -127,11 +124,11 @@ export class Chat extends Component {
 		})
 
 		// const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE1MTEwNzk2LCJpYXQiOjE3MTUwOTk5OTYsImp0aSI6IjA4NmYzYmU5OTQzODQ3MWI5ODgwMjBmN2UwMjgyMzg0IiwidXNlcl9pZCI6Mn0.yMI2n-EohpKT5CieM2k7VKiPVPBKcmyAHK76SRCyOW8"
-		const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE1NjgyODIyLCJpYXQiOjE3MTU2NzIwMjIsImp0aSI6IjU2MmI4ZTZmNzY1YTRjZGM4YzhlOTYzN2NkMDZiY2M2IiwidXNlcl9pZCI6Mn0.15BgOQjplU0kxyzo5NE7AK3iZ8lb-Zds7r_kU7Rn1ys"
+		const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE1NzY1MTEzLCJpYXQiOjE3MTU3NTQzMTMsImp0aSI6IjE5ZDJiYjVjNzlkNzQwNjliMGI0YWI3YmM3ODJjNmI3IiwidXNlcl9pZCI6Mn0.vUc2C7sTBcifoUj0UNgT1Vy7_BvyU80ZjcrE5ImPGrg"
 		const socket = new WebSocket(
 			'wss://'
 			+ window.location.host
-			+ '/api/chat?token='
+			+ '/ws/messages?token='
 			+ token
 		);
 
