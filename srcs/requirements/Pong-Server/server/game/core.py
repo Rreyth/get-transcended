@@ -109,7 +109,8 @@ class Game:
 	async def closeAll(self):
 		for client in self.clients.values():
 			await client.close()
-		await self.hub.close()
+		for hub in self.hub:
+			await hub.close()
  
 	async def sendUpdate(self):
 		if not self.is_running:
@@ -219,16 +220,29 @@ async def handle_game(websocket, path):
 				break
 
 	finally:
-		if game.state != 'end' and game.is_running:
+		if game.tournament:
 			for key, value in game.clients.items():
 				if value == websocket:
 					del game.clients[key]
-					await game.sendHub(json.dumps(game.endMsg(key, 'quit')))
-					await game.sendAll(game.endMsg(key, 'quit'))
+					await game.sendAll({'type' : 'update', 'tournament' : True, 'cmd' : 'leave', 'id' : key})
+					game.tournament.leave(key)
+					if game.state == "game" or game.state == "start":
+						await game.tournament.endMatch(game.players, game, 'leave')
 					break
-		game.is_running = False
-		clients.remove(websocket)
-		if clients.__len__() <= 0:
+			if game.clients.__len__() == 0:
+				await game.closeAll()
+				clients.clear()
+		else:
+			if game.state != 'end' and game.is_running:
+				for key, value in game.clients.items():
+					if value == websocket:
+						del game.clients[key]
+						await game.sendHub(json.dumps(game.endMsg(key, 'quit')))
+						await game.sendAll(game.endMsg(key, 'quit'))
+						break
+			game.is_running = False
+		clients.discard(websocket)
+		if clients.__len__() == 0:
 			os.kill(os.getpid(), signal.SIGTERM)
 
  
@@ -261,15 +275,45 @@ async def parse_msg(msg : dict, websocket):
 		if 'cmd' in msg.keys() and msg['cmd'] == 'quitWait':
 			await game.hub.send(json.dumps({'type' : 'endGame', 'cmd' : 'quitWait', 'nb' : game.clients.__len__(), 'id' : msg['id']}))
 			await game.sendAll({'type' : 'endGame', 'cmd' : 'quitWait', 'id': msg['id']})
+			# game.clients.pop(msg['id'])
+			for key, value in game.clients.items():
+				if value == websocket:
+					del game.clients[key]
+					break
 			await websocket.close()
-			game.clients.pop(msg['id'])
 			if game.clients.__len__() == 0:
 				game.is_running = False
-		else:
-			await game.sendHub(json.dumps(game.endMsg(msg['id'], 'quit')))
-			await game.sendAll(game.endMsg(msg['id'], 'quit'))
-			game.is_running = False
+		elif 'cmd' in msg.keys() and msg['cmd'] == 'tournament':
+			# game.clients.pop(msg['id'])
+			for key, value in game.clients.items():
+				if value == websocket:
+					del game.clients[key]
+					break
 			await websocket.close()
+			if game.clients.__len__() == 0:
+				game.is_running = False
+			else:
+				await game.sendAll({'type' : 'update', 'tournament' : True, 'cmd' : 'leave', 'id' : msg['id']})
+				game.tournament.leave(msg['id'])
+		else:
+			if game.tournament:
+				# game.clients.pop(msg['id'])
+				for key, value in game.clients.items():
+					if value == websocket:
+						del game.clients[key]
+						break
+				await websocket.close()
+				if game.clients.__len__() == 0:
+					game.is_running = False
+				else:
+					await game.sendAll({'type' : 'update', 'tournament' : True, 'cmd' : 'leave', 'id' : msg['id']})
+					game.tournament.leave(msg['id'])
+					await game.tournament.endMatch(game.players, game, 'leave')
+			else:
+				await game.sendHub(json.dumps(game.endMsg(msg['id'], 'quit')))
+				await game.sendAll(game.endMsg(msg['id'], 'quit'))
+				game.is_running = False
+				await websocket.close()
 
 	if msg['type'] == 'close':
 		game.is_running = False

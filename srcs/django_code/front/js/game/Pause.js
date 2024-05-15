@@ -32,12 +32,18 @@ export class Pause {
 						core.ai = [];
 						core.max_score = 10;
 					}
-					else
-						core.GameRoom.send(JSON.stringify({'type' : 'quitGame', 'id' : core.id}));
+					else {
+						if (!core.tournament)
+							core.GameRoom.send(JSON.stringify({'type' : 'quitGame', 'id' : core.id}));
+						else
+							core.GameRoom.send(JSON.stringify({'type' : 'quitGame', 'id' : core.tournament_id}));
+					}
 					core.online = false;
 					core.wait_screen = false;
 					core.start_screen = false;
 					core.custom_menu = false;
+					core.tournament = false;
+					core.tournament_menu = false;
 				}
 				core.pause[0] = false;
 				this.freeze = false;

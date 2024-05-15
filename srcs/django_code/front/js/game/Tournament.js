@@ -179,6 +179,8 @@ export class Tournament {
 				this.onlineStart(msg.states, core);
 			else if (msg.cmd === 'EndMatch' || msg.cmd === 'EndTournament')
 				this.onlineEnd(msg, core);
+			else if (msg.cmd === 'leave')
+				this.leave(msg.id);
 			return;
 		}
 		for (let [id, players] of Object.entries(msg.matches)) {
@@ -193,6 +195,15 @@ export class Tournament {
 		this.state = msg.state;
 		this.timer[0] = msg.timer;
 		this.match_index = msg.index;
+	}
+
+	leave(id) {
+		for (const [p] of this.players) {
+			if (p.nb == id) {
+				this.players.set(p, "(LEFT)");
+				break;
+			}
+		}
 	}
 
 	onlineStart(states, core) {
@@ -223,6 +234,7 @@ export class Tournament {
 		for (const player of core.players) {
 			if (core.tournament_id == player.tournament) {
 				core.state = "start";
+				core.id = player.nb;
 				core.start_screen = new StartScreen("ONLINE", core.online);
 				break;
 			}
@@ -236,6 +248,7 @@ export class Tournament {
 		const spec_pos = [this.spec_screen.x, this.spec_screen.y];
 		let new_pos;
 		for (let player of core.players) {
+			player.size = [spec_size[0] * 0.007, spec_size[1] * 0.1];
 			player.paddle[0].size = [spec_size[0] * 0.007, spec_size[1] * 0.1];
 			new_pos = [((player.paddle[0].pos.x / canvas.width) * spec_size[0]) + spec_pos[0],
 						((player.paddle[0].pos.y / canvas.height) * spec_size[1]) + spec_pos[1]];
@@ -247,15 +260,18 @@ export class Tournament {
 				player.paddle[2].pos = new Vec2(new_pos[0], new_pos[1] + spec_size[1]);
 			}
 		}
-		// if (core.walls) {
-		// 	for (let wall of core.walls) {
-		// 		wall.size = [spec_size[0], spec_size[1] * 0.0075];
-		// 		new_pos = [((wall.visual.x / canvas.width) * spec_size[0]) + spec_pos[0],
-		// 					((wall.visual.y / canvas.height) * spec_size[1]) + spec_pos[1]];
-		// 		wall.visual = new Vec2(new_pos[0], new_pos[1]);
-		// 		wall.Hitbox = new Hitbox(new_pos[0], new_pos[1], wall.size[0], wall.size[1]);
-		// 	}
-		// }
+		if (core.walls) {
+			for (let wall of core.walls) {
+				if (wall.spec)
+					continue;
+				wall.spec = true;
+				wall.size = [spec_size[0], spec_size[1] * 0.0075];
+				new_pos = [((wall.visual.x / canvas.width) * spec_size[0]) + spec_pos[0],
+							((wall.visual.y / canvas.height) * spec_size[1]) + spec_pos[1]];
+				wall.visual = new Vec2(new_pos[0], new_pos[1]);
+				wall.Hitbox = new Hitbox(new_pos[0], new_pos[1], wall.size[0], wall.size[1]);
+			}
+		}
 		core.ball.radius = Math.floor(spec_size[1] * 0.01);
 		new_pos = [((core.ball.center[0].x / canvas.width) * spec_size[0]) + spec_pos[0],
 					((core.ball.center[0].y / canvas.height) * spec_size[1]) + spec_pos[1]];
@@ -281,16 +297,17 @@ export class Tournament {
 			this.state = "end";
 		}
 		core.state = "tournament";
+		this.timer[0] = 5;
 	}
 
 	draw(core) {
+		this.centerBox(core);
 		if (this.online)
 			ctx.fillText("ID : " + this.id, canvas.width * 0.06, canvas.height * 0.1);
 		ctx.font = Math.floor(canvas.height * 0.15) + "px pong-teko";
 		ctx.fillText("TOURNAMENT", canvas.width / 2, canvas.height * 0.1);
 		ctx.font = Math.floor(canvas.height * 0.06) + "px pong-teko";
 		if (this.state === "ongoing") {
-			//add score to top
 			const match = this.matches[this.match_index];
 			ctx.fillText("SPECTATING", canvas.width / 2, canvas.height * 0.87);
 			ctx.textAlign = "left";
@@ -303,7 +320,6 @@ export class Tournament {
 		this.button.draw();
 		this.leftBox();
 		this.rightBox();
-		this.centerBox(core);
 		ctx.font = Math.floor(canvas.height * 0.085) + "px pong-teko";
 		for (let b of this.visual) {
 			b.draw();
@@ -340,9 +356,20 @@ export class Tournament {
 				}
 			}
 		}
+		ctx.fillStyle = "rgb(0, 0, 0)";
+		ctx.fillRect(0, 0, canvas.width, this.spec_screen.y * 0.995);
+		ctx.fillRect(0, this.spec_screen.y + (this.spec_screen.height * 1.001), canvas.width, this.spec_screen.y);
+		ctx.fillStyle = "white";
 	}
 
 	specDraw(core) {
+		ctx.fillStyle = "rgba(100, 100, 100, 0.5)";
+		ctx.font = Math.floor(this.spec_screen.height * 0.75) + "px pong-teko";
+		ctx.fillText(core.players[0].score.toString(), canvas.width * 0.3, canvas.height * 0.56);
+		ctx.fillText("-", canvas.width / 2, canvas.height * 0.56);
+		ctx.fillText(core.players[1].score.toString(), canvas.width * 0.7, canvas.height * 0.56);
+		ctx.fillStyle = "white";
+		ctx.font = Math.floor(canvas.height * 0.085) + "px pong-teko";
 		for (const player of core.players)
 			player.draw();
 		if (core.walls)
@@ -427,7 +454,10 @@ export class Tournament {
 			core.online = false;
 			core.tournament_menu = false;
 			core.tournament = false;
-			//add leave state + msg for others
+			if (core.GameRoom)
+				core.GameRoom.send(JSON.stringify({'type' : 'quitGame', 'id' : core.tournament_id, 'cmd' : 'tournament'}));
+			else
+				core.GameHub.send(JSON.stringify({'type' : 'quitGame', 'id' : core.tournament_id, 'cmd' : 'tournament'}));
 		}
 	}
 

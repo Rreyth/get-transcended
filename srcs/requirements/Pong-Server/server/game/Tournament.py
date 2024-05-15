@@ -45,7 +45,7 @@ class Tournament :
 					self.match_index += 1
 					self.timer = [5, time.time()]
 					break
-			if match != self.matches[self.match_index]:
+			if self.match_index not in self.matches or match != self.matches[self.match_index]:
 				break
 
 	async def endTournament(self, core):  #send msg ?
@@ -60,14 +60,14 @@ class Tournament :
 			# msg = {"type" : "endGame", "winner" : winner, "players" : self.max_players}
 			# core.sendHub(msg)
    
-	async def endMatch(self, players, core):
+	async def endMatch(self, players, core, reason = "end"):
 		self.nb_match -= 1
 		for player in players:
 			for p in self.players.keys():
 				if p.nb == player.tournament:
-					if player.win == "LOSE":
+					if player.win == "LOSE" and reason != "leave":
 						self.players[p] = "(LOSE)"
-					else:
+					elif self.players[p] != "(LEFT)":
 						self.players[p] = "(SPEC)"
 					break
  
@@ -79,8 +79,10 @@ class Tournament :
 						if state == "(SPEC)":
 							self.matches[self.match_index].append(player)
 						break
-  
+ 
+		self.timer[0] = 5
 		self.state = "interlude"
+		core.state = "tournament"
 		await core.sendAll(self.stateMsg('EndMatch'))
 
 	async def startMatch(self, core):
@@ -140,3 +142,9 @@ class Tournament :
 			'cmd' : cmd,
 			'states' : states}
 		return msg
+
+	def leave(self, id):
+		for player in self.players.keys():
+			if player.nb == id:
+				self.players[player] = "(LEFT)"
+				break

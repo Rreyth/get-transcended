@@ -1,4 +1,4 @@
-var canvas = document.getElementById("pong_canvas")
+var canvas = document.querySelector("#pong_canvas");
 canvas.width = window.innerWidth * 0.80;
 canvas.height = Math.floor(canvas.width * 0.482);
 canvas.style.display = "block";

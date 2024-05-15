@@ -24,8 +24,9 @@ Router.set('/login', () => {
 	render('login')
 })
 
-Router.set('/pong', () => {
+Router.set('/pong', async () => {
 	render('pong')
+	await new Promise(resolve => setTimeout(resolve, 10))
 	import("../js/pong.js").then(m => {
 		m.connect_hub()
 	})

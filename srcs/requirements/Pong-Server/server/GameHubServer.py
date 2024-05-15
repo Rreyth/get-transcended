@@ -131,7 +131,7 @@ async def run_game(id, websocket):
 				try:
 					async for message in gameSocket:
 						msg :dict = json.loads(message)
-						if msg['type'] == 'endGame':
+						if msg['type'] == 'endGame': #add tournament end
 							if django_socket:
 								await django_socket.send(message)
 							break
@@ -170,7 +170,7 @@ async def handle_tournament(client_msg, websocket):
 	global rooms, used_port, used_id
 	if client_msg['online']	== 'false':
 		msg : dict = json.loads(await websocket.recv())
-		while msg['type'] != 'endGame':
+		while msg['type'] != 'endGame' and msg['type'] != 'quitGame':
 			msg : dict = json.loads(await websocket.recv())
 		print(msg, file=sys.stderr) #send it to serv for db stockage / histo
   

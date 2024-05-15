@@ -130,6 +130,7 @@ export class TournamentMenu {
 		}
 
 		core.tournament = new Tournament(this.mod_list, this.nb_players, this.ai_nb, this.score, core.online, new Player(1, core.alias,  this.nb_players, this.mod_list.includes("BORDERLESS"), false));
+		core.tournament_id = 1;
 		if (!core.online)
 			core.tournament.initPlayers(core.players);
 	}

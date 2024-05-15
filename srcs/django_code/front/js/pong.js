@@ -135,8 +135,10 @@ function parse_msg(event) {
 		game.ball.dir = msg.ball[4];
 		if (game.obstacle)
 			game.obstacle.solid = msg.obstacle;
-		if (game.state === "tournament")
+		if (game.state === "tournament") {
+			game.tournament.timer[0] = 0;
 			game.tournament.resizeSpec(game);
+		}
 	}
 	else if (msg.type == "endGame") {
 		if ("cmd" in msg && msg.cmd == "quitWait") {
