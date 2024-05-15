@@ -18,7 +18,7 @@ from django.urls import path
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'transcend.settings')
 django.setup()
 
-from myapp.consumers import ChatConsumer
+from chat.consumers import ChatConsumer
 from users.middleware import JwtAuthMiddlewareStack
 
 websocket_urlpatterns = [
