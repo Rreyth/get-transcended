@@ -1,4 +1,7 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
+from myapp.models import PrivateMessage
+from users.models import User
+from asgiref.sync import sync_to_async
 import json
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -14,19 +17,21 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		text_data_json = json.loads(text_data)
 		message = text_data_json['message']
 
+		recever = await sync_to_async(User.objects.get, thread_sensitive=True)(pk=text_data_json['recever_id'])
+		private_message = await sync_to_async(PrivateMessage.objects.create)(content=message, recever=recever, sender=self.scope['user'])
+
 		await self.channel_layer.group_send(
             str(text_data_json['recever_id']),
             {
-                'type': 'chat_message',
-                'message': message
+                'type': 'broadcast',
+                'private_message': private_message
             }
         )
 
-	async def chat_message(self, event):
-		message = event['message']
+	async def broadcast(self, event):
 
 		await self.send(text_data=json.dumps({
-            'message': message,
-            'username': 'swotex',
-            'date': "27/03/2024 12:40"
+            'message': event['private_message'].content,
+            'username': event['private_message'].recever.username,
+            'date': event['private_message'].created_at.strftime('%m/%d/%Y')
         }))
