@@ -8,6 +8,7 @@ import { Obstacle } from "./game/Obstacle.js";
 import { StartScreen } from "./game/StartScreen.js";
 import { WaitScreen } from "./game/WaitScreen.js";
 import { update_sizes } from "./game/update.js";
+import { Thread } from "./thread.js";
 
 let timer;
 let connect_last;
@@ -57,7 +58,8 @@ function try_connect(GameHub) {
 let GameHub = false;
 
 export function connect_hub() {
-	const socket = "wss://" + window.location.hostname + ":8765";
+	// const socket = "wss://" + window.location.hostname + ":8765";
+	const socket = "wss://" + window.location.hostname + ":8760";
 	GameHub = new WebSocket(socket);
 	GameHub.onerror = hub_error;
 	GameHub.onopen = hub_open;
@@ -68,7 +70,7 @@ function hub_error(error) {
 	console.error("Connection failed: ", error)
 	timer = 5;
 	connect_last = Date.now() / 1000;
-	loginInterval = setInterval(connect_loop, 10);
+	loginInterval = Thread.new(connect_loop, 10);
 }
 
 function hub_open() {
@@ -85,7 +87,7 @@ function parse_msg(event) {
 			if (msg['alias'] !== undefined)
 				game.alias = msg.alias;
 			game.start(GameHub);
-			gameInterval = setInterval(game_loop, 10);
+			gameInterval = Thread.new(game_loop, 10);
 		}
 		else
 			console.log("Connection failed"); // + invalid user token ?? is it even possible to fail connect from web ??
