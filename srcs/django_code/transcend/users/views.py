@@ -34,8 +34,6 @@ class UserView(APIView):
         user.save()
         return Response({'message': 'Image updated'}, status=status.HTTP_200_OK)
 
-import sys
-
 class FriendView(APIView):
     permission_classes = (IsAuthenticated,)
     parser_classes = [JSONParser,]
