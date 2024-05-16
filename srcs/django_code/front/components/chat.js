@@ -1,5 +1,6 @@
-import { Component } from "../../js/component.js";
-import { escapeHtml, scrollbarToEnd } from "../../js/utils.js";
+import { Component } from "../js/component.js";
+import { escapeHtml, scrollbarToEnd } from "../js/utils.js";
+import { api, user_token, auth } from "../js/helpers.js"
 
 export class Chat extends Component {
 
@@ -14,7 +15,21 @@ export class Chat extends Component {
 		}));
 	}
 
-	connectedCallback() {
+	async getFriends()
+	{
+		const response = await api('/user/friends/', 'GET', null, await user_token())
+
+		if (response.ok)
+		{
+			return await response.json()
+		}
+
+		return []
+	}
+
+	async connectedCallback() {
+		await auth('test', 'pass')
+		await this.getFriends()
 		this.innerHTML = `
 		<div class="chat">
 		<div class="btn-group dropup">
@@ -123,13 +138,11 @@ export class Chat extends Component {
 			}
 		})
 
-		// const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE1MTEwNzk2LCJpYXQiOjE3MTUwOTk5OTYsImp0aSI6IjA4NmYzYmU5OTQzODQ3MWI5ODgwMjBmN2UwMjgyMzg0IiwidXNlcl9pZCI6Mn0.yMI2n-EohpKT5CieM2k7VKiPVPBKcmyAHK76SRCyOW8"
-		const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE1NzcxNzY5LCJpYXQiOjE3MTU3NjA5NjksImp0aSI6ImRlODgwM2JjMzc3NzQ0NDk5MmI2ZDU0ZDdhYWE2YzZlIiwidXNlcl9pZCI6Mn0.bKUmJCxZXknj_5qRNnNC38iC3dNha7ngrgTYyYfWDGY"
 		const socket = new WebSocket(
 			'wss://'
 			+ window.location.host
 			+ '/ws/messages?token='
-			+ token
+			+ await user_token()
 		);
 
 		socket.onopen = function (event) {
