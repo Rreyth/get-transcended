@@ -11,6 +11,7 @@ from .serializer import PrivateMessageSerializer
 class DMView(APIView):
     permission_classes = (IsAuthenticated,)
     parser_classes = [JSONParser, MultiPartParser, FormParser]
+    serializer_class = PrivateMessageSerializer
 
     def get(self, request, user):
         u = User.objects.get(pk=user)
@@ -18,3 +19,6 @@ class DMView(APIView):
         serializer = PrivateMessageSerializer(messages, many=True)
         
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def perform_create(self, serializer):
+        serializer.save(sender=self.request.user, recever=self.request.user)

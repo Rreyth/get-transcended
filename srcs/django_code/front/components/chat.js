@@ -1,6 +1,7 @@
 import { Component } from "../js/component.js";
 import { escapeHtml, scrollbarToEnd } from "../js/utils.js";
-import { api, user_token, auth } from "../js/helpers.js"
+import { api, user_token, auth, user } from "../js/helpers.js"
+import { Cache } from "../js/cache.js";
 
 export class Chat extends Component {
 
@@ -29,7 +30,17 @@ export class Chat extends Component {
 
 	async connectedCallback() {
 		await auth('test', 'pass')
-		await this.getFriends()
+
+		const friends = await this.getFriends();
+		const cache = {};
+
+		if (friends.length > 0)
+		{
+			cache[friends[0].id] = await this.fetchDmWith(friends[0].id);
+		}
+
+		Cache.set("messages", cache);
+
 		this.innerHTML = `
 		<div class="chat">
 		<div class="btn-group dropup">
@@ -52,11 +63,7 @@ export class Chat extends Component {
 								<span class="separator-header"></span>
 							</div>
 							
-							<div class="users-body">
-								<c-friend user-id="3" username="tutute fils de pute"></c-friend>
-								<c-friend user-id="3" username="Swotex"></c-friend>
-								<c-friend user-id="3" username="sd asd"></c-friend>
-							</div>
+							<div class="users-body" id="chat-friends"></div>
 						</div>
 	
 						<div class="groups">
@@ -101,6 +108,12 @@ export class Chat extends Component {
 		
 	</div>
         `;
+
+		friends.map(friend => {
+			document.querySelector('#chat-friends').innerHTML += `<c-friend user-id="${friend.id}" username="${friend.username}"></c-friend>`
+		})
+
+		this.displayDmWith(friends[0].id)
 
 		this.addClickEvent('#switch-chat', (e) => {
 			let element = e.target;
@@ -153,10 +166,6 @@ export class Chat extends Component {
 			const data = JSON.parse(event.data);
 			console.log('Message from server:', data.message);
 			document.querySelector("#messages").innerHTML += `<c-message who="${data.username}" date="${data.date}" content="${data.message}"></c-message>`
-			
-			// displayNewMsg(data, 'me');
-			// displayNewMsg(data, 'nameOfSpeaker');
-			// scrollbarToEnd(".msg-body");
 		};
 
 		document.getElementById('msg-area').addEventListener('keydown', function (event) {
@@ -170,6 +179,40 @@ export class Chat extends Component {
 			}
 		});
 
+	}
+
+	async fetchDmWith(userId)
+	{
+		const response = await api(`/user/dm/${userId}`, 'GET', null, await user_token());
+
+		return await response.json();
+	}
+
+	async getDmWith(userId)
+	{
+		let messages = Cache.get("messages");
+
+		if (messages.hasOwnProperty(userId))
+		{
+			return messages[userId];
+		}
+		else
+		{
+			messages[userId] = await this.fetchDmWith(userId);
+
+			Cache.set("messages", messages);
+
+			return messages[userId];
+		}
+	}
+
+	async displayDmWith(userId)
+	{
+		const messages = await this.getDmWith(userId);
+
+		messages.map(message => {
+			document.querySelector('#messages').innerHTML += `<c-message who="${message.sender.username}" date="${message.created_at}" content="${message.content}"></c-message>`
+		});
 	}
 
 }

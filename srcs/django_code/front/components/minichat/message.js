@@ -1,4 +1,5 @@
 import { Component } from "../../js/component.js";
+import { user } from "../../js/helpers.js";
 
 export class Message extends Component {
 
@@ -6,10 +7,10 @@ export class Message extends Component {
         return "message"
     }
 
-    connectedCallback() {
+    async connectedCallback() {
         super.connectedCallback()
 
-        const who = this.getAttribute('who') == "swotex" ? "msg-recieve" : "msg-sender"
+        const who = this.getAttribute('who') == (await user()).username ? "msg-recieve" : "msg-sender"
 
         this.innerHTML = `
         <div class="${who}">
