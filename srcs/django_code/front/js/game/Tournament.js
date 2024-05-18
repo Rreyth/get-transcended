@@ -98,6 +98,7 @@ export class Tournament {
 		}
 		this.state = "end";
 		if (core) {
+			//send names (local can change names)
 			const msg = {"type" : "endGame", "winner" : winner, "players" : this.max_players};
 			core.GameHub.send(JSON.stringify(msg));
 		}

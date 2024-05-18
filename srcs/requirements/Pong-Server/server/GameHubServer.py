@@ -34,7 +34,7 @@ class Room:
   
 	async def sendAll(self, msg : dict):
 		for player in self.players:
-			await player.send(json.dumps(msg))
+			await player.websocket.send(json.dumps(msg))
 	
 	async def cleanEmpty(self):
 		global used_port, used_id
@@ -64,7 +64,7 @@ django_socket = False
 
 async def send_to_DB(msg : dict):
 	print(msg, file=sys.stderr, flush=True)
-    #add players infos + send to main serv for db
+	#add players infos + send to main serv for db
 	#add tournament end
 	# if django_socket:
 	# await django_socket.send(msg)
@@ -80,10 +80,16 @@ async def full_room(id, websocket):
 		if msg['type'] == 'quitGame':
 			if 'cmd' in msg.keys() and msg['cmd'] == 'quitWait':
 				await rooms[id].sendAll({'type' : 'endGame', 'cmd' : 'quitWait', 'id': msg['id']})
-				rooms[id].players.remove(websocket)
+				for player in rooms[id].players:
+					if player.websocket == websocket:
+						rooms[id].players.remove(player)
+						break
 				rooms[id].players_nb -= 1
 			else:
-				rooms[id].players.remove(websocket)
+				for player in rooms[id].players:
+					if player.websocket == websocket:
+						rooms[id].players.remove(player)
+						break
 				rooms[id].players_nb -= 1
 				await rooms[id].sendAll({'type' : 'endGame', 'cmd' : 'quitWait', 'id': msg['id']})
 			if rooms[id].players.__len__() == 0:
@@ -103,24 +109,25 @@ def id_generator():
 async def connection_handler(client_msg, websocket):
 	global django_socket, clients, registered
 	if client_msg["type"] == 'connectionRpl' and websocket == django_socket:
-		for key, ws in clients.items():
+		for key, player in clients.items():
 			if key == client_msg['id']:
-				await ws.send(json.dumps(client_msg))
+				player.name = client_msg['alias']
+				await player.websocket.send(json.dumps(client_msg))
 				if (client_msg['success'] == 'true'):
-					registered[key] = ws
+					registered[key] = player.websocket
 				break
 	elif django_socket:
-		for key, ws in clients.items():
-			if ws == websocket:
+		for key, player in clients.items():
+			if player.websocket == websocket:
 				client_msg['id'] = key
 				break
 		await django_socket.send(json.dumps(client_msg))
 	else:
 		msg = {'type' : 'connectionRpl', 'success' : 'true', 'error' : 'none'}
 		await websocket.send(json.dumps(msg))
-		for key, ws in clients.items():
-			if ws == websocket:
-				registered[key] = ws
+		for key, player in clients.items():
+			if player.websocket == websocket:
+				registered[key] = player.websocket
 				break
 	
 async def run_game(id, websocket):
@@ -148,21 +155,24 @@ async def run_game(id, websocket):
  
  
 async def handle_join(client_msg, websocket):
-	global rooms, used_port, used_id
+	global rooms, used_port, used_id, clients
 	if client_msg['id'] not in used_id:
 		await websocket.send(json.dumps({'type' : 'joinResponse', 'success' : 'false'}))
 		return
 
 	for room in rooms.values():
 		if room.id == client_msg['id']:
-			await room.sendAll({"type" : "join", "alias" : "ALIAS"}) #SPE FOR TOUNAMENT #TMPPPP
-			room.players.append(websocket)
+			for player in clients.values():
+				if player.websocket == websocket:
+					await room.sendAll({"type" : "join", "alias" : player.name})
+					room.players.append(player)
+					break
 			room.players_nb += 1
 			msg = {'type' : 'joinResponse', 'success' : 'true', 'port' : room.port, 'pos' : room.players_nb, 'max' : room.max_players, 'mode' : room.type, 'custom_mods' : room.mods}
 			if room.type == 'tournament':
 				msg['score'] = room.score
 				msg['ai'] = room.ai_nb
-				msg['players'] = ["ALIAS" for i in range(room.players.__len__())] #TMPPPPPPP
+				msg['players'] = [player.name for player in room.players]
 			await websocket.send(json.dumps(msg))
 			await full_room(room.id, websocket)
 			if client_msg['id'] in rooms.keys() and rooms[room.id].full:
@@ -170,7 +180,7 @@ async def handle_join(client_msg, websocket):
 			return
 
 async def handle_tournament(client_msg, websocket):
-	global rooms, used_port, used_id
+	global rooms, used_port, used_id, clients
 	if client_msg['online']	== 'false':
 		msg : dict = json.loads(await websocket.recv())
 		while msg['type'] != 'endGame' and msg['type'] != 'quitGame':
@@ -190,7 +200,10 @@ async def handle_tournament(client_msg, websocket):
 		rooms[room_id].mods = client_msg['mods']
 		rooms[room_id].score = client_msg['score']
 		rooms[room_id].ai_nb = client_msg['ai']
-		rooms[room_id].players.append(websocket)
+		for player in clients.values():
+			if player.websocket == websocket:
+				rooms[room_id].players.append(player)
+				break
 		rooms[room_id].players_nb = client_msg['ai'] + 1
 		await websocket.send(json.dumps({'type' : 'TournamentRoom', 'ID' : room_id, 'port' : port, 'pos' : rooms[room_id].players_nb}))
 		await full_room(room_id, websocket)
@@ -198,7 +211,7 @@ async def handle_tournament(client_msg, websocket):
 			await run_game(room_id, websocket)
 
 async def handle_custom(client_msg, websocket):
-	global rooms, used_port, used_id
+	global rooms, used_port, used_id, clients
 	if client_msg['online']	== 'false':
 		msg : dict = json.loads(await websocket.recv())
 		while msg['type'] != 'endGame':
@@ -218,7 +231,10 @@ async def handle_custom(client_msg, websocket):
 		rooms[room_id].mods = client_msg['mods']
 		rooms[room_id].score = client_msg['score']
 		rooms[room_id].ai_nb = client_msg['ai']
-		rooms[room_id].players.append(websocket)
+		for player in clients.values():
+			if player.websocket == websocket:
+				rooms[room_id].players.append(player)
+				break
 		rooms[room_id].players_nb = client_msg['ai'] + 1
 		await websocket.send(json.dumps({'type' : 'GameRoom', 'ID' : room_id, 'port' : port, 'pos' : rooms[room_id].players_nb}))
 		await full_room(room_id, websocket)
@@ -227,7 +243,7 @@ async def handle_custom(client_msg, websocket):
 
 
 async def handle_quickGame(client_msg, websocket):
-	global rooms, used_port, used_id
+	global rooms, used_port, used_id, clients
 	if client_msg['online'] == 'false':
 		response : dict = json.loads(await websocket.recv())
 		while response['type'] != 'endGame':
@@ -238,7 +254,10 @@ async def handle_quickGame(client_msg, websocket):
 		for room in rooms.values():
 			if not room.full and room.type == 'quickGame':
 				await room.sendAll({"type" : "join"})
-				room.players.append(websocket)
+				for player in clients.values():
+					if player.websocket == websocket:
+						room.players.append(player)
+						break
 				room.players_nb += 1
 				await websocket.send(json.dumps({'type' : 'GameRoom', 'ID' : room.id, 'port' : room.port, 'pos' : room.players_nb}))
 				id = room.id
@@ -257,7 +276,10 @@ async def handle_quickGame(client_msg, websocket):
 		time.sleep(0.1)
 
 		rooms[room_id] = Room(room_id, host, port, 'quickGame', 2)
-		rooms[room_id].players.append(websocket)
+		for player in clients.values():
+			if player.websocket == websocket:
+				rooms[room_id].players.append(player)
+				break
 		rooms[room_id].players_nb = 1
 		await websocket.send(json.dumps({'type' : 'GameRoom', 'ID' : room_id, 'port' : port, 'pos' : rooms[room_id].players_nb}))
 		await full_room(room_id, websocket)
@@ -292,7 +314,7 @@ async def handle_client(websocket):
 	global clients, registered
 	for id in range(10000):
 		if not id in clients:
-			clients[id] = websocket
+			clients[id] = Player(websocket)
 			break
 
 	try:
@@ -300,19 +322,19 @@ async def handle_client(websocket):
 			await parse_msg(message, websocket)
 
 	except websockets.exceptions.ConnectionClosedError:
-		for key, ws in clients.items():
-			if ws == websocket:
+		for key, player in clients.items():
+			if player.websocket == websocket:
 				print(f"Game hub: Client {key}: Connection Closed Error", file=sys.stderr)
 				break
 	except websockets.exceptions.ConnectionClosedOK:
-		for key, ws in clients.items():
-			if ws == websocket:
+		for key, player in clients.items():
+			if player.websocket == websocket:
 				print(f"Game hub: Client {key}: Closed connection", file=sys.stderr)
 				break
 
 	finally:
-		for key, value in clients.items():
-			if value == websocket:
+		for key, player in clients.items():
+			if player.websocket == websocket:
 				del clients[key]
 				if is_registered(websocket):
 					del registered[key]
@@ -320,18 +342,20 @@ async def handle_client(websocket):
 		await quit_room(websocket)
 
 async def quit_room(websocket):
-	global rooms, used_port, used_id
+	global rooms, used_port, used_id, clients
 	for id, room in rooms.items():
-		if websocket in room.players:
-			if not room.full:
-				index = room.players.index(websocket) + 1
-				rooms[id].players.remove(websocket)
-				rooms[id].players_nb -= 1
-				await rooms[id].sendAll({'type' : 'endGame', 'cmd' : 'quitWait', 'id': index})
-			if rooms[id].players.__len__() == 0:
-				await rooms[id].cleanEmpty()
-				del rooms[id]
-			break
+		for player in clients.values():
+			if player.websocket == websocket and player in room.players:
+				if not room.full:
+					index = room.players.index(player) + 1
+					rooms[id].players.remove(player)
+					rooms[id].players_nb -= 1
+					await rooms[id].sendAll({'type' : 'endGame', 'cmd' : 'quitWait', 'id': index})
+				if rooms[id].players.__len__() == 0:
+					await rooms[id].cleanEmpty()
+					del rooms[id]
+				break
+		break
 
 
 def is_registered(websocket):

@@ -20,7 +20,6 @@ async def creds_verificator(message, websocket): #wait for db and user
 		msg = {'type' : 'connectionRpl', 'success' : 'true', 'error' : 'none', 'id' : message['id'], 'alias' : alias} #add user name / pseudo
 		# msg = {'type' : 'connectionRpl', 'success' : 'false', 'error' : 'invalid token'}
 	await websocket.send(json.dumps(msg))
-	print("YES")
 
 
 #stock les infos de fin de game recu en db
