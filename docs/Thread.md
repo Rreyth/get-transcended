@@ -1,8 +1,8 @@
-# Les Threads
+# Threads
 
-Une nouvelle classe `Thread` a été ajoutée permettant de créer des `setInterval` sans qu'ils affectent une autre page où ils ne sont pas censés être présents.
+A new `Thread` class has been added, allowing you to create `setInterval` that do not affect other pages where they are not supposed to be present.
 
-## Comment l'utiliser
+## How to use it
 ```js
 const threadId = Thread.new(() => {
     // code ...
