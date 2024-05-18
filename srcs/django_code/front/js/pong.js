@@ -87,7 +87,7 @@ function hub_open() {
 
 function parse_msg(event) {
 	let msg = JSON.parse(event.data);
-	console.log(msg, game.state)
+	console.log(msg, game.state) /// TESTING
 	let room_id = 0;
 	let wait_nb = 0;
 	if (msg.type == "connectionRpl") {
@@ -224,6 +224,7 @@ function parse_msg(event) {
 				}
 				game.tournament.initPlayers(game.players);
 				game.tournament.id = room_id;
+				game.tournament_id = game.id;
 				game.state = "tournament";
 			}
 			else {
@@ -252,6 +253,7 @@ function parse_msg(event) {
 		game.mode = "ONLINE";
 		game.state = "tournament";
 		game.id = msg.pos;
+		game.tournament_id = game.id;
 		game.online = true;
 		game.tournament.id = room_id;
 	}

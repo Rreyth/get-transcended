@@ -129,7 +129,6 @@ class Game:
 		await self.sendAll(msg)
  
 	async def join(self, websocket, name = "Player"):
-		# self.clients.add(websocket)
 		self.clients[self.clients.__len__() + 1] = websocket
 		self.players[self.clients.__len__() - 1].name = name
 		if self.clients.__len__() + self.ai.__len__() == self.requiered:
@@ -275,7 +274,6 @@ async def parse_msg(msg : dict, websocket):
 		if 'cmd' in msg.keys() and msg['cmd'] == 'quitWait':
 			await game.hub.send(json.dumps({'type' : 'endGame', 'cmd' : 'quitWait', 'nb' : game.clients.__len__(), 'id' : msg['id']}))
 			await game.sendAll({'type' : 'endGame', 'cmd' : 'quitWait', 'id': msg['id']})
-			# game.clients.pop(msg['id'])
 			for key, value in game.clients.items():
 				if value == websocket:
 					del game.clients[key]
@@ -284,7 +282,6 @@ async def parse_msg(msg : dict, websocket):
 			if game.clients.__len__() == 0:
 				game.is_running = False
 		elif 'cmd' in msg.keys() and msg['cmd'] == 'tournament':
-			# game.clients.pop(msg['id'])
 			for key, value in game.clients.items():
 				if value == websocket:
 					del game.clients[key]
@@ -297,7 +294,6 @@ async def parse_msg(msg : dict, websocket):
 				game.tournament.leave(msg['id'])
 		else:
 			if game.tournament:
-				# game.clients.pop(msg['id'])
 				for key, value in game.clients.items():
 					if value == websocket:
 						del game.clients[key]
@@ -332,7 +328,12 @@ async def main():
 		return
 	loop = asyncio.get_running_loop()
 	stop = loop.create_future()
-	loop.add_signal_handler(signal.SIGTERM, stop.set_result, None)
+ 
+	def stop_signal():
+		if not stop.done():
+			stop.set_result(None)
+
+	loop.add_signal_handler(signal.SIGTERM, stop_signal)
 
 	game.id = args[3]
 	async with websockets.serve(handle_game, args[1], args[2], ssl=ssl_context):

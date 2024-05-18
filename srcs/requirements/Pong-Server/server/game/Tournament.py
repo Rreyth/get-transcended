@@ -6,7 +6,7 @@ from AI import *
 class Tournament :
 	def __init__(self, mods, nb_players, nb_ai, score):
 		self.mods = mods
-		self.max_players = nb_players #useless ?
+		self.max_players = nb_players
 		self.nb_ai = nb_ai
 		self.max_score = score
 		self.timer = [5, time.time()]
@@ -47,8 +47,9 @@ class Tournament :
 					break
 			if self.match_index not in self.matches or match != self.matches[self.match_index]:
 				break
+		self.oddPlayersMatch()
 
-	async def endTournament(self, core):  #send msg ?
+	async def endTournament(self, core):
 		for player, state in self.players.items():
 			if state != "(LOSE)" and state != "(LEFT)":
 				self.players[player] = "(WIN)"
@@ -72,6 +73,14 @@ class Tournament :
 					break
  
 		self.match_index += 1
+		self.oddPlayersMatch()
+ 
+		self.timer[0] = 5
+		self.state = "interlude"
+		core.state = "tournament"
+		await core.sendAll(self.stateMsg('EndMatch'))
+  
+	def oddPlayersMatch(self):
 		if self.match_index in self.matches and self.matches[self.match_index].__len__() == 1:
 			for player in self.matches[self.match_index - 1]:
 				for p, state in self.players.items():
@@ -79,14 +88,9 @@ class Tournament :
 						if state == "(SPEC)":
 							self.matches[self.match_index].append(player)
 						break
- 
-		self.timer[0] = 5
-		self.state = "interlude"
-		core.state = "tournament"
-		await core.sendAll(self.stateMsg('EndMatch'))
 
 	async def startMatch(self, core):
-		core.start[0] = 3
+		core.start[0] = 4
 		self.timer[0] = 5
 		self.state = "ongoing"
 		core.players = []

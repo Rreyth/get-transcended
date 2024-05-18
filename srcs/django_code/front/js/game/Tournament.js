@@ -395,7 +395,7 @@ export class Tournament {
 		for (const [player, state] of this.players) {
 			const name = (player.name.length <= 9) ? player.name : player.name.slice(0, 9) + '.';
 			ctx.fillText(name, canvas.width * 0.86, pos);
-			ctx.fillText(state, canvas.width * 0.93, pos); //player state = (left, play, spec, lose, win) //win ?? end only
+			ctx.fillText(state, canvas.width * 0.93, pos);
 			pos += gap;
 		}
 		ctx.textAlign = "center";
