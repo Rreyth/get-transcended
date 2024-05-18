@@ -87,7 +87,6 @@ function hub_open() {
 
 function parse_msg(event) {
 	let msg = JSON.parse(event.data);
-	console.log(msg, game.state) /// TESTING
 	let room_id = 0;
 	let wait_nb = 0;
 	if (msg.type == "connectionRpl") {
@@ -184,7 +183,10 @@ function parse_msg(event) {
 				console.error("Connection to room failed");
 			}
 			game.GameRoom.onopen = function() {
-				game.GameRoom.send(JSON.stringify({"type" : "join", "name" : game.alias}));
+				if (game.tournament)
+					game.GameRoom.send(JSON.stringify({"type" : "join", "name" : game.alias, "tournament" : game.tournament_id}));
+				else
+					game.GameRoom.send(JSON.stringify({"type" : "join", "name" : game.alias}));
 			}
 			game.GameRoom.onmessage = parse_msg;
 			return;

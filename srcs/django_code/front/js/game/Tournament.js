@@ -185,12 +185,17 @@ export class Tournament {
 		}
 		for (let [id, players] of Object.entries(msg.matches)) {
 			this.matches[id] = [];
-			for (const [p] of this.players) {
-				if (p.nb == players[0] || p.nb == players[1])
-					this.matches[id].push(p);
-				if (this.matches[id].length == 2)
-					break;
-			}
+			let i = 0;
+			do {
+				for (const [p] of this.players) {
+					if (p.nb == players[i]) {
+						this.matches[id].push(p);
+						i++;
+					}
+					if (this.matches[id].length == 2)
+						break;
+				}
+			} while (i < 2 && msg.index == id);
 		}
 		this.state = msg.state;
 		this.timer[0] = msg.timer;
@@ -214,14 +219,10 @@ export class Tournament {
 		core.players = [];
 		core.ai = [];
 		let i = 1;
-		for (const [player, state] of this.players) {
-			if (state === "(PLAY)") {
-				core.players.push(new Player(i, player.name, 2, this.mods.includes("BORDERLESS"), false));
-				core.players[i - 1].tournament = player.nb;
-				i++;
-			}
-			if (i == 3)
-				break;
+		for (const player of this.matches[this.match_index]) {
+			core.players.push(new Player(i, player.name, 2, this.mods.includes("BORDERLESS"), false));
+			core.players[i - 1].tournament = player.nb;
+			i++;
 		}
 		core.walls = false;
 		if (!this.mods.includes("BORDERLESS")) {
@@ -295,6 +296,8 @@ export class Tournament {
 		}
 		else {
 			this.state = "end";
+			core.GameRoom.close();
+			core.GameRoom = false;
 		}
 		core.state = "tournament";
 		this.timer[0] = 5;

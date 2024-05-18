@@ -128,12 +128,16 @@ class Game:
 				msg['obstacle'] = self.obstacle.solid
 		await self.sendAll(msg)
  
-	async def join(self, websocket, name = "Player"):
-		self.clients[self.clients.__len__() + 1] = websocket
-		self.players[self.clients.__len__() - 1].name = name
+	async def join(self, websocket, msg):
+		if 'tournament' in msg.keys():
+			self.clients[msg['tournament']] = websocket
+			self.players[msg['tournament'] - 1].name = msg['name']
+		else:
+			self.clients[self.clients.__len__() + 1] = websocket
+			self.players[self.clients.__len__() - 1].name = msg['name']
 		if self.clients.__len__() + self.ai.__len__() == self.requiered:
-			for i, client in enumerate(self.clients.values()):
-				await client.send(json.dumps(self.startMsg(i + 1)))
+			for key, ws in self.clients.items():
+				await ws.send(json.dumps(self.startMsg(key)))
 			await self.sendAll({'type' : 'waiting'})
 			self.state = 'ready'
 			if self.tournament:
@@ -219,7 +223,7 @@ async def handle_game(websocket, path):
 				break
 
 	finally:
-		if game.tournament:
+		if game.tournament and game.is_running:
 			for key, value in game.clients.items():
 				if value == websocket:
 					del game.clients[key]
@@ -265,7 +269,7 @@ async def parse_msg(msg : dict, websocket):
 				await websocket.send(json.dumps({'type' : 'CreationSuccess'}))
 
 	if msg['type'] == 'join':
-		await game.join(websocket, msg['name'])
+		await game.join(websocket, msg)
 
 	if msg['type'] == 'input' and game.state == 'game':
 		game.input(msg['player'], msg['inputs'])

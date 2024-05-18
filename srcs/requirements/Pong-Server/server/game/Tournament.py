@@ -57,9 +57,10 @@ class Tournament :
 				break
 		self.state = "end"
 		await core.sendAll(self.stateMsg("EndTournament"))
-		# if core: #TMPPP #endMsg with only winner infos ?
-			# msg = {"type" : "endGame", "winner" : winner, "players" : self.max_players}
-			# core.sendHub(msg)
+		if core: 
+			msg = {"type" : "endGame", "winner" : winner, "players" : self.max_players}
+			await core.sendHub(msg)
+			core.is_running = False
    
 	async def endMatch(self, players, core, reason = "end"):
 		self.nb_match -= 1

@@ -62,8 +62,12 @@ registered = {}
 client_id = 0
 django_socket = False
 
-async def send_to_DB(msg : dict): #add players infos + send to main serv for db
-	pass
+async def send_to_DB(msg : dict):
+	print(msg, file=sys.stderr, flush=True)
+    #add players infos + send to main serv for db
+	#add tournament end
+	# if django_socket:
+	# await django_socket.send(msg)
 
 
 async def full_room(id, websocket):
@@ -98,7 +102,7 @@ def id_generator():
 
 async def connection_handler(client_msg, websocket):
 	global django_socket, clients, registered
-	if client_msg["type"] == 'connectionRpl':
+	if client_msg["type"] == 'connectionRpl' and websocket == django_socket:
 		for key, ws in clients.items():
 			if key == client_msg['id']:
 				await ws.send(json.dumps(client_msg))
@@ -131,9 +135,8 @@ async def run_game(id, websocket):
 				try:
 					async for message in gameSocket:
 						msg :dict = json.loads(message)
-						if msg['type'] == 'endGame': #add tournament end
-							if django_socket:
-								await django_socket.send(message)
+						if msg['type'] == 'endGame':
+							await send_to_DB(msg)
 							break
 
 				finally:
@@ -172,7 +175,7 @@ async def handle_tournament(client_msg, websocket):
 		msg : dict = json.loads(await websocket.recv())
 		while msg['type'] != 'endGame' and msg['type'] != 'quitGame':
 			msg : dict = json.loads(await websocket.recv())
-		print(msg, file=sys.stderr) #send it to serv for db stockage / histo
+		await send_to_DB(msg)
   
 	else:
 		port = starting_port
@@ -200,7 +203,7 @@ async def handle_custom(client_msg, websocket):
 		msg : dict = json.loads(await websocket.recv())
 		while msg['type'] != 'endGame':
 			msg : dict = json.loads(await websocket.recv())
-		print(msg) #send it to serv for db stockage / histo
+		await send_to_DB(msg)
   
 	else:
 		port = starting_port
@@ -229,8 +232,7 @@ async def handle_quickGame(client_msg, websocket):
 		response : dict = json.loads(await websocket.recv())
 		while response['type'] != 'endGame':
 			response : dict = json.loads(await websocket.recv())
-		print(response)
-		#send it to serv for db stockage
+		await send_to_DB(response)
 
 	elif client_msg['online'] == 'true':
 		for room in rooms.values():
@@ -267,7 +269,6 @@ async def parse_msg(message, websocket):
 	global django_socket
 	client_msg : dict = json.loads(message)
 
-	# print('client message : ', client_msg, file=sys.stderr) #keep for logs / debug ?
 	if client_msg["type"] == "DJANGO":
 		django_socket = websocket
 	if client_msg["type"] == "connectionRpl":
