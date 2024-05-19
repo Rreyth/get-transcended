@@ -1,4 +1,5 @@
 import { Component } from "../js/component.js";
+import { Thread } from "../js/thread.js";
 
 export class Clock extends Component {
     static getName() {
@@ -29,7 +30,7 @@ export class Clock extends Component {
 		this.querySelector('#clock-time').innerHTML = this.getHours();
 		this.querySelector('#clock-date').innerHTML = this.getDate();
 
-		setInterval(() => {
+		Thread.new(() => {
 			this.querySelector('#clock-time').innerHTML = this.getHours();
 			this.querySelector('#clock-date').innerHTML = this.getDate();
 		}, 1000);
