@@ -2,6 +2,7 @@ import { Component } from "../js/component.js";
 import { escapeHtml, scrollbarToEnd } from "../js/utils.js";
 import { api, user_token, auth, user } from "../js/helpers.js"
 import { Cache } from "../js/cache.js";
+import { Friend } from "./minichat/friend.js";
 
 export class Chat extends Component {
 
@@ -12,7 +13,7 @@ export class Chat extends Component {
 	static sendMsg(socket, msg) {
 		socket.send(JSON.stringify({
 			'message': msg,
-			'recever_id': '2'
+			'recever_id': Friend.lastFriendActive.getAttribute("user-id")
 		}));
 	}
 
@@ -100,19 +101,10 @@ export class Chat extends Component {
         `;
 
 		const friends = await this.getFriends();
-		const cache = {};
 
-		if (friends.length > 0)
-		{
-			cache[friends[0].id] = await this.fetchDmWith(friends[0].id);
-
-			this.displayDmWith(friends[0].id)
-			friends.map(friend => {
-				document.querySelector('#chat-friends').innerHTML += `<c-friend user-id="${friend.id}" username="${friend.username}"></c-friend>`
-			})
-		}
-
-		Cache.set("messages", cache);
+		friends.map(friend => {
+			document.querySelector('#chat-friends').innerHTML += `<c-friend user-id="${friend.id}" username="${friend.username}"></c-friend>`
+		})
 
 		this.addClickEvent('#switch-chat', (e) => {
 			let element = e.target;
@@ -180,14 +172,14 @@ export class Chat extends Component {
 
 	}
 
-	async fetchDmWith(userId)
+	static async fetchDmWith(userId)
 	{
 		const response = await api(`/user/dm/${userId}`, 'GET', null, await user_token());
 
 		return await response.json();
 	}
 
-	async getDmWith(userId)
+	static async getDmWith(userId)
 	{
 		let messages = Cache.getOrCreate("messages", {});
 
@@ -197,7 +189,7 @@ export class Chat extends Component {
 		}
 		else
 		{
-			messages[userId] = await this.fetchDmWith(userId);
+			messages[userId] = await Chat.fetchDmWith(userId);
 
 			Cache.set("messages", messages);
 
@@ -205,12 +197,15 @@ export class Chat extends Component {
 		}
 	}
 
-	async displayDmWith(userId)
+	static async displayDmWith(userId)
 	{
-		const messages = await this.getDmWith(userId);
+		const messages = await Chat.getDmWith(userId);
+		let element = document.querySelector('#messages')
+
+		element.innerHTML = ""
 
 		messages.map(message => {
-			document.querySelector('#messages').innerHTML += `<c-message who="${message.sender.username}" date="${message.created_at}" content="${message.content}"></c-message>`
+			element.innerHTML += `<c-message who="${message.sender.username}" date="${message.created_at}" content="${message.content}"></c-message>`
 		});
 	}
 
