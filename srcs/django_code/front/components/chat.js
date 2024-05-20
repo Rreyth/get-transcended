@@ -30,7 +30,7 @@ export class Chat extends Component {
 	}
 
 	async connectedCallback() {
-		await auth('test', 'pass')
+		await auth('test2', 'pass')
 
 		this.innerHTML = `
 		<div class="chat">

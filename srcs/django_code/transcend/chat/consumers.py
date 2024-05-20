@@ -27,11 +27,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'private_message': private_message
             }
         )
+		await self.channel_layer.group_send(
+            str(self.scope["user"].id),
+            {
+                'type': 'broadcast',
+                'private_message': private_message
+            }
+        )
 
 	async def broadcast(self, event):
 
 		await self.send(text_data=json.dumps({
             'message': event['private_message'].content,
-            'username': event['private_message'].recever.username,
+            'username': self.scope["user"].username,
             'date': event['private_message'].created_at.strftime('%m/%d/%Y')
         }))
