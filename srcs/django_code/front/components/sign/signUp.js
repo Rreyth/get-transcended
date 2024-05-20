@@ -1,4 +1,5 @@
 import { Component } from "../../js/component.js";
+import { api } from "../../js/helpers.js"
 
 export class SignUp extends Component {
     static getName() {
@@ -11,55 +12,44 @@ export class SignUp extends Component {
 		const dropdownMenu = document.getElementById('dropdownMenu');
 		const inputEmail = this.querySelector("#input-email");
 		const inputPass = this.querySelector("#input-pass");
+		const inputUser = this.querySelector("#input-user");
 
-		this.querySelector("#input-user").addEventListener("input", (e) => {
+		inputUser.addEventListener("input", (e) => {
 			if (e.target.value.length > lengthUserMax)
 			{
 				this.querySelector("#input-user").style.color = "#a51221";
 				if (this.querySelector(".popover-user") === null)
 				{
-					const popover = new bootstrap.Popover(e.target, {
-						container: popover_container,
-						content: "Le nom d'utilisateur ne peux pas depasser 10 charactere",
-						placement: "right",
-						trigger: "manual",
-						boundary: "viewport",
-						customClass: "popover-user"
-					  });
-					  popover.show();
+					createPopover(e.target, "popover-user", "Le nom d'utilisateur ne peux pas depasser 10 charactere");
 				}
 			}
 			else
 			{
-				this.querySelector("#input-user").style.color = "black";
-				popover_container.innerHTML = "";
+				inputUser.style.color = "black";
+				if (this.querySelector(".popover-user") != null)
+				{
+					this.querySelector(".popover-user").remove();
+				}
 			}
 		})
-		this.querySelector("#input-user").addEventListener("blur", (e) => {
-			const responseUser = "requetteDB";
+		inputUser.addEventListener("blur", (e) => {
+			const responseUser = "swotex";
 			if (responseUser === e.target.value)
 			{
-				this.querySelector("#input-user").style.color = "#a51221";
+				inputUser.style.color = "#a51221";
 				if (this.querySelector(".popover-user") === null)
 				{
-					const popover = new bootstrap.Popover(e.target, {
-						container: popover_container,
-						content: "Le nom d'utilisateur existe deja",
-						placement: "right",
-						trigger: "manual",
-						boundary: "viewport",
-						customClass: "popover-user"
-					  });
-					  popover.show();
+					createPopover(e.target, "popover-user", "Le nom d'utilisateur existe deja");
 				}
 			}
 			else if (e.target.value.length <= lengthUserMax)
 			{
-				popover_container.innerHTML = "";
+				inputUser.style.color = "black";
+				if (this.querySelector(".popover-user") != null)
+				{
+					this.querySelector(".popover-user").remove();
+				}
 			}
-		})
-		this.querySelector("#input-user").addEventListener("focus", (e) => {
-			popover_container.innerHTML = "";
 		})
 
 
@@ -96,15 +86,7 @@ export class SignUp extends Component {
 					
 					if (this.querySelector(".popover-email") === null)
 					{
-						const popover = new bootstrap.Popover(inputEmail, {
-							container: popover_container,
-							content: "Le nom d'utilisateur existe deja",
-							placement: "right",
-							trigger: "manual",
-							boundary: "viewport",
-							customClass: "popover-email"
-						});
-						popover.show();
+						createPopover(inputEmail, "popover-email", "Le mail existe deja");
 					}
 
 				}
@@ -118,17 +100,18 @@ export class SignUp extends Component {
 				
 				if (this.querySelector(".popover-email") === null)
 				{
-					const popover = new bootstrap.Popover(inputEmail, {
-						container: popover_container,
-						content: "Le nom d'utilisateur existe deja",
-						placement: "right",
-						trigger: "manual",
-						boundary: "viewport",
-						customClass: "popover-email"
-					});
-					popover.show();
+					createPopover(inputEmail, "popover-email", "Le mail existe deja");
 				}
 
+			}
+			else if (!emailIsValid(inputEmail.value) && inputEmail.value != "")
+			{
+				inputEmail.style.color = '#a51221';
+				
+				if (this.querySelector(".popover-email") === null)
+				{
+					createPopover(inputEmail, "popover-email", "mal formater"); //pb avec le dropdown click
+				}
 			}
 			else
 			{
@@ -143,20 +126,12 @@ export class SignUp extends Component {
 		inputPass.addEventListener("input", (e) => {
 			const passwordIsGood = passwordCheck(e.target.value);
 
-			if (passwordIsGood.includes(false))
+			if (passwordIsGood.includes(false) && e.target.value != "")
 			{
 				inputPass.style.color = "#a51221";
 				if (this.querySelector(".popover-pass") === null)
 				{
-					const popover = new bootstrap.Popover(inputPass, {
-						container: popover_container,
-						content: "f",
-						placement: "right",
-						trigger: "manual",
-						boundary: "viewport",
-						customClass: "popover-pass"
-					});
-					popover.show();
+					createPopover(inputPass, "popover-pass", "none");
 				}
 				setPopoverContent("popover-pass", passPopoverContent);
 				if (passwordIsGood[0] == true)
@@ -178,6 +153,20 @@ export class SignUp extends Component {
 			}
 		});
 
+		this.querySelector("#singup-btn").addEventListener("click", async (e) => {
+			if (!emailIsValid(inputEmail.value))
+				return;
+			else if (passwordCheck(inputPass.value).includes(false))
+				return;
+			else if (inputUser.value > lengthUserMax)
+				return;
+			let data = new FormData();
+			data.append("username", inputUser.value);
+			data.append("email", inputEmail.value);
+			data.append("password", inputPass.value);
+			console.log(inputUser.value + " : " + inputEmail.value + " : " + inputPass.value)
+			// const response = await api("/register/", "POST", );
+		});
     }
 }
 
@@ -188,6 +177,20 @@ const passPopoverContent = /* html */ `
 	<p id="passContent4">doit etre >=8</p>
 
 `;
+
+function createPopover(target, name, content)
+{
+	const popover_container = document.querySelector("#popover-container");
+	const popover = new bootstrap.Popover(target, {
+		container: popover_container,
+		content: content,
+		placement: "right",
+		trigger: "manual",
+		boundary: "viewport",
+		customClass: name
+	});
+	popover.show();
+}
 
 function setPopoverContent (className, newContent)
 {
@@ -200,6 +203,12 @@ function setPopoverContent (className, newContent)
         popoverBody.innerHTML = newContent;
       }
     }
+}
+
+function emailIsValid(email)
+{
+	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	return (emailRegex.test(email))
 }
 
 function passwordCheck(password)
@@ -252,7 +261,7 @@ const content = /*html*/`
 				</div>
 				<input class="form-control" id="input-pass" type="password" placeholder="Password">
 			</div>
-			<button type="button" class="btn btn-primary">Sing up</button>
+			<button type="button" class="btn btn-primary" id="singup-btn">Sing up</button>
 		</div>
 		</div>
 		<div class="red-popover" id="popover-container"></div>
