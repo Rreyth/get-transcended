@@ -189,7 +189,7 @@ export class Chat extends Component {
 
 	async getDmWith(userId)
 	{
-		let messages = Cache.get("messages");
+		let messages = Cache.getOrCreate("messages", {});
 
 		if (messages.hasOwnProperty(userId))
 		{
