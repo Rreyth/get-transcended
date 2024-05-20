@@ -39,6 +39,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 		await self.send(text_data=json.dumps({
             'message': event['private_message'].content,
-            'username': self.scope["user"].username,
+            'username': event['private_message'].sender.username,
             'date': event['private_message'].created_at.strftime('%m/%d/%Y')
         }))

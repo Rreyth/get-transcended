@@ -30,8 +30,6 @@ export class Chat extends Component {
 	}
 
 	async connectedCallback() {
-		await auth('test2', 'pass')
-
 		this.innerHTML = `
 		<div class="chat">
 		<div class="btn-group dropup">
