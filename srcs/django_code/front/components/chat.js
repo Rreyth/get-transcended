@@ -31,16 +31,6 @@ export class Chat extends Component {
 	async connectedCallback() {
 		await auth('test', 'pass')
 
-		const friends = await this.getFriends();
-		const cache = {};
-
-		if (friends.length > 0)
-		{
-			cache[friends[0].id] = await this.fetchDmWith(friends[0].id);
-		}
-
-		Cache.set("messages", cache);
-
 		this.innerHTML = `
 		<div class="chat">
 		<div class="btn-group dropup">
@@ -109,11 +99,20 @@ export class Chat extends Component {
 	</div>
         `;
 
-		friends.map(friend => {
-			document.querySelector('#chat-friends').innerHTML += `<c-friend user-id="${friend.id}" username="${friend.username}"></c-friend>`
-		})
+		const friends = await this.getFriends();
+		const cache = {};
 
-		this.displayDmWith(friends[0].id)
+		if (friends.length > 0)
+		{
+			cache[friends[0].id] = await this.fetchDmWith(friends[0].id);
+
+			this.displayDmWith(friends[0].id)
+			friends.map(friend => {
+				document.querySelector('#chat-friends').innerHTML += `<c-friend user-id="${friend.id}" username="${friend.username}"></c-friend>`
+			})
+		}
+
+		Cache.set("messages", cache);
 
 		this.addClickEvent('#switch-chat', (e) => {
 			let element = e.target;
