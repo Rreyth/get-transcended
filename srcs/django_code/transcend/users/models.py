@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.validators import validate_email
+from django.utils import timezone
 
 class UserProfileManager(BaseUserManager):
     """Manager for user profiles"""
@@ -21,8 +22,9 @@ class User(AbstractBaseUser):
 	username = models.CharField(max_length=25, unique=True)
 	avatar = models.TextField(blank=True, default='')
 	email = models.EmailField(max_length=255, unique=True, validators=[validate_email])
-	created_at = models.DateTimeField(auto_now_add=True, blank=True)
-	updated_at = models.DateTimeField(auto_now=True, blank=True)
+	friends = models.ManyToManyField("self")
+	created_at = models.DateTimeField(default=timezone.now)
+	updated_at = models.DateTimeField(default=timezone.now)
  
 	objects = UserProfileManager()
  

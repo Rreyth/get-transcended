@@ -1,20 +1,12 @@
 import { Router, render } from "../js/router.js";
+import { user } from "../js/helpers.js"
 
-Router.set('/', () => {
-	render('sign')
-
-	// console.log(document)
-
-	// document.querySelector('#sing-in-switch').addEventListener('click', (e) => {
-	// 	document.querySelector("#sing-in-form").classList.remove("d-none")
-	// 	document.querySelector("#sing-up-form").classList.add("d-none")
-	// })
-
-	// document.querySelector("#sing-up-switch").addEventListener('click', (e) => {
-	// 	document.querySelector("#sing-in-form").classList.add("d-none")
-	// 	document.querySelector("#sing-up-form").classList.remove("d-none")
-	// })
-}).setName('sign')
+Router.set('/', async () => {
+	if (await user() == null)
+		render('sign')
+	else
+		render('home')
+}).setName('home')
 
 Router.set('/about', () => {
 	render('about')
