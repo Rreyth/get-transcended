@@ -160,15 +160,16 @@ export class SignUp extends Component {
 				return;
 			else if (inputUser.value > lengthUserMax)
 				return;
-			let data = new FormData();
+			const data = new FormData();
 			data.append("username", inputUser.value);
 			data.append("email", inputEmail.value);
 			data.append("password", inputPass.value);
 			console.log(inputUser.value + " : " + inputEmail.value + " : " + inputPass.value)
-			// const response = await api("/register/", "POST", );
+			const response = await api("/register/", "POST", data);
 		});
     }
 }
+
 
 const passPopoverContent = /* html */ `
 	<p id="passContent1">doit contenir une maj</p>
