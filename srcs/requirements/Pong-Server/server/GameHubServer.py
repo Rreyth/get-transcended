@@ -170,6 +170,7 @@ async def handle_join(client_msg, websocket):
 			room.players_nb += 1
 			msg = {'type' : 'joinResponse', 'success' : 'true', 'port' : room.port, 'pos' : room.players_nb, 'max' : room.max_players, 'mode' : room.type, 'custom_mods' : room.mods}
 			if room.type == 'tournament':
+				msg['pos'] = room.players_nb - room.ai_nb
 				msg['score'] = room.score
 				msg['ai'] = room.ai_nb
 				msg['players'] = [player.name for player in room.players]
@@ -205,7 +206,7 @@ async def handle_tournament(client_msg, websocket):
 				rooms[room_id].players.append(player)
 				break
 		rooms[room_id].players_nb = client_msg['ai'] + 1
-		await websocket.send(json.dumps({'type' : 'TournamentRoom', 'ID' : room_id, 'port' : port, 'pos' : rooms[room_id].players_nb}))
+		await websocket.send(json.dumps({'type' : 'TournamentRoom', 'ID' : room_id, 'port' : port, 'pos' : rooms[room_id].players_nb - client_msg['ai']}))
 		await full_room(room_id, websocket)
 		if room_id in rooms.keys() and rooms[room_id].full:
 			await run_game(room_id, websocket)

@@ -69,6 +69,9 @@ class Game:
 		self.players = []
 		for i in range(msg['players']):
 			self.players.append(Player(i + 1, "Player{}".format(i + 1) if msg['ai'] < msg['players'] - i else 'AI', msg['players'], "BORDERLESS" in msg['mods'], False))
+		for player in self.players:
+			if player.name == 'AI':
+				self.ai.append(AI(player))
 
 		self.max_score = msg['score']
 		self.walls = False
