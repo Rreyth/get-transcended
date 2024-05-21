@@ -7,6 +7,7 @@ import { Ball } from "./Ball.js";
 import { Vec2 } from "./Vec2.js";
 import { is_colliding } from "./Hitbox.js";
 import { Tournament } from "./Tournament.js";
+import { TournamentNames } from "./TournamentNames.js";
 
 export class TournamentMenu {
 	constructor() {
@@ -115,12 +116,13 @@ export class TournamentMenu {
 			this.initPlayers(core);
 			this.initWalls(core);
 			core.ball = new Ball((this.mod_list.includes("BORDERLESS")) ? true : false);
-			core.state = "tournament";
+			core.state = "tournament names";
 			core.mode = "LOCAL";
 			if (this.mod_list.includes("OBSTACLE"))
 				core.obstacle = new Obstacle();
 			const msg = {"type" : 'tournament', 'online' : 'false'};
 			core.GameHub.send(JSON.stringify(msg));
+			core.tournament_names = new TournamentNames(core.players);
 		}
 		else if (this.mod_list.includes("ONLINE")) {
 			const msg = {"type" : 'tournament', 'online' : 'true', 'mods' : this.mod_list, 'score' : this.score, 'ai' : this.ai_nb, 'players' : Object.keys(this.players).length};
@@ -131,8 +133,6 @@ export class TournamentMenu {
 
 		core.tournament = new Tournament(this.mod_list, this.nb_players, this.ai_nb, this.score, core.online, new Player(1, core.alias,  this.nb_players, this.mod_list.includes("BORDERLESS"), false));
 		core.tournament_id = 1;
-		if (!core.online)
-			core.tournament.initPlayers(core.players);
 	}
 
 	getMods(alias = "Player") {

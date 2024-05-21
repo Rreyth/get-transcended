@@ -121,5 +121,9 @@ export function tournament(core) {
 		core.tournament_menu.draw();
 		return;
 	}
+	if (core.state === "tournament names") {
+		core.tournament_names.draw();
+		return;
+	}
 	core.tournament.draw(core);
 }

@@ -48,6 +48,12 @@ canvas.addEventListener('wheel', (event) => {
 		else 
 			game.tournament.scroll("up");
 	}
+	if (game.state === "tournament names") {
+		if (event.deltaY > 0)
+			game.tournament_names.scroll("down");
+		else 
+			game.tournament_names.scroll("up");
+	}
 });
 
 canvas.addEventListener("click", game.mouse_input);
@@ -70,6 +76,7 @@ export function connect_hub() {
 	const socket = "wss://" + window.location.hostname + ":8765";
 	GameHub = new WebSocket(socket);
 	GameHub.onerror = hub_error;
+	GameHub.onclose = hub_error;
 	GameHub.onopen = hub_open;
 	GameHub.onmessage = parse_msg;
 }
@@ -268,11 +275,6 @@ function parse_msg(event) {
 			game.wait_screen = new WaitScreen(room_id, game.id, wait_nb, "QuickGame Online");
 	}
 }
-
-// // GameHub.onclose = function() { //fusion avec on error ?
-// // 	console.log("Connection closed")
-// // }
-
 
 window.addEventListener("resize", resize_all);
 

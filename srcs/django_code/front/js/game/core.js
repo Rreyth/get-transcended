@@ -47,6 +47,8 @@ export class Game {
 			input.escape_handler(this);
 		if (this.state === "menu" && this.menu.buttons[5].highlight)
 			input.input_id(this, this.menu.buttons[5], this.inputs);
+		else if (this.state === "tournament names")
+			this.tournament_names.input(this.inputs);
 		else
 			input.input_handler(this, this.inputs);
 	}
@@ -92,7 +94,7 @@ export class Game {
 			render.render_pause(this);
 		else if (this.state === "game")
 			render.render_game(this);
-		else if (this.state === "tournament menu" || this.state === "tournament")
+		else if (this.state === "tournament menu" || this.state === "tournament" || this.state === "tournament names")
 			render.tournament(this);
 	}
 }
