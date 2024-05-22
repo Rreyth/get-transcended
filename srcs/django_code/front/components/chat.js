@@ -68,23 +68,6 @@ export class Chat extends Component {
 			document.querySelector('#chat-friends').innerHTML += `<c-friend user-id="${friend.id}" username="${friend.username}"></c-friend>`
 		})
 
-		const socket = new WebSocket(
-			'wss://'
-			+ window.location.host
-			+ '/ws/messages?token='
-			+ await user_token()
-		);
-
-		socket.onopen = function (event) {
-			console.log('WebSocket connection established.');
-		};
-
-		socket.onmessage = function (event) {
-			const data = JSON.parse(event.data);
-			console.log('Message from server:', data.message);
-			document.querySelector("#messages").innerHTML += `<c-message who="${data.username}" date="${data.date}" content="${data.message}"></c-message>`
-		};
-
 		document.getElementById('msg-area').addEventListener('keydown', function (event) {
 			if (event.key === 'Enter' && !event.shiftKey) {
 				event.preventDefault();
@@ -96,6 +79,27 @@ export class Chat extends Component {
 			}
 		});
 
+	}
+
+	async setUpWebSocket()
+	{
+		const token = await user_token()
+
+		if (token != null)
+		{
+			const socket = new WebSocket(
+				'wss://'
+				+ window.location.host
+				+ '/ws/messages?token='
+				+ token
+			);
+
+			socket.onmessage = function (event) {
+				const data = JSON.parse(event.data);
+
+				document.querySelector("#messages").innerHTML += `<c-message who="${data.username}" date="${data.date}" content="${data.message}"></c-message>`
+			};
+		}
 	}
 
 	static async fetchDmWith(userId)
