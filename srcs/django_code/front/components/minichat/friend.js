@@ -15,12 +15,13 @@ export class Friend extends Component
     {
         super.connectedCallback()
 
-        this.innerHTML = `
-        <div class="users-card" id="user-card">
-            <div class="content-card">
-                <img class="rounded-circle" src="/media/profile_default.jpg" alt="profile" width="25" height="25">
-                <span class="scroll-on-hover">${this.getAttribute('username')}</span>
-            </div>
+        this.userId = this.getAttribute("user-id")
+        this.username = this.getAttribute('username')
+
+        this.innerHTML = /* html */`
+        <div class="d-flex justify-content-between align-items-center p-1 bg-secondary rounded-4 border-2 border border-primary gap-2" style="--bs-border-opacity: .0;" id="user-card">
+            <img class="rounded-circle" src="/media/profile_default.jpg" alt="profile" width="25" height="25">
+            <span class="scroll-on-hover">${this.username}</span>
         </div>
         `
 
@@ -45,13 +46,13 @@ export class Friend extends Component
     {
         if (this == Friend.lastFriendActive) return;
 
-        Chat.displayDmWith(this.getAttribute("user-id"))
+        Chat.displayDmWith(this)
 
-        this.querySelector('#user-card').classList.add('active')
+        this.querySelector('#user-card').style = ""
 
         if (Friend.lastFriendActive != null)
         {
-            Friend.lastFriendActive.querySelector('#user-card').classList.remove('active')
+            Friend.lastFriendActive.querySelector('#user-card').style = "--bs-border-opacity: .0;"
         }
         
         Friend.lastFriendActive = this

@@ -30,114 +30,42 @@ export class Chat extends Component {
 	}
 
 	async connectedCallback() {
-		this.innerHTML = `
-		<div class="chat">
-		<div class="btn-group dropup">
-			<button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
-			data-bs-auto-close="false" aria-expanded="false">
-				Messages
-				<span class="icon-up"><i class="fa fa-chevron-up" aria-hidden="true"></i></span>
-			</button>
-	
-			<div class="dropdown-menu">
-				<div class="select-chat">
-					<div class="select-body overflow-auto">
-	
-						<div class="users">
-							<div class="users-header my-auto">
-								<div class="add-btn" id="setting-bt">
-									<i class='bx bx-cog'></i>
-									<span> FRIEND SETTINGS </span>
-								</div>
-								<span class="separator-header"></span>
-							</div>
-							
-							<div class="users-body" id="chat-friends"></div>
-						</div>
-	
-						<div class="groups">
-							<div class="users-header my-auto">
-								<div class="add-btn">
-									<i class='bx bx-user-plus' ></i>
-									<span> GROUP SETTINGS </span>
-								</div>
-								<span class="separator-header"></span>
-							</div>
-							coucou, ca c'est des groupes
-						</div>
-	
+		this.innerHTML = /* html */`
+			<div class="rounded-4 d-inline-flex justify-content-start align-items-start border border-secondary" style="height: 25em;">
+				<div class="border-secondary border-end d-inline-flex flex-column justify-content-between align-self-stretch">
+					<div class="d-flex align-self-stretch flex-column justify-content-start align-items-center gap-2 p-2" id="chat-friends">
 					</div>
-	
-					<div class="select-footer">
-						<div class="switch-btn">
-							<div class="user-btn active" id="switch-chat"><i class='bx bx-user'></i></div>
-							<span class="separator-btn"></span>
-							<div class="group-btn" id="switch-chat"><i class='bx bx-group' ></i></div>
-						</div>
-					</div>
-	
-				</div>
-	
-				<div class="msg">
-					<div class="msg-header">
-						<p>Undefine</p>
-						<i class='bx bx-dots-horizontal-rounded'></i>
-					</div>
-					<div class="msg-body overflow-auto" id="messages">
-	
-					</div>
-					<div class="msg-footer">
-						<textarea id="msg-area" class="form-control"></textarea>
-						<i class='bx bx-send'></i>
+					
+
+					<div class="d-flex justify-content-around align-items-center border-top border-secondary" style="padding: 0.20em;">
+						<i class='bx bx-group fs-1'></i>
+						<div class="border-secondary border" style="width: 1.5em; height: 0px; transform: rotate(90deg);"></div>
+						<i class='bx bx-user fs-1'></i>
 					</div>
 				</div>
-	
+
+				<div class="d-flex flex-column align-items-stretch justify-content-between h-100">
+					<div class="d-flex justify-content-between align-items-center gap-3 p-3 border-bottom border-secondary">
+						<h3 id="friend-name">Personne</h3>
+						<i class='bx bxs-cog fs-2'></i>
+					</div>
+					
+					<div class="d-flex flex-column overflow-auto py-2" id="messages">
+						<p class="text-center w-100">Selectionner un amie !</p>
+					</div>
+
+					<div class="d-flex align-items-center justify-content-center border-top border-secondary" style="padding: 0.5em;">
+						<input class="rounded" placeholder="Votre message..." name="message" />
+						<i class='bx bx-send fs-3' ></i>
+					</div>
+				</div>
 			</div>
-		</div>
-		
-	</div>
         `;
 
 		const friends = await this.getFriends();
 
 		friends.map(friend => {
 			document.querySelector('#chat-friends').innerHTML += `<c-friend user-id="${friend.id}" username="${friend.username}"></c-friend>`
-		})
-
-		this.addClickEvent('#switch-chat', (e) => {
-			let element = e.target;
-
-			if (element.tagName == "I")
-				element = element.parentElement;
-			element = element.classList;
-
-			if (!element.contains("active")) {
-				if (element.contains("group-btn")) {
-					document.querySelector(".user-btn").classList.remove("active");
-					document.querySelector(".users").style.display = "none";
-					document.querySelector(".groups").style.display = "block";
-				}
-				else {
-					document.querySelector(".group-btn").classList.remove("active");
-					document.querySelector(".groups").style.display = "none";
-					document.querySelector(".users").style.display = "block";
-				}
-				element.add("active");
-			}
-		})
-
-		this.addClickEvent('#setting-bt', (e) => {
-			let settingComponent = document.getElementById("setting-tag");
-			if (settingComponent)
-			{
-				document.getElementById("setting-tag").remove();
-				document.body.style.overflow = "scroll";
-			}
-			else
-			{
-				document.body.innerHTML += `<c-setting id="setting-tag"></c-setting>`;
-				document.body.style.overflow = "hidden";
-			}
 		})
 
 		const socket = new WebSocket(
@@ -195,10 +123,12 @@ export class Chat extends Component {
 		}
 	}
 
-	static async displayDmWith(userId)
+	static async displayDmWith(friendElement)
 	{
-		const messages = await Chat.getDmWith(userId);
+		const messages = await Chat.getDmWith(friendElement.userId);
 		let element = document.querySelector('#messages')
+
+		document.querySelector('#friend-name').innerHTML = friendElement.username
 
 		element.innerHTML = ""
 
