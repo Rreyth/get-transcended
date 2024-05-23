@@ -1,3 +1,5 @@
+import { Thread } from "./thread.js";
+
 export const render = (file) => {
     fetch(`/static/html/${file}.html`)
         .then(response => response.text())
@@ -47,6 +49,8 @@ export class Router
 
     static run()
     {
+        Thread.clearAll()
+
         let pageFound = false
         let pathname = location.pathname.replace(/\/+$/, '')
 
