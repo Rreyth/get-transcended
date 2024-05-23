@@ -8,6 +8,7 @@ from .Pause import *
 from .AI import *
 from .Custom import *
 from .Button import *
+from .TournamentMenu import *
 
 class Menu:
 	def __init__(self):
@@ -15,11 +16,12 @@ class Menu:
 		self.text_font = pg.font.Font(font, int(winHeight * 0.05))
 		self.button_size = [winWidth * 0.1, winHeight * 0.1]
 		self.buttons = [Button("SOLO", (winWidth / 3) - (self.button_size[0] / 2), (winHeight / 2) - self.button_size[1], self.button_size[0], self.button_size[1], winHeight * 0.085),
-				  Button("LOCAL", (winWidth / 3 * 2) - (self.button_size[0] / 2), (winHeight / 2) - self.button_size[1], self.button_size[0], self.button_size[1], winHeight * 0.085),
-				  Button("ONLINE", (winWidth / 3) - (self.button_size[0] / 2), (winHeight / 3 * 2), self.button_size[0], self.button_size[1], winHeight * 0.085),
-				  Button("CUSTOM", (winWidth / 3 * 2) - (self.button_size[0] / 2), (winHeight / 3 * 2), self.button_size[0], self.button_size[1], winHeight * 0.085),
-				  Button("JOIN", 25, winHeight - self.button_size[1] - 25, self.button_size[0], self.button_size[1], winHeight * 0.085),
-				  Button("", self.button_size[0] + 35, winHeight - self.button_size[1] - 25, self.button_size[0], self.button_size[1], winHeight * 0.085)]
+					Button("LOCAL", (winWidth / 3 * 2) - (self.button_size[0] / 2), (winHeight / 2) - self.button_size[1], self.button_size[0], self.button_size[1], winHeight * 0.085),
+					Button("ONLINE", (winWidth / 3) - (self.button_size[0] / 2), (winHeight / 3 * 2), self.button_size[0], self.button_size[1], winHeight * 0.085),
+					Button("CUSTOM", (winWidth / 3 * 2) - (self.button_size[0] / 2), (winHeight / 3 * 2), self.button_size[0], self.button_size[1], winHeight * 0.085),
+					Button("JOIN", 25, winHeight - self.button_size[1] - 25, self.button_size[0], self.button_size[1], winHeight * 0.085),
+					Button("", self.button_size[0] + 35, winHeight - self.button_size[1] - 25, self.button_size[0], self.button_size[1], winHeight * 0.085),
+	  				Button("TOURNAMENT", winWidth * 0.815, winHeight * 0.875, self.button_size[0] * 1.75, self.button_size[1], winHeight * 0.085)]
 		self.err = False
   
 	def draw(self, win):
@@ -54,12 +56,22 @@ class Menu:
 				core.GamePort = response['port']
 				room_id = self.buttons[5].name
 				core.id = response['pos']
-				core.state = "waiting"
 				core.mode = "ONLINE"
 				core.online = True
-				wait_nb = response['max']
-				core.custom_mod = "1V1V1V1" if "1V1V1V1" in response['custom_mods'] else False
-				core.start_screen = StartScreen(response['mode'], core.online, True if "1V1V1V1" in response['custom_mods'] else False, wait_nb)
+				if response['mode'] == 'tournament':
+					core.tournament = Tournament(response['custom_mods'], response['max'], response['ai'], response['score'], True, False)
+					core.players = []
+					for i in range(response['players'].__len__()):
+						core.players.append(Player(i + 1, response['players'][i], 2, 'BORDERLESS' in response['custom_mods'], False))
+					core.tournament.initPlayers(core.players)
+					core.tournament.id = room_id
+					core.tournament_id = core.id
+					core.state = 'tournament'
+				else:
+					core.state = "waiting"
+					wait_nb = response['max']
+					core.custom_mod = "1V1V1V1" if "1V1V1V1" in response['custom_mods'] else False
+					core.start_screen = StartScreen(response['mode'], core.online, True if "1V1V1V1" in response['custom_mods'] else False, wait_nb)
 
 		if name == self.buttons[5].name:
 			self.buttons[5].highlight = not self.buttons[5].highlight
@@ -88,6 +100,9 @@ class Menu:
 		if name == "CUSTOM":
 			core.state = "custom"
 			core.custom_menu = CustomMenu()
+			self.buttons[5].name = ''
+			self.buttons[5].highlight = False
+			self.err = False
 		
 		if name == "ONLINE":
 			msg = {"type" : "quickGame", "cmd" : "join", "online" : "true"}
@@ -102,8 +117,16 @@ class Menu:
 			core.online = True
 			wait_nb = 2
 
+		if name == "TOURNAMENT":
+			core.tournament_menu = TournamentMenu()
+			core.state = 'tournament menu'
+			self.buttons[5].name = ''
+			self.buttons[5].highlight = False
+			self.err = False
+
 		if core.mode != "none":
 			self.buttons[5].name = ""
+			self.buttons[5].highlight = False
 			self.err = False
 			if not core.start_screen:
 				core.start_screen = StartScreen(core.mode, core.online)

@@ -4,7 +4,8 @@ from .Player import *
 from .Wall import *
 from .Ball import *
 from .update import *
-from .render import *
+# from .render import *
+import render as render
 from .Menu import *
 from .Pause import *
 from .End import *
@@ -31,6 +32,7 @@ class Game:
 		self.online = False
 		self.is_running = True
 		self.id = 1
+		self.tournament_id = self.id
 		self.GameRoom = False
 		self.GameHub = websocket
 		self.winSize = [winWidth, winHeight]
@@ -40,6 +42,9 @@ class Game:
 		self.last = time.time()
 		self.wait_screen = False
 		self.start_screen = False
+		self.tournament = False
+		self.tournament_menu = False
+		self.tournament_names = False
 			
 	def endMsg(self, reason = 'end'):
 		msg = {'type' : 'endGame'}
@@ -57,6 +62,8 @@ class Game:
 				await escape_handler(self)
 			if event.type == pg.KEYDOWN and self.menu.buttons[5].highlight and self.state == "menu":
 				await input_id(self, self.menu.buttons[5], event.key, event.unicode)
+			if event.type == pg.KEYDOWN and self.state == "tournament names":
+				self.tournament_names.input(event.key, event.unicode)
 			if event.type == pg.MOUSEBUTTONDOWN:
 				self.mouseState = pg.mouse.get_pressed()
 				self.mousePos = pg.mouse.get_pos()
@@ -94,19 +101,21 @@ class Game:
 	def render(self):
 
 		if self.state == "waiting":
-			render_wait(self)
+			render.render_wait(self)
 		if self.state == "start":
-			render_start(self)
+			render.render_start(self)
 		elif self.state == "end":
-			render_end(self)
+			render.render_end(self)
 		elif self.state == "menu":
-			render_menu(self)
+			render.render_menu(self)
 		elif self.state == "custom":
-			render_custom(self)
+			render.render_custom(self)
 		elif self.pause[0]:
-			render_pause(self)
+			render.render_pause(self)
 		elif self.state == "game":
-			render_game(self)
+			render.render_game(self)
+		elif self.state == "tournament menu" or self.state == "tournament names" or self.state == "tournament":
+			render.tournament(self)
 
 		pg.display.update()
 		

@@ -33,16 +33,26 @@ async def parse_msg(msg : dict):
 	global game
  
 	if msg['type'] == 'join':
-		game.wait_screen.nb += 1
+		if game.state == 'tournament':
+			game.players.append(Player(game.players.__len__() + 1, msg['alias'], 2, False, False))
+			game.tournament.initPlayers(game.players)
+		else:
+			game.wait_screen.nb += 1
  
 	if msg['type'] == 'start':
-		game.state = 'start'
+		game.state = 'tournament' if game.tournament else 'start'
 
 	if msg['type'] == 'update':
-		if 'timer' in msg.keys():
-			game.start_screen.timer = msg['timer']
+		if 'tournament' in msg.keys:
+			await game.tournament.onlineUpdate(msg, game)
+		elif 'timer' in msg.keys():
+			if game.state == 'tournament':
+				game.tournament.timer[0] = msg['timer']
+			else:
+				game.start_screen.timer = msg['timer']
 		else:
-			game.state = 'game'
+			if game.state != 'tournament':
+				game.state = 'game'
 			for i in range(game.players.__len__()):
 				game.players[i].paddle[0].pos = Vec2(msg['players'][i][0] * winWidth, msg['players'][i][1] * winHeight)
 				game.players[i].score = msg['score'][i]
@@ -52,6 +62,9 @@ async def parse_msg(msg : dict):
 			game.ball.dir = msg['ball'][4]
 			if game.obstacle:
 				game.obstacle.solid = msg['obstacle']
+			if game.state == 'tournament':
+				game.tournament.timer[0] = 0
+				game.tournament.resizeSpec(game)
 
 	if msg['type'] == 'endGame':
 		if 'cmd' in msg.keys() and msg['cmd'] == 'quitWait':
@@ -64,7 +77,14 @@ async def parse_msg(msg : dict):
 			else:
 				if game.id > msg['id']:
 					game.id -= 1
-				game.wait_screen.nb -= 1
+				if game.state != 'tournament':
+					game.wait_screen.nb -= 1
+				else:
+					game.players = [player for player in game.players if player.nb != msg['id']]
+					for player in game.players:
+						if player.nb > msg['id']:
+							player.nb -= 1
+					game.tournament.initPlayers(game.players)
 			return
 		for i in range(game.players.__len__()):
 			game.players[i].score = msg['score'][i]
@@ -104,7 +124,7 @@ async def local_run():
 		await asyncio.sleep(0.01)
 
 
-async def wait_loop():
+async def wait_loop():#add new start logic
 	global game
 	game.render()
 	msg = {'type' : 'none'}

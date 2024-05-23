@@ -27,10 +27,6 @@ class CustomMenu:
               	Button("ONLINE", winWidth / 5 * 2 - (self.mod_size[0] / 2), winHeight / 2 - (self.mod_size[1] / 2), self.mod_size[0], self.mod_size[1], winHeight * 0.06),
           		Button("BORDERLESS", winWidth / 5 * 3 - (self.mod_size[0] / 2), winHeight / 2 - (self.mod_size[1] / 2), self.mod_size[0], self.mod_size[1], winHeight * 0.06),
             	Button("OBSTACLE", winWidth / 5 * 4 - (self.mod_size[0] / 2), winHeight / 2 - (self.mod_size[1] / 2), self.mod_size[0], self.mod_size[1], winHeight * 0.06)]
-		# self.param_buttons = [Button("-", winWidth / 2 + 125, winHeight / 4 * 3 - (winHeight * 0.03 / 2), winWidth * 0.015, winHeight * 0.03, winHeight * 0.06),
-		# 		Button("+", winWidth / 2 + 155, winHeight / 4 * 3 - (winHeight * 0.03 / 2), winWidth * 0.015, winHeight * 0.03, winHeight * 0.06),
-    	# 		Button("-", (winWidth / 5 * 4) + 140, winHeight / 4 * 3 - (winHeight * 0.03 / 2), winWidth * 0.015, winHeight * 0.03, winHeight * 0.06),
-		# 		Button("+", (winWidth / 5 * 4) + 170, winHeight / 4 * 3 - (winHeight * 0.03 / 2), winWidth * 0.015, winHeight * 0.03, winHeight * 0.06)] # old pos
 		self.param_buttons = [Button("-", winWidth / 3 + 125, winHeight / 4 * 3 - (winHeight * 0.03 / 2), winWidth * 0.015, winHeight * 0.03, winHeight * 0.06),
 				Button("+", winWidth / 3 + 155, winHeight / 4 * 3 - (winHeight * 0.03 / 2), winWidth * 0.015, winHeight * 0.03, winHeight * 0.06),
 				Button("-", winWidth / 3 * 2 + 140, winHeight / 4 * 3 - (winHeight * 0.03 / 2), winWidth * 0.015, winHeight * 0.03, winHeight * 0.06),
@@ -43,10 +39,8 @@ class CustomMenu:
 		win.blit(title, (winWidth / 2 - (title.get_size()[0] / 2), winHeight * 0.1 - title.get_size()[1] * 0.45))
 		score = self.font.render("MAX SCORE = " + str(self.score), True, (255, 255, 255))
 		win.blit(score, (winWidth / 3 - (score.get_size()[0] / 2), winHeight / 4 * 3 - score.get_size()[1] * 0.45))
-		# win.blit(score, (winWidth / 2 - (score.get_size()[0] / 2), winHeight / 4 * 3 - score.get_size()[1] * 0.45)) #center
 		ai = self.font.render("AI OPPONENTS = " + str(self.ai_nb), True, (255, 255, 255))
 		win.blit(ai, (winWidth / 3 * 2 - (ai.get_size()[0] / 2), winHeight / 4 * 3 - ai.get_size()[1] * 0.45))
-		# win.blit(ai, (winWidth / 5 * 4 - (ai.get_size()[0] / 2), winHeight / 4 * 3 - ai.get_size()[1] * 0.45)) #right
 		for button in self.down_buttons:
 			button.draw(win)
 		for button in self.players_buttons:
@@ -63,6 +57,7 @@ class CustomMenu:
 					core.state = "menu"
 					core.mode = "none"
 					core.max_score = 10
+					core.custom_menu = False
 					break
 				elif button.name == "START":
 					await self.start(core)
@@ -211,6 +206,4 @@ class CustomMenu:
 			if button.name == "ONLINE" and button.highlight:
 				selected = True
 				break
-		if not selected:
-			return False
-		return True
+		return selected

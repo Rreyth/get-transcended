@@ -7,6 +7,7 @@ class Wall:
 		self.size = [winWidth, winHeight * 0.0075]
 		self.pos = pos
 		self.square = square
+		self.spec = False
 
 		if not square:
 			if pos == "up":
