@@ -31,7 +31,7 @@ export class Chat extends Component {
 
 	async connectedCallback() {
 		this.innerHTML = /* html */`
-			<div class="rounded-4 d-inline-flex justify-content-start align-items-start border border-secondary" style="height: 25em;">
+			<div class="position-absolute bottom-0 end-0 rounded-4 d-inline-flex justify-content-start align-items-start border border-secondary" style="height: 25em;">
 				<div class="border-secondary border-end d-inline-flex flex-column justify-content-between align-self-stretch">
 					<div class="d-flex align-self-stretch flex-column justify-content-start align-items-center gap-2 p-2" id="chat-friends">
 					</div>
@@ -50,17 +50,19 @@ export class Chat extends Component {
 						<i class='bx bxs-cog fs-2'></i>
 					</div>
 					
-					<div class="d-flex flex-column overflow-auto py-2" id="messages">
+					<div class="d-flex flex-column overflow-auto py-2" style="gap: 0.625rem; padding: 0.3125rem 0.5rem;" id="messages">
 						<p class="text-center w-100">Selectionner un amie !</p>
 					</div>
 
-					<div class="d-flex align-items-center justify-content-center border-top border-secondary" style="padding: 0.5em;">
-						<input class="rounded" placeholder="Votre message..." name="message" />
-						<i class='bx bx-send fs-3' ></i>
+					<div class="d-flex align-items-center justify-content-center border-top border-secondary gap-2" style="padding: 0.5em;">
+						<textarea class="rounded" placeholder="Votre message..." type="text" name="message" id="msg-area" disabled ></textarea>
+						<i class='bx bx-send fs-3' style="transform: rotate(-30deg);"></i>
 					</div>
 				</div>
 			</div>
         `;
+
+		const socket = await this.setUpWebSocket()
 
 		const friends = await this.getFriends();
 
@@ -68,7 +70,7 @@ export class Chat extends Component {
 			document.querySelector('#chat-friends').innerHTML += `<c-friend user-id="${friend.id}" username="${friend.username}"></c-friend>`
 		})
 
-		document.getElementById('msg-area').addEventListener('keydown', function (event) {
+		this.querySelector('#msg-area').addEventListener('keydown', function (event) {
 			if (event.key === 'Enter' && !event.shiftKey) {
 				event.preventDefault();
 				if (document.getElementById('msg-area').value === '')
@@ -94,12 +96,22 @@ export class Chat extends Component {
 				+ token
 			);
 
-			socket.onmessage = function (event) {
+			socket.onmessage = async (event) => {
 				const data = JSON.parse(event.data);
+				const element = document.querySelector("#messages");
 
-				document.querySelector("#messages").innerHTML += `<c-message who="${data.username}" date="${data.date}" content="${data.message}"></c-message>`
+				element.innerHTML += `<c-message who="${data.username}" date="${data.date}" content="${data.message}"></c-message>`
+				await new Promise(resolve => requestAnimationFrame(resolve));
+
+				setTimeout(() => {
+					element.scrollTop = element.scrollHeight;
+				}, 5);
 			};
+
+			return socket
 		}
+
+		return null
 	}
 
 	static async fetchDmWith(userId)
@@ -133,12 +145,19 @@ export class Chat extends Component {
 		let element = document.querySelector('#messages')
 
 		document.querySelector('#friend-name').innerHTML = friendElement.username
+		document.querySelector('#msg-area').removeAttribute('disabled')
 
 		element.innerHTML = ""
 
 		messages.map(message => {
 			element.innerHTML += `<c-message who="${message.sender.username}" date="${message.created_at}" content="${message.content}"></c-message>`
 		});
+
+		await new Promise(resolve => requestAnimationFrame(resolve));
+
+		setTimeout(() => {
+			element.scrollTop = element.scrollHeight;
+		}, 10);
 	}
 
 }
