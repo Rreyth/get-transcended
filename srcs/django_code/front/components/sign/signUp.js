@@ -8,7 +8,6 @@ export class SignUp extends Component {
 
     connectedCallback() {
 		this.innerHTML = content;
-		const popover_container = document.querySelector("#popover-container");
 		const dropdownMenu = document.getElementById('dropdownMenu');
 		const inputEmail = this.querySelector("#input-email");
 		const inputPass = this.querySelector("#input-pass");
@@ -18,43 +17,24 @@ export class SignUp extends Component {
 			if (e.target.value.length > lengthUserMax)
 			{
 				this.querySelector("#input-user").style.color = "#a51221";
-				if (this.querySelector(".popover-user") === null)
-				{
-					createPopover(e.target, "popover-user", "Le nom d'utilisateur ne peux pas depasser 10 charactere");
-				}
+				createPopover(e.target, "popover-user", "Le nom d'utilisateur ne peux pas depasser 10 charactere");
 			}
 			else
-			{
-				inputUser.style.color = "black";
-				if (this.querySelector(".popover-user") != null)
-				{
-					this.querySelector(".popover-user").remove();
-				}
-			}
+				removeError(inputUser, "popover-user");
 		})
 		inputUser.addEventListener("blur", (e) => {
 			const responseUser = "swotex";
 			if (responseUser === e.target.value)
 			{
 				inputUser.style.color = "#a51221";
-				if (this.querySelector(".popover-user") === null)
-				{
-					createPopover(e.target, "popover-user", "Le nom d'utilisateur existe deja");
-				}
+				createPopover(e.target, "popover-user", "Le nom d'utilisateur existe deja");
 			}
 			else if (e.target.value.length <= lengthUserMax)
-			{
-				inputUser.style.color = "black";
-				if (this.querySelector(".popover-user") != null)
-				{
-					this.querySelector(".popover-user").remove();
-				}
-			}
+				removeError(inputUser, "popover-user");
 		})
 
 
 		inputEmail.addEventListener("input", (e) => {
-			const inputEmail = document.getElementById('input-email');
 			const inputRect = inputEmail.getBoundingClientRect();
 			dropdownMenu.style.top = (inputRect.top + inputRect.height) + 'px';
 			if (e.target.value.includes("@") === false && e.target.value != "")
@@ -67,9 +47,7 @@ export class SignUp extends Component {
 				dropdownMenu.classList.add('show');
 			}
 			else
-			{
 				dropdownMenu.classList.remove('show');
-			}
 			
 		})
 
@@ -83,11 +61,7 @@ export class SignUp extends Component {
 				if (emailIsAlreadyUsed(inputEmail.value))
 				{
 					inputEmail.style.color = '#a51221';
-					
-					if (this.querySelector(".popover-email") === null)
-					{
-						createPopover(inputEmail, "popover-email", "Le mail existe deja");
-					}
+					createPopover(inputEmail, "popover-email", "Le mail existe deja");
 
 				}
 			}
@@ -97,30 +71,16 @@ export class SignUp extends Component {
 			if (emailIsAlreadyUsed(inputEmail.value))
 			{
 				inputEmail.style.color = '#a51221';
-				
-				if (this.querySelector(".popover-email") === null)
-				{
-					createPopover(inputEmail, "popover-email", "Le mail existe deja");
-				}
+				createPopover(inputEmail, "popover-email", "Le mail existe deja");
 
 			}
 			else if (!emailIsValid(inputEmail.value) && inputEmail.value != "")
 			{
 				inputEmail.style.color = '#a51221';
-				
-				if (this.querySelector(".popover-email") === null)
-				{
-					createPopover(inputEmail, "popover-email", "mal formater"); //pb avec le dropdown click
-				}
+				createPopover(inputEmail, "popover-email", "mal formater"); //pb avec le dropdown click
 			}
 			else
-			{
-				inputEmail.style.color = 'black';
-				if (this.querySelector(".popover-email") != null)
-				{
-					this.querySelector(".popover-email").remove();
-				}
-			}
+				removeError(inputEmail, "popover-email");
 		});
 
 		inputPass.addEventListener("input", (e) => {
@@ -129,10 +89,7 @@ export class SignUp extends Component {
 			if (passwordIsGood.includes(false) && e.target.value != "")
 			{
 				inputPass.style.color = "#a51221";
-				if (this.querySelector(".popover-pass") === null)
-				{
-					createPopover(inputPass, "popover-pass", "none");
-				}
+				createPopover(inputPass, "popover-pass", "none");
 				setPopoverContent("popover-pass", passPopoverContent);
 				if (passwordIsGood[0] == true)
 					this.querySelector("#passContent1").style.color = "green";
@@ -144,29 +101,16 @@ export class SignUp extends Component {
 					this.querySelector("#passContent4").style.color = "green";
 			}
 			else
-			{
-				inputPass.style.color = "black";
-				if (this.querySelector(".popover-pass") != null)
-				{
-					this.querySelector(".popover-pass").remove();
-				}
-			}
+				removeError(inputPass, "popover-pass");
 		});
 
 		this.querySelector("#singup-btn").addEventListener("click", async (e) => {
-			if (!emailIsValid(inputEmail.value))
-				return;
-			else if (passwordCheck(inputPass.value).includes(false))
-				return;
-			else if (inputUser.value > lengthUserMax)
-				return;
-			const data = new FormData();
-			data.append("username", inputUser.value);
-			data.append("email", inputEmail.value);
-			data.append("password", inputPass.value);
-			console.log(inputUser.value + " : " + inputEmail.value + " : " + inputPass.value)
-			const response = await api("/register/", "POST", data);
+			registerUser(inputUser.value, inputEmail.value,inputPass.value);
 		});
+		this.addEventListener('keydown', (e) => {
+			if (e.key === 'Enter')
+				registerUser(inputUser.value, inputEmail.value,inputPass.value);
+		})
     }
 }
 
@@ -179,8 +123,39 @@ const passPopoverContent = /* html */ `
 
 `;
 
+async function registerUser(username, email, password)
+{
+	if (!emailIsValid(email))
+		return;
+	else if (passwordCheck(password).includes(false))
+		return;
+	else if (username > lengthUserMax)
+		return;
+	const data = new FormData();
+	data.append("username", username);
+	data.append("email", email);
+	data.append("password", password);
+	const response = await api("/register/", "POST", data);
+	const token = (await response.json()).access;
+	cookieStore.set({name: 'token', value: token});
+	location.reload();
+}
+
+function removeError(input, popover)
+{
+	input.style.color = "black";
+	const selectPopover = document.querySelector(`.${popover}`);
+	if (selectPopover != null)
+	{
+		selectPopover.remove();
+	}
+}
+
 function createPopover(target, name, content)
 {
+	if (document.querySelector(`.${name}`) === null)
+	{
+
 	const popover_container = document.querySelector("#popover-container");
 	const popover = new bootstrap.Popover(target, {
 		container: popover_container,
@@ -191,6 +166,7 @@ function createPopover(target, name, content)
 		customClass: name
 	});
 	popover.show();
+	}
 }
 
 function setPopoverContent (className, newContent)
