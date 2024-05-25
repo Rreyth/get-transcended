@@ -141,11 +141,18 @@ class Tournament :
 	def stateMsg(self, cmd):
 		states = {}
 		for player, state in self.players.items():
-			states[player.nb] = state		
+			states[player.nb] = state
+		matches = {}
+		for id, players in self.matches.items():
+			matches[id] = []
+			for player in players:
+				matches[id].append(player.nb)
 		msg = {'type' : 'update',
 			'tournament' : True,
 			'cmd' : cmd,
-			'states' : states}
+			'states' : states,
+   			'matches' : matches,
+      		'index' : self.match_index}
 		return msg
 
 	def leave(self, id):

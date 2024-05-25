@@ -87,7 +87,7 @@ function hub_error(error) {
 	console.error("Connection failed: ", error);
 	timer = 5;
 	connect_last = Date.now() / 1000;
-	loginInterval = Thread.new(connect_loop, 10);
+	loginInterval = Thread.new(connect_loop, 100);
 }
 
 function hub_open() {

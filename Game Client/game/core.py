@@ -4,8 +4,7 @@ from .Player import *
 from .Wall import *
 from .Ball import *
 from .update import *
-# from .render import *
-import render as render
+from .render import *
 from .Menu import *
 from .Pause import *
 from .End import *
@@ -24,6 +23,8 @@ class Game:
 		self.win = False
 		self.alias = 'ALIAS'
 		self.is_running = False
+		self.tournament_id = 1
+		self.tournament = False
 
 	def start(self, websocket):
 		self.max_score = 10
@@ -32,7 +33,6 @@ class Game:
 		self.online = False
 		self.is_running = True
 		self.id = 1
-		self.tournament_id = self.id
 		self.GameRoom = False
 		self.GameHub = websocket
 		self.winSize = [winWidth, winHeight]
@@ -42,7 +42,6 @@ class Game:
 		self.last = time.time()
 		self.wait_screen = False
 		self.start_screen = False
-		self.tournament = False
 		self.tournament_menu = False
 		self.tournament_names = False
 			
@@ -68,6 +67,11 @@ class Game:
 				self.mouseState = pg.mouse.get_pressed()
 				self.mousePos = pg.mouse.get_pos()
 				await mouse_handler(self)
+			if event.type == pg.MOUSEWHEEL:
+				if self.state == "tournament names":
+					self.tournament_names.scroll('up' if event.y > 0 else 'down')
+				elif self.state == "tournament":
+					self.tournament.scroll('up' if event.y > 0 else 'down')
 
 		if not self.is_running:
 			return
@@ -101,21 +105,21 @@ class Game:
 	def render(self):
 
 		if self.state == "waiting":
-			render.render_wait(self)
+			render_wait(self)
 		if self.state == "start":
-			render.render_start(self)
+			render_start(self)
 		elif self.state == "end":
-			render.render_end(self)
+			render_end(self)
 		elif self.state == "menu":
-			render.render_menu(self)
+			render_menu(self)
 		elif self.state == "custom":
-			render.render_custom(self)
+			render_custom(self)
 		elif self.pause[0]:
-			render.render_pause(self)
+			render_pause(self)
 		elif self.state == "game":
-			render.render_game(self)
+			render_game(self)
 		elif self.state == "tournament menu" or self.state == "tournament names" or self.state == "tournament":
-			render.tournament(self)
+			render_tournament(self)
 
 		pg.display.update()
 		
@@ -124,9 +128,14 @@ class Game:
 			if not self.online:
 				await self.GameHub.send(json.dumps(self.endMsg('quit')))
 			else:
-				if self.state == 'waiting':
+				if self.state == 'tournament':
+					if self.GameRoom:
+						await self.GameRoom.send(json.dumps({'type' : 'quitGame', 'id' : self.tournament_id, 'cmd' : 'tournament'}))
+					else:
+						await self.GameHub.send(json.dumps({'type' : 'quitGame', 'id' : self.tournament_id, 'cmd' : 'tournament'}))
+				elif self.state == 'waiting':
 					await self.GameHub.send(json.dumps({'type' : 'quitGame', 'id' : self.id}))
-				else:
+				elif self.GameRoom:
 					await self.GameRoom.send(json.dumps({'type' : 'quitGame', 'id' : self.id}))
 		self.state = "quit"
 		self.is_running = False

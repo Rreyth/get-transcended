@@ -35,7 +35,7 @@ async def parse_msg(msg : dict):
 	if msg['type'] == 'join':
 		if game.state == 'tournament':
 			game.players.append(Player(game.players.__len__() + 1, msg['alias'], 2, False, False))
-			game.tournament.initPlayers(game.players)
+			await game.tournament.initPlayers(game.players)
 		else:
 			game.wait_screen.nb += 1
  
@@ -43,7 +43,7 @@ async def parse_msg(msg : dict):
 		game.state = 'tournament' if game.tournament else 'start'
 
 	if msg['type'] == 'update':
-		if 'tournament' in msg.keys:
+		if 'tournament' in msg.keys():
 			await game.tournament.onlineUpdate(msg, game)
 		elif 'timer' in msg.keys():
 			if game.state == 'tournament':
@@ -84,7 +84,7 @@ async def parse_msg(msg : dict):
 					for player in game.players:
 						if player.nb > msg['id']:
 							player.nb -= 1
-					game.tournament.initPlayers(game.players)
+					await game.tournament.initPlayers(game.players)
 			return
 		for i in range(game.players.__len__()):
 			game.players[i].score = msg['score'][i]
@@ -124,7 +124,7 @@ async def local_run():
 		await asyncio.sleep(0.01)
 
 
-async def wait_loop():#add new start logic
+async def wait_loop():
 	global game
 	game.render()
 	msg = {'type' : 'none'}
@@ -143,7 +143,10 @@ async def wait_loop():#add new start logic
 	if game.is_running:
 		socket = "wss://" + ip + ":" + str(game.GamePort)
 		game.GameRoom = await websockets.connect(socket, ssl=ssl_context)
-		await game.GameRoom.send(json.dumps({'type' : 'join', 'name' : game.alias}))
+		if game.tournament:
+			await game.GameRoom.send(json.dumps({'type' : 'join', 'name' : game.alias, "tournament" : game.tournament_id}))
+		else:	
+			await game.GameRoom.send(json.dumps({'type' : 'join', 'name' : game.alias}))
 		infos : dict = json.loads(await game.GameRoom.recv())
 		while infos['type'] != 'start':
 			infos : dict = json.loads(await game.GameRoom.recv())
@@ -159,6 +162,9 @@ async def wait_loop():#add new start logic
 		game.ball = Ball(infos['ball'])
 		if 'obstacle' in infos.keys():
 			game.obstacle = Obstacle()
+		if game.state == 'tournament':
+			await game.tournament.initPlayers(game.players)
+			game.tournament_id = game.id
 		game.state = 'launch'
 	
 
@@ -181,7 +187,7 @@ async def in_game(websocket):
 			game.is_running = False
 			if game.GameRoom:
 				await game.GameRoom.close()
-			if game.state == 'menu' or game.state == 'end':
+			if game.state == 'menu' or game.state == 'end' or game.state == 'tournament':
 				await in_game(websocket)
 			game.pygame_quit()
 

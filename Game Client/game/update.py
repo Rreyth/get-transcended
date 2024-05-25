@@ -33,4 +33,4 @@ async def update_all(core, delta):
 			core.state = "game"
    
 	if core.state == 'tournament'and not core.online:
-		core.tournament.update(core)
+		await core.tournament.update(core)

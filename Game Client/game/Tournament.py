@@ -16,7 +16,7 @@ class Tournament:
 		self.button = Button("LEAVE", winWidth * 0.015, winHeight * 0.9, winWidth * 0.11, winHeight * 0.07, winHeight * 0.06)
 		self.size = [winWidth * 0.2, winHeight * 0.4]
 		self.visual = [Button("", -(winWidth * 0.05), winHeight / 2 - (self.size[1] / 2), self.size[0], self.size[1], winHeight * 0.085, True)]
-		self.size[1] = winHeight * 0.4 * nb_players if nb_players <= 20 else winHeight * 0.4 * 20
+		self.size[1] = winHeight * 0.04 * nb_players if nb_players <= 20 else winHeight * 0.04 * 20
 		self.visual.append(Button("", winWidth * 0.85, winHeight / 2 - (self.size[1] / 2), self.size[0], self.size[1], winHeight * 0.085, True))
 		self.start_names = self.visual[1].y + (winHeight * 0.025)
 		spec_size = [winWidth * 0.65, winHeight * 0.65]
@@ -29,6 +29,7 @@ class Tournament:
 		self.online = online
 		self.state = "waiting"
 		self.timer = [5, time.time()]
+		self.arrows = False
 		if nb_players > 20:
 			self.arrows = [Arrow("", winWidth * 0.977, winHeight / 2 - (self.size[1] * 0.49), winWidth * 0.02, winHeight * 0.02, "up"),
                   			Arrow("", winWidth * 0.977, winHeight / 2 + (self.size[1] * 0.465), winWidth * 0.02, winHeight * 0.02, "down")]
@@ -81,7 +82,6 @@ class Tournament:
 				winner = player.nb
 				break
 		self.state = "end"
-		await core.sendAll(self.stateMsg("EndTournament"))
 		if core: 
 			msg = {"type" : "endGame", "winner" : winner, "players" : self.max_players}
 			await core.GameHub.send(json.dumps(msg))
@@ -152,21 +152,26 @@ class Tournament:
 			elif msg["cmd"] == 'leave':
 				self.leave(msg['id'])
 			return
-		for id, players in msg['matches'].items():
-			self.matches[id] = []
-			i = 0
-			while i < 2 and msg['index'] == id:
-				for p in self.players.keys():
-					if p.nb == players[i]:
-						self.matches[id].append(p)
-						i += 1
-					if self.matches[id].__len__() == 2:
-						break
+		self.UpdateMatches(msg)
   
 		self.state = msg['state']
 		self.timer[0] = msg['timer']
+
+	def UpdateMatches(self, msg):
+		for id, players in msg['matches'].items():
+			id_int = int(id)
+			self.matches[id_int] = []
+			i = 0
+			while i < 2 and msg['index'] == id_int:
+				for p in self.players.keys():
+					if p.nb == players[i]:
+						self.matches[id_int].append(p)
+						i += 1
+					if self.matches[id_int].__len__() == 2:
+						break
 		self.match_index = msg["index"]
-  
+
+
 	def leave(self, id):
 		for player in self.players.keys():
 			if player.nb == id:
@@ -175,7 +180,7 @@ class Tournament:
 
 	def onlineStart(self, states, core):
 		for p in self.players.keys():
-			self.players[p] = states[p.nb]
+			self.players[p] = states[str(p.nb)]
 		self.state = 'ongoing'
 		core.players = []
 		core.ai = []
@@ -201,7 +206,7 @@ class Tournament:
 		spec_size = [self.spec_screen.width, self.spec_screen.height]
 		spec_pos = [self.spec_screen.x, self.spec_screen.y]
 		for player in core.players:
-			player.size = [spec_size[0] * 0.007, spec_size * 0.1]
+			player.size = [spec_size[0] * 0.007, spec_size[1] * 0.1]
 			player.paddle[0].size = player.size
 			new_pos = [((player.paddle[0].pos.x / winWidth) * spec_size[0]) + spec_pos[0],
 						((player.paddle[0].pos.y / winHeight) * spec_size[1]) + spec_pos[1]]
@@ -218,9 +223,9 @@ class Tournament:
 					continue
 				wall.spec = True
 				wall.size = [spec_size[0], spec_size[1] * 0.0075]
-				new_pos = [((wall.visual.x / winWidth) * spec_size[0]) + spec_pos[0],
-							((wall.visual.y / winHeight) * spec_size[1]) + spec_pos[1]]
-				wall.visual = Vec2(new_pos[0], new_pos[1])
+				new_pos = [((wall.visual[0] / winWidth) * spec_size[0]) + spec_pos[0],
+							((wall.visual[1] / winHeight) * spec_size[1]) + spec_pos[1]]
+				wall.visual = [new_pos[0], new_pos[1]]
 				wall.hitbox = Hitbox(new_pos[0], new_pos[1], wall.size[0], wall.size[1])
 		
 		core.ball.radius = int(spec_size[1] * 0.01)
@@ -236,10 +241,11 @@ class Tournament:
    
 	async def onlineEnd(self, msg : dict, core):
 		for p in self.players.keys():
-			self.players[p] = msg['states'][p.nb]
+			self.players[p] = msg['states'][str(p.nb)]
 		if msg['cmd'] == "EndMatch":
 			self.state = 'interlude'
 			self.nb_match -= 1
+			self.UpdateMatches(msg)
 		else:
 			self.state = 'end'
 			await core.GameRoom.close()
@@ -252,21 +258,21 @@ class Tournament:
 		text_font = pg.font.Font(font, int(winHeight * 0.085))
 		if self.online:
 			text = text_font.render("ID : " + str(self.id), True, (255, 255, 255))
-			win.blit(text, [winWidth * 0.06 - (text.get_size[0] / 2), winHeight * 0.1 - (text.get_size[1] / 2)])
+			win.blit(text, [winWidth * 0.06 - (text.get_size()[0] / 2), winHeight * 0.1 - (text.get_size()[1] / 2)])
 		text_font = pg.font.Font(font, int(winHeight * 0.15))
 		text = text_font.render("TOURNAMENT", True, (255, 255, 255))
-		win.blit(text, [winWidth / 2 - (text.get_size[0] / 2), winHeight * 0.1 - (text.get_size[1] / 2)])
+		win.blit(text, [winWidth / 2 - (text.get_size()[0] / 2), winHeight * 0.1 - (text.get_size()[1] / 2)])
 		text_font = pg.font.Font(font, int(winHeight * 0.06))
 		if self.state == 'ongoing':
 			match = self.matches[self.match_index]
 			text = text_font.render("SPECTATING", True, (255, 255, 255))
-			win.blit(text, [winWidth / 2 - (text.get_size[0] / 2), winHeight * 0.87 - (text.get_size[1] / 2)])
+			win.blit(text, [winWidth / 2 - (text.get_size()[0] / 2), winHeight * 0.87 - (text.get_size()[1] / 2)])
 			text = text_font.render(match[0].name, True, (255, 255, 255))
-			win.blit(text, [self.spec_screen.x, winHeight * 0.94 - (text.get_size[1] / 2)])
+			win.blit(text, [self.spec_screen.x, winHeight * 0.94 - (text.get_size()[1] / 2)])
 			text = text_font.render(match[1].name, True, (255, 255, 255))
-			win.blit(text, [self.spec_screen.x + self.spec_screen.width - text.get_size[0], winHeight * 0.94 - (text.get_size[1] / 2)])
+			win.blit(text, [self.spec_screen.x + self.spec_screen.width - text.get_size()[0], winHeight * 0.94 - (text.get_size()[1] / 2)])
 			text = text_font.render("VS", True, (255, 255, 255))
-			win.blit(text, [winWidth / 2 - (text.get_size[0] / 2), winHeight * 0.94 - (text.get_size[1] / 2)])
+			win.blit(text, [winWidth / 2 - (text.get_size()[0] / 2), winHeight * 0.94 - (text.get_size()[1] / 2)])
    
 		self.button.draw(win)
 		self.leftBox(win)
@@ -282,26 +288,26 @@ class Tournament:
 		self.spec_screen.draw(win)
 		if self.state == "waiting":
 			text = text_font.render("WAITING FOR PLAYERS", True, (255, 255, 255))
-			win.blit(text, [winWidth / 2 - (text.get_size[0] / 2), winHeight * 0.45 - (text.get_size[1] / 2)])
+			win.blit(text, [winWidth / 2 - (text.get_size()[0] / 2), winHeight * 0.45 - (text.get_size()[1] / 2)])
 			text = text_font.render(str(self.players.__len__()) + "/" + str(self.max_players), True, (255, 255, 255))
-			win.blit(text, [winWidth / 2 - (text.get_size[0] / 2), winHeight * 0.55 - (text.get_size[1] / 2)])
+			win.blit(text, [winWidth / 2 - (text.get_size()[0] / 2), winHeight * 0.55 - (text.get_size()[1] / 2)])
 		elif self.state == 'interlude':
 			text = text_font.render("NEXT MATCH", True, (255, 255, 255))
-			win.blit(text, [winWidth / 2 - (text.get_size[0] / 2), winHeight * 0.4 - (text.get_size[1] / 2)])
+			win.blit(text, [winWidth / 2 - (text.get_size()[0] / 2), winHeight * 0.4 - (text.get_size()[1] / 2)])
 			names = self.matches[self.match_index][0].name + "   -   " + self.matches[self.match_index][1].name
 			text = text_font.render(names, True, (255, 255, 255))
-			win.blit(text, [winWidth / 2 - (text.get_size[0] / 2), winHeight * 0.5 - (text.get_size[1] / 2)])
+			win.blit(text, [winWidth / 2 - (text.get_size()[0] / 2), winHeight * 0.5 - (text.get_size()[1] / 2)])
 			text = text_font.render(str(self.timer[0]), True, (255, 255, 255))
-			win.blit(text, [winWidth / 2 - (text.get_size[0] / 2), winHeight * 0.6 - (text.get_size[1] / 2)])
+			win.blit(text, [winWidth / 2 - (text.get_size()[0] / 2), winHeight * 0.6 - (text.get_size()[1] / 2)])
 		elif self.state == 'ongoing':
 			self.specDraw(core, win)
 		elif self.state == 'end':
 			text = text_font.render("WINNER", True, (255, 255, 255))
-			win.blit(text, [winWidth / 2 - (text.get_size[0] / 2), winHeight * 0.4 - (text.get_size[1] / 2)])
+			win.blit(text, [winWidth / 2 - (text.get_size()[0] / 2), winHeight * 0.4 - (text.get_size()[1] / 2)])
 			for player, state in self.players.items():
 				if state == "(WIN)":
 					text = text_font.render(player.name, True, (255, 255, 255))
-					win.blit(text, [winWidth / 2 - (text.get_size[0] / 2), winHeight * 0.6 - (text.get_size[1] / 2)])
+					win.blit(text, [winWidth / 2 - (text.get_size()[0] / 2), winHeight * 0.6 - (text.get_size()[1] / 2)])
 					break
 		pg.draw.rect(win, (0, 0, 0), pg.Rect((0, 0), (winWidth, self.spec_screen.y * 0.995)))
 		pg.draw.rect(win, (0, 0, 0), pg.Rect((0, self.spec_screen.y + (self.spec_screen.height * 1.001)), (winWidth, self.spec_screen.y)))
@@ -312,17 +318,17 @@ class Tournament:
 		surface = pg.Surface(text.get_size(), pg.SRCALPHA)
 		surface.blit(text, (0, 0))
 		surface.set_alpha(128)
-		win.blit(surface, [winWidth * 0.3 - (text.get_size[0] / 2), winHeight * 0.56 - (text.get_size[1] / 2)])
+		win.blit(surface, [winWidth * 0.3 - (text.get_size()[0] / 2), winHeight * 0.56 - (text.get_size()[1] / 2)])
 		text = text_font.render("-", True, (100, 100, 100))
 		surface = pg.Surface(text.get_size(), pg.SRCALPHA)
 		surface.blit(text, (0, 0))
 		surface.set_alpha(128)
-		win.blit(surface, [winWidth / 2 - (text.get_size[0] / 2), winHeight * 0.56 - (text.get_size[1] / 2)])
+		win.blit(surface, [winWidth / 2 - (text.get_size()[0] / 2), winHeight * 0.56 - (text.get_size()[1] / 2)])
 		text = text_font.render(str(core.players[1].score), True, (100, 100, 100))
 		surface = pg.Surface(text.get_size(), pg.SRCALPHA)
 		surface.blit(text, (0, 0))
 		surface.set_alpha(128)
-		win.blit(surface, [winWidth * 0.7 - (text.get_size[0] / 2), winHeight * 0.56 - (text.get_size[1] / 2)])
+		win.blit(surface, [winWidth * 0.7 - (text.get_size()[0] / 2), winHeight * 0.56 - (text.get_size()[1] / 2)])
 		text_font = pg.font.Font(font, int(winHeight * 0.085))
 		for player in core.players:
 			player.draw(win)
@@ -338,18 +344,18 @@ class Tournament:
 			surface.fill((0, 0, 0, 125))
 			win.blit(surface, (self.spec_screen.x, self.spec_screen.y))
 			text = text_font.render(str(self.timer[0]), True, (255, 255, 255))
-			win.blit(text, [winWidth / 2 - (text.get_size[0] / 2), winHeight / 2 - (text.get_size[1] / 2)])
+			win.blit(text, [winWidth / 2 - (text.get_size()[0] / 2), winHeight / 2 - (text.get_size()[1] / 2)])
 			
 	def rightBox(self, win):
-		text_font = pg.font.Font(font, int(winHeight * 0.04))
-		gap = winHeight * 0.04
+		text_font = pg.font.Font(font, int(winHeight * 0.037))
+		gap = winHeight * 0.037
 		pos = self.start_names
 		for player, state in self.players.items():
 			name = player.name if player.name.__len__() <= 9 else player.name[:9] + '.'
 			text = text_font.render(name, True, (255, 255, 255))
-			win.blit(text, [winWidth * 0.86, pos - (text.get_size[1] / 2)])
+			win.blit(text, [winWidth * 0.86, pos - (text.get_size()[1] / 2)])
 			text = text_font.render(state, True, (255, 255, 255))
-			win.blit(text, [winWidth * 0.93, pos - (text.get_size[1] / 2)])
+			win.blit(text, [winWidth * 0.93, pos - (text.get_size()[1] / 2)])
 			pos += gap
 		pg.draw.rect(win, (0, 0, 0), pg.Rect((self.visual[1].x, 0), (self.visual[1].width, self.visual[1].y)))
 		pg.draw.rect(win, (0, 0, 0), pg.Rect((self.visual[1].x, self.visual[1].y + self.size[1]), (self.visual[1].width, self.visual[1].y)))
@@ -357,31 +363,31 @@ class Tournament:
 	def leftBox(self, win):
 		text_font = pg.font.Font(font, int(winHeight * 0.05))
 		text = text_font.render("ONLINE" if self.online else "LOCAL", True, (255, 255, 255))
-		win.blit(text, [winWidth * 0.005, winHeight * 0.35 - (text.get_size[1] / 2)])
+		win.blit(text, [winWidth * 0.005, winHeight * 0.35 - (text.get_size()[1] / 2)])
 		text = text_font.render("PLAYERS:", True, (255, 255, 255))
-		win.blit(text, [winWidth * 0.005, winHeight * 0.4 - (text.get_size[1] / 2)])
+		win.blit(text, [winWidth * 0.005, winHeight * 0.4 - (text.get_size()[1] / 2)])
 		text = text_font.render("AI:", True, (255, 255, 255))
-		win.blit(text, [winWidth * 0.005, winHeight * 0.45 - (text.get_size[1] / 2)])
+		win.blit(text, [winWidth * 0.005, winHeight * 0.45 - (text.get_size()[1] / 2)])
 		text = text_font.render("BORDERLESS:", True, (255, 255, 255))
-		win.blit(text, [winWidth * 0.005, winHeight * 0.5 - (text.get_size[1] / 2)])
+		win.blit(text, [winWidth * 0.005, winHeight * 0.5 - (text.get_size()[1] / 2)])
 		text = text_font.render("OBSTACLE:", True, (255, 255, 255))
-		win.blit(text, [winWidth * 0.005, winHeight * 0.55 - (text.get_size[1] / 2)])
+		win.blit(text, [winWidth * 0.005, winHeight * 0.55 - (text.get_size()[1] / 2)])
 		text = text_font.render("MATCH SCORE:", True, (255, 255, 255))
-		win.blit(text, [winWidth * 0.005, winHeight * 0.6 - (text.get_size[1] / 2)])
+		win.blit(text, [winWidth * 0.005, winHeight * 0.6 - (text.get_size()[1] / 2)])
 		text = text_font.render("MATCH LEFT:", True, (255, 255, 255))
-		win.blit(text, [winWidth * 0.005, winHeight * 0.65 - (text.get_size[1] / 2)])
+		win.blit(text, [winWidth * 0.005, winHeight * 0.65 - (text.get_size()[1] / 2)])
 		text = text_font.render(str(self.max_players), True, (255, 255, 255))
-		win.blit(text, [winWidth * 0.12 - (text.get_size[0] / 2), winHeight * 0.4 - (text.get_size[1] / 2)])
+		win.blit(text, [winWidth * 0.12 - (text.get_size()[0] / 2), winHeight * 0.4 - (text.get_size()[1] / 2)])
 		text = text_font.render(str(self.nb_ai), True, (255, 255, 255))
-		win.blit(text, [winWidth * 0.12 - (text.get_size[0] / 2), winHeight * 0.45 - (text.get_size[1] / 2)])
+		win.blit(text, [winWidth * 0.12 - (text.get_size()[0] / 2), winHeight * 0.45 - (text.get_size()[1] / 2)])
 		text = text_font.render(str("BORDERLESS" in self.mods), True, (255, 255, 255))
-		win.blit(text, [winWidth * 0.12 - (text.get_size[0] / 2), winHeight * 0.5 - (text.get_size[1] / 2)])
+		win.blit(text, [winWidth * 0.12 - (text.get_size()[0] / 2), winHeight * 0.5 - (text.get_size()[1] / 2)])
 		text = text_font.render(str("OBSTACLE" in self.mods), True, (255, 255, 255))
-		win.blit(text, [winWidth * 0.12 - (text.get_size[0] / 2), winHeight * 0.55 - (text.get_size[1] / 2)])
+		win.blit(text, [winWidth * 0.12 - (text.get_size()[0] / 2), winHeight * 0.55 - (text.get_size()[1] / 2)])
 		text = text_font.render(str(self.max_score), True, (255, 255, 255))
-		win.blit(text, [winWidth * 0.12 - (text.get_size[0] / 2), winHeight * 0.6 - (text.get_size[1] / 2)])
+		win.blit(text, [winWidth * 0.12 - (text.get_size()[0] / 2), winHeight * 0.6 - (text.get_size()[1] / 2)])
 		text = text_font.render(str(self.nb_match), True, (255, 255, 255))
-		win.blit(text, [winWidth * 0.12 - (text.get_size[0] / 2), winHeight * 0.65 - (text.get_size[1] / 2)])
+		win.blit(text, [winWidth * 0.12 - (text.get_size()[0] / 2), winHeight * 0.65 - (text.get_size()[1] / 2)])
   
 	def scroll(self, dir):
 		if self.players.__len__() <= 20:
@@ -406,6 +412,7 @@ class Tournament:
 			core.online = False
 			core.tournament_menu = False
 			core.tournament = False
+			core.start_screen = False
 			if core.GameRoom:
 				await core.GameRoom.send(json.dumps({'type' : 'quitGame', 'id' : core.tournament_id, 'cmd' : 'tournament'}))
 			else:

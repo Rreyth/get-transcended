@@ -458,6 +458,7 @@ export class Tournament {
 			core.online = false;
 			core.tournament_menu = false;
 			core.tournament = false;
+			core.start_screen = false;
 			if (core.GameRoom)
 				core.GameRoom.send(JSON.stringify({'type' : 'quitGame', 'id' : core.tournament_id, 'cmd' : 'tournament'}));
 			else

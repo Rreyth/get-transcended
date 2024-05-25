@@ -63,7 +63,7 @@ class Menu:
 					core.players = []
 					for i in range(response['players'].__len__()):
 						core.players.append(Player(i + 1, response['players'][i], 2, 'BORDERLESS' in response['custom_mods'], False))
-					core.tournament.initPlayers(core.players)
+					await core.tournament.initPlayers(core.players)
 					core.tournament.id = room_id
 					core.tournament_id = core.id
 					core.state = 'tournament'
@@ -130,5 +130,5 @@ class Menu:
 			self.err = False
 			if not core.start_screen:
 				core.start_screen = StartScreen(core.mode, core.online)
-			if core.online and not core.wait_screen:
+			if core.online and not core.wait_screen and core.state != 'tournament':
 				core.wait_screen = WaitScreen(room_id, core.id, wait_nb, "QuickGame Online")

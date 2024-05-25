@@ -112,12 +112,12 @@ class TournamentMenu:
 			if "OBSTACLE" in self.mod_list:
 				core.obstacle = Obstacle()
 			msg = {"type" : 'tournament', 'online' : 'false'}
-			core.GameHub.send(json.dumps(msg))
+			await core.GameHub.send(json.dumps(msg))
 			core.tournament_names = TournamentNames(core.players)
 		elif "ONLINE" in self.mod_list:
 			msg = {"type" : 'tournament', 'online' : 'true', 'mods' : self.mod_list, 'score' : self.score, 'ai' : self.ai_nb, 'players' : self.players.__len__()}
 			core.players = [Player(1, core.alias, 2, "BORDERLESS" in self.mod_list, False)]
-			core.GameHub.send(json.dumps(msg))
+			await core.GameHub.send(json.dumps(msg))
 			response : dict = json.loads(await core.GameHub.recv())
 			core.GamePort = response['port']
 			core.mode = "ONLINE"
@@ -126,6 +126,7 @@ class TournamentMenu:
 			core.tournament_id = core.id
 			core.online = True
 			core.tournament.id = response['ID']
+			core.tournament.online = True
 
 		core.start_screen = StartScreen(core.mode, core.online)
 
@@ -151,6 +152,6 @@ class TournamentMenu:
 
 	def validStart(self):
 		for b in self.mod_buttons:
-			if b.highlight and (b.name == "LOCAl" or b.name == "ONLINE"):
+			if b.highlight and (b.name == "LOCAL" or b.name == "ONLINE"):
 				return True
 		return False

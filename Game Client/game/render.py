@@ -117,7 +117,7 @@ def render_custom(core):
 	
 	core.custom_menu.draw(core.win)
  
-def tournament(core):
+def render_tournament(core):
 	core.win.fill((0, 0, 0))
 	if core.state == 'tournament menu':
 		core.tournament_menu.draw(core.win)
