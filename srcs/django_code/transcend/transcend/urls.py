@@ -16,36 +16,17 @@ Including another URLconf
 from django.urls import path
 from myapp import views
 from users.views import RegisterUserView, UserView, FriendView
-from channels.routing import ProtocolTypeRouter, URLRouter
-from channels.auth import AuthMiddlewareStack
-from channels.security.websocket import AllowedHostsOriginValidator
+from chat.views import DMView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
 
-websocket_urlpatterns = [
-    path('api/', views.MyConsumer.as_asgi()),
-]
-
-application = ProtocolTypeRouter({
-    # 'https': get_asgi_application(),
-    "websocket": AllowedHostsOriginValidator(
-            AuthMiddlewareStack(URLRouter(websocket_urlpatterns))
-        ),
-})
-
 urlpatterns = [
-    #path('', views.home, name='home'),
-    # path('', views.index, name='index'),
     path('auth/42/', views.auth_42, name='auth_42'),
-    # re_path(r'^(?!auth/42/).*$', views.index),
-    # path('admin/', admin.site.urls),
-    # path('api/auth/register', csrf_exempt(views.register), name='register'),
-    # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/user/', UserView.as_view()),
     path('api/user/friends/', FriendView.as_view()),
+    path('api/user/dm/<int:user>', DMView.as_view()),
     path('api/register/', RegisterUserView.as_view()),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
