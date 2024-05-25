@@ -1,4 +1,4 @@
-var canvas = document.querySelector("#pong_canvas");
+const canvas = document.querySelector("#pong_canvas");
 canvas.width = window.innerWidth * 0.80;
 canvas.height = Math.floor(canvas.width * 0.482);
 canvas.style.display = "block";
@@ -7,7 +7,7 @@ canvas.style.position = "absolute";
 canvas.style.left = (window.innerWidth - canvas.width) / 2 + "px";
 canvas.style.top = (window.innerHeight - canvas.height) / 2 + "px";
 
-var ctx = canvas.getContext("2d");
+const ctx = canvas.getContext("2d");
 ctx.font = Math.floor(canvas.height * 0.085) + "px pong-teko";
 ctx.fillStyle = "white";
 ctx.strokeStyle = "white";

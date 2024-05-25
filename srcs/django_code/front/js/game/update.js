@@ -62,7 +62,7 @@ export function update_sizes(core, old_sizes) {
 		core.tournament_menu.responsive();
 	if (core.tournament) {
 		core.tournament.responsive(old_sizes);
-		if (core.tournament.state === "ongoing")
+		if (core.tournament.state === "ongoing" && core.state === "tournament")
 			core.tournament.resizeSpec(core);
 	if (core.tournament_names)
 		core.tournament_names.responsive(old_sizes);

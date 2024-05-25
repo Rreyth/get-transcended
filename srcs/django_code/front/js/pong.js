@@ -136,11 +136,13 @@ function parse_msg(event) {
 		for (let i = 0; i < game.players.length; i++) {
 			game.players[i].paddle[0].pos = new Vec2(msg.players[i][0] * canvas.width, msg.players[i][1] * canvas.height);
 			game.players[i].score = msg.score[i];
+			game.players[i].spec = false
 		}
 		game.ball.center[0] = new Vec2(msg.ball[0] * canvas.width, msg.ball[1] * canvas.height);
 		game.ball.stick = msg.ball[2];
 		game.ball.speed = msg.ball[3];
 		game.ball.dir = msg.ball[4];
+		game.ball.spec = false
 		if (game.obstacle)
 			game.obstacle.solid = msg.obstacle;
 		if (game.state === "tournament") {

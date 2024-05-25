@@ -252,13 +252,18 @@ export class Tournament {
 		for (let player of core.players) {
 			player.size = [spec_size[0] * 0.007, spec_size[1] * 0.1];
 			player.paddle[0].size = [spec_size[0] * 0.007, spec_size[1] * 0.1];
+			if (player.borderless) {
+				player.paddle[1].size = player.paddle[0].size;
+				player.paddle[2].size = player.paddle[0].size;
+			}
+			if (player.spec)
+				continue;
+			player.spec = true;
 			new_pos = [((player.paddle[0].pos.x / canvas.width) * spec_size[0]) + spec_pos[0],
 						((player.paddle[0].pos.y / canvas.height) * spec_size[1]) + spec_pos[1]];
 			player.paddle[0].pos = new Vec2(new_pos[0], new_pos[1]);
 			if (player.borderless) {
-				player.paddle[1].size = player.paddle[0].size;
 				player.paddle[1].pos = new Vec2(new_pos[0], new_pos[1] - spec_size[1]);
-				player.paddle[2].size = player.paddle[0].size;
 				player.paddle[2].pos = new Vec2(new_pos[0], new_pos[1] + spec_size[1]);
 			}
 		}
@@ -275,12 +280,15 @@ export class Tournament {
 			}
 		}
 		core.ball.radius = Math.floor(spec_size[1] * 0.01);
-		new_pos = [((core.ball.center[0].x / canvas.width) * spec_size[0]) + spec_pos[0],
-					((core.ball.center[0].y / canvas.height) * spec_size[1]) + spec_pos[1]];
-		core.ball.center[0] = new Vec2(new_pos[0], new_pos[1]);
-		if (core.ball.borderless) {
-			core.ball.center[1] = new Vec2(new_pos[0], new_pos[1] + spec_size[1]);
-			core.ball.center[2] = new Vec2(new_pos[0], new_pos[1] - spec_size[1]);	
+		if (!core.ball.spec) {
+			core.ball.spec = true
+			new_pos = [((core.ball.center[0].x / canvas.width) * spec_size[0]) + spec_pos[0],
+						((core.ball.center[0].y / canvas.height) * spec_size[1]) + spec_pos[1]];
+			core.ball.center[0] = new Vec2(new_pos[0], new_pos[1]);
+			if (core.ball.borderless) {
+				core.ball.center[1] = new Vec2(new_pos[0], new_pos[1] + spec_size[1]);
+				core.ball.center[2] = new Vec2(new_pos[0], new_pos[1] - spec_size[1]);	
+			}
 		}
 		if (core.obstacle) {
 			core.obstacle.radius = Math.floor(spec_size[1] * 0.193);
