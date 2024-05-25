@@ -38,6 +38,8 @@ class JwtAuthMiddleware(BaseMiddleware):
             return None
         except jwt.InvalidSignatureError:
             return None
+        except jwt.DecodeError:
+            return None
 
         user = await get_user(jwt_token)
         
