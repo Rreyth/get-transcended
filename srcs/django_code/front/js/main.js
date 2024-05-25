@@ -29,15 +29,20 @@ const navigateTo = url => {
 	Router.run()
 };
 
-window.addEventListener("popstate", Router.run());
+window.addEventListener("popstate", (e) => {
+	Router.run()
+});
 
 document.addEventListener("DOMContentLoaded", () => {
 	document.body.addEventListener("click", e => {
 		if (e.target.localName == "a" && e.target.id != 1){
 			e.preventDefault();
+			console.log("test")
 			navigateTo(e.target.href);
 		}
 	});
+
+	Router.run()
 });
 
 const socket = new WebSocket('wss://localhost:44433/api/chat')
