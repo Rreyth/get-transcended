@@ -11,12 +11,9 @@ import sys
 class RegisterUserView(APIView):
     parser_classes = [JSONParser, MultiPartParser, FormParser]
     def post(self, request):
-
-        if User.objects.filter(email=request.data['email']).exists():
-            return Response({'error': 'Email already registered'}, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            serializer = UserSerializer(data=request.data)
-
+        
+        serializer = UserSerializer(data=request.data)
+        
         if serializer.is_valid():
             user = serializer.save()
             refresh = RefreshToken.for_user(user)

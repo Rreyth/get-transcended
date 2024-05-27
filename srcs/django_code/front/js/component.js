@@ -12,7 +12,12 @@ export class Component extends HTMLElement
 
     addClickEvent(item, callback)
     {
-        this.querySelector(item).addEventListener('click', callback);
+        let allItems = this.querySelectorAll(item);
+
+        for (let i of allItems)
+        {
+            i.addEventListener('click', callback);
+        }
     }
 
     static getName()
