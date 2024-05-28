@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
-from users.models import User
+from users.models import User, Friend
 from .serializer import UserSerializer
 
 class RegisterUserView(APIView):
@@ -37,14 +37,26 @@ class FriendView(APIView):
     parser_classes = [JSONParser,]
 
     def get(self, request):
-        serializer = UserSerializer(request.user.friends, many=True)
+        serializer = UserSerializer(request.user.friends.objects.get(accept=True), many=True)
         
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request):
         try:
-            request.user.friends.add(request.data['user'])
+            # request.user.friends.add(request.data['user'])
+            Friend.objects.create(sender=request.user, receiver_id=int(request.data['receiver']))
 
-            return Response({'message': 'Friend add'}, status=status.HTTP_201_CREATED)
+            return Response({'message': 'Friend request success'}, status=status.HTTP_201_CREATED)
         except KeyError:
-            return Response({'error': 'user field is required'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'receiver field is required'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    def put(self, request):
+        if 'sender' not in request.data:
+            return Response({'error': 'sender field is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        friend = Friend.objects.get(sender_id=int(request.data['sender']), receiver=request.user)
+        
+        friend.accept = True
+        friend.save()
+        
+        return Response({'message': 'Friend confirm success'}, status=status.HTTP_200_OK)

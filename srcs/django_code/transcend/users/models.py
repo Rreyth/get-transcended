@@ -22,7 +22,7 @@ class User(AbstractBaseUser):
 	username = models.CharField(max_length=25, unique=True)
 	avatar = models.TextField(blank=True, default='')
 	email = models.EmailField(max_length=255, unique=True, validators=[validate_email])
-	friends = models.ManyToManyField("self")
+	friends = models.ManyToManyField("Friend")
 	created_at = models.DateTimeField(default=timezone.now)
 	updated_at = models.DateTimeField(default=timezone.now)
  
@@ -33,3 +33,8 @@ class User(AbstractBaseUser):
 
 	def __str__(self) -> str:
 		return self.username
+
+class Friend(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="+")
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="+")
+    accept = models.BooleanField(default=False)
