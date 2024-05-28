@@ -58,11 +58,11 @@ class Tournament :
 		self.state = "end"
 		await core.sendAll(self.stateMsg("EndTournament"))
 		if core: 
-			msg = {"type" : "endGame", "winner" : winner, "players" : self.max_players}
+			msg = {"type" : "endGame", "winner" : winner, "players" : self.max_players} #replace with names ? send match list
 			await core.sendHub(msg)
 			core.is_running = False
    
-	async def endMatch(self, players, core, reason = "end"):
+	async def endMatch(self, players, core, reason = "end"): #each match save to send -> match : (user, score, winner?) x nb_players
 		self.nb_match -= 1
 		for player in players:
 			for p in self.players.keys():

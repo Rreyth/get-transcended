@@ -80,7 +80,7 @@ class Game:
 		self.tournament = Tournament(msg['mods'], msg['players'], msg['ai'], msg['score'])
 
     
-	def endMsg(self, id, reason = 'end'):
+	def endMsg(self, id, reason = 'end'): #match : (user, score, winner?) x nb_players
 		msg = {'type' : 'endGame'}
 		if id != 0:
 			for player in self.players:

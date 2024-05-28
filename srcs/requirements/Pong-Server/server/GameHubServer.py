@@ -67,7 +67,7 @@ clients = {}
 registered = {}
 client_id = 0
 
-async def send_to_DB(msg : dict):
+async def send_to_DB(msg : dict): #match : (user, score, winner?) x nb_players      #tournament : winner, loosers, matchList
 	print(msg, file=sys.stderr, flush=True)
 	#add players infos + send to main serv for db
 	#add tournament end
