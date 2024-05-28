@@ -4,8 +4,8 @@ import pygame as pg
 from math import *
 from random import randint
 
-winWidth = 960
-winHeight = 480
+winWidth = 1620
+winHeight = 780
 wallDist = winHeight * 0.05
 speed_per_sec = winHeight
 font = "game/Teko-Regular.ttf"
