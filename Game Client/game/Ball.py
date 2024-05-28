@@ -7,6 +7,7 @@ class Ball:
 		self.borderless = borderless
 		self.radius = int(winHeight * 0.01)
 		self.center = [Vec2(winWidth / 2, winHeight / 2)]
+		self.speed = ball_speed_per_sec * 0.005
 		if borderless:
 			self.center.append(Vec2(self.center[0].x, self.center[0].y + winHeight))
 			self.center.append(Vec2(self.center[0].x, self.center[0].y - winHeight))
@@ -14,9 +15,6 @@ class Ball:
 		self.stick = 0
 		self.side = "none"
 		self.launch()
-  
-		self.multiplier = 1.0
-		self.last_hit = 0
 
 
 	def copy(self, ai_hitbox = False):
@@ -180,7 +178,8 @@ class Ball:
 				self.dir = 90
 			elif self.side == "down":
 				self.dir = 270
-	  
+    
+		self.last_hit = self.stick
 		self.multiplier = 1.0
 		self.stick = 0
   

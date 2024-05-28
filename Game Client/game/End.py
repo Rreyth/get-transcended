@@ -88,6 +88,8 @@ class End:
 			core.pause[1].freeze = False
 			core.start_screen = False
 			core.wait_screen = False
+			core.custom_menu = False
 			core.ai = []
 			core.max_score = 10
+			core.online = False
 

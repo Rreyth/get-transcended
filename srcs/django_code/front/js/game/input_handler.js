@@ -74,6 +74,12 @@ export function mouse_handler(core, pos) {
 		core.custom_menu.click(core, pos);
 	else if (core.state === "waiting")
 		core.wait_screen.click(core, pos);
+	else if (core.state === "tournament menu")
+		core.tournament_menu.click(core, pos);
+	else if (core.state === "tournament names")
+		core.tournament_names.click(core, pos);
+	else if (core.state === "tournament")
+		core.tournament.click(core, pos);
 }
 
 function ai_moves(core, player) {
@@ -152,11 +158,13 @@ function player_moves(core, player, inputs) {
 }
 
 export function escape_handler(core) {
-	if (core.state === "end" || core.state === "custom") {
+	if (core.state === "end" || core.state === "custom" || core.state === "tournament menu") {
 		core.state = "menu";
 		core.mode = "none";
 		core.max_score = 10;
 		core.custom_menu = false;
+		core.tournament_menu = false;
+		core.online = false;
 	}
 	if (core.state === "game") {
 		core.pause[0] = !core.pause[0];

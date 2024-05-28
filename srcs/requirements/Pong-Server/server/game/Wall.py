@@ -4,7 +4,7 @@ from Hitbox import *
 
 class Wall:
 	def __init__(self, pos, square):
-		self.size = [winWidth ,5]
+		self.size = [winWidth, winHeight * 0.0075]
 		self.pos = pos
 		self.square = square
 

@@ -4,12 +4,12 @@ from Vec2 import *
 class Obstacle:
 	def __init__(self):
 		self.center = Vec2(winWidth / 2, winHeight / 2)
-		self.radius = 150
+		self.radius = int(winHeight * 0.193)
 		self.solid = False
 		self.start = time.time()
   
 	def update(self):
-		if not self.solid and time.time() - self.start >= 4:
+		if not self.solid and time.time() - self.start >= 3.5:
 			self.solid = True
   
 	def collide(self, ball):

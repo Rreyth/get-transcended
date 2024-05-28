@@ -114,3 +114,16 @@ export function render_custom(core) {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	core.custom_menu.draw();
 }
+
+export function tournament(core) {
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	if (core.state === "tournament menu") {
+		core.tournament_menu.draw();
+		return;
+	}
+	if (core.state === "tournament names") {
+		core.tournament_names.draw();
+		return;
+	}
+	core.tournament.draw(core);
+}
