@@ -7,5 +7,4 @@ django-extensions
 djangorestframework
 djangorestframework-simplejwt
 tzdata
-websockets
 PyJWT

@@ -10,6 +10,7 @@ import { WaitScreen } from "./game/WaitScreen.js";
 import { update_sizes } from "./game/update.js";
 import { Tournament } from "./game/Tournament.js";
 import { Thread } from "./thread.js";
+import { user, user_token } from "./helpers.js"
 
 let timer;
 let connect_last;
@@ -65,9 +66,17 @@ function game_loop() {
 	game.render();
 }
 
+try {
+	const user_infos = await user();
+	game.alias = user_infos.username;
+	game.avatar = user_infos.avatar
+} catch (error) {
+}
+
+const token = await user_token();
+
 function try_connect(GameHub) {
-	//get the user or the token or smth
-	const msg = {"type" : "connect", "cmd" : "token", "token" : "tqt"};
+	const msg = {"type" : "connect", "cmd" : "token", "token" : token};
 	GameHub.send(JSON.stringify(msg));
 }
 
@@ -94,6 +103,13 @@ function hub_open() {
 	try_connect(GameHub)
 }
 
+function invalid_token() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+	ctx.fillStyle = "rgb(255, 102, 102)";
+	ctx.fillText("Invalid user", canvas.width / 2, canvas.height / 2);
+	ctx.fillStyle = "white";
+}
+
 function parse_msg(event) {
 	let msg = JSON.parse(event.data);
 	let room_id = 0;
@@ -101,13 +117,13 @@ function parse_msg(event) {
 	if (msg.type == "connectionRpl") {
 		if (msg.success == "true") {
 			console.log("Connection success");
-			if (msg['alias'] !== undefined)
-				game.alias = msg.alias;
 			game.start(GameHub);
 			gameInterval = Thread.new(game_loop, 10);
 		}
-		else
-			console.log("Connection failed"); // + invalid user token ?? is it even possible to fail connect from web ??
+		else {
+			console.log("Connection failed");
+			Thread.new(invalid_token, 500);
+		}
 	}
 	else if (msg.type == "join") {
 		if (game.state == "tournament") {

@@ -8,6 +8,12 @@ import string
 import signal
 import ssl
 import sys
+import requests
+import urllib3
+
+urllib3.disable_warnings()
+
+BASE_URL = "https://nginx:44433/api/"
 
 starting_port = 8766
 
@@ -60,15 +66,12 @@ forbiden_port = [8000, 8001, 44433, 5432, 6720]
 clients = {}
 registered = {}
 client_id = 0
-django_socket = False
 
 async def send_to_DB(msg : dict):
 	print(msg, file=sys.stderr, flush=True)
 	#add players infos + send to main serv for db
 	#add tournament end
-	# if django_socket:
-	# await django_socket.send(msg)
-
+	#request (same as user login)
 
 async def full_room(id, websocket):
 	global rooms
@@ -107,31 +110,38 @@ def id_generator():
 	return id
 
 async def connection_handler(client_msg, websocket):
-	global django_socket, clients, registered
-	if client_msg["type"] == 'connectionRpl' and websocket == django_socket:
-		for key, player in clients.items():
-			if key == client_msg['id']:
-				player.name = client_msg['alias']
-				await player.websocket.send(json.dumps(client_msg))
-				if (client_msg['success'] == 'true'):
-					registered[key] = player.websocket
-				break
-	elif django_socket:
-		for key, player in clients.items():
-			if player.websocket == websocket:
-				client_msg['id'] = key
-				break
-		await django_socket.send(json.dumps(client_msg))
+	global clients, registered
+	if client_msg['cmd'] == 'token':
+		method = 'GET'
+		url = BASE_URL + "user/"
+		headers = {'Authorization' : 'Bearer ' + client_msg['token']}
+		payload = {}
+	
+	elif client_msg['cmd'] == 'username':
+		method = 'POST'
+		url = BASE_URL + "token/"
+		headers = {'Content-Type' : 'application/json'}
+		payload = json.dumps({'username' : client_msg['username'],
+                        		'password' : client_msg['password']})
+
+	response = requests.request(method, url, headers=headers, data=payload, verify=False)
+	data = response.json()
+	if response.status_code != 200:
+		if client_msg['cmd'] == 'token':
+			msg = {'type' : 'connectionRpl', 'success' : 'false', 'error' : 'invalid token'}
+		elif client_msg['cmd'] == 'username':
+			msg = {'type' : 'connectionRpl', 'success' : 'false', 'error' : 'invalid username or password'}
 	else:
 		msg = {'type' : 'connectionRpl', 'success' : 'true', 'error' : 'none'}
-		await websocket.send(json.dumps(msg))
-		for key, player in clients.items():
+		for id, player in clients.items():
 			if player.websocket == websocket:
-				registered[key] = player.websocket
+				player.name = data.get('username') if data.get('username') != None else client_msg['username']
+				registered[id] = websocket
 				break
+	await websocket.send(json.dumps(msg))
 	
 async def run_game(id, websocket):
-	global rooms, used_port, used_id, django_socket
+	global rooms, used_port, used_id
 	for room in rooms.values():
 		if room.id == id:
 			async with websockets.connect("wss://{}:{}".format(room.host, room.port), ssl=ssl_context_client) as gameSocket:
@@ -289,13 +299,8 @@ async def handle_quickGame(client_msg, websocket):
 
 
 async def parse_msg(message, websocket):
-	global django_socket
 	client_msg : dict = json.loads(message)
 
-	if client_msg["type"] == "DJANGO":
-		django_socket = websocket
-	if client_msg["type"] == "connectionRpl":
-		await connection_handler(client_msg, websocket)
 	if client_msg["type"] == "connect":
 		await connection_handler(client_msg, websocket)
   
