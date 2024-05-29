@@ -156,6 +156,12 @@ async def run_game(id, websocket):
 							await send_to_DB(msg)
 							break
 
+				except websockets.exceptions.ConnectionClosedOK:
+					print(f"Game room {id} closed connection", file=sys.stderr, flush=True)
+     
+				except websockets.exceptions.ConnectionClosedError:
+					print(f"Game room {id} connection error", file=sys.stderr, flush=True)
+
 				finally:
 					if id in rooms.keys():
 						del rooms[room.id]

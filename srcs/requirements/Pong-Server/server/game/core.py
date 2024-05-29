@@ -256,10 +256,10 @@ async def parse_msg(msg : dict, websocket):
 	global game
 	if msg['type'] == 'create':
 		if game.hub:
-			game.hub.add(websocket)
+			game.hub.append(websocket)
 		else:
-			game.hub = set()
-			game.hub.add(websocket)	
+			game.hub = []
+			game.hub.append(websocket)	
 			game.id = msg['Room_id']
 			if msg['cmd'] == 'quickGame':
 				game.initQuickGame()
