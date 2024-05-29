@@ -12,6 +12,7 @@ class Tournament :
 		self.timer = [5, time.time()]
 		self.state = 'waiting'
 		self.nb_match = nb_players - 1
+		self.save = []
   
 	async def initPlayers(self, players):
 		self.players = {}
@@ -53,17 +54,24 @@ class Tournament :
 		for player, state in self.players.items():
 			if state != "(LOSE)" and state != "(LEFT)":
 				self.players[player] = "(WIN)"
-				winner = player.nb
+				winner = player.name
 				break
 		self.state = "end"
 		await core.sendAll(self.stateMsg("EndTournament"))
-		if core: 
-			msg = {"type" : "endGame", "winner" : winner, "players" : self.max_players} #replace with names ? send match list
+		if core:
+			msg = {"type" : "endGame", "winner" : winner, "players" : [player.name for player in self.players.keys()], "matches" : self.save, "online" : True}
 			await core.hub[0].send(json.dumps(msg))
 			core.is_running = False
 			await core.closeAll()
+
+	def saveMatch(self, players):
+		match = []
+		for player in players:
+			match.append({'id' : player.nb, 'username' : player.name, 'score' : player.score, 'win' : player.win == 'WIN'})
    
-	async def endMatch(self, players, core, reason = "end"): #each match save to send -> match : (user, score, winner?) x nb_players
+		self.save.append(match)
+
+	async def endMatch(self, players, core, reason = "end"):
 		self.nb_match -= 1
 		for player in players:
 			for p in self.players.keys():
@@ -73,6 +81,8 @@ class Tournament :
 					elif self.players[p] != "(LEFT)":
 						self.players[p] = "(SPEC)"
 					break
+ 
+		self.saveMatch(players)
  
 		self.match_index += 1
 		self.oddPlayersMatch()

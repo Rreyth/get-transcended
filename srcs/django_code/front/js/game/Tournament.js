@@ -37,6 +37,7 @@ export class Tournament {
 		this.players = new Map();
 		if (creator)
 			this.players.set(creator, "(SPEC)");
+		this.save = [];
 	}
 
 	initPlayers(players) {
@@ -92,16 +93,27 @@ export class Tournament {
 		for (const [p, state] of this.players) {
 			if (state != "(LOSE)" && state != "(LEFT)") {
 				this.players.set(p, "(WIN)");
-				winner = p.nb;
+				winner = p.name;
 				break;
 			}
 		}
 		this.state = "end";
 		if (core) {
-			//send names (local can change names)
-			const msg = {"type" : "endGame", "winner" : winner, "players" : this.max_players};
+			let names = [];
+			for (const [player] of this.players)
+				names.push(player.name);
+			const msg = {"type" : "endGame", "winner" : winner, "players" : names, "matches" : this.save, "online" : false};
 			core.GameHub.send(JSON.stringify(msg));
 		}
+	}
+
+	saveMatch(players) {
+		let match = [];
+		for (const player of players) {
+			match.push({'id' : player.nb, 'username' : player.name, 'score' : player.score, 'win' : player.win == 'WIN'});
+		}
+
+		this.save.push(match);
 	}
 
 	endMatch(players) {
@@ -117,6 +129,9 @@ export class Tournament {
 				}
 			}
 		}
+
+		this.saveMatch(players);
+
 		this.match_index++;
 		if ((this.match_index in this.matches) && (this.matches[this.match_index].length === 1)) {
 			for (let player of this.matches[this.match_index - 1]) {

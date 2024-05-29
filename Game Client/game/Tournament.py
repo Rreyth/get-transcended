@@ -37,6 +37,7 @@ class Tournament:
 		self.players = {}
 		if creator:
 			self.players[creator] = "(SPEC)"
+		self.save = []
    
 	async def initPlayers(self, players):
 		self.players = {}
@@ -79,13 +80,20 @@ class Tournament:
 		for player, state in self.players.items():
 			if state != "(LOSE)" and state != "(LEFT)":
 				self.players[player] = "(WIN)"
-				winner = player.nb
+				winner = player.name
 				break
 		self.state = "end"
-		if core: 
-			msg = {"type" : "endGame", "winner" : winner, "players" : self.max_players}
+		if core:
+			msg = {"type" : "endGame", "winner" : winner, "players" : [player.name for player in self.players.keys()], "matches" : self.save, "online" : False}
 			await core.GameHub.send(json.dumps(msg))
-   
+
+	def saveMatch(self, players):
+		match = []
+		for player in players:
+			match.append({'id' : player.nb, 'username' : player.name, 'score' : player.score, 'win' : player.win == 'WIN'})
+		
+		self.save.append(match)
+
 	def endMatch(self, players):
 		self.nb_match -= 1
 		for player in players:
@@ -96,6 +104,8 @@ class Tournament:
 					else:
 						self.players[p] = "(SPEC)"
 					break
+		
+		self.saveMatch(players)
  
 		self.match_index += 1
 		self.oddPlayersMatch()
