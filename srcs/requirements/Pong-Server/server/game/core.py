@@ -80,14 +80,17 @@ class Game:
 		self.tournament = Tournament(msg['mods'], msg['players'], msg['ai'], msg['score'])
 
     
-	def endMsg(self, id, reason = 'end'): #match : (user, score, winner?) x nb_players
+	def endMsg(self, id, reason = 'end'):
 		msg = {'type' : 'endGame'}
 		if id != 0:
 			for player in self.players:
 				player.win = 'LOSE' if player.side == self.players[id - 1].side else 'WIN'
-		msg['players'] = [player.name for player in self.players]
-		msg['score'] = [player.score for player in self.players]
-		msg['win'] = [player.win for player in self.players]
+
+		msg['match'] = []
+		for player in self.players:
+			msg['match'].append({'id' : player.nb, 'username' : player.name, 'score' : player.score, 'win' : player.win == 'WIN'})
+
+		msg['online'] = True
 		msg['reason'] = reason
 		return msg
  

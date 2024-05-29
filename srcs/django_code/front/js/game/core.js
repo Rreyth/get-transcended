@@ -34,10 +34,13 @@ export class Game {
 
 	endMsg(reason = "end") {
 		let msg = {"type" : "endGame"};
-		if (this.players) {
-			msg["score"] = this.players.map(player => player.score);
-			msg["win"] = this.players.map(player => player.win);
+		
+		msg["match"] = [];
+		for (let player of this.players){
+			msg["match"].push({'id' : player.nb, 'username' : player.name, 'score' : player.score, 'win' : (player.win === "WIN")});
 		}
+
+		msg["online"] = false;
 		msg["reason"] = reason;
 		return msg;
 	}

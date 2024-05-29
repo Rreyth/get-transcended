@@ -191,9 +191,9 @@ function parse_msg(event) {
 			}
 			return;
 		}
-		for (let i = 0; i < game.players.length; i++) {
-			game.players[i].win = msg.win[i];
-			game.players[i].score = msg.score[i];
+		for (let player of msg.match) {
+			game.players[player.id - 1].win = (player.win) ? "WIN" : "LOSE";
+			game.players[player.id - 1].score = player.score;
 		}
 		if (game.state != "menu")
 			game.state = "end";

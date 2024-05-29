@@ -47,9 +47,12 @@ class Game:
 			
 	def endMsg(self, reason = 'end'):
 		msg = {'type' : 'endGame'}
-		if self.players:
-			msg['score'] = [player.score for player in self.players]
-			msg['win'] = [player.win for player in self.players]
+
+		msg['match'] = []
+		for player in self.players:
+			msg['match'].append({'id' : player.nb, 'username' : player.name, 'score' : player.score, 'win' : player.win == 'WIN'})
+   
+		msg['online'] = False
 		msg['reason'] = reason
 		return msg
    
