@@ -17,7 +17,7 @@ export class Game {
 		this.players = false;
 		this.alias = "ALIAS";
 		this.inputs = {};
-		this.customs = false;
+		this.customs = [];
 	}
 
 	start(websocket) {

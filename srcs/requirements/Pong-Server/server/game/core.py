@@ -32,7 +32,7 @@ class Game:
 
 		self.obstacle = False
 		self.square = False
-		self.customs = False
+		self.customs = []
 		self.tournament = False
 
     

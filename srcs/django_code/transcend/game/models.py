@@ -14,11 +14,11 @@ class Match(models.Model):
 
 	users = models.ManyToManyField(User, related_name="match", related_query_name="match", through='Player')
 
-	def addWinner(self, player: User):
-		Player.objects.create(user=player, match=self, win=True)
+	def addWinner(self, player: User, score):
+		Player.objects.create(user=player, match=self, score=score, win=True)
 	
-	def addLooser(self, player: User):
-		Player.objects.create(user=player, match=self, win=False)
+	def addLooser(self, player: User, score):
+		Player.objects.create(user=player, match=self, score=score, win=False)
    
 	def getWinners(self):
 		return self.users.filter(player__win=True, match=self)

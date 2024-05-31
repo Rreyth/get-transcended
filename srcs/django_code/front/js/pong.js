@@ -262,7 +262,7 @@ function parse_msg(event) {
 				game.square = msg.custom_mods.includes("1V1V1V1");
 				game.start_screen = new StartScreen(msg.mode, game.online, msg.custom_mods.includes("1V1V1V1"), wait_nb);
 			}
-			game.customs = (msg.custom_mods.length > 0) ? msg.custom_mods : false;
+			game.customs = msg.custom_mods;
 		}
 	}
 	else if (msg.type == "GameRoom") {

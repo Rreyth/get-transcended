@@ -42,7 +42,7 @@ class Menu:
 	
  
 	async def setValues(self, name, core):
-		core.customs = False
+		core.customs = []
 		core.square = False
 		core.obstacle = False
 		if name == 'JOIN':

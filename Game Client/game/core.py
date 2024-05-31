@@ -27,7 +27,7 @@ class Game:
 		self.tournament = False
 
 	def start(self, websocket):
-		self.customs = False
+		self.customs = []
 		self.max_score = 10
 		self.ai = []
 		self.pressed = []

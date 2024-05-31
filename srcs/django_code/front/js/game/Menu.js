@@ -48,7 +48,7 @@ export class Menu {
 
 	setValues(name, core) {
 		core.square = false;
-		core.customs = false;
+		core.customs = [];
 		core.obstacle = false;
 		if (name === "JOIN") {
 			if (this.buttons[5].name.length === 0) {
