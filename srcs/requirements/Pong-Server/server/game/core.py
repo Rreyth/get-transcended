@@ -31,7 +31,8 @@ class Game:
 		self.ai = []
 
 		self.obstacle = False
-		self.custom_mod = False
+		self.square = False
+		self.customs = False
 		self.tournament = False
 
     
@@ -43,6 +44,7 @@ class Game:
 		self.walls = [Wall("up", False), Wall("down", False)]
     
 	def initCustom(self, msg : dict):
+		self.customs = msg['mods']
 		self.requiered = msg['players']
 		self.ball = Ball("BORDERLESS" in msg['mods'])
 		self.players = []
@@ -57,7 +59,7 @@ class Game:
 			self.obstacle = Obstacle()
 		self.walls = False
 		if "1V1V1V1" in msg['mods']:
-			self.custom_mod = "1V1V1V1"
+			self.square = True
 			self.walls = [Wall("up", True), Wall("down", True), Wall("left", True), Wall("right", True)]
 		elif "BORDERLESS" not in msg['mods']:
 			self.walls = [Wall("up", False), Wall("down", False)]
@@ -85,12 +87,14 @@ class Game:
 		if id != 0:
 			for player in self.players:
 				player.win = 'LOSE' if player.side == self.players[id - 1].side else 'WIN'
-
+		msg['mode'] = "custom" if self.customs else "QuickGame"
 		msg['match'] = []
 		for player in self.players:
 			msg['match'].append({'id' : player.nb, 'username' : player.name, 'score' : player.score, 'win' : player.win == 'WIN'})
 
 		msg['online'] = True
+		msg['customs'] = self.customs
+		msg['score'] = self.max_score
 		msg['reason'] = reason
 		return msg
  

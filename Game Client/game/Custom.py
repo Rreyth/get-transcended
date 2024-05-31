@@ -117,6 +117,7 @@ class CustomMenu:
 			return
 		self.getMods(core.alias)
 		core.max_score = self.score
+		core.customs = self.mod_list
 		if "LOCAL" in self.mod_list:
 			self.initPlayers(core)
 			self.initWalls(core)
@@ -138,9 +139,9 @@ class CustomMenu:
 			core.online = True
 			core.wait_screen = WaitScreen(response['ID'], core.id, self.players.__len__(), "CUSTOM")
 		if "1V1V1V1" in self.mod_list:
-			core.custom_mod = "1V1V1V1"
+			core.square = True
 
-		core.start_screen = StartScreen('custom', core.online, True if "1V1V1V1" in self.mod_list else False, self.players.__len__())
+		core.start_screen = StartScreen('custom', core.online, core.square, self.players.__len__())
 
 	def getMods(self, alias = 'Player'):
 		self.mod_list = []

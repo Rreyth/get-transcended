@@ -102,7 +102,8 @@ export class Tournament {
 			let names = [];
 			for (const [player] of this.players)
 				names.push(player.name);
-			const msg = {"type" : "endGame", "winner" : winner, "players" : names, "matches" : this.save, "online" : false};
+			const msg = {"type" : "endGame", "mode" : "tournament", "winner" : winner, "players" : names, "matches" : this.save,
+						"online" : false, "customs" : this.mods, "score" : this.max_score};
 			core.GameHub.send(JSON.stringify(msg));
 		}
 	}

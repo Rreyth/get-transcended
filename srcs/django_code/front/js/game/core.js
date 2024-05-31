@@ -17,6 +17,7 @@ export class Game {
 		this.players = false;
 		this.alias = "ALIAS";
 		this.inputs = {};
+		this.customs = false;
 	}
 
 	start(websocket) {
@@ -34,13 +35,15 @@ export class Game {
 
 	endMsg(reason = "end") {
 		let msg = {"type" : "endGame"};
-		
+		msg["mode"] = (this.customs) ? "custom" : "QuickGame";
 		msg["match"] = [];
 		for (let player of this.players){
 			msg["match"].push({'id' : player.nb, 'username' : player.name, 'score' : player.score, 'win' : (player.win === "WIN")});
 		}
 
 		msg["online"] = false;
+		msg["customs"] = this.customs;
+		msg["score"] = this.max_score;
 		msg["reason"] = reason;
 		return msg;
 	}

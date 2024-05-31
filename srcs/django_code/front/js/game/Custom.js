@@ -131,6 +131,7 @@ export class CustomMenu {
 			return;
 		this.getMods(core.alias);
 		core.max_score = this.score;
+		core.customs = this.mod_list;
 		if (this.mod_list.includes("LOCAL")) {
 			this.initPlayers(core);
 			this.initWalls(core);
@@ -148,9 +149,9 @@ export class CustomMenu {
 			core.online = true;
 		}
 		if (this.mod_list.includes("1V1V1V1"))
-			core.custom_mod = "1V1V1V1";
+			core.square = true;
 
-		core.start_screen = new StartScreen("custom", core.online, (this.mod_list.includes("1V1V1V1")) ? true : false, Object.keys(this.players).length);
+		core.start_screen = new StartScreen("custom", core.online, core.square, Object.keys(this.players).length);
 	}
 
 	getMods(alias = "Player") {

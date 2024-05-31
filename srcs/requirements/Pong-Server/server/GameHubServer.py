@@ -66,12 +66,15 @@ forbiden_port = [8000, 8001, 44433, 5432, 6720]
 clients = {}
 registered = {}
 client_id = 0
+SECRET_KEY = os.getenv("SECRET")
 
-async def send_to_DB(msg : dict): #match : (user, score, winner?) x nb_players      #tournament : winner, loosers, matchList
+async def send_to_DB(msg : dict):
 	print(msg, file=sys.stderr, flush=True)
-	#add players infos + send to main serv for db
-	#add tournament end
-	#request (same as user login)
+	headers = {'Content-Type' : 'application/json'}
+	msg['secret'] = SECRET_KEY
+	payload = json.dumps(msg)
+	url = BASE_URL + 'game/'
+	requests.request("POST", url, headers=headers, data=payload, verify=False)
 
 async def full_room(id, websocket):
 	global rooms

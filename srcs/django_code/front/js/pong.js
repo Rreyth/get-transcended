@@ -259,9 +259,10 @@ function parse_msg(event) {
 			else {
 				game.state = "waiting";
 				wait_nb = msg.max;
-				game.custom_mod = msg.custom_mods.includes("1V1V1V1") ? "1V1V1V1" : false;
+				game.square = msg.custom_mods.includes("1V1V1V1");
 				game.start_screen = new StartScreen(msg.mode, game.online, msg.custom_mods.includes("1V1V1V1"), wait_nb);
 			}
+			game.customs = (msg.custom_mods.length > 0) ? msg.custom_mods : false;
 		}
 	}
 	else if (msg.type == "GameRoom") {

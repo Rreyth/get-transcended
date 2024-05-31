@@ -84,7 +84,8 @@ class Tournament:
 				break
 		self.state = "end"
 		if core:
-			msg = {"type" : "endGame", "winner" : winner, "players" : [player.name for player in self.players.keys()], "matches" : self.save, "online" : False}
+			msg = {"type" : "endGame", "mode" : "tournament", "winner" : winner, "players" : [player.name for player in self.players.keys()],
+          			"matches" : self.save, "online" : False, "customs" : self.mods, "score" : self.max_score}
 			await core.GameHub.send(json.dumps(msg))
 
 	def saveMatch(self, players):

@@ -27,6 +27,7 @@ class Game:
 		self.tournament = False
 
 	def start(self, websocket):
+		self.customs = False
 		self.max_score = 10
 		self.ai = []
 		self.pressed = []
@@ -47,12 +48,13 @@ class Game:
 			
 	def endMsg(self, reason = 'end'):
 		msg = {'type' : 'endGame'}
-
+		msg['mode'] = "custom" if self.customs else "QuickGame"
 		msg['match'] = []
 		for player in self.players:
 			msg['match'].append({'id' : player.nb, 'username' : player.name, 'score' : player.score, 'win' : player.win == 'WIN'})
-   
 		msg['online'] = False
+		msg['customs'] = self.customs
+		msg['score'] = self.max_score
 		msg['reason'] = reason
 		return msg
    

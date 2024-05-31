@@ -59,7 +59,8 @@ class Tournament :
 		self.state = "end"
 		await core.sendAll(self.stateMsg("EndTournament"))
 		if core:
-			msg = {"type" : "endGame", "winner" : winner, "players" : [player.name for player in self.players.keys()], "matches" : self.save, "online" : True}
+			msg = {"type" : "endGame", "mode" : "tournament", "winner" : winner, "players" : [player.name for player in self.players.keys()],
+          			"matches" : self.save, "online" : True, "customs" : self.mods, "score" : self.max_score}
 			await core.hub[0].send(json.dumps(msg))
 			core.is_running = False
 			await core.closeAll()

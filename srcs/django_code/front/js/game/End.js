@@ -10,7 +10,7 @@ export class End {
 	}
 
 	draw(core, score) {
-		if (core.custom_mod === "1V1V1V1") {
+		if (core.square) {
 			this.drawSquare(core, score);
 			this.button = new Button("BACK TO MENU", canvas.width * 0.77, canvas.height * 0.85, this.size[0], this.size[1]);
 		}
