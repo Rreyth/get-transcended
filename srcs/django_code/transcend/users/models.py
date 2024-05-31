@@ -26,6 +26,10 @@ class User(AbstractBaseUser):
 	created_at = models.DateTimeField(default=timezone.now)
 	updated_at = models.DateTimeField(default=timezone.now)
  
+	wins = models.IntegerField(default=0)
+	games = models.IntegerField(default=0)
+	winrate = models.IntegerField(default=0)
+ 
 	objects = UserProfileManager()
  
 	USERNAME_FIELD = 'username'

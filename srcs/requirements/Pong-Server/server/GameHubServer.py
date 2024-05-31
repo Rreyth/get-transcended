@@ -69,7 +69,8 @@ client_id = 0
 SECRET_KEY = os.getenv("SECRET")
 
 async def send_to_DB(msg : dict):
-	print(msg, file=sys.stderr, flush=True)
+	if not msg['online']:
+		return
 	headers = {'Content-Type' : 'application/json'}
 	msg['secret'] = SECRET_KEY
 	payload = json.dumps(msg)

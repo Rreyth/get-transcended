@@ -34,12 +34,16 @@ class GameStorageView(APIView):
 		match = Match.objects.create(mode=mode, online=online, score=score, borderless=is_borderless, obstacle=has_obstacle, square=is_square)
 		for player in players:
 			user = User.objects.get(username=player['username'])
+			user.games += 1
 			if player['win']:
+				user.wins += 1
 				match.addWinner(user, player['score'])
 			else:
 				match.addLooser(user, player['score'])
+			user.winrate = int((user.wins / user.games) * 100)
+			user.save()
 		return match
-			
+
 
 	def TournamentStorage(self, data):
 		is_borderless = 'BORDERLESS' in data['customs']
