@@ -27,7 +27,7 @@ urlpatterns = [
     path('api/user/', UserView.as_view()),
     path('api/user/friends/', FriendView.as_view()),
     path('api/user/friends/requests/', FriendRequestsView.as_view()),
-    path('api/user/friends/requests/<int:friend_request>', FriendRequestView.as_view()),
+    path('api/user/friends/requests/<int:request_id>', FriendRequestView.as_view()),
     path('api/user/dm/<int:user>', DMView.as_view()),
     path('api/register/', RegisterUserView.as_view()),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

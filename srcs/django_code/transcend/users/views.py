@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from users.models import User, FriendRequest
-from .serializer import UserSerializer
+from .serializer import UserSerializer, FriendRequestSerializer
 from django.db.models import Q
 
 class RegisterUserView(APIView):
@@ -60,15 +60,15 @@ class FriendRequestsView(APIView):
         received = FriendRequest.objects.filter(to_user=request.user)
         send = FriendRequest.objects.filter(from_user=request.user)
 
-        return Response({send: send, received: received}, status=status.HTTP_200_OK)
+        return Response({'send': FriendRequestSerializer(send, fields=('id', 'to_user'), many=True).data, 'received': FriendRequestSerializer(received, fields=('id', 'from_user'), many=True).data}, status=status.HTTP_200_OK)
 
 class FriendRequestView(APIView):
     permission_classes = (IsAuthenticated,)
     parser_classes = [JSONParser, MultiPartParser, FormParser]
 
-    def post(self, request, requestId):
+    def post(self, request, request_id):
         try:
-            friendRequest = FriendRequest.objects.get(pk=id)
+            friendRequest = FriendRequest.objects.get(pk=request_id)
 
             if friendRequest.to_user == request.user:
                 friendRequest.to_user.friends.add(friendRequest.from_user)
@@ -82,9 +82,9 @@ class FriendRequestView(APIView):
         except FriendRequest.DoesNotExist:
             return Response({'message': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
     
-    def delete(self, request, requestId):
+    def delete(self, request, request_id):
         try:
-            friendRequest = FriendRequest.objects.get(pk=id)
+            friendRequest = FriendRequest.objects.get(pk=request_id)
 
             if friendRequest.from_user == request.user:
                 friendRequest.delete()
