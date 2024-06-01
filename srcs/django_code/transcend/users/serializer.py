@@ -1,7 +1,28 @@
 from rest_framework import serializers
-from .models import User
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from .models import User, FriendRequest
 
-class UserProfileSerializer(serializers.ModelSerializer):
+class DynamicFieldsModelSerializer(serializers.ModelSerializer):
+    """
+    A ModelSerializer that takes an additional `fields` argument that
+    controls which fields should be displayed.
+    """
+
+    def __init__(self, *args, **kwargs):
+        # Don't pass the 'fields' arg up to the superclass
+        fields = kwargs.pop('fields', None)
+
+        # Instantiate the superclass normally
+        super(DynamicFieldsModelSerializer, self).__init__(*args, **kwargs)
+
+        if fields is not None:
+            # Drop any fields that are not specified in the `fields` argument.
+            allowed = set(fields)
+            existing = set(self.fields)
+            for field_name in existing - allowed:
+                self.fields.pop(field_name)
+
+class UserSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'email', 'username', 'password', 'avatar', 'created_at')
@@ -10,3 +31,22 @@ class UserProfileSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         return user
+    
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        token['id'] = user.id
+        token['username'] = user.username
+        token['avatar'] = user.avatar
+
+        return token
+
+class FriendRequestSerializer(DynamicFieldsModelSerializer):
+    from_user = UserSerializer(read_only=True)
+    to_user = UserSerializer(read_only=True)
+    
+    class Meta:
+        model = FriendRequest
+        fields = ('id', 'from_user', 'to_user')

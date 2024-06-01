@@ -1,10 +1,9 @@
 import { Component } from "./component.js"
 import { Router } from "./router.js";
 import { Navbar } from "../components/navbar.js";
-import { Minichat } from "../components/minichat/minichat.js";
+import { Chat } from "../components/chat.js";
 import { Message } from "../components/minichat/message.js";
 import { Friend } from "../components/minichat/friend.js";
-import { ChatInput } from "../components/minichat/input.js";
 import { Clock } from "../components/clock.js";
 import { Login } from "../components/sign/login.js";
 import { SSign } from "../components/sign/switchSign.js";
@@ -14,10 +13,9 @@ import { Search } from "../components/navbar/search.js";
 
 Component.loader([
 	Navbar,
-	Minichat,
 	Message,
 	Friend,
-	ChatInput,
+	Chat,
 	Clock,
 	Login,
 	SSign,
@@ -31,21 +29,18 @@ const navigateTo = url => {
 	Router.run()
 };
 
-window.addEventListener("popstate", Router.run());
+window.addEventListener("popstate", (e) => {
+	Router.run()
+});
 
 document.addEventListener("DOMContentLoaded", () => {
 	document.body.addEventListener("click", e => {
 		if (e.target.localName == "a" && e.target.id != 1){
 			e.preventDefault();
+			console.log("test")
 			navigateTo(e.target.href);
 		}
 	});
+
+	Router.run()
 });
-
-const socket = new WebSocket('wss://localhost:44433/api/chat')
-
-socket.onmessage = event => {
-	const data = JSON.parse(event.data);
-
-	console.log("data")
-};

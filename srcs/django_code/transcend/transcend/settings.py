@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-zbpkg$%q^w(@20v+%r%4h-o^gj82q+$9t2q6k%tovw%wj(j5zt
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'transcendence.fr']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'nginx']
 
 
 # Application definition
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 	'myapp',
     'users',
+    'chat',
     'channels',
     'rest_framework_simplejwt.token_blacklist',
     'rest_framework',
@@ -185,7 +186,8 @@ SIMPLE_JWT = {
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'TOKEN_TYPE_CLAIM': 'token_type',
     'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
-
+    'TOKEN_OBTAIN_SERIALIZER': "users.serializer.CustomTokenObtainPairSerializer",
+    
     'JTI_CLAIM': 'jti',
 
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',

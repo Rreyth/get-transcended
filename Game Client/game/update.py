@@ -18,6 +18,11 @@ async def update_all(core, delta):
 				core.state = "end"
 				player.win = "WIN"
 			player.update(delta)
+		
+		if core.state == 'end' and core.tournament and not core.online:
+			core.state = 'tournament'
+			core.tournament.endMatch(core.players)
+  
 		if core.state == "end" and not core.online:
 			await core.GameHub.send(json.dumps(core.endMsg('end')))
 
@@ -26,3 +31,6 @@ async def update_all(core, delta):
 			core.start_screen.update()
 		if core.start_screen.timer == 0:
 			core.state = "game"
+   
+	if core.state == 'tournament'and not core.online:
+		await core.tournament.update(core)

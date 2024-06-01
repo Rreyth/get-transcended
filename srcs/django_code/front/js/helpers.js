@@ -40,7 +40,8 @@ export const user_token = async () => {
 export const api = async (path, method, formdata, token = null) => {
 	const url = `https://${location.hostname}:${location.port}/api${path}`;
 	const myHeader = new Headers();
-	
+
+    myHeader.append("Content-Type", "application/json");
 	myHeader.append("Authorization", `Bearer ${token}`);
 	let requestOptions = {
 			method: method,
@@ -73,10 +74,10 @@ export const user = async () => {
 }
 
 export const auth = async (username, password) => {
-    const response = await api('/token/', 'POST', {
+    const response = await api('/token/', 'POST', JSON.stringify({
         username: username,
         password: password
-    })
+    }))
 
     if (response.ok)
     {

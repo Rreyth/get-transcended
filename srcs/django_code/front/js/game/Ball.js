@@ -198,6 +198,7 @@ export class Ball {
 			else
 				this.dir = 270;
 		}
+		this.last_hit = this.stick;
 		this.stick = 0;
 		this.multiplier = 1.0;
 	}

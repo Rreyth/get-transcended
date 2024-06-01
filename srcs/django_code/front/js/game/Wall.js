@@ -7,6 +7,7 @@ export class Wall {
 		this.size = [canvas.width, canvas.height * 0.0075];
 		this.pos = pos;
 		this.square = square;
+		this.spec = false;
 
 		if (!square) {
 			if (pos == "up") {
@@ -47,6 +48,7 @@ export class Wall {
 	}
 
 	responsive() {
+		this.spec = false;
 		this.size = [canvas.width, canvas.height * 0.0075];
 		if (this.square) {
 			if (this.pos == "up")
