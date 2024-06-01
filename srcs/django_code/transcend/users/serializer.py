@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import User
+from .models import User, FriendRequest
 
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
     """
@@ -42,3 +42,11 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['avatar'] = user.avatar
 
         return token
+
+class FriendRequestSerializer(DynamicFieldsModelSerializer):
+    from_user = UserSerializer(read_only=True)
+    to_user = UserSerializer(read_only=True)
+    
+    class Meta:
+        model = FriendRequest
+        fields = ('id', 'from_user', 'to_user')
