@@ -35,13 +35,17 @@ function connect_loop() {
 let game = new Game();
 let gameInterval;
 
-window.addEventListener('keydown', (event) => {
+const keydown_event = (event) => {
     game.inputs[event.key] = true;
-});
+};
 
-window.addEventListener('keyup', (event) => {
+window.addEventListener('keydown', keydown_event);
+
+const keyup_event = (event) => {
     delete game.inputs[event.key];
-});
+};
+
+window.addEventListener('keyup', keyup_event);
 
 canvas.addEventListener('wheel', (event) => {
 	if (game.state === "tournament") {
@@ -304,3 +308,9 @@ function resize_all() {
 	resize_canvas();
 	update_sizes(game, old_sizes);
 }
+
+window.addEventListener("ThreadClearEvent", function(event) {
+	window.removeEventListener("resize", resize_all);
+	window.removeEventListener('keydown', keydown_event);
+	window.removeEventListener('keyup', keyup_event);
+});
