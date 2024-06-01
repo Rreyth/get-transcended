@@ -313,7 +313,6 @@ function resize_all() {
 }
 
 export async function reset() {
-	game = new Game();
 	window.addEventListener('keydown', keydown_event);
 	window.addEventListener('keyup', keyup_event);
 	window.addEventListener("resize", resize_all);
@@ -326,7 +325,6 @@ export async function reset() {
 	} catch (error) {
 	}
 	token = await user_token();
-	let GameHub = false;
 }
 
 window.addEventListener("ThreadClearEvent", function(event) {
