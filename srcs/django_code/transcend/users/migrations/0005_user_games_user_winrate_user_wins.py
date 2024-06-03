@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0002_user_friends'),
+        ('users', '0004_alter_user_friends_friendrequest_delete_friend'),
     ]
 
     operations = [
