@@ -1,12 +1,10 @@
-version: '3'
-
 services:
   postgres:
     image: postgres:latest
     container_name: postgres
     restart: always
     volumes:
-      - db:/db
+      - db:/var/lib/postgresql/data
     expose:
       - '5432'
     networks:
@@ -82,11 +80,7 @@ volumes:
       type: none
       device: ./django_code
   db:
-    driver: local
     name: db
-    driver_opts:
-      o: bind
-      type: none
 
 networks:
   transcendNetwork:
