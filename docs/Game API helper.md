@@ -16,7 +16,7 @@ send:
 {
 	"type"		: "connect",
 	"cmd" 		: "token",
-	"token"	: <token>,
+	"token"		: <token>,
 }
 ```
 ### Reply:
