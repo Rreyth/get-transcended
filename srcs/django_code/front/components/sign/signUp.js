@@ -12,6 +12,8 @@ export class SignUp extends Component {
 		const inputEmail = this.querySelector("#input-email");
 		const inputPass = this.querySelector("#input-pass");
 		const inputUser = this.querySelector("#input-user");
+		const imgBtn = this.querySelector("#addimg-btn");
+		let file;
 
 		inputUser.addEventListener("input", (e) => {
 			if (e.target.value.length > lengthUserMax)
@@ -22,17 +24,6 @@ export class SignUp extends Component {
 			else
 				removeError(inputUser, "popover-user");
 		})
-		inputUser.addEventListener("blur", (e) => {
-			const responseUser = "swotex";
-			if (responseUser === e.target.value)
-			{
-				inputUser.style.color = "#a51221";
-				createPopover(e.target, "popover-user", "Le nom d'utilisateur existe deja");
-			}
-			else if (e.target.value.length <= lengthUserMax)
-				removeError(inputUser, "popover-user");
-		})
-
 
 		inputEmail.addEventListener("input", (e) => {
 			const inputRect = inputEmail.getBoundingClientRect();
@@ -58,23 +49,22 @@ export class SignUp extends Component {
 			{
 				inputEmail.value = e.target.innerHTML;
 				dropdownMenu.classList.remove('show');
-				if (emailIsAlreadyUsed(inputEmail.value))
+				if (!emailIsValid(inputEmail.value) && inputEmail.value != "")
 				{
 					inputEmail.style.color = '#a51221';
-					createPopover(inputEmail, "popover-email", "Le mail existe deja");
-
+					createPopover(inputEmail, "popover-email", "mal formater"); //pb avec le dropdown click
 				}
-			}
+				else
+					removeError(inputEmail, "popover-email");
+				}
 		});
 
 		inputEmail.addEventListener("blur", (e) => {
-			if (emailIsAlreadyUsed(inputEmail.value))
-			{
-				inputEmail.style.color = '#a51221';
-				createPopover(inputEmail, "popover-email", "Le mail existe deja");
-
-			}
-			else if (!emailIsValid(inputEmail.value) && inputEmail.value != "")
+			// if (dropdownMenu.classList.contains('dropdown-item'))
+			// {
+				// dropdownMenu.classList.remove('show');
+			// }
+			if (!emailIsValid(inputEmail.value) && inputEmail.value != "")
 			{
 				inputEmail.style.color = '#a51221';
 				createPopover(inputEmail, "popover-email", "mal formater"); //pb avec le dropdown click
@@ -103,13 +93,27 @@ export class SignUp extends Component {
 			else
 				removeError(inputPass, "popover-pass");
 		});
+		
+		imgBtn.addEventListener("click", (e) => {
+			document.getElementById('fileInput').click();
+		})
+
+		document.getElementById('fileInput').onchange = evt =>
+		{
+			document.getElementById("profile-img").src = "/media/frank.svg";
+			file = document.getElementById('fileInput').files[0];
+			if (file)
+			{
+				document.getElementById("profile-img").src = URL.createObjectURL(file);
+			}
+		}
 
 		this.querySelector("#singup-btn").addEventListener("click", async (e) => {
-			registerUser(inputUser.value, inputEmail.value,inputPass.value);
+			registerUser(inputUser.value, inputEmail.value,inputPass.value, file);
 		});
 		this.addEventListener('keydown', (e) => {
 			if (e.key === 'Enter')
-				registerUser(inputUser.value, inputEmail.value,inputPass.value);
+				registerUser(inputUser.value, inputEmail.value,inputPass.value, file);
 		})
     }
 }
@@ -123,7 +127,7 @@ const passPopoverContent = /* html */ `
 
 `;
 
-async function registerUser(username, email, password)
+async function registerUser(username, email, password, file)
 {
 	if (!emailIsValid(email))
 		return;
@@ -131,14 +135,38 @@ async function registerUser(username, email, password)
 		return;
 	else if (username > lengthUserMax)
 		return;
+	// if (!file)
+		// console.log("hey")
 	const data = new FormData();
 	data.append("username", username);
 	data.append("email", email);
 	data.append("password", password);
+	if (file)
+		data.append("avatar", file);
 	const response = await api("/register/", "POST", data);
-	const token = (await response.json()).access;
-	cookieStore.set({name: 'token', value: token});
-	location.reload();
+	// add verification of response (print error alert)
+	const res = (await response.json());
+	if (res.username || res.email)
+	{
+		if (res.username && !res.email)
+			document.querySelector("#alert-id").innerHTML = "username is already used";
+		else if (!res.username && res.email)
+			document.querySelector("#alert-id").innerHTML = "email is already used";
+		else
+			document.querySelector("#alert-id").innerHTML = "username and email are already used";
+		document.querySelector("#alert-id").classList.add("show");
+	}
+	else if (res.access)
+	{
+		document.querySelector("#alert-id").classList.remove("show");
+		cookieStore.set({name: 'token', value: res.access});
+		location.reload();
+	}
+	else
+	{
+		document.querySelector("#alert-id").innerHTML = "Internal error, try later";
+		document.querySelector("#alert-id").classList.add("show");
+	}
 }
 
 function removeError(input, popover)
@@ -169,7 +197,7 @@ function createPopover(target, name, content)
 	}
 }
 
-function setPopoverContent (className, newContent)
+function setPopoverContent(className, newContent)
 {
 	const popoverElement = document.querySelector('.' + className);
     if (popoverElement)
@@ -204,18 +232,6 @@ function passwordCheck(password)
 	return (errorTest);
 }
 
-function emailIsAlreadyUsed (tryEmail) {
-
-	const responseUser = true;
-
-	if (tryEmail === "swotex@gmail.com")
-		return (true);
-	else
-		return (false);
-
-	return (responseUser);
-}
-
 
 const lengthUserMax = 10;
 
@@ -223,14 +239,17 @@ const content = /*html*/`
 	<div class="d-flex align-self-center" id="sing-up-form">
 		<div class="form-group flex-column d-flex row-gap-5">
 
-			<div class="d-flex align-self-center justify-center align-items-center rounded-circle bg-secondary p-2" style="width: 10em; height: 10em;">
-				<svg xmlns="http://www.w3.org/2000/svg" width="144" height="144" viewBox="0 0 24 24" style="fill: rgba(210, 210, 210, 1);msFilter:;"><path d="M12 2c-4.963 0-9 4.038-9 9v8h.051c.245 1.691 1.69 3 3.449 3 1.174 0 2.074-.417 2.672-1.174a3.99 3.99 0 0 0 5.668-.014c.601.762 1.504 1.188 2.66 1.188 1.93 0 3.5-1.57 3.5-3.5V11c0-4.962-4.037-9-9-9zm7 16.5c0 .827-.673 1.5-1.5 1.5-.449 0-1.5 0-1.5-2v-1h-2v1c0 1.103-.897 2-2 2s-2-.897-2-2v-1H8v1c0 1.845-.774 2-1.5 2-.827 0-1.5-.673-1.5-1.5V11c0-3.86 3.141-7 7-7s7 3.14 7 7v7.5z"></path><circle cx="9" cy="10" r="2"></circle><circle cx="15" cy="10" r="2"></circle></svg>
-				<div class="position-absolute d-flex justify-content-center align-items-center rounded-circle bg-danger" style="transform: translate(600%, 270%); width: 1.3em; height: 1.3em;">
+			<div class="position-relative d-flex align-self-center justify-content-center align-items-center rounded-circle bg-secondary p-2" id="addimg-btn" style="width: 10em; height: 10em; cursor:pointer;">
+				<img class="rounded-circle" id="profile-img" src="/media/frank.svg" style="width: 10em; height: 10em;" />
+				<div class="position-absolute d-flex justify-content-center align-items-center rounded-circle bg-primary p-1" style="right:0.3em; bottom:0.3em;">
 					<i class='bx bx-plus bx-sm' style="transform: translate(1%, 4%);"></i>
 				</div>
 				</div>
 
 			<div class="flex-column d-flex row-gap-4">
+				<div class="alert alert-danger collapse" id="alert-id" role="alert">
+					error msg
+				</div>
 				<input class="form-control" id="input-user" type="text" placeholder="Username">
 				<input class="form-control" id="input-email" type="email" placeholder="Email">
 				<div class="dropdown-menu" id="dropdownMenu">
@@ -242,6 +261,7 @@ const content = /*html*/`
 		</div>
 		</div>
 		<div class="red-popover" id="popover-container"></div>
+		<input type="file" id="fileInput" name="profile_picture" accept="image/*" style="display: none;" />
 	<style>
     /* Style CSS pour le Popover rouge */
     .red-popover .popover {

@@ -6,14 +6,13 @@ from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from users.models import User, FriendRequest
 from .serializer import UserSerializer, FriendRequestSerializer
 from django.db.models import Q
+from rest_framework_simplejwt.tokens import RefreshToken
 
-import sys
 class RegisterUserView(APIView):
     parser_classes = [JSONParser, MultiPartParser, FormParser]
     def post(self, request):
         
         serializer = UserSerializer(data=request.data)
-        
         if serializer.is_valid():
             user = serializer.save()
             refresh = RefreshToken.for_user(user)
