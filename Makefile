@@ -3,6 +3,7 @@ DC := docker compose -f srcs/docker-compose.yml
 all: up
 
 up:
+	mkdir -p ~/db_transcendence
 	$(DC) up --build
 
 down:
