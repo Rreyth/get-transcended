@@ -10,6 +10,13 @@ import { Ball } from "./Ball.js";
 import { AI } from "./AI.js";
 import { Wall } from "./Wall.js";
 
+const img = new Image();
+img.src = "/static/js/game/tournament_end.jpg";
+img.width = canvas.width * 0.3;
+img.height = canvas.height * 0.467;
+
+const audio = new Audio("/static/js/game/tournament_end.mp3");
+
 export class Tournament {
 	constructor(mods, nb_players, nb_ai, max_score, online, creator) {
 		this.id = 1234;
@@ -37,6 +44,7 @@ export class Tournament {
 		this.players = new Map();
 		if (creator)
 			this.players.set(creator, "(SPEC)");
+		this.save = [];
 	}
 
 	initPlayers(players) {
@@ -92,16 +100,29 @@ export class Tournament {
 		for (const [p, state] of this.players) {
 			if (state != "(LOSE)" && state != "(LEFT)") {
 				this.players.set(p, "(WIN)");
-				winner = p.nb;
+				winner = p.name;
 				break;
 			}
 		}
 		this.state = "end";
 		if (core) {
-			//send names (local can change names)
-			const msg = {"type" : "endGame", "winner" : winner, "players" : this.max_players};
+			let names = [];
+			for (const [player] of this.players)
+				names.push(player.name);
+			const msg = {"type" : "endGame", "mode" : "tournament", "winner" : winner, "players" : names, "matches" : this.save,
+						"online" : false, "customs" : this.mods, "score" : this.max_score};
 			core.GameHub.send(JSON.stringify(msg));
 		}
+		audio.play();
+	}
+
+	saveMatch(players) {
+		let match = [];
+		for (const player of players) {
+			match.push({'id' : player.nb, 'username' : player.name, 'score' : player.score, 'win' : player.win == 'WIN'});
+		}
+
+		this.save.push(match);
 	}
 
 	endMatch(players) {
@@ -117,6 +138,9 @@ export class Tournament {
 				}
 			}
 		}
+
+		this.saveMatch(players);
+
 		this.match_index++;
 		if ((this.match_index in this.matches) && (this.matches[this.match_index].length === 1)) {
 			for (let player of this.matches[this.match_index - 1]) {
@@ -307,6 +331,7 @@ export class Tournament {
 			this.state = "end";
 			core.GameRoom.close();
 			core.GameRoom = false;
+			audio.play();
 		}
 		core.state = "tournament";
 		this.timer[0] = 5;
@@ -359,8 +384,8 @@ export class Tournament {
 			this.specDraw(core);
 		}
 		else if (this.state === "end") {
+			ctx.drawImage(img, canvas.width / 2 - (img.width / 2) , canvas.height / 2 - (img.height / 2), img.width, img.height);
 			ctx.fillText("WINNER", canvas.width / 2, canvas.height * 0.3);
-			ctx.fillText("(insert img ?)", canvas.width / 2, canvas.height * 0.5); //TODO
 			for (const [player, state] of this.players) {
 				if (state === "(WIN)") {
 					ctx.fillText(player.name, canvas.width / 2, canvas.height * 0.7);
@@ -490,5 +515,7 @@ export class Tournament {
 		}
 		const spec_size = [canvas.width  * 0.65, canvas.height * 0.65];
 		this.spec_screen = new Button("", (canvas.width / 2) - (spec_size[0] / 2), (canvas.height / 2) - (spec_size[1] / 2), spec_size[0], spec_size[1], true);
+		img.width = canvas.width * 0.3;
+		img.height = canvas.height * 0.467;
 	}
 }

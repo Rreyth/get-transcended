@@ -26,7 +26,7 @@ def render_text(core, nb_players):
 		text = [core.font.render(score, True, (255, 255, 255)), core.font.render(names[0], True, (255, 255, 255)), core.font.render(names[1], True, (255, 255, 255))]
 		pos = [((winWidth / 2) - (text[0].get_size()[0] / 2), textDist), (0, textDist), (winWidth - text[2].get_size()[0], textDist)]
 	
-	elif core.custom_mod == "1V1V1V1":
+	elif core.square:
 		color = (128, 128, 128) if core.obstacle else (224, 224, 224)
 
 		text = [core.font.render(str(core.players[0].score), True, color),
@@ -91,7 +91,7 @@ def render_end(core):
 	
 	if core.players.__len__() == 2:
 		score = [core.players[0].score, core.players[1].score]
-	elif core.players.__len__() == 4 and core.custom_mod != "1V1V1V1":
+	elif core.players.__len__() == 4 and not core.square:
 		score = [core.players[0].score, core.players[2].score]
 	else:
 		score = [core.players[0].score, core.players[1].score, core.players[2].score, core.players[3].score]

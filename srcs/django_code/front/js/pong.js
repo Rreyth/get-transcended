@@ -1,4 +1,4 @@
-import { canvas, ctx, resize_canvas } from "./game/canvas.js";
+import { canvas, ctx, resize_canvas, reset_canvas } from "./game/canvas.js";
 import { Game } from "./game/core.js";
 import { Vec2 } from "./game/Vec2.js";
 import { Player } from "./game/Player.js";
@@ -26,7 +26,7 @@ function connect_loop() {
 		connect_last = tmp;
 		timer -= 1;
 	}
-	if (timer === -1) {
+	if (timer <= -1) {
 		clearInterval(loginInterval);
 		connect_hub();
 	}
@@ -35,15 +35,19 @@ function connect_loop() {
 let game = new Game();
 let gameInterval;
 
-window.addEventListener('keydown', (event) => {
+const keydown_event = (event) => {
     game.inputs[event.key] = true;
-});
+};
 
-window.addEventListener('keyup', (event) => {
+window.addEventListener('keydown', keydown_event);
+
+const keyup_event = (event) => {
     delete game.inputs[event.key];
-});
+};
 
-canvas.addEventListener('wheel', (event) => {
+window.addEventListener('keyup', keyup_event);
+
+const wheel_event = (event) => {
 	if (game.state === "tournament") {
 		if (event.deltaY > 0)
 			game.tournament.scroll("down");
@@ -56,7 +60,9 @@ canvas.addEventListener('wheel', (event) => {
 		else 
 			game.tournament_names.scroll("up");
 	}
-});
+};
+
+canvas.addEventListener('wheel', wheel_event);
 
 canvas.addEventListener("click", game.mouse_input);
 
@@ -66,14 +72,14 @@ function game_loop() {
 	game.render();
 }
 
+let user_infos;
 try {
-	const user_infos = await user();
+	user_infos = await user();
 	game.alias = user_infos.username;
-	game.avatar = user_infos.avatar
 } catch (error) {
 }
 
-const token = await user_token();
+let token = await user_token();
 
 function try_connect(GameHub) {
 	const msg = {"type" : "connect", "cmd" : "token", "token" : token};
@@ -191,9 +197,9 @@ function parse_msg(event) {
 			}
 			return;
 		}
-		for (let i = 0; i < game.players.length; i++) {
-			game.players[i].win = msg.win[i];
-			game.players[i].score = msg.score[i];
+		for (let player of msg.match) {
+			game.players[player.id - 1].win = (player.win) ? "WIN" : "LOSE";
+			game.players[player.id - 1].score = player.score;
 		}
 		if (game.state != "menu")
 			game.state = "end";
@@ -259,9 +265,10 @@ function parse_msg(event) {
 			else {
 				game.state = "waiting";
 				wait_nb = msg.max;
-				game.custom_mod = msg.custom_mods.includes("1V1V1V1") ? "1V1V1V1" : false;
+				game.square = msg.custom_mods.includes("1V1V1V1");
 				game.start_screen = new StartScreen(msg.mode, game.online, msg.custom_mods.includes("1V1V1V1"), wait_nb);
 			}
+			game.customs = msg.custom_mods;
 		}
 	}
 	else if (msg.type == "GameRoom") {
@@ -296,6 +303,7 @@ function parse_msg(event) {
 	}
 }
 
+
 window.addEventListener("resize", resize_all);
 
 function resize_all() {
@@ -303,3 +311,26 @@ function resize_all() {
 	resize_canvas();
 	update_sizes(game, old_sizes);
 }
+
+export async function reset() {
+	window.addEventListener('keydown', keydown_event);
+	window.addEventListener('keyup', keyup_event);
+	window.addEventListener("resize", resize_all);
+	reset_canvas();
+	canvas.addEventListener('wheel', wheel_event);
+	canvas.addEventListener("click", game.mouse_input);
+	try {
+		user_infos = await user();
+		game.alias = user_infos.username;
+	} catch (error) {
+	}
+	token = await user_token();
+}
+
+window.addEventListener("ThreadClearEvent", function(event) {
+	window.removeEventListener("resize", resize_all);
+	window.removeEventListener('keydown', keydown_event);
+	window.removeEventListener('keyup', keyup_event);
+	canvas.removeEventListener('wheel', wheel_event);
+	canvas.removeEventListener("click", game.mouse_input);
+});

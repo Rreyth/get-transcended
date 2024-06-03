@@ -28,7 +28,6 @@ services:
       - transcendNetwork
     depends_on:
       - postgres
-      - pong
     env_file:
       - .env
 
@@ -59,8 +58,8 @@ services:
       - transcendNetwork
     volumes:
       - app:/app
-    depends_on:
-      - nginx
+    env_file:
+      - .env
 
   adminer:
     image: adminer:latest

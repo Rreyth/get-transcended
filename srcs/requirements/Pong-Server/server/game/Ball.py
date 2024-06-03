@@ -94,8 +94,8 @@ class Ball:
 		self.move(core.players, core.walls, core.obstacle)
 		self.collide(core.walls, core.players, core.obstacle)
 		if not self.ai_hitbox:
-			self.goal(core.players, core.custom_mod)
-		self.unstuck(core.custom_mod)
+			self.goal(core.players, core.square)
+		self.unstuck(core.square)
 
 		if self.borderless:
 			if self.center[0].y < 0:
@@ -108,7 +108,7 @@ class Ball:
 			self.center[2].y = self.center[0].y + winHeight
 
 	def unstuck(self, mod):
-		if mod == "1V1V1V1":
+		if mod:
 			return
 		if round(self.dir) % 360 in range(85, 96) or round(self.dir) % 360 in range(-275, -264):
 			if (self.last_hit == 1):
@@ -130,7 +130,7 @@ class Ball:
 						players[1].score += 1
 					else:
 						players[0].score += 1
-				elif mod == "1V1V1V1":
+				elif mod:
 					if player.nb == self.last_hit:
 						player.score -= 1
 					elif self.last_hit:

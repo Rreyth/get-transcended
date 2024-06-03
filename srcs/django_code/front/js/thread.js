@@ -1,3 +1,9 @@
+const ThreadClearEvent = new CustomEvent('ThreadClearEvent', {
+	detail: {
+		message: 'All threads cleared'
+	}
+});
+
 export class Thread 
 {
     static threads = []
@@ -21,5 +27,6 @@ export class Thread
         this.threads.forEach(item => {
             clearInterval(item)
         })
+		window.dispatchEvent(ThreadClearEvent);
     }
 }

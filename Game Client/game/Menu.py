@@ -42,7 +42,8 @@ class Menu:
 	
  
 	async def setValues(self, name, core):
-		core.custom_mod = False
+		core.customs = []
+		core.square = False
 		core.obstacle = False
 		if name == 'JOIN':
 			if self.buttons[5].name.__len__() == 0:
@@ -70,8 +71,9 @@ class Menu:
 				else:
 					core.state = "waiting"
 					wait_nb = response['max']
-					core.custom_mod = "1V1V1V1" if "1V1V1V1" in response['custom_mods'] else False
-					core.start_screen = StartScreen(response['mode'], core.online, True if "1V1V1V1" in response['custom_mods'] else False, wait_nb)
+					core.square = "1V1V1V1" in response['custom_mods']
+					core.start_screen = StartScreen(response['mode'], core.online, core.square, wait_nb)
+				core.customs = response['custom_mods'] if response['custom_mods'].__len__() > 0 else False
 
 		if name == self.buttons[5].name:
 			self.buttons[5].highlight = not self.buttons[5].highlight
