@@ -17,6 +17,7 @@ export class Game {
 		this.players = false;
 		this.alias = "ALIAS";
 		this.inputs = {};
+		this.customs = [];
 	}
 
 	start(websocket) {
@@ -34,10 +35,15 @@ export class Game {
 
 	endMsg(reason = "end") {
 		let msg = {"type" : "endGame"};
-		if (this.players) {
-			msg["score"] = this.players.map(player => player.score);
-			msg["win"] = this.players.map(player => player.win);
+		msg["mode"] = (this.customs) ? "custom" : "QuickGame";
+		msg["match"] = [];
+		for (let player of this.players){
+			msg["match"].push({'id' : player.nb, 'username' : player.name, 'score' : player.score, 'win' : (player.win === "WIN")});
 		}
+
+		msg["online"] = false;
+		msg["customs"] = this.customs;
+		msg["score"] = this.max_score;
 		msg["reason"] = reason;
 		return msg;
 	}
@@ -47,6 +53,8 @@ export class Game {
 			input.escape_handler(this);
 		if (this.state === "menu" && this.menu.buttons[5].highlight)
 			input.input_id(this, this.menu.buttons[5], this.inputs);
+		else if (this.state === "tournament names")
+			this.tournament_names.input(this.inputs);
 		else
 			input.input_handler(this, this.inputs);
 	}
@@ -92,5 +100,7 @@ export class Game {
 			render.render_pause(this);
 		else if (this.state === "game")
 			render.render_game(this);
+		else if (this.state === "tournament menu" || this.state === "tournament" || this.state === "tournament names")
+			render.tournament(this);
 	}
 }

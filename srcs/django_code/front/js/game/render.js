@@ -27,7 +27,7 @@ function render_text(core, nb_players) {
 				[canvas.width * names_pos[0], canvas.height * 0.03],
 				[canvas.width * (1 - names_pos[1]), canvas.height * 0.03]);
 	}
-	else if (core.custom_mod == "1V1V1V1") {
+	else if (core.square) {
 		color = (core.obstacle) ? "rgb(128, 128, 128)" : "rgb(224, 224, 224)";
 		for (let player of core.players) {
 			text.push(player.score);
@@ -90,7 +90,7 @@ export function render_end(core) {
 	let score = [];
 	if (len == 2)
 		score.push(core.players[0].score, core.players[1].score);
-	else if (core.custom_mod == "1V1V1V1")
+	else if (core.square)
 		score.push(core.players[0].score, core.players[1].score, core.players[2].score, core.players[3].score);
 	else
 		score.push(core.players[0].score, core.players[2].score);
@@ -113,4 +113,17 @@ export function render_wait(core) {
 export function render_custom(core) {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	core.custom_menu.draw();
+}
+
+export function tournament(core) {
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	if (core.state === "tournament menu") {
+		core.tournament_menu.draw();
+		return;
+	}
+	if (core.state === "tournament names") {
+		core.tournament_names.draw();
+		return;
+	}
+	core.tournament.draw(core);
 }

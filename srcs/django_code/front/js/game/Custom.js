@@ -37,7 +37,7 @@ export class CustomMenu {
 	draw() {
 		ctx.fillText("CUSTOM", canvas.width / 2, canvas.height * 0.1);
 		for (let b of this.down_buttons)
-		b.draw();
+			b.draw();
 		ctx.font = Math.floor(canvas.height * 0.06) + "px pong-teko";
 		ctx.fillText("MAX SCORE = " + this.score, canvas.width / 3, canvas.height / 4 * 3);
 		ctx.fillText("AI OPPONENTS = " + this.ai_nb, canvas.width / 3 * 2, canvas.height / 4 * 3);
@@ -131,6 +131,7 @@ export class CustomMenu {
 			return;
 		this.getMods(core.alias);
 		core.max_score = this.score;
+		core.customs = this.mod_list;
 		if (this.mod_list.includes("LOCAL")) {
 			this.initPlayers(core);
 			this.initWalls(core);
@@ -148,9 +149,9 @@ export class CustomMenu {
 			core.online = true;
 		}
 		if (this.mod_list.includes("1V1V1V1"))
-			core.custom_mod = "1V1V1V1";
+			core.square = true;
 
-		core.start_screen = new StartScreen("custom", core.online, (this.mod_list.includes("1V1V1V1")) ? true : false, Object.keys(this.players).length);
+		core.start_screen = new StartScreen("custom", core.online, core.square, Object.keys(this.players).length);
 	}
 
 	getMods(alias = "Player") {
@@ -249,5 +250,7 @@ export class CustomMenu {
 				new Button("+", canvas.width * 0.435, canvas.height / 4 * 3 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
 				new Button("-", canvas.width * 0.755, canvas.height / 4 * 3 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03),
 				new Button("+", canvas.width * 0.775, canvas.height / 4 * 3 - (canvas.height * 0.025), canvas.width * 0.015, canvas.height * 0.03)];
+		this.players_buttons[1].highlight = true;
+		this.mod_buttons[0].highlight = true;
 	}
 }

@@ -9,16 +9,18 @@ import { CustomMenu } from "./Custom.js";
 import { Button } from "./Button.js";
 import { Vec2 } from "./Vec2.js";
 import { is_colliding } from "./Hitbox.js";
+import { TournamentMenu } from "./TournamentMenu.js";
 
 export class Menu {
 	constructor() {
 		this.button_size = [canvas.width * 0.1, canvas.height * 0.1];
 		this.buttons = [new Button("SOLO", (canvas.width / 3) - (this.button_size[0] / 2), (canvas.height / 2) - this.button_size[1], this.button_size[0], this.button_size[1]),
-				  new Button("LOCAL", (canvas.width / 3 * 2) - (this.button_size[0] / 2), (canvas.height / 2) - this.button_size[1], this.button_size[0], this.button_size[1]),
-				  new Button("ONLINE", (canvas.width / 3) - (this.button_size[0] / 2), (canvas.height / 3 * 2), this.button_size[0], this.button_size[1]),
-				  new Button("CUSTOM", (canvas.width / 3 * 2) - (this.button_size[0] / 2), (canvas.height / 3 * 2), this.button_size[0], this.button_size[1]),
-				  new Button("JOIN", (canvas.width * 0.01), (canvas.height * 0.875), this.button_size[0], this.button_size[1]),
-				  new Button("", (canvas.width * 0.12), (canvas.height * 0.875), this.button_size[0], this.button_size[1])];
+					new Button("LOCAL", (canvas.width / 3 * 2) - (this.button_size[0] / 2), (canvas.height / 2) - this.button_size[1], this.button_size[0], this.button_size[1]),
+					new Button("ONLINE", (canvas.width / 3) - (this.button_size[0] / 2), (canvas.height / 3 * 2), this.button_size[0], this.button_size[1]),
+					new Button("CUSTOM", (canvas.width / 3 * 2) - (this.button_size[0] / 2), (canvas.height / 3 * 2), this.button_size[0], this.button_size[1]),
+					new Button("JOIN", (canvas.width * 0.01), (canvas.height * 0.875), this.button_size[0], this.button_size[1]),
+					new Button("", (canvas.width * 0.12), (canvas.height * 0.875), this.button_size[0], this.button_size[1]),
+					new Button("TOURNAMENT", (canvas.width * 0.815), (canvas.height * 0.875), this.button_size[0] * 1.75, this.button_size[1])];
 		this.err = false;
 	}
 
@@ -40,12 +42,13 @@ export class Menu {
 	click(core, mousePos) {
 		const pos = new Vec2(mousePos[0], mousePos[1]);
 		for (let b of this.buttons)
-			if (is_colliding(pos, [0, 0], b.hitbox.pos, this.button_size))
+			if (is_colliding(pos, [0, 0], b.hitbox.pos, [b.width, b.height]))
 				this.setValues(b.name, core);
 	}
 
 	setValues(name, core) {
-		core.custom_mod = false;
+		core.square = false;
+		core.customs = [];
 		core.obstacle = false;
 		if (name === "JOIN") {
 			if (this.buttons[5].name.length === 0) {
@@ -78,13 +81,24 @@ export class Menu {
 		if (name === "CUSTOM") {
 			core.custom_menu = new CustomMenu();
 			core.state = "custom";
+			this.buttons[5].name = "";
+			this.buttons[5].highlight = false;
+			this.err = false;
 		}
 		if (name === "ONLINE") {
 			const msg = {"type" : "quickGame", "cmd" : "join", "online" : "true"};
 			core.GameHub.send(JSON.stringify(msg));
 		}
+		if (name === "TOURNAMENT") {
+			core.tournament_menu = new TournamentMenu();
+			core.state = "tournament menu";
+			this.buttons[5].name = "";
+			this.buttons[5].highlight = false;
+			this.err = false;
+		}
 		if (core.mode != "none") {
 			this.buttons[5].name = "";
+			this.buttons[5].highlight = false;
 			this.err = false;
 			if (!core.start_screen)
 				core.start_screen = new StartScreen(core.mode, core.online);
@@ -100,6 +114,7 @@ export class Menu {
 				  new Button("ONLINE", (canvas.width / 3) - (this.button_size[0] / 2), (canvas.height / 3 * 2), this.button_size[0], this.button_size[1]),
 				  new Button("CUSTOM", (canvas.width / 3 * 2) - (this.button_size[0] / 2), (canvas.height / 3 * 2), this.button_size[0], this.button_size[1]),
 				  new Button("JOIN", (canvas.width * 0.01), (canvas.height * 0.875), this.button_size[0], this.button_size[1]),
-				  new Button("", (canvas.width * 0.12), (canvas.height * 0.875), this.button_size[0], this.button_size[1])];
+				  new Button("", (canvas.width * 0.12), (canvas.height * 0.875), this.button_size[0], this.button_size[1]),
+				  new Button("TOURNAMENT", (canvas.width * 0.815), (canvas.height * 0.875), this.button_size[0] * 1.75, this.button_size[1])];
 	}
 }

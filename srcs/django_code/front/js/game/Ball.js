@@ -100,8 +100,8 @@ export class Ball {
 		this.move(core.players, core.walls, core.obstacle);
 		this.collide(core.walls, core.players, core.obstacle);
 		if (!this.ai_hitbox)
-			this.goal(core.players, core.custom_mod);
-		this.unstuck(core.custom_mod);
+			this.goal(core.players, core.square);
+		this.unstuck(core.square);
 
 		if (this.borderless) {
 			if (this.center[0].y < 0)
@@ -121,7 +121,7 @@ export class Ball {
 	}
 
 	unstuck(mod) {
-		if (mod === "1V1V1V1")
+		if (mod)
 			return;
 		if ((Math.round(this.dir) % 360 >= 85 && Math.round(this.dir) % 360 <= 95) || (Math.round(this.dir) % 360 >= -275 && Math.round(this.dir) % 360 <= -265)) {
 			if (this.last_hit == 1)
@@ -149,7 +149,7 @@ export class Ball {
 					else
 						players[0].score += 1;
 				}
-				else if (mod === "1V1V1V1") {
+				else if (mod) {
 					if (player.nb == this.last_hit)
 						player.score -= 1;
 					else if (this.last_hit)
@@ -198,6 +198,7 @@ export class Ball {
 			else
 				this.dir = 270;
 		}
+		this.last_hit = this.stick;
 		this.stick = 0;
 		this.multiplier = 1.0;
 	}

@@ -16,6 +16,10 @@ export function update_all(core, delta) {
 			}
 			player.update(delta);
 		}
+		if (core.state === "end" && core.tournament && !core.online) {
+			core.state = "tournament";
+			core.tournament.endMatch(core.players);
+		}
 		if (core.state == "end" && !core.online)
 			core.GameHub.send(JSON.stringify(core.endMsg("end")));
 	}
@@ -25,6 +29,9 @@ export function update_all(core, delta) {
 			core.start_screen.update();
 		if (core.start_screen.timer === 0)
 			core.state = "game";
+	}
+	if (core.state === "tournament" && !core.online) {
+		core.tournament.update(core);
 	}
 }
 
@@ -51,5 +58,14 @@ export function update_sizes(core, old_sizes) {
 			wall.responsive();
 	if (core.obstacle)
 		core.obstacle.responsive();
+	if (core.tournament_menu)
+		core.tournament_menu.responsive();
+	if (core.tournament) {
+		core.tournament.responsive(old_sizes);
+		if (core.tournament.state === "ongoing" && core.state === "tournament")
+			core.tournament.resizeSpec(core);
+	if (core.tournament_names)
+		core.tournament_names.responsive(old_sizes);
+	}
 	core.render();
 }

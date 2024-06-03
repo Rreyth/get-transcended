@@ -26,12 +26,12 @@ def render_text(core, nb_players):
 		text = [core.font.render(score, True, (255, 255, 255)), core.font.render(names[0], True, (255, 255, 255)), core.font.render(names[1], True, (255, 255, 255))]
 		pos = [((winWidth / 2) - (text[0].get_size()[0] / 2), textDist), (0, textDist), (winWidth - text[2].get_size()[0], textDist)]
 	
-	elif core.custom_mod == "1V1V1V1":
+	elif core.square:
 		color = (128, 128, 128) if core.obstacle else (224, 224, 224)
 
 		text = [core.font.render(str(core.players[0].score), True, color),
-            	core.font.render(str(core.players[1].score), True, color),
-             	core.font.render(str(core.players[2].score), True, color),
+				core.font.render(str(core.players[1].score), True, color),
+			 	core.font.render(str(core.players[2].score), True, color),
 			  	core.font.render(str(core.players[3].score), True, color)]
 
 		for player in core.players:
@@ -45,7 +45,7 @@ def render_text(core, nb_players):
 				[(winWidth / 2) - (text[1].get_size()[0] / 2) + 135, (winHeight / 2) - (text[1].get_size()[1] /2)],
 				[(winWidth / 2) - (text[2].get_size()[0] / 2), (winHeight / 2) - 160],
 				[(winWidth / 2) - (text[3].get_size()[0] / 2), (winHeight / 2) + 165 - text[3].get_size()[1]],
-    			[(winWidth / 2) - (text[4].get_size()[0] / 2) - 60, (winHeight / 2) - (text[4].get_size()[1] /2)],
+				[(winWidth / 2) - (text[4].get_size()[0] / 2) - 60, (winHeight / 2) - (text[4].get_size()[1] /2)],
 				[(winWidth / 2) - (text[5].get_size()[0] / 2) + 60, (winHeight / 2) - (text[5].get_size()[1] /2)],
 				[(winWidth / 2) - (text[6].get_size()[0] / 2), (winHeight / 2) - 95],
 				[(winWidth / 2) - (text[7].get_size()[0] / 2), (winHeight / 2) + 100  - text[7].get_size()[1]]]
@@ -63,10 +63,10 @@ def render_text(core, nb_players):
 		for name in names:
 			text.append(core.font.render(name, True, (255, 255, 255)))
 		pos = [((winWidth / 2) - (text[0].get_size()[0] / 2), textDist),
-         	(0, textDist),
+		 	(0, textDist),
 			(text[1].get_size()[0] + 25, textDist),
-          	(winWidth - text[2].get_size()[0], textDist),
-           	(winWidth - (text[2].get_size()[0] * 2) - 25, textDist)]
+		  	(winWidth - text[2].get_size()[0], textDist),
+		   	(winWidth - (text[2].get_size()[0] * 2) - 25, textDist)]
 
 	for i in range(text.__len__()):
 		core.win.blit(text[i], pos[i])
@@ -91,7 +91,7 @@ def render_end(core):
 	
 	if core.players.__len__() == 2:
 		score = [core.players[0].score, core.players[1].score]
-	elif core.players.__len__() == 4 and core.custom_mod != "1V1V1V1":
+	elif core.players.__len__() == 4 and not core.square:
 		score = [core.players[0].score, core.players[2].score]
 	else:
 		score = [core.players[0].score, core.players[1].score, core.players[2].score, core.players[3].score]
@@ -116,3 +116,12 @@ def render_custom(core):
 	core.win.fill((0, 0, 0))
 	
 	core.custom_menu.draw(core.win)
+ 
+def render_tournament(core):
+	core.win.fill((0, 0, 0))
+	if core.state == 'tournament menu':
+		core.tournament_menu.draw(core.win)
+	elif core.state == 'tournament names':
+		core.tournament_names.draw(core.win)
+	else:
+		core.tournament.draw(core, core.win)

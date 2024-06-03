@@ -15,9 +15,6 @@ class Ball:
 		self.stick = 0
 		self.side = "none"
 		self.launch()
-  
-		self.multiplier = 1.0
-		self.last_hit = 0
 
 
 	def copy(self, ai_hitbox = False):
@@ -41,13 +38,13 @@ class Ball:
 				if player.nb == self.stick:
 					self.side = player.side
 					if player.side == "left":
-						self.center[0] = Vec2((player.paddle[0].pos.x + (player.size[0] / 2)) + 25, player.paddle[0].pos.y + (player.size[1] / 2))
+						self.center[0] = Vec2((player.paddle[0].pos.x + (player.size[0] / 2)) + (self.radius * 4), player.paddle[0].pos.y + (player.size[1] / 2))
 					if player.side == "right":
-						self.center[0] = Vec2((player.paddle[0].pos.x + (player.size[0] / 2)) - 25, player.paddle[0].pos.y + (player.size[1] / 2))
+						self.center[0] = Vec2((player.paddle[0].pos.x + (player.size[0] / 2)) - (self.radius * 4), player.paddle[0].pos.y + (player.size[1] / 2))
 					if player.side == "up":
-						self.center[0] = Vec2(player.paddle[0].pos.x + (player.size[0] / 2), (player.paddle[0].pos.y + (player.size[1] / 2)) + 25)
+						self.center[0] = Vec2(player.paddle[0].pos.x + (player.size[0] / 2), (player.paddle[0].pos.y + (player.size[1] / 2)) + (self.radius * 4))
 					if player.side == "down":
-						self.center[0] = Vec2(player.paddle[0].pos.x + (player.size[0] / 2), (player.paddle[0].pos.y + (player.size[1] / 2)) - 25)
+						self.center[0] = Vec2(player.paddle[0].pos.x + (player.size[0] / 2), (player.paddle[0].pos.y + (player.size[1] / 2)) - (self.radius * 4))
 			return
 
 		rad = radians(self.dir)
@@ -97,8 +94,8 @@ class Ball:
 		self.move(core.players, core.walls, core.obstacle)
 		self.collide(core.walls, core.players, core.obstacle)
 		if not self.ai_hitbox:
-			self.goal(core.players, core.custom_mod)
-		self.unstuck(core.custom_mod)
+			self.goal(core.players, core.square)
+		self.unstuck(core.square)
 
 		if self.borderless:
 			if self.center[0].y < 0:
@@ -111,7 +108,7 @@ class Ball:
 			self.center[2].y = self.center[0].y + winHeight
 
 	def unstuck(self, mod):
-		if mod == "1V1V1V1":
+		if mod:
 			return
 		if round(self.dir) % 360 in range(85, 96) or round(self.dir) % 360 in range(-275, -264):
 			if (self.last_hit == 1):
@@ -133,7 +130,7 @@ class Ball:
 						players[1].score += 1
 					else:
 						players[0].score += 1
-				elif mod == "1V1V1V1":
+				elif mod:
 					if player.nb == self.last_hit:
 						player.score -= 1
 					elif self.last_hit:
@@ -175,7 +172,8 @@ class Ball:
 				self.dir = 90
 			elif self.side == "down":
 				self.dir = 270
-	  
+    
+		self.last_hit = self.stick
 		self.multiplier = 1.0
 		self.stick = 0
   

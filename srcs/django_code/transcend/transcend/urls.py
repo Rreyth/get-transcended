@@ -15,8 +15,9 @@ Including another URLconf
 """
 from django.urls import path
 from myapp import views
-from users.views import RegisterUserView, UserView, FriendView
+from users.views import RegisterUserView, UserView, FriendView, FriendRequestsView, FriendRequestView
 from chat.views import DMView
+from game.views import GameStorageView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -26,8 +27,11 @@ urlpatterns = [
     path('auth/42/', views.auth_42, name='auth_42'),
     path('api/user/', UserView.as_view()),
     path('api/user/friends/', FriendView.as_view()),
+    path('api/user/friends/requests/', FriendRequestsView.as_view()),
+    path('api/user/friends/requests/<int:request_id>', FriendRequestView.as_view()),
     path('api/user/dm/<int:user>', DMView.as_view()),
     path('api/register/', RegisterUserView.as_view()),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/game/', GameStorageView.as_view())
 ]

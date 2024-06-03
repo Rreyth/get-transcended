@@ -10,7 +10,9 @@ from Player import *
 from Wall import *
 from Ball import *
 from update import *
+from AI import *
 from Obstacle import *
+from Tournament import *
 
 ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 ssl_context.load_cert_chain("/certs/cert.pem")
@@ -29,7 +31,9 @@ class Game:
 		self.ai = []
 
 		self.obstacle = False
-		self.custom_mod = False
+		self.square = False
+		self.customs = []
+		self.tournament = False
 
     
 	def initQuickGame(self):
@@ -40,11 +44,12 @@ class Game:
 		self.walls = [Wall("up", False), Wall("down", False)]
     
 	def initCustom(self, msg : dict):
+		self.customs = msg['mods']
 		self.requiered = msg['players']
-		self.ball = Ball(True if "BORDERLESS" in msg['mods'] else False)
+		self.ball = Ball("BORDERLESS" in msg['mods'])
 		self.players = []
 		for i in range(msg['players']):
-			self.players.append(Player(i + 1, "Player{}".format(i + 1) if msg['ai'] < msg['players'] - i else 'AI', msg['players'], True if "BORDERLESS" in msg['mods'] else False, True if "1V1V1V1" in msg['mods'] else False))
+			self.players.append(Player(i + 1, "Player{}".format(i + 1) if msg['ai'] < msg['players'] - i else 'AI', msg['players'], "BORDERLESS" in msg['mods'], "1V1V1V1" in msg['mods']))
 		for player in self.players:
 			if player.name == 'AI':
 				self.ai.append(AI(player))
@@ -54,10 +59,27 @@ class Game:
 			self.obstacle = Obstacle()
 		self.walls = False
 		if "1V1V1V1" in msg['mods']:
-			self.custom_mod = "1V1V1V1"
+			self.square = True
 			self.walls = [Wall("up", True), Wall("down", True), Wall("left", True), Wall("right", True)]
 		elif "BORDERLESS" not in msg['mods']:
 			self.walls = [Wall("up", False), Wall("down", False)]
+
+
+	def initTournament(self, msg : dict):
+		self.requiered = msg['players']
+		self.ball = Ball("BORDERLESS" in msg['mods'])
+		self.players = []
+		for i in range(msg['players']):
+			self.players.append(Player(i + 1, "Player{}".format(i + 1) if msg['ai'] < msg['players'] - i else 'AI', msg['players'], "BORDERLESS" in msg['mods'], False))
+		for player in self.players:
+			if player.name == 'AI':
+				self.ai.append(AI(player))
+
+		self.max_score = msg['score']
+		self.walls = False
+		if "BORDERLESS" not in msg['mods']:
+			self.walls = [Wall("up", False), Wall("down", False)]
+		self.tournament = Tournament(msg['mods'], msg['players'], msg['ai'], msg['score'])
 
     
 	def endMsg(self, id, reason = 'end'):
@@ -65,9 +87,14 @@ class Game:
 		if id != 0:
 			for player in self.players:
 				player.win = 'LOSE' if player.side == self.players[id - 1].side else 'WIN'
-		msg['players'] = [player.name for player in self.players]
-		msg['score'] = [player.score for player in self.players]
-		msg['win'] = [player.win for player in self.players]
+		msg['mode'] = "custom" if self.customs else "QuickGame"
+		msg['match'] = []
+		for player in self.players:
+			msg['match'].append({'id' : player.nb, 'username' : player.name, 'score' : player.score, 'win' : player.win == 'WIN'})
+
+		msg['online'] = True
+		msg['customs'] = self.customs
+		msg['score'] = self.max_score
 		msg['reason'] = reason
 		return msg
  
@@ -92,12 +119,15 @@ class Game:
 	async def closeAll(self):
 		for client in self.clients.values():
 			await client.close()
-		await self.hub.close()
+		for hub in self.hub:
+			await hub.close()
  
 	async def sendUpdate(self):
 		if not self.is_running:
 			return
-		if self.state == "start":
+		if self.state == "tournament":
+			msg = self.tournament.updateMsg()
+		elif self.state == "start":
 			msg = {'type' : 'update', 'timer' : self.start[0]}
 		else:
 			msg = {'type' : 'update',
@@ -108,15 +138,20 @@ class Game:
 				msg['obstacle'] = self.obstacle.solid
 		await self.sendAll(msg)
  
-	async def join(self, websocket, name = "Player"):
-		# self.clients.add(websocket)
-		self.clients[self.clients.__len__() + 1] = websocket
-		self.players[self.clients.__len__() - 1].name = name
+	async def join(self, websocket, msg):
+		if 'tournament' in msg.keys():
+			self.clients[msg['tournament']] = websocket
+			self.players[msg['tournament'] - 1].name = msg['name']
+		else:
+			self.clients[self.clients.__len__() + 1] = websocket
+			self.players[self.clients.__len__() - 1].name = msg['name']
 		if self.clients.__len__() + self.ai.__len__() == self.requiered:
-			for i, client in enumerate(self.clients.values()):
-				await client.send(json.dumps(self.startMsg(i + 1)))
+			for key, ws in self.clients.items():
+				await ws.send(json.dumps(self.startMsg(key)))
 			await self.sendAll({'type' : 'waiting'})
 			self.state = 'ready'
+			if self.tournament:
+				await self.tournament.initPlayers(self.players)
 
 			
 	def input(self, player_id, inputs):
@@ -162,7 +197,7 @@ class Game:
 
 async def run_game():
 	global game
-	game.state = "start"
+	game.state = "tournament" if game.tournament else "start"
 	while game.is_running:
 		await game.tick()
 		if not game.is_running:
@@ -198,16 +233,29 @@ async def handle_game(websocket, path):
 				break
 
 	finally:
-		if game.state != 'end' and game.is_running:
+		if game.tournament and game.is_running:
 			for key, value in game.clients.items():
 				if value == websocket:
 					del game.clients[key]
-					await game.sendHub(json.dumps(game.endMsg(key, 'quit')))
-					await game.sendAll(game.endMsg(key, 'quit'))
+					await game.sendAll({'type' : 'update', 'tournament' : True, 'cmd' : 'leave', 'id' : key})
+					game.tournament.leave(key)
+					if game.state == "game" or game.state == "start":
+						await game.tournament.endMatch(game.players, game, 'leave')
 					break
-		game.is_running = False
-		clients.remove(websocket)
-		if clients.__len__() <= 0:
+			if game.clients.__len__() == 0:
+				await game.closeAll()
+				clients.clear()
+		else:
+			if game.state != 'end' and game.is_running:
+				for key, value in game.clients.items():
+					if value == websocket:
+						del game.clients[key]
+						await game.sendHub(json.dumps(game.endMsg(key, 'quit')))
+						await game.sendAll(game.endMsg(key, 'quit'))
+						break
+			game.is_running = False
+		clients.discard(websocket)
+		if clients.__len__() == 0:
 			os.kill(os.getpid(), signal.SIGTERM)
 
  
@@ -215,21 +263,23 @@ async def parse_msg(msg : dict, websocket):
 	global game
 	if msg['type'] == 'create':
 		if game.hub:
-			game.hub.add(websocket)
+			game.hub.append(websocket)
 		else:
-			game.hub = set()
-			game.hub.add(websocket)	
+			game.hub = []
+			game.hub.append(websocket)	
+			game.id = msg['Room_id']
 			if msg['cmd'] == 'quickGame':
-				game.id = msg['Room_id']
 				game.initQuickGame()
 				await websocket.send(json.dumps({'type' : 'CreationSuccess'}))
 			if msg['cmd'] == 'custom':
-				game.id = msg['Room_id']
 				game.initCustom(msg)
+				await websocket.send(json.dumps({'type' : 'CreationSuccess'}))
+			if msg['cmd'] == 'tournament':
+				game.initTournament(msg)
 				await websocket.send(json.dumps({'type' : 'CreationSuccess'}))
 
 	if msg['type'] == 'join':
-		await game.join(websocket, msg['name'])
+		await game.join(websocket, msg)
 
 	if msg['type'] == 'input' and game.state == 'game':
 		game.input(msg['player'], msg['inputs'])
@@ -238,15 +288,42 @@ async def parse_msg(msg : dict, websocket):
 		if 'cmd' in msg.keys() and msg['cmd'] == 'quitWait':
 			await game.hub.send(json.dumps({'type' : 'endGame', 'cmd' : 'quitWait', 'nb' : game.clients.__len__(), 'id' : msg['id']}))
 			await game.sendAll({'type' : 'endGame', 'cmd' : 'quitWait', 'id': msg['id']})
+			for key, value in game.clients.items():
+				if value == websocket:
+					del game.clients[key]
+					break
 			await websocket.close()
-			game.clients.pop(msg['id'])
 			if game.clients.__len__() == 0:
 				game.is_running = False
-		else:
-			await game.sendHub(json.dumps(game.endMsg(msg['id'], 'quit')))
-			await game.sendAll(game.endMsg(msg['id'], 'quit'))
-			game.is_running = False
+		elif 'cmd' in msg.keys() and msg['cmd'] == 'tournament':
+			for key, value in game.clients.items():
+				if value == websocket:
+					del game.clients[key]
+					break
 			await websocket.close()
+			if game.clients.__len__() == 0:
+				game.is_running = False
+			else:
+				await game.sendAll({'type' : 'update', 'tournament' : True, 'cmd' : 'leave', 'id' : msg['id']})
+				game.tournament.leave(msg['id'])
+		else:
+			if game.tournament:
+				for key, value in game.clients.items():
+					if value == websocket:
+						del game.clients[key]
+						break
+				await websocket.close()
+				if game.clients.__len__() == 0:
+					game.is_running = False
+				else:
+					await game.sendAll({'type' : 'update', 'tournament' : True, 'cmd' : 'leave', 'id' : msg['id']})
+					game.tournament.leave(msg['id'])
+					await game.tournament.endMatch(game.players, game, 'leave')
+			else:
+				await game.sendHub(json.dumps(game.endMsg(msg['id'], 'quit')))
+				await game.sendAll(game.endMsg(msg['id'], 'quit'))
+				game.is_running = False
+				await websocket.close()
 
 	if msg['type'] == 'close':
 		game.is_running = False
@@ -265,7 +342,12 @@ async def main():
 		return
 	loop = asyncio.get_running_loop()
 	stop = loop.create_future()
-	loop.add_signal_handler(signal.SIGTERM, stop.set_result, None)
+ 
+	def stop_signal():
+		if not stop.done():
+			stop.set_result(None)
+
+	loop.add_signal_handler(signal.SIGTERM, stop_signal)
 
 	game.id = args[3]
 	async with websockets.serve(handle_game, args[1], args[2], ssl=ssl_context):

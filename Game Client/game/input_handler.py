@@ -58,6 +58,15 @@ async def mouse_handler(core):
 	elif core.state == 'waiting':
 		if core.mouseState[0] and pg.mouse.get_focused():
 			await core.wait_screen.click(core, core.mousePos)
+	elif core.state == 'tournament menu':
+		if core.mouseState[0] and pg.mouse.get_focused():
+			await core.tournament_menu.click(core, core.mousePos)
+	elif core.state == 'tournament names':
+		if core.mouseState[0] and pg.mouse.get_focused():
+			await core.tournament_names.click(core, core.mousePos)
+	elif core.state == 'tournament':
+		if core.mouseState[0] and pg.mouse.get_focused():
+			await core.tournament.click(core, core.mousePos)
 
 async def custom_input(core):
 	if core.mouseState[0] and pg.mouse.get_focused():
@@ -146,7 +155,10 @@ async def escape_handler(core):
 			core.pause[1].freeze = True
 		else:
 			core.pause[1].freeze = False
-	if core.state == "custom":
+	if core.state == "custom" or core.state == "tournament menu":
 		core.state = "menu"
 		core.mode = "none"
 		core.max_score = 10
+		core.custom_menu = False
+		core.tournament_menu = False
+		core.online = False

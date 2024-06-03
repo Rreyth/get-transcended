@@ -9,7 +9,7 @@ class End:
   
   
 	def draw(self, core, win, score):
-		if core.custom_mod == "1V1V1V1":
+		if core.square:
 			self.drawSquare(core, win, score)
 			self.button = Button("BACK TO MENU", winWidth - self.size[0] - 50, winHeight - (self.size[1] * 1.5), self.size[0], self.size[1], winHeight * 0.085)
 		else:
@@ -88,6 +88,8 @@ class End:
 			core.pause[1].freeze = False
 			core.start_screen = False
 			core.wait_screen = False
+			core.custom_menu = False
 			core.ai = []
 			core.max_score = 10
+			core.online = False
 
