@@ -42,12 +42,17 @@ export class SignUp extends Component {
 			
 		})
 
-		dropdownMenu.addEventListener('click', (e) => {
+		dropdownMenu.addEventListener('mousedown', (e) => {
 			e.preventDefault();
-
+			
 			if (e.target.classList.contains('dropdown-item'))
 			{
 				inputEmail.value = e.target.innerHTML;
+				dropdownMenu.classList.remove('show');
+			}
+		});
+
+		inputEmail.addEventListener("blur", (e) => {
 				dropdownMenu.classList.remove('show');
 				if (!emailIsValid(inputEmail.value) && inputEmail.value != "")
 				{
@@ -56,21 +61,11 @@ export class SignUp extends Component {
 				}
 				else
 					removeError(inputEmail, "popover-email");
-				}
 		});
-
-		inputEmail.addEventListener("blur", (e) => {
-			// if (dropdownMenu.classList.contains('dropdown-item'))
-			// {
-				// dropdownMenu.classList.remove('show');
-			// }
-			if (!emailIsValid(inputEmail.value) && inputEmail.value != "")
-			{
-				inputEmail.style.color = '#a51221';
-				createPopover(inputEmail, "popover-email", "mal formater"); //pb avec le dropdown click
-			}
-			else
-				removeError(inputEmail, "popover-email");
+		
+		inputEmail.addEventListener("focus", (e) => {
+			if (e.target.value.includes("@") === false && e.target.value != "")
+				dropdownMenu.classList.add('show');
 		});
 
 		inputPass.addEventListener("input", (e) => {
@@ -146,14 +141,16 @@ async function registerUser(username, email, password, file)
 	const response = await api("/register/", "POST", data);
 	// add verification of response (print error alert)
 	const res = (await response.json());
-	if (res.username || res.email)
+	if (res.username || res.email || res.avatar)
 	{
-		if (res.username && !res.email)
-			document.querySelector("#alert-id").innerHTML = "username is already used";
-		else if (!res.username && res.email)
-			document.querySelector("#alert-id").innerHTML = "email is already used";
-		else
-			document.querySelector("#alert-id").innerHTML = "username and email are already used";
+		document.querySelector("#alert-id").innerHTML = "";
+
+		if (res.username)
+			document.querySelector("#alert-id").innerHTML += "<span>username is already used</span>";
+		if (res.email)
+			document.querySelector("#alert-id").innerHTML += "<span>email is already used</span>";
+		if (res.avatar)
+			document.querySelector("#alert-id").innerHTML += "<span>bad image input</span>";
 		document.querySelector("#alert-id").classList.add("show");
 	}
 	else if (res.access)
@@ -247,7 +244,7 @@ const content = /*html*/`
 				</div>
 
 			<div class="flex-column d-flex row-gap-4">
-				<div class="alert alert-danger collapse" id="alert-id" role="alert">
+				<div class="alert alert-danger row collapse" id="alert-id" role="alert">
 					error msg
 				</div>
 				<input class="form-control" id="input-user" type="text" placeholder="Username">
