@@ -41,8 +41,13 @@ export const api = async (path, method, formdata, token = null) => {
 	const url = `https://${location.hostname}:${location.port}/api${path}`;
 	const myHeader = new Headers();
 
-    myHeader.append("Content-Type", "application/json");
-	myHeader.append("Authorization", `Bearer ${token}`);
+	if (path != "/register/")
+	{
+    	myHeader.append("Content-Type", "application/json");
+		if (token)
+			myHeader.append("Authorization", `Bearer ${token}`);
+	}
+	
 	let requestOptions = {
 			method: method,
 			redirect: 'follow',
@@ -82,5 +87,7 @@ export const auth = async (username, password) => {
     if (response.ok)
     {
         cookieStore.set({ name: "token", value: (await response.json()).access })
+		return (true);
     }
+	return (false);
 }
