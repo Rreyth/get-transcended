@@ -15,9 +15,6 @@ Including another URLconf
 """
 from django.urls import path
 from myapp import views
-from channels.routing import ProtocolTypeRouter, URLRouter
-from channels.auth import AuthMiddlewareStack
-from channels.security.websocket import AllowedHostsOriginValidator
 from users.views import RegisterUserView, UserView, FriendView, FriendRequestsView, FriendRequestView, ReseachUserView
 from chat.views import DMView
 from game.views import GameStorageView
