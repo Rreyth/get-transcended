@@ -1,4 +1,4 @@
-const canvas = document.querySelector("#pong_canvas");
+let canvas = document.querySelector("#pong_canvas");
 canvas.width = window.innerWidth * 0.80;
 canvas.height = Math.floor(canvas.width * 0.482);
 canvas.style.display = "block";
@@ -7,13 +7,32 @@ canvas.style.position = "absolute";
 canvas.style.left = (window.innerWidth - canvas.width) / 2 + "px";
 canvas.style.top = (window.innerHeight - canvas.height) / 2 + "px";
 
-const ctx = canvas.getContext("2d");
+let ctx = canvas.getContext("2d");
 ctx.font = Math.floor(canvas.height * 0.085) + "px pong-teko";
 ctx.fillStyle = "white";
 ctx.strokeStyle = "white";
 ctx.textBaseline = "middle";
 ctx.textAlign = "center";
 ctx.lineWidth = 2;
+
+export function reset_canvas() {
+	canvas = document.querySelector("#pong_canvas");
+	canvas.width = window.innerWidth * 0.80;
+	canvas.height = Math.floor(canvas.width * 0.482);
+	canvas.style.display = "block";
+	canvas.style.backgroundColor = "black";
+	canvas.style.position = "absolute";
+	canvas.style.left = (window.innerWidth - canvas.width) / 2 + "px";
+	canvas.style.top = (window.innerHeight - canvas.height) / 2 + "px";
+	
+	ctx = canvas.getContext("2d");
+	ctx.font = Math.floor(canvas.height * 0.085) + "px pong-teko";
+	ctx.fillStyle = "white";
+	ctx.strokeStyle = "white";
+	ctx.textBaseline = "middle";
+	ctx.textAlign = "center";
+	ctx.lineWidth = 2;
+}
 
 export function resize_canvas() {
 	canvas.width = window.innerWidth * 0.80;

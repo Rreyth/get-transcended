@@ -85,9 +85,9 @@ async def parse_msg(msg : dict):
 							player.nb -= 1
 					await game.tournament.initPlayers(game.players)
 			return
-		for i in range(game.players.__len__()):
-			game.players[i].score = msg['score'][i]
-			game.players[i].win = msg['win'][i]
+		for player in msg['match']:
+			game.players[player['id'] - 1].win = "WIN" if player['win'] else "LOSE"
+			game.players[player['id'] - 1].score = player['score']
 		game.is_running = False
 		if game.state != 'menu' and game.state != 'quit':
 			game.state = 'end'

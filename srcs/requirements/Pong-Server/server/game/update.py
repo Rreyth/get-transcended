@@ -21,9 +21,10 @@ async def update_all(core, delta):
 			await core.tournament.endMatch(core.players, core)
 
 		if core.state == "end":
-			await core.sendHub(core.endMsg(0, 'end'))
+			await core.hub[0].send(json.dumps(core.endMsg(0, 'end')))
 			await core.sendAll(core.endMsg(0, 'end'))
 			core.is_running = False
+			await core.closeAll()
 
 	if core.state == "start":
 		tmp = time.time()

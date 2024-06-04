@@ -66,12 +66,16 @@ forbiden_port = [8000, 8001, 44433, 5432, 6720]
 clients = {}
 registered = {}
 client_id = 0
+SECRET_KEY = os.getenv("SECRET")
 
 async def send_to_DB(msg : dict):
-	print(msg, file=sys.stderr, flush=True)
-	#add players infos + send to main serv for db
-	#add tournament end
-	#request (same as user login)
+	if not msg['online']:
+		return
+	headers = {'Content-Type' : 'application/json'}
+	msg['secret'] = SECRET_KEY
+	payload = json.dumps(msg)
+	url = BASE_URL + 'game/'
+	requests.request("POST", url, headers=headers, data=payload, verify=False)
 
 async def full_room(id, websocket):
 	global rooms
@@ -155,6 +159,12 @@ async def run_game(id, websocket):
 						if msg['type'] == 'endGame':
 							await send_to_DB(msg)
 							break
+
+				except websockets.exceptions.ConnectionClosedOK:
+					print(f"Game room {id} closed connection", file=sys.stderr, flush=True)
+     
+				except websockets.exceptions.ConnectionClosedError:
+					print(f"Game room {id} connection error", file=sys.stderr, flush=True)
 
 				finally:
 					if id in rooms.keys():

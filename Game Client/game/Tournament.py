@@ -10,6 +10,10 @@ from .Ball import *
 from .AI import *
 from .Wall import *
 
+IMG = pg.image.load("game/tournament_end.jpg")
+pg.mixer.init()
+pg.mixer.music.load("game/tournament_end.mp3")
+
 class Tournament:
 	def __init__(self, mods, nb_players, nb_ai, max_score, online, creator):
 		self.id = 1234
@@ -37,6 +41,7 @@ class Tournament:
 		self.players = {}
 		if creator:
 			self.players[creator] = "(SPEC)"
+		self.save = []
    
 	async def initPlayers(self, players):
 		self.players = {}
@@ -79,13 +84,22 @@ class Tournament:
 		for player, state in self.players.items():
 			if state != "(LOSE)" and state != "(LEFT)":
 				self.players[player] = "(WIN)"
-				winner = player.nb
+				winner = player.name
 				break
 		self.state = "end"
-		if core: 
-			msg = {"type" : "endGame", "winner" : winner, "players" : self.max_players}
+		if core:
+			msg = {"type" : "endGame", "mode" : "tournament", "winner" : winner, "players" : [player.name for player in self.players.keys()],
+          			"matches" : self.save, "online" : False, "customs" : self.mods, "score" : self.max_score}
 			await core.GameHub.send(json.dumps(msg))
-   
+		pg.mixer.music.play()
+
+	def saveMatch(self, players):
+		match = []
+		for player in players:
+			match.append({'id' : player.nb, 'username' : player.name, 'score' : player.score, 'win' : player.win == 'WIN'})
+		
+		self.save.append(match)
+
 	def endMatch(self, players):
 		self.nb_match -= 1
 		for player in players:
@@ -96,6 +110,8 @@ class Tournament:
 					else:
 						self.players[p] = "(SPEC)"
 					break
+		
+		self.saveMatch(players)
  
 		self.match_index += 1
 		self.oddPlayersMatch()
@@ -250,6 +266,7 @@ class Tournament:
 			self.state = 'end'
 			await core.GameRoom.close()
 			core.GameRoom = False
+			pg.mixer.music.play()
 		core.state = 'tournament'
 		self.timer[0] = 5
   
@@ -302,12 +319,13 @@ class Tournament:
 		elif self.state == 'ongoing':
 			self.specDraw(core, win)
 		elif self.state == 'end':
+			win.blit(IMG, ((winWidth / 2) - (IMG.get_width() / 2), (winHeight / 2) - (IMG.get_height() / 2)))
 			text = text_font.render("WINNER", True, (255, 255, 255))
-			win.blit(text, [winWidth / 2 - (text.get_size()[0] / 2), winHeight * 0.4 - (text.get_size()[1] / 2)])
+			win.blit(text, [winWidth / 2 - (text.get_size()[0] / 2), winHeight * 0.3 - (text.get_size()[1] / 2)])
 			for player, state in self.players.items():
 				if state == "(WIN)":
 					text = text_font.render(player.name, True, (255, 255, 255))
-					win.blit(text, [winWidth / 2 - (text.get_size()[0] / 2), winHeight * 0.6 - (text.get_size()[1] / 2)])
+					win.blit(text, [winWidth / 2 - (text.get_size()[0] / 2), winHeight * 0.7 - (text.get_size()[1] / 2)])
 					break
 		pg.draw.rect(win, (0, 0, 0), pg.Rect((0, 0), (winWidth, self.spec_screen.y * 0.995)))
 		pg.draw.rect(win, (0, 0, 0), pg.Rect((0, self.spec_screen.y + (self.spec_screen.height * 1.001)), (winWidth, self.spec_screen.y)))

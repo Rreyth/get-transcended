@@ -1,12 +1,10 @@
-version: '3'
-
 services:
   postgres:
     image: postgres:latest
     container_name: postgres
     restart: always
     volumes:
-      - db:/db
+      - db:/var/lib/postgresql/data
     expose:
       - '5432'
     networks:
@@ -28,7 +26,6 @@ services:
       - transcendNetwork
     depends_on:
       - postgres
-      - pong
     env_file:
       - .env
 
@@ -59,8 +56,8 @@ services:
       - transcendNetwork
     volumes:
       - app:/app
-    depends_on:
-      - nginx
+    env_file:
+      - .env
 
   adminer:
     image: adminer:latest
@@ -83,11 +80,7 @@ volumes:
       type: none
       device: ./django_code
   db:
-    driver: local
     name: db
-    driver_opts:
-      o: bind
-      type: none
 
 networks:
   transcendNetwork:
