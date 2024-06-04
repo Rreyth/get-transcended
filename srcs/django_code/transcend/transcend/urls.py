@@ -18,7 +18,7 @@ from myapp import views
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from channels.security.websocket import AllowedHostsOriginValidator
-from users.views import RegisterUserView, UserView, FriendView, FriendRequestsView, FriendRequestView
+from users.views import RegisterUserView, UserView, FriendView, FriendRequestsView, FriendRequestView, ReseachUserView
 from chat.views import DMView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
