@@ -1,4 +1,5 @@
 import { Thread } from "./thread.js";
+import { token_checker } from "./helpers.js";
 
 export const render = (file) => {
     fetch(`/static/html/${file}.html`)
@@ -54,11 +55,12 @@ export class Router
         let pageFound = false
         let pathname = location.pathname.replace(/\/+$/, '')
 
-        this.routes.map(route => {
+        this.routes.map(async route => {
             let path = route.path.replace(/\/+$/, '')
 
             if (pathname == path)
             {
+				await token_checker();
                 pageFound = true
                 route.callback();
             }
