@@ -15,6 +15,7 @@ fclean: down pyclean
 	@docker volume rm $$(docker volume ls -q) 2>/dev/null || echo No volume to delete
 	docker system prune -af --volumes
 	rm -rf srcs/django_code/etc
+	rm -rf srcs/django_code/transcend/profile
 
 pyclean:
 	bash -c "find . | grep -E "__pycache__" | xargs rm -rf"
