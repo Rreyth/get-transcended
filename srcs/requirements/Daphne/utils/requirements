@@ -8,3 +8,4 @@ djangorestframework
 djangorestframework-simplejwt
 tzdata
 PyJWT
+Pillow

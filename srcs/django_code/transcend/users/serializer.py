@@ -28,6 +28,12 @@ class UserSerializer(DynamicFieldsModelSerializer):
         fields = ('id', 'email', 'username', 'password', 'avatar', 'created_at')
         extra_kwargs = {'password': {'write_only': True}}
 
+    def get_avatar_url(self, obj):
+        request = self.context.get('request')
+        if obj.avatar and hasattr(obj.avatar, 'url'):
+            return request.build_absolute_uri(obj.avatar.url)
+        return None
+
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         return user
@@ -39,7 +45,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         token['id'] = user.id
         token['username'] = user.username
-        token['avatar'] = user.avatar
+        token['avatar'] = user.avatar.url if user.avatar and hasattr(user.avatar, 'url') else None
 
         return token
 
