@@ -116,6 +116,10 @@ def id_generator():
 async def connection_handler(client_msg, websocket):
 	global clients, registered
 	if client_msg['cmd'] == 'token':
+		if client_msg['token'] == None:
+			msg = {'type' : 'connectionRpl', 'success' : 'false', 'error' : 'invalid token'}
+			await websocket.send(json.dumps(msg))
+			return
 		method = 'GET'
 		url = BASE_URL + "user/"
 		headers = {'Authorization' : 'Bearer ' + client_msg['token']}
