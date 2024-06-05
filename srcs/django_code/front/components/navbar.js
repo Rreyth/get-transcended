@@ -9,34 +9,41 @@ export class Navbar extends Component {
 	async connectedCallback() {
 		if (await user() != null)
 		{
-		this.innerHTML = content;
+			this.innerHTML = await content();
 
-		document.addEventListener("click", (e) => {
-			if (e.target.id == "seach-user")
-			{
-				this.querySelector(".dropdown-menu").innerHTML = `<c-search content="${e.target.value}"></c-search>`;
-				this.querySelector(".dropdown-toggle").click();
-			}
-			else if (e.target.classList.contains("bx"))
-			{
-				if (e.target.parentNode.classList.contains("dropdown-toggle"))
+			document.addEventListener("click", (e) => {
+				if (e.target.id == "seach-user")
 				{
-					this.querySelector(".dropdown-menu").innerHTML = "";
+					this.querySelector(".dropdown-menu").innerHTML = `<c-search content="${e.target.value}"></c-search>`;
+					this.querySelector(".dropdown-toggle").click();
 				}
-			}
-		})
+				else if (e.target.classList.contains("bx"))
+				{
+					if (e.target.parentNode.classList.contains("dropdown-toggle"))
+					{
+						this.querySelector(".dropdown-menu").innerHTML = "";
+					}
+				}
+			})
 
 
 
-		this.querySelector("#seach-user").addEventListener("input", (e) => {
-			let content = this.querySelector(".dropdown-menu");
-			content.innerHTML = `<c-search content="${e.target.value}"></c-search>`;
-		})
+			this.querySelector("#seach-user").addEventListener("input", (e) => {
+				let content = this.querySelector(".dropdown-menu");
+				content.innerHTML = `<c-search content="${e.target.value}"></c-search>`;
+			})
+
+			this.querySelector("#msg-btn").addEventListener("click", (e) => {
+				if (document.getElementById("chat"))
+				document.getElementById("chat").remove();
+				else
+					document.querySelector("#content").innerHTML += `<c-chat-body id="chat"></c-chat-body>`;
+			})
 		}
 	}
 }
 
-const content = /* html */ `
+const content = async () => /* html */ `
 	<nav class="navbar fixed-bottom navbar-expand bg-body-tertiary user-select-none">
 		<div class="container-fluid text-center">
 
@@ -60,27 +67,30 @@ const content = /* html */ `
 					</div>
 					<div class="px-2">
 
-						<div class="form-outline">
+						<div class="form-outline position-relative">
 							<input id="seach-user" type="text" class="form-control ps-5 rounded-4" placeholder="${await translate('nav.user')}" style="height: 3em;"/>
-							<i class="bx bx-search-alt bx-md ms-3 text-primary" style="position: absolute; transform: translate(-385%,-118%); pointer-events: none;"></i>
+							<i class="bx bx-search-alt bx-md ms-3 text-primary position-absolute" style="top: 0.2em; left: -0.2em; pointer-events: none;"></i>
 						</div>
 
 					</div>
 				</div>
 				<div class="d-flex align-items-center justify-content-center">
-					<div class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4" style="cursor: pointer; width: 3em; height: 3em;">
+					<a class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4 text-decoration-none text-reset" href="/" style="width: 3em; height: 3em;">
+						<i class='bx bx-home-alt-2 bx-md'></i>
+					</a>
+					<a class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4 text-decoration-none text-reset" href="#" style="width: 3em; height: 3em;">
 						<i class='bx bx-history bx-md'></i>
-					</div>
-					<div class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4" style="cursor: pointer; width: 3em; height: 3em;">
+					</a>
+					<a class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4 text-decoration-none text-reset" href="/pong" style="width: 3em; height: 3em;">
 						<i class='bx bx-joystick bx-md'></i>
-					</div>
-					<div class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4" style="cursor: pointer; width: 3em; height: 3em;">
+					</a>
+					<a class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4 text-decoration-none text-reset" href="#" style="width: 3em; height: 3em;">
 						<i class='bx bx-info-circle bx-md'></i>
-					</div>
+					</a>
 				</div>
 
 				<div class="d-flex align-items-center justify-content-center">
-					<div class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4" style="width: 14em; height: 3em;">
+					<div class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4" id="msg-btn" style="width: 14em; height: 3em;">
 						<i class='bx bx-chat bx-md' ></i>
 						<span class="w-100">MESSAGES</span>
 					</div>

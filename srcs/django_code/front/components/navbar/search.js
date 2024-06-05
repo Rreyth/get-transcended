@@ -15,7 +15,7 @@ export class Search extends Component {
 
 
 			if (this.getAttribute('content') === "")
-				this.innerHTML = emptySearch;
+				this.innerHTML = await emptySearch();
 			else {
 				let response = await api("/user/search/?username_prefix=" + attrContent, "GET", null, token);
 				response = (await response.json());
@@ -61,7 +61,7 @@ function createUserCard(imgName, name)
 	`);
 }
 
-const emptySearch = /* html */ `
+const emptySearch = async () =>/* html */ `
 	<div class="w-100 h-100 d-flex justify-content-center align-items-center">
 		<i class='bx bx-search-alt bx-lg' ></i>
 		<span style="font-size: 1.5em; margin-left: 1em; width: 60%">${await translate("nav.rshUser")}</span>
