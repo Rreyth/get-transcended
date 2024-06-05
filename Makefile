@@ -1,6 +1,6 @@
 DC := docker compose -f srcs/docker-compose.yml
 
-all: up
+all: auto_ip up
 
 up:
 	$(DC) up --build
@@ -23,4 +23,12 @@ pyclean:
 
 re: fclean up
 
-.PHONY: all re clean fclean up down pyclean
+auto_ip:
+	@if [ "$(wildcard srcs/.env)" = "" ]; then \
+		(echo "srcs/.env is needed"; false); \
+	else \
+		sed -i '/ADDRESS/d' srcs/.env; \
+		echo "ADDRESS=$(shell hostname -i)" >> srcs/.env; \
+	fi
+
+.PHONY: all re clean fclean up down pyclean auto_ip
