@@ -95,3 +95,16 @@ class FriendRequestView(APIView):
 
         except FriendRequest.DoesNotExist:
             return Response({'message': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+
+class ProfileView(APIView):
+    permission_classes = (IsAuthenticated,)
+    parser_classes = [JSONParser, MultiPartParser, FormParser]
+    
+    def get(self, request, username):
+        user = User.objects.filter(username=username)
+        serializer = UserSerializer(user)
+        
+        if serializer.is_valid():
+            return Response(UserSerializer(user).data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
