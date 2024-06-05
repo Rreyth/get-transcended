@@ -29,6 +29,10 @@ Router.set('/pong', async () => {
 	}
 })
 
+Router.set('/user/{user}', () => {
+	render('profile')
+})
+
 Router.notFound(() => {
     render('404')
 })

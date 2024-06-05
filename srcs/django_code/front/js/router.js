@@ -56,9 +56,9 @@ export class Router
         let pathname = location.pathname.replace(/\/+$/, '')
 
         this.routes.map(async route => {
-            let path = route.path.replace(/\/+$/, '')
+            let path = route.path.replace(/\/+$/, '').replace(/{\w+}/, "([^/]+)")  
 
-            if (pathname == path)
+            if (pathname.match(new RegExp(`^${path}$`)))
             {
 				await token_checker();
                 pageFound = true
