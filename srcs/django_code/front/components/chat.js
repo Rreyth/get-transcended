@@ -1,13 +1,24 @@
 import { Component } from "../js/component.js";
-import { escapeHtml, scrollbarToEnd } from "../js/utils.js";
-import { api, user_token, auth, user } from "../js/helpers.js"
+import { api, user_token } from "../js/helpers.js"
 import { Cache } from "../js/cache.js";
-import { Friend } from "./minichat/friend.js";
+import { Friend } from "./chat/friend.js";
 
 export class Chat extends Component {
 
 	static getName() {
 		return "chat-body"
+	}
+
+	static escapeHtml(text)
+	{
+		let map = {
+			'&': '&amp;',
+			'<': '&lt;',
+			'>': '&gt;',
+			'"': '&quot;',
+			"'": '&#039;'
+		};
+		return text.replace(/[&<>"']/g, function (m) { return map[m]; });
 	}
 
 	static sendMsg(socket, msg) {
@@ -75,7 +86,7 @@ export class Chat extends Component {
 				event.preventDefault();
 				if (document.getElementById('msg-area').value === '')
 					return;
-				let msg = escapeHtml(document.getElementById('msg-area').value)
+				let msg = Chat.escapeHtml(document.getElementById('msg-area').value)
 				Chat.sendMsg(socket, msg.replace(/\n/g, "<br>"));
 				document.getElementById('msg-area').value = '';
 			}

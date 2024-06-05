@@ -20,7 +20,7 @@ export class Friend extends Component
 
         this.innerHTML = /* html */`
         <div class="d-flex justify-content-between align-items-center p-1 bg-secondary rounded-4 border-2 border border-primary gap-2" style="--bs-border-opacity: .0;" id="user-card">
-            <img class="rounded-circle" src="/media/profile_default.jpg" alt="profile" width="25" height="25">
+            <img class="rounded-circle" src="/media/frank.svg" alt="profile" width="25" height="25">
             <span class="scroll-on-hover">${this.username}</span>
         </div>
         `
