@@ -25,7 +25,7 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
 class UserSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email', 'username', 'password', 'avatar', 'created_at')
+        fields = ('id', 'email', 'username', 'password', 'avatar', 'created_at', 'login42')
         extra_kwargs = {'password': {'write_only': True}}
 
     def get_avatar_url(self, obj):

@@ -24,7 +24,7 @@ from rest_framework_simplejwt.views import (
 )
 
 urlpatterns = [
-    path('auth/42/', views.auth_42, name='auth_42'),
+    path('api/42/', views.auth_42, name='auth_42'),
     path('api/user/', UserView.as_view()),
     path('api/user/search/', ReseachUserView.as_view()),
     path('api/user/friends/', FriendView.as_view()),
