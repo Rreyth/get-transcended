@@ -86,7 +86,7 @@ export class Chat extends Component {
 				event.preventDefault();
 				if (document.getElementById('msg-area').value === '')
 					return;
-				let msg = escapeHtml(document.getElementById('msg-area').value)
+				let msg = Chat.escapeHtml(document.getElementById('msg-area').value)
 				Chat.sendMsg(socket, msg.replace(/\n/g, "<br>"));
 				document.getElementById('msg-area').value = '';
 			}

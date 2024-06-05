@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from users.models import User, FriendRequest
-from .serializer import UserSerializer, FriendRequestSerializer
+from .serializer import UserSerializer, FriendRequestSerializer, CustomTokenObtainPairSerializer
 from django.db.models import Q
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -105,3 +105,9 @@ class FriendRequestView(APIView):
 
         except FriendRequest.DoesNotExist:
             return Response({'message': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
