@@ -111,10 +111,10 @@ class ProfileView(APIView):
     parser_classes = [JSONParser, MultiPartParser, FormParser]
     
     def get(self, request, username):
-        user = User.objects.filter(username=username)
-        serializer = UserSerializer(user)
-        
-        if serializer.is_valid():
-            return Response(UserSerializer(user).data, status=status.HTTP_200_OK)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            user = User.objects.get(username=username)
+            serializer = UserSerializer(user)
+            
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({"error": "User no found"}, status=status.HTTP_404_NOT_FOUND)

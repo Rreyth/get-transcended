@@ -1,5 +1,5 @@
 import { Router, render } from "../js/router.js";
-import { user } from "../js/helpers.js"
+import { api, user, user_token } from "../js/helpers.js"
 
 Router.set('/', async () => {
 	if (await user() == null)
@@ -29,8 +29,18 @@ Router.set('/pong', async () => {
 	}
 })
 
-Router.set('/user/{user}', () => {
-	render('profile')
+Router.set('/user/{username}', async (match) => {
+	const response = await api(`/user/${match[1]}`, 'GET', {}, await user_token())
+	const data = await response.json()
+
+	if (!response.ok) {
+		return console.log(data)
+	}
+
+	render('profile', {
+		avatar: data.avatar,
+		username: data.username,
+	})
 })
 
 Router.notFound(() => {
