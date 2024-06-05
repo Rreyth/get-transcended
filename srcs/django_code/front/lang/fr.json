@@ -1,6 +1,11 @@
 {
     "word": "mot",
     "home": {
-        "welcome": "bienvenue"
-    }
+		"welcome": "bienvenue"
+    },
+	"nav": {
+		"user": "Utilisateur",
+		"msg": "Messages",
+		"rshUser": "Rechercher un utilisateur"
+	}
 }

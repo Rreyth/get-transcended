@@ -9,6 +9,7 @@ import { Login } from "../components/sign/login.js";
 import { SSign } from "../components/sign/switchSign.js";
 import { SignUp } from "../components/sign/signUp.js";
 import { LangBtn } from "../components/lang.js";
+import { Search } from "../components/navbar/search.js";
 
 Component.loader([
 	Navbar,
@@ -20,6 +21,7 @@ Component.loader([
 	SSign,
 	SignUp,
 	LangBtn,
+	Search,
 ])
 
 const navigateTo = url => {

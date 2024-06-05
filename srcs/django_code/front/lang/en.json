@@ -1,6 +1,11 @@
 {
-    "word": "word",
+	"word": "word",
     "home": {
-        "welcome": "welcome"
-    }
+		"welcome": "welcome"
+    },
+	"nav": {
+		"user": "User",
+		"msg": "Messages",
+		"rshUser": "Search a user"
+	}
 }

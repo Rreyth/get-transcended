@@ -31,7 +31,7 @@ export class Chat extends Component {
 
 	async connectedCallback() {
 		this.innerHTML = /* html */`
-			<div class="position-absolute bottom-0 end-0 rounded-4 d-inline-flex justify-content-start align-items-start border border-secondary" style="height: 25em;">
+			<div class="position-absolute rounded-4 d-inline-flex justify-content-start align-items-start border border-secondary" style="height: 25em; bottom: 5em; right: 0.5em;">
 				<div class="border-secondary border-end d-inline-flex flex-column justify-content-between align-self-stretch">
 					<div class="d-flex align-self-stretch flex-column justify-content-start align-items-center gap-2 p-2" id="chat-friends">
 					</div>
