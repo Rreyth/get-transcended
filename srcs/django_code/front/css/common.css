@@ -15,3 +15,7 @@
     border-radius: 20px;
     border: 1.5px solid rgb(66, 66, 66);
 }
+#content-none::after
+{
+	content: none;
+}
