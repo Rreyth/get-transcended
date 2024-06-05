@@ -1,5 +1,5 @@
 import { Component } from "../../js/component.js";
-import { auth, user } from "../../js/helpers.js";
+import { auth } from "../../js/helpers.js";
 
 export class Login extends Component {
     static getName() {
