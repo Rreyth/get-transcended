@@ -10,7 +10,6 @@ export class SSign extends Component {
 
 		const urlParams = new URLSearchParams(window.location.search);
 		const code = urlParams.get('code');
-		console.log(code);
 		if (code)
 		{
 			const url = `https://${location.hostname}:${location.port}/api/42?code=${code}`;
@@ -22,6 +21,25 @@ export class SSign extends Component {
 			{
 				cookieStore.set({name: 'token', value: res.access});
 				location.href = location.href.split('?')[0];
+			}
+			else
+			{
+				document.querySelector(".error-box").innerHTML = /*html*/`
+					<div class="alert position-absolute top-0 w-100 alert-warning alert-dismissible d-flex" role="alert">
+						<i class='bx bx-error-alt bx-sm' style="margin-right: 0.4em;"></i>
+						<span id="api-error-txt"></span>
+						<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+					</div>
+				`;
+				if (res.username)
+					document.getElementById("api-error-txt").innerHTML = "All occurence of your 42login is already used, please register manually";
+				else if (res.email)
+					document.getElementById("api-error-txt").innerHTML = "Email already exist, try manually connexion";
+				else if (res.apiError)
+					document.getElementById("api-error-txt").innerHTML = "API Error, please try later";
+				else
+					document.getElementById("api-error-txt").innerHTML = "Error, please try later";
+
 			}
 		}
 
@@ -64,7 +82,7 @@ const content = /*html*/`
 
 		<hr />
 
-		<a class="d-flex text-decoration-none text-reset" id="sing-42-switch" style="cursor: pointer;" href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-b5e0cf73ba0e68a7e2bc9e5fa86d0f242be05def4e3de852c9e804e95b398350&redirect_uri=https%3A%2F%2Flocalhost%3A44433%2F&response_type=code">
+		<a class="d-flex text-decoration-none text-reset" id="sing-42-switch" href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-b5e0cf73ba0e68a7e2bc9e5fa86d0f242be05def4e3de852c9e804e95b398350&redirect_uri=https%3A%2F%2Flocalhost%3A44433%2F&response_type=code">
 			<div class="d-flex flex-row align-items-center gap-2 fs-3">
 				<div class="d-flex justify-center align-items-center rounded-circle bg-secondary p-2">
 					<!-- <i class='bx bx-user bx-lg'></i> --->
