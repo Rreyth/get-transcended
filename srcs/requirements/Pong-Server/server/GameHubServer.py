@@ -181,27 +181,31 @@ async def run_game(id, websocket):
 async def handle_join(client_msg, websocket):
 	global rooms, used_port, used_id, clients
 	if client_msg['id'] not in used_id:
-		await websocket.send(json.dumps({'type' : 'joinResponse', 'success' : 'false'}))
+		room_id = client_msg['id']
+		await websocket.send(json.dumps({'type' : 'joinResponse', 'success' : 'false', 'error' : f'Room {room_id} doesn\'t exist'}))
 		return
 
 	for room in rooms.values():
 		if room.id == client_msg['id']:
-			for player in clients.values():
-				if player.websocket == websocket:
-					await room.sendAll({"type" : "join", "alias" : player.name})
-					room.players.append(player)
-					break
-			room.players_nb += 1
-			msg = {'type' : 'joinResponse', 'success' : 'true', 'port' : room.port, 'pos' : room.players_nb, 'max' : room.max_players, 'mode' : room.type, 'custom_mods' : room.mods}
-			if room.type == 'tournament':
-				msg['pos'] = room.players_nb - room.ai_nb
-				msg['score'] = room.score
-				msg['ai'] = room.ai_nb
-				msg['players'] = [player.name for player in room.players]
-			await websocket.send(json.dumps(msg))
-			await full_room(room.id, websocket)
-			if client_msg['id'] in rooms.keys() and rooms[room.id].full:
-				await run_game(room.id, websocket)
+			if not room.full:
+				for player in clients.values():
+					if player.websocket == websocket:
+						await room.sendAll({"type" : "join", "alias" : player.name})
+						room.players.append(player)
+						break
+				room.players_nb += 1
+				msg = {'type' : 'joinResponse', 'success' : 'true', 'port' : room.port, 'pos' : room.players_nb, 'max' : room.max_players, 'mode' : room.type, 'custom_mods' : room.mods}
+				if room.type == 'tournament':
+					msg['pos'] = room.players_nb - room.ai_nb
+					msg['score'] = room.score
+					msg['ai'] = room.ai_nb
+					msg['players'] = [player.name for player in room.players]
+				await websocket.send(json.dumps(msg))
+				await full_room(room.id, websocket)
+				if client_msg['id'] in rooms.keys() and rooms[room.id].full:
+					await run_game(room.id, websocket)
+			else:
+				await websocket.send(json.dumps({'type' : 'joinResponse', 'success' : 'false', 'error' : f'Room {room.id} is already full'}))
 			return
 
 async def handle_tournament(client_msg, websocket):
