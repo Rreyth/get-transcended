@@ -39,11 +39,9 @@ class UserSerializer(DynamicFieldsModelSerializer):
         return user
     
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
+    def get_token(self, user):
         token = super().get_token(user)
 
-        token['id'] = user.id
         token['username'] = user.username
         token['avatar'] = user.avatar.url if user.avatar and hasattr(user.avatar, 'url') else None
 
