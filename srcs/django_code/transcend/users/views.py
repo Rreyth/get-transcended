@@ -6,6 +6,7 @@ from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from users.models import User, FriendRequest
 from .serializer import UserSerializer, FriendRequestSerializer, CustomTokenObtainPairSerializer
 from django.db.models import Q
+from rest_framework_simplejwt.tokens import RefreshToken
 import requests
 import os
 
@@ -47,10 +48,6 @@ class Log42(APIView):
     def get(self, request):
         code = request.GET.get('code')
 
-
-        print("coucou1", request, flush=True)
-        print("coucou2", code, flush=True)
-
         try:
             # Faire une requête pour échanger le code d'authentification contre un jeton d'accès
             response = requests.post('https://api.intra.42.fr/oauth/token', data={
@@ -67,7 +64,6 @@ class Log42(APIView):
                 # Récupérer le jeton d'accès depuis la réponse JSON
                 access_token = response.json()['access_token']
                 
-                
 
                 # Utiliser le jeton d'accès pour récupérer les informations de l'utilisateur
                 user_response = requests.get('https://api.intra.42.fr/v2/me', headers={'Authorization': f'Bearer {access_token}'})
@@ -76,11 +72,11 @@ class Log42(APIView):
                 # Gérer les informations de l'utilisateur, par exemple, en le connectant ou en le créant dans votre système Django
                 # user = User.objects.get_or_create(username=user_data['login'], ...)
                 # request.session['user_id'] = user.id
+                
+                username = user_data['login']
 
-                if User.objects.filter(username=user_data['login']).exists():
-                    username = user_data['login'] + "_"
-                else:
-                    username = user_data['login']
+                while User.objects.filter(username=username).exists() and len(username) < 25:
+                    username += "_"
                 try:
                     user, created = User.objects.get_or_create(
                         login42=user_data['login'],
@@ -94,7 +90,10 @@ class Log42(APIView):
 
                     serializer = UserSerializer(user)
                     refresh = RefreshToken.for_user(user)
-                    # refresh["username"] = username
+                    if created:
+                        refresh["username"] = username
+                    else:
+                        refresh["username"] = user_data['login']
                     return Response({'access' : str(refresh.access_token)}, status=status.HTTP_201_CREATED)
 
                 except Exception as e:
@@ -103,7 +102,7 @@ class Log42(APIView):
                     elif str(e).find("users_user_email_key") != -1:
                         return Response({'email': 'email already exist'}, status=status.HTTP_400_BAD_REQUEST)
                     else:
-                        return Response({'error': 'Internal Error'}, status=status.HTTP_400_BAD_REQUEST)
+                        return Response({'error': 'Internal Error', "DEtail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
             else:
                 return Response({'error': 'Error connexion api'}, status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e:

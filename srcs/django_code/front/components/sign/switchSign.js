@@ -14,15 +14,10 @@ export class SSign extends Component {
 		if (code)
 		{
 			const url = `https://${location.hostname}:${location.port}/api/42?code=${code}`;
-			
-			
-			let requestOptions = {
-					method: 'GET',
-					redirect: 'follow',
-				};
-		
-			const response = await fetch(url, requestOptions);
+					
+			const response = await fetch(url);
 			const res = (await response.json());
+			console.log(res)
 			if (res.access)
 			{
 				cookieStore.set({name: 'token', value: res.access});
@@ -34,7 +29,6 @@ export class SSign extends Component {
 			if (document.getElementById("singup-tag") != null)
 			{
 				document.getElementById("singup-tag").remove();
-				// document.body.innerHTML += `<c-login id="singin-tag"></c-login>`;
 				document.getElementById("signs").innerHTML += `<c-login id="singin-tag"></c-login>`;
 			}
 		})
@@ -42,13 +36,8 @@ export class SSign extends Component {
 			if (document.getElementById("singin-tag") != null)
 			{
             	document.getElementById("singin-tag").remove();
-				// document.body.innerHTML += `<c-signup id="singup-tag"></c-signup>`;
 				document.getElementById("signs").innerHTML += `<c-signup id="singup-tag"></c-signup>`;
 			}
-        })
-		this.addClickEvent('#sing-42-switch', async (e) => {
-			// const response = await fetch("https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-2ffd2ebbe228c94c5e8db5210490bb337c5b1ce0a919b151c5b5862f402b5ac4&redirect_uri=https%3A%2F%2Flocalhost%3A44433%2F&response_type=code");
-			// console.log(response);
         })
     }
 }
@@ -75,7 +64,7 @@ const content = /*html*/`
 
 		<hr />
 
-		<a class="d-flex" id="sing-42-switch" style="cursor: pointer;" href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-b5e0cf73ba0e68a7e2bc9e5fa86d0f242be05def4e3de852c9e804e95b398350&redirect_uri=https%3A%2F%2Flocalhost%3A44433%2F&response_type=code">
+		<a class="d-flex text-decoration-none text-reset" id="sing-42-switch" style="cursor: pointer;" href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-b5e0cf73ba0e68a7e2bc9e5fa86d0f242be05def4e3de852c9e804e95b398350&redirect_uri=https%3A%2F%2Flocalhost%3A44433%2F&response_type=code">
 			<div class="d-flex flex-row align-items-center gap-2 fs-3">
 				<div class="d-flex justify-center align-items-center rounded-circle bg-secondary p-2">
 					<!-- <i class='bx bx-user bx-lg'></i> --->
