@@ -95,16 +95,22 @@ export const auth = async (username, password) => {
 export async function token_checker() {
 	const token = await user_token();
 	if (!token)
-		return
-	const response = await api('/user/', 'GET', undefined, token);
-	if (!response.ok) { 
-		cookieStore.delete(name="token");
-		return
-	}
+		return;
+	try {
+		const response = await api('/user/', 'GET', undefined, token);
 
-	const expiration = (await user()).exp;
-	const now = Date.now() / 1000;
-	if (now >= expiration) {
-		cookieStore.delete(name="token");
+		if (!response.ok) { 
+			cookieStore.delete(name="token");
+			return;
+		}
+
+		const expiration = (await user()).exp;
+		const now = Date.now() / 1000;
+		if (now >= expiration) {
+			cookieStore.delete(name="token");
+		}
+	}
+	catch (error) {
+		console.error(error.message);
 	}
 }
