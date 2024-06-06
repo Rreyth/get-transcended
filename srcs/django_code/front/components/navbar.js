@@ -1,5 +1,5 @@
 import { Component } from "../js/component.js";
-import { user, translate } from "../js/helpers.js";
+import { user, translate, token_checker } from "../js/helpers.js";
 
 export class Navbar extends Component {
 	static getName() {
@@ -7,6 +7,7 @@ export class Navbar extends Component {
 	}
 
 	async connectedCallback() {
+		token_checker();
 		if (await user() != null)
 		{
 			this.innerHTML = await content();
@@ -35,9 +36,9 @@ export class Navbar extends Component {
 
 			this.querySelector("#msg-btn").addEventListener("click", (e) => {
 				if (document.getElementById("chat"))
-				document.getElementById("chat").remove();
+					document.getElementById("chat").remove();
 				else
-					document.querySelector("#content").innerHTML += `<c-chat-body id="chat"></c-chat-body>`;
+					document.querySelector("#chat_box").innerHTML += `<c-chat-body id="chat"></c-chat-body>`;
 			})
 		}
 	}
@@ -106,4 +107,5 @@ const content = async () => /* html */ `
 
 		</div>
 	</nav>
+	<div id="chat_box"></div>
 `;
