@@ -6,9 +6,11 @@ from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from users.models import User, FriendRequest
 from .serializer import UserSerializer, FriendRequestSerializer, CustomTokenObtainPairSerializer
 from django.db.models import Q
-from rest_framework_simplejwt.tokens import RefreshToken
-
 import requests
+import os
+
+CLIENT_ID = os.getenv("CLIENT_ID")
+CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 
 class RegisterUserView(APIView):
     parser_classes = [JSONParser, MultiPartParser, FormParser]
@@ -18,8 +20,12 @@ class RegisterUserView(APIView):
             if len(serializer.validated_data["username"]) > 24:
                 return Response({"message": "username length is too long"}, status=status.HTTP_400_BAD_REQUEST)
             user = serializer.save()
-            refresh = RefreshToken.for_user(user)
-            return Response({'access' : str(refresh.access_token)}, status=status.HTTP_201_CREATED)
+            token = CustomTokenObtainPairSerializer(data=request.data)
+
+            if token.is_valid():
+                return Response(token.validated_data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(token.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserView(APIView):
@@ -49,8 +55,8 @@ class Log42(APIView):
             # Faire une requête pour échanger le code d'authentification contre un jeton d'accès
             response = requests.post('https://api.intra.42.fr/oauth/token', data={
                 'grant_type': 'authorization_code',
-                'client_id': 'u-s4t2ud-b5e0cf73ba0e68a7e2bc9e5fa86d0f242be05def4e3de852c9e804e95b398350',
-                'client_secret': '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',
+                'client_id': CLIENT_ID,
+                'client_secret': CLIENT_SECRET,
                 'code': code,
                 'redirect_uri': 'https://localhost:44433/'
             })
@@ -175,9 +181,3 @@ class FriendRequestView(APIView):
 
         except FriendRequest.DoesNotExist:
             return Response({'message': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
-
-
-from rest_framework_simplejwt.views import TokenObtainPairView
-
-class MyTokenObtainPairView(TokenObtainPairView):
-    serializer_class = CustomTokenObtainPairSerializer

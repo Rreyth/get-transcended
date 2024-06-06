@@ -43,7 +43,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
 
-        token['id'] = user.id
         token['username'] = user.username
         token['avatar'] = user.avatar.url if user.avatar and hasattr(user.avatar, 'url') else None
 
