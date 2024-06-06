@@ -22,7 +22,7 @@ export class Search extends Component {
 
 				this.innerHTML = /* html */ `
 					<div class="w-100 h-100 d-flex align-items-center flex-column overflow-auto">
-						${response.map(item => { return createUserCard("test_img_user.png", item) }).join('')}
+						${response.map(item => { return createUserCard("frank.svg", item) }).join('')}
 					</div>
 					<style>
 						.user-search-card:hover

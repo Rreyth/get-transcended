@@ -2,8 +2,8 @@ import { Component } from "./component.js"
 import { Router } from "./router.js";
 import { Navbar } from "../components/navbar.js";
 import { Chat } from "../components/chat.js";
-import { Message } from "../components/minichat/message.js";
-import { Friend } from "../components/minichat/friend.js";
+import { Message } from "../components/chat/message.js";
+import { Friend } from "../components/chat/friend.js";
 import { Clock } from "../components/clock.js";
 import { Login } from "../components/sign/login.js";
 import { SSign } from "../components/sign/switchSign.js";
