@@ -17,7 +17,7 @@ from django.urls import path
 from myapp import views
 from users.views import RegisterUserView, UserView, FriendView, FriendRequestsView, FriendRequestView, ReseachUserView, ProfileView
 from chat.views import DMView
-from game.views import GameStorageView
+from game.views import GameStorageView, GamesView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -27,6 +27,7 @@ urlpatterns = [
     path('auth/42/', views.auth_42, name='auth_42'),
     path('api/user/', UserView.as_view()),
     path('api/user/<str:username>', ProfileView.as_view()),
+    path('api/user/<str:username>/games/', GamesView.as_view()),
     path('api/user/search/', ReseachUserView.as_view()),
     path('api/user/friends/', FriendView.as_view()),
     path('api/user/friends/requests/', FriendRequestsView.as_view()),
