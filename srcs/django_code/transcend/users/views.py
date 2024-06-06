@@ -6,7 +6,6 @@ from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from users.models import User, FriendRequest
 from .serializer import UserSerializer, FriendRequestSerializer, CustomTokenObtainPairSerializer
 from django.db.models import Q
-from rest_framework_simplejwt.tokens import RefreshToken
 
 class RegisterUserView(APIView):
     parser_classes = [JSONParser, MultiPartParser, FormParser]
@@ -15,8 +14,12 @@ class RegisterUserView(APIView):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            refresh = RefreshToken.for_user(user)
-            return Response({'access' : str(refresh.access_token)}, status=status.HTTP_201_CREATED)
+            token = CustomTokenObtainPairSerializer(data=request.data)
+
+            if token.is_valid():
+                return Response(token.validated_data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(token.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserView(APIView):
@@ -118,8 +121,3 @@ class ProfileView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return Response({"error": "User no found"}, status=status.HTTP_404_NOT_FOUND)
-
-from rest_framework_simplejwt.views import TokenObtainPairView
-
-class MyTokenObtainPairView(TokenObtainPairView):
-    serializer_class = CustomTokenObtainPairSerializer
