@@ -72,6 +72,6 @@ class GamesView(APIView):
 		try:
 			user = User.objects.get(username=username)
 
-			return Response(PlayerSerializer(user.player_set.all(), many=True, fields=('match')).data)
+			return Response(PlayerSerializer(user.player_set.all(), fields=('match', 'score', 'win'), many=True).data)
 		except User.DoesNotExist:
 			return Response({'message': 'Not found'}, status=status.HTTP_404_NOT_FOUND)

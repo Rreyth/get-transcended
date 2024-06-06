@@ -12,4 +12,4 @@ class PlayerSerializer(DynamicFieldsModelSerializer):
 
     class Meta:
         model = Player
-        fields = ('id', 'match', 'user', 'win')
+        fields = ('id', 'match', 'user', 'win', 'score')

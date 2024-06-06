@@ -37,9 +37,9 @@ Router.set('/user/{username}', async (match) => {
 		return console.log(data)
 	}
 
-	console.log(data)
-
-	console.log(await (await api(`/user/${match[1]}/games/`, 'GET', {}, await user_token())).json())
+	const r = await api(`/user/${match[1]}/games/`, 'GET', {}, await user_token())
+	const d = await r.json()
+	console.log(d)
 
 	render('profile', {
 		avatar: data.avatar,
