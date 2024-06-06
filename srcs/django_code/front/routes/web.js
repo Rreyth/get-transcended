@@ -37,10 +37,6 @@ Router.set('/user/{username}', async (match) => {
 		return console.log(data)
 	}
 
-	const r = await api(`/user/${match[1]}/games/`, 'GET', {}, await user_token())
-	const d = await r.json()
-	console.log(d)
-
 	render('profile', {
 		avatar: data.avatar,
 		username: data.username,
@@ -48,6 +44,35 @@ Router.set('/user/{username}', async (match) => {
 		games: data.games,
 		winrate: data.winrate,
 	})
+
+	const r = await api(`/user/${match[1]}/games/`, 'GET', {}, await user_token())
+	const games = await r.json()
+	const section = document.querySelector('#games')
+
+	console.log(games)
+
+	if (games.length > 0)
+	{
+		for (const game of games)
+		{
+			if (game.mode == "QuickGame")
+			{
+				section.innerHTML += `<c-quickgame class="list-group-item" target-user-username="${game.target_user_info.user.username}" target-user-score="${game.target_user_info.score}" opponent="${game.adversaries[0].user.username}" opponent-score="${game.adversaries[0].score}" has_won="${game.target_user_info.win}"></c-quickgame>`
+			}
+			else if (game.square)
+			{
+				section.innerHTML += `<c-squaregame class="list-group-item" player-winner-score="${game.score}" player-1-username="${game.target_user_info.user.username}" player-1-score="${game.target_user_info.score}" player-2-username="${game.adversaries[0].user.username}" player-2-score="${game.adversaries[0].score}" player-3-username="${game.adversaries[1].user.username}" player-3-score="${game.adversaries[1].score}" player-4-username="${game.adversaries[2].user.username}" player-4-score="${game.adversaries[2].score}"></c-squaregame>`
+			}
+		}
+	}
+	else
+	{
+		section.innerHTML = `<li class="row d-flex align-items-center">
+			<div class="col text-center fs-1">
+				Aucune partie jouée encore
+			</div>
+		</li>`
+	}
 })
 
 Router.notFound(() => {

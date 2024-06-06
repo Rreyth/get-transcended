@@ -10,6 +10,8 @@ import { SSign } from "../components/sign/switchSign.js";
 import { SignUp } from "../components/sign/signUp.js";
 import { LangBtn } from "../components/lang.js";
 import { Search } from "../components/navbar/search.js";
+import { QuickGame } from "../components/profile/quickgame.js";
+import { SquareGame } from "../components/profile/squaregame.js";
 
 Component.loader([
 	Navbar,
@@ -22,6 +24,8 @@ Component.loader([
 	SignUp,
 	LangBtn,
 	Search,
+	QuickGame,
+	SquareGame,
 ])
 
 const navigateTo = url => {

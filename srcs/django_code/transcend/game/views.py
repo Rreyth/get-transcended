@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from rest_framework.permissions import IsAuthenticated
 from .models import Match, Tournament
-from .serializer import PlayerSerializer
+from .serializer import MatchSerializer
 from users.models import User
 import os
 
@@ -71,7 +71,10 @@ class GamesView(APIView):
 	def get(self, request, username):
 		try:
 			user = User.objects.get(username=username)
+			matches = Match.objects.filter(players__user=user).distinct()
 
-			return Response(PlayerSerializer(user.player_set.all(), fields=('match', 'score', 'win'), many=True).data)
+			# Sérialiser les matchs avec les adversaires
+			serializer = MatchSerializer(matches, many=True, context={'target_username': username})
+			return Response(serializer.data)
 		except User.DoesNotExist:
-			return Response({'message': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+			return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
