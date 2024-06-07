@@ -1,1 +1,0 @@
-from myapp.models import *
