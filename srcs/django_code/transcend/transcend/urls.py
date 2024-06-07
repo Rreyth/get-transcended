@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from users.views import RegisterUserView, UserView, FriendView, FriendRequestsView, FriendRequestView, ReseachUserView
+from users.views import RegisterUserView, UserView, FriendView, FriendRequestsView, FriendRequestView, ReseachUserView, Log42
 from chat.views import DMView
 from game.views import GameStorageView
 from rest_framework_simplejwt.views import (
@@ -23,6 +23,7 @@ from rest_framework_simplejwt.views import (
 )
 
 urlpatterns = [
+    path('api/42/', Log42.as_view()),
     path('api/user/', UserView.as_view()),
     path('api/user/search/', ReseachUserView.as_view()),
     path('api/user/friends/', FriendView.as_view()),
