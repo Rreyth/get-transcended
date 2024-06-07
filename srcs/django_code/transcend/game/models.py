@@ -28,8 +28,8 @@ class Match(models.Model):
 
 
 class Player(models.Model):
-	user = models.ForeignKey(User, on_delete=models.CASCADE)
-	match = models.ForeignKey(Match, on_delete=models.CASCADE)
+	user = models.ForeignKey(User, related_name='players', on_delete=models.CASCADE)
+	match = models.ForeignKey(Match, related_name='players', on_delete=models.CASCADE)
 	score = models.IntegerField(default=0)
 	win = models.BooleanField()
 

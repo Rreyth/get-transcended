@@ -1,10 +1,15 @@
 import { Thread } from "./thread.js";
 import { token_checker } from "./helpers.js";
 
-export const render = (file) => {
+export const render = (file, vars = {}) => {
     fetch(`/static/html/${file}.html`)
         .then(response => response.text())
         .then(html => {
+
+            for (const property in vars) {
+                html = html.replace(`{{ ${property} }}`, vars[property])
+            }
+
             document.querySelector('#content').innerHTML = html;
         })
         .catch(error => console.error('Error loading page:', error));
@@ -56,13 +61,14 @@ export class Router
         let pathname = location.pathname.replace(/\/+$/, '')
 
         this.routes.map(async route => {
-            let path = route.path.replace(/\/+$/, '')
+            let path = route.path.replace(/\/+$/, '').replace(/{\w+}/, "([^/]+)")  
+            const match = pathname.match(new RegExp(`^${path}$`))
 
-            if (pathname == path)
+            if (match)
             {
 				await token_checker();
                 pageFound = true
-                route.callback();
+                route.callback(match);
             }
         })
 

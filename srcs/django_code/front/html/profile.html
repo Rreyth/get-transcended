@@ -1,0 +1,31 @@
+<div class="mx-auto pt-4 d-flex flex-column gap-4" style="max-width: 60em;">
+    <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-4">
+            <img class="rounded-circle" width="120.5rem" height="120.5rem" src="{{ avatar }}" />
+            <h2>{{ username }}</h2>
+        </div>
+        <button type="button" class="btn btn-primary btn-lg">Add friend</button>
+    </div>
+    <div class="card-group text-center">
+        <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Game win</h5>
+              <p class="card-text">{{ wins }}</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Total Game</h5>
+              <p class="card-text">{{ games }}</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">WinRate</h5>
+              <p class="card-text">{{ winrate }}</p>
+            </div>
+        </div>
+    </div>
+    <ol class="list-group" id="games">
+    </ol>
+</div>
