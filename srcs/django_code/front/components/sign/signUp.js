@@ -57,7 +57,7 @@ export class SignUp extends Component {
 				if (!emailIsValid(inputEmail.value) && inputEmail.value != "")
 				{
 					inputEmail.style.color = '#a51221';
-					createPopover(inputEmail, "popover-email", "mal formater"); //pb avec le dropdown click
+					createPopover(inputEmail, "popover-email", "mal formater");
 				}
 				else
 					removeError(inputEmail, "popover-email");
@@ -124,14 +124,14 @@ const passPopoverContent = /* html */ `
 
 async function registerUser(username, email, password, file)
 {
+	console.log("regist");
 	if (!emailIsValid(email))
 		return;
 	else if (passwordCheck(password).includes(false))
 		return;
-	else if (username > lengthUserMax)
+	else if (username.length > lengthUserMax)
 		return;
-	// if (!file)
-		// console.log("hey")
+
 	const data = new FormData();
 	data.append("username", username);
 	data.append("email", email);
@@ -139,7 +139,6 @@ async function registerUser(username, email, password, file)
 	if (file)
 		data.append("avatar", file);
 	const response = await api("/register/", "POST", data);
-	// add verification of response (print error alert)
 	const res = (await response.json());
 	if (res.username || res.email || res.avatar)
 	{
