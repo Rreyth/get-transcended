@@ -161,10 +161,14 @@ export class Ball {
 							}
 				}
 				else if (players.length === 4) {
-					if (player.nb === 1 || player.nb === 2)
+					if (player.nb === 1 || player.nb === 2) {
 						players[2].score += 1;
-					else
+						players[3].score += 1;
+					}
+					else {
 						players[0].score += 1;
+						players[1].score += 1;
+					}
 				}
 				this.stick = player.nb;
 				this.multiplier = 1.0;

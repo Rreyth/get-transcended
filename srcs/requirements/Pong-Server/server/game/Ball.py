@@ -143,8 +143,10 @@ class Ball:
 				elif players.__len__() == 4:
 					if player.nb == 1 or player.nb == 2:
 						players[2].score += 1
+						players[3].score += 1
 					else:
 						players[0].score += 1
+						players[1].score += 1
 				self.stick = player.nb
 				self.multiplier = 1.0
 				self.side = player.side
