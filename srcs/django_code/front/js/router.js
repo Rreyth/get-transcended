@@ -36,14 +36,16 @@ class Route
 
 export class Router
 {
-    static routes = []
+    static routes = {}
     static notFoundAction = null
 
     static set(path, callback)
     {
+        path = path.replace(/\/+$/, '').replace(/{\w+}/, "([^/]+)")  
+
         const route = new Route(path, callback)
 
-        this.routes.push(route)
+        this.routes[path] = route
 
         return route
     }
@@ -53,26 +55,33 @@ export class Router
         this.notFoundAction = callback
     }
 
-    static run()
+    static async run()
     {
         Thread.clearAll()
 
-        let pageFound = false
         let pathname = location.pathname.replace(/\/+$/, '')
+        let route = null;
+        let match = null;
 
-        this.routes.map(async route => {
-            let path = route.path.replace(/\/+$/, '').replace(/{\w+}/, "([^/]+)")  
-            const match = pathname.match(new RegExp(`^${path}$`))
+        let exist = Object.keys(this.routes).some(function(key) {
+            const m = pathname.match(new RegExp(`^${key}$`))
 
-            if (match)
-            {
-				await token_checker();
-                pageFound = true
-                route.callback(match);
+            if (m != null) {
+                route = Router.routes[key]
+                match = m
+
+                return true
             }
-        })
 
-        if (!pageFound && this.notFoundAction != null)
+            return false
+        });
+
+        if (exist)
+        {
+            await token_checker();
+            route.callback(match)
+        }
+        else
         {
             this.notFoundAction()
         }
