@@ -10,6 +10,15 @@ import { Ball } from "./Ball.js";
 import { AI } from "./AI.js";
 import { Wall } from "./Wall.js";
 
+function NextMatchEvent(opponent) {
+	const event = new CustomEvent('NextMatchEvent', {
+		detail: {
+			opponent: opponent
+		}
+	});
+	window.dispatchEvent(event);
+}
+
 const img = new Image();
 img.src = "/static/js/game/tournament_end.jpg";
 img.width = canvas.width * 0.3;
@@ -45,6 +54,7 @@ export class Tournament {
 		if (creator)
 			this.players.set(creator, "(SPEC)");
 		this.save = [];
+		this.notified = false;
 	}
 
 	initPlayers(players) {
@@ -198,6 +208,17 @@ export class Tournament {
 		}
 	}
 
+	notifyNextMatch(id) {
+		if (this.notified)
+			return;
+		const players_id = [this.matches[this.match_index][0].nb, this.matches[this.match_index][1].nb];
+		if (players_id.includes(id)) {
+			this.notified = true;
+			const opponent = (this.matches[this.match_index][0].nb != id) ? this.matches[this.match_index][0].name : this.matches[this.match_index][1].name;
+			NextMatchEvent(opponent);
+		}
+	}
+
 	onlineUpdate(msg, core) {
 		if ('cmd' in msg) {
 			if (msg.cmd === 'StartMatch')
@@ -225,6 +246,7 @@ export class Tournament {
 		this.state = msg.state;
 		this.timer[0] = msg.timer;
 		this.match_index = msg.index;
+		this.notifyNextMatch(core.tournament_id);
 	}
 
 	leave(id) {
@@ -237,6 +259,7 @@ export class Tournament {
 	}
 
 	onlineStart(states, core) {
+		this.notified = false;
 		for (const [p] of this.players) {
 			this.players.set(p, states[p.nb]);
 		}
