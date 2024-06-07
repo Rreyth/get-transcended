@@ -12,6 +12,9 @@ export class QuickGame extends Component
         const bgColor = this.getAttribute('has_won') == 'true' ? 'text-bg-success' : 'text-bg-danger'
 
         this.innerHTML = /*html*/`<li class="row d-flex align-items-center">
+            <div class="col">
+                ${this.getAttribute("at")}
+            </div>
             <div class="col ms-2 fw-bold">
                 ${this.getAttribute("target-user-username")}
             </div>

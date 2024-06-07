@@ -17,6 +17,9 @@ export class TeamGame extends Component
         const bgColor = this.getAttribute('has_won') == 'true' ? 'text-bg-success' : 'text-bg-danger'
 
         this.innerHTML = /*html*/`<li class="row d-flex align-items-center">
+            <div class="col">
+                ${this.getAttribute("at")}
+            </div>
             <div class="col ms-2 fw-bold">
                 ${this.getAttribute("player-1-username")} - ${this.link(this.getAttribute("player-2-username"))} 
             </div>
