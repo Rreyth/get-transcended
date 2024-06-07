@@ -124,7 +124,6 @@ const passPopoverContent = /* html */ `
 
 async function registerUser(username, email, password, file)
 {
-	console.log("regist");
 	if (!emailIsValid(email))
 		return;
 	else if (passwordCheck(password).includes(false))
