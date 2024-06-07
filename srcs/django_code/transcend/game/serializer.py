@@ -22,21 +22,18 @@ class MatchSerializer(DynamicFieldsModelSerializer):
         if not target_username:
             return []
 
-        try:
-            target_user = User.objects.get(username=target_username)
-        except User.DoesNotExist:
-            return []
+        players = obj.players.all()
 
-        try:
-            adversaries = obj.players.exclude(user=target_user)
-            same_named_players = obj.players.filter(user__username=target_username).exclude(user=target_user)
-            first_player = same_named_players.first()
-            if first_player:
-                adversaries = adversaries.exclude(id=first_player.id)
-            adversaries |= same_named_players
-            return PlayerSerializer(adversaries, many=True, fields=('user', 'win', 'score')).data
-        except Player.DoesNotExist:
-            return []
+        first_player = None
+        for player in players:
+            if player.user.username == target_username:
+                first_player = player
+                break
+
+        if first_player:
+            players = players.exclude(id=first_player.id)
+
+        return PlayerSerializer(players, many=True, fields=('user', 'win', 'score')).data
 
     def get_target_user_info(self, obj):
         target_username = self.context.get('target_username', None)

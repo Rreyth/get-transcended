@@ -1,6 +1,10 @@
 import { Router, render } from "../js/router.js";
 import { api, user, user_token } from "../js/helpers.js"
 
+Router.notFound(() => {
+    render('404')
+})
+
 Router.set('/', async () => {
 	if (await user() == null)
 		render('sign')
@@ -49,13 +53,11 @@ Router.set('/user/{username}', async (match) => {
 	const games = await r.json()
 	const section = document.querySelector('#games')
 
-	console.log(games)
-
 	if (games.length > 0)
 	{
 		for (const game of games)
 		{
-			if (game.mode == "QuickGame")
+			if (game.players.length == 2)
 			{
 				section.innerHTML += `<c-quickgame class="list-group-item" target-user-username="${game.target_user_info.user.username}" target-user-score="${game.target_user_info.score}" opponent="${game.adversaries[0].user.username}" opponent-score="${game.adversaries[0].score}" has_won="${game.target_user_info.win}"></c-quickgame>`
 			}
@@ -65,7 +67,23 @@ Router.set('/user/{username}', async (match) => {
 			}
 			else
 			{
-				section.innerHTML += `<c-teamgame class="list-group-item" has_won="${game.target_user_info.win}" team-1-score="${game.target_user_info.score}" team-2-score="${game.adversaries[2].score}" player-1-username="${game.target_user_info.user.username}" player-2-username="${game.adversaries[0].user.username}" player-3-username="${game.adversaries[1].user.username}" player-4-username="${game.adversaries[2].user.username}"></c-teamgame>`
+				let players = []
+				let otherScore = 0
+
+				for (const player of game.players)
+				{
+					if (game.target_user_info.score != player.score)
+						otherScore = player.score
+					players.push(player.user.username)
+				}
+
+				let indexOfPlayer = players.indexOf(game.target_user_info.user.username)
+				const indexOfMate = indexOfPlayer % 2 ? indexOfPlayer - 1 : indexOfPlayer + 1
+
+				players.splice(indexOfPlayer, 1)
+				players.splice(indexOfMate % 2 ? indexOfMate - 1 : indexOfMate, 1)
+				
+				section.innerHTML += `<c-teamgame class="list-group-item" has_won="${game.target_user_info.win}" team-1-score="${game.target_user_info.score}" team-2-score="${otherScore}" player-1-username="${game.target_user_info.user.username}" player-2-username="${game.players[indexOfMate].user.username}" player-3-username="${players[0]}" player-4-username="${players[1]}"></c-teamgame>`
 			}
 		}
 	}
@@ -77,8 +95,4 @@ Router.set('/user/{username}', async (match) => {
 			</div>
 		</li>`
 	}
-})
-
-Router.notFound(() => {
-    render('404')
 })
