@@ -32,6 +32,8 @@ class User(AbstractBaseUser):
     wins = models.IntegerField(default=0)
     games = models.IntegerField(default=0)
     winrate = models.IntegerField(default=0)
+
+    login42 = models.CharField(default=None, blank=True, null=True) 
  
     objects = UserProfileManager()
  
