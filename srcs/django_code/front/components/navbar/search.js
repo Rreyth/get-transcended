@@ -50,7 +50,7 @@ function createUserCard(imgName, name)
 						<span class="text-truncate" style="font-size: 1.5em;">${name}</span>
 					</div>
 					<div class="d-flex align-items-start justify-content-evenly btns btns-${name}" style="height: 33%;">
-						<i class='bx bxs-user-detail rounded-circle bg-light border border-dark p-1' id="bt-profile" style="cursor: pointer;"></i>
+						<a href="/user/${name}" class="text-decoration-none text-reset"><i class='bx bxs-user-detail rounded-circle bg-light border border-dark p-1' id="bt-profile"></i></a>
 						<i class='bx bx-user-plus rounded-circle bg-light border border-dark p-1' style="cursor: pointer;"></i>
 						<i class='bx bx-message-dots rounded-circle bg-light border border-dark p-1' style="cursor: pointer;"></i>
 						<i class='bx bx-joystick rounded-circle bg-light border border-dark p-1' style="cursor: pointer;"></i>

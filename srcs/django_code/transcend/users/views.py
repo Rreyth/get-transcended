@@ -6,6 +6,7 @@ from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from users.models import User, FriendRequest
 from .serializer import UserSerializer, FriendRequestSerializer, CustomTokenObtainPairSerializer
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 from rest_framework_simplejwt.tokens import RefreshToken
 import requests
 import os
@@ -115,9 +116,18 @@ class FriendView(APIView):
     parser_classes = [JSONParser, MultiPartParser, FormParser]
 
     def get(self, request):
-        serializer = UserSerializer(request.user.friends, many=True)
+        target = request.query_params.get('target')
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        if target:
+            friend = get_object_or_404(User, username=target)
+            if friend in request.user.friends.all():
+                serializer = UserSerializer(friend)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response({"detail": "Friend not found"}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            serializer = UserSerializer(request.user.friends, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
 class FriendRequestsView(APIView):
     permission_classes = (IsAuthenticated,)
