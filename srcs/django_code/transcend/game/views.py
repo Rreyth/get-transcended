@@ -71,7 +71,7 @@ class GamesView(APIView):
 	def get(self, request, username):
 		try:
 			user = User.objects.get(username=username)
-			matches = Match.objects.filter(players__user=user).distinct()
+			matches = Match.objects.filter(players__user=user).order_by('-created_at').distinct()
 
 			# Sérialiser les matchs avec les adversaires
 			serializer = MatchSerializer(matches, many=True, context={'target_username': username})
