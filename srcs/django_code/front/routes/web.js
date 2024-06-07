@@ -16,8 +16,8 @@ Router.set('/about', () => {
 	render('about')
 })
 
-Router.set('/login', () => {
-	render('login')
+Router.set('/setting', () => {
+	render('setting')
 })
 
 Router.set('/pong', async () => {
