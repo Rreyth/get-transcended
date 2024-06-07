@@ -52,7 +52,10 @@ class Menu:
 			await core.GameHub.send(json.dumps({'type' : 'join', 'id' : self.buttons[5].name}))
 			response : dict = json.loads(await core.GameHub.recv())
 			if response['success'] == 'false':
-				self.err = "Room " + self.buttons[5].name + " doesn't exist"
+				if "error" in response.keys():
+					self.err = response['error']
+				else:
+					self.err = "Room " + self.buttons[5].name + " doesn't exist"
 			else:
 				core.GamePort = response['port']
 				room_id = self.buttons[5].name

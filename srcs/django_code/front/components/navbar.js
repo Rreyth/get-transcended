@@ -7,7 +7,7 @@ export class Navbar extends Component {
 	}
 
 	async connectedCallback() {
-		token_checker();
+		await token_checker();
 		if (await user() != null)
 		{
 			this.innerHTML = await content();

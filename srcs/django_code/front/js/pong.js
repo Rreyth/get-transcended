@@ -102,7 +102,7 @@ function hub_error(error) {
 	console.error("Connection failed: ", error);
 	timer = 5;
 	connect_last = Date.now() / 1000;
-	loginInterval = Thread.new(connect_loop, 100);
+	loginInterval = Thread.new(connect_loop, 1000);
 }
 
 function hub_open() {
@@ -244,7 +244,7 @@ function parse_msg(event) {
 	}
 	else if (msg.type == "joinResponse") {
 		if (msg.success == 'false')
-			game.menu.err = "Room " + game.menu.buttons[5].name + " doesn't exist";
+			game.menu.err = (msg.error) ? msg.error : "Room " + game.menu.buttons[5].name + " doesn't exist";
 		else {
 			game.GamePort = msg.port;
 			room_id = game.menu.buttons[5].name;

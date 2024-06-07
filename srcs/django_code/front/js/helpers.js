@@ -95,11 +95,13 @@ export const auth = async (username, password) => {
 export async function token_checker() {
 	const token = await user_token();
 	if (!token)
-		return
+		return;
+
 	const response = await api('/user/', 'GET', undefined, token);
+
 	if (!response.ok) { 
 		cookieStore.delete(name="token");
-		return
+		return;
 	}
 
 	const expiration = (await user()).exp;
