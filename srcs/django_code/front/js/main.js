@@ -12,6 +12,7 @@ import { LangBtn } from "../components/lang.js";
 import { Search } from "../components/navbar/search.js";
 import { QuickGame } from "../components/profile/quickgame.js";
 import { SquareGame } from "../components/profile/squaregame.js";
+import { TeamGame } from "../components/profile/teamgame.js";
 
 Component.loader([
 	Navbar,
@@ -26,6 +27,7 @@ Component.loader([
 	Search,
 	QuickGame,
 	SquareGame,
+	TeamGame
 ])
 
 const navigateTo = url => {

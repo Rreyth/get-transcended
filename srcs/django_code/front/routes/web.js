@@ -63,6 +63,10 @@ Router.set('/user/{username}', async (match) => {
 			{
 				section.innerHTML += `<c-squaregame class="list-group-item" player-winner-score="${game.score}" player-1-username="${game.target_user_info.user.username}" player-1-score="${game.target_user_info.score}" player-2-username="${game.adversaries[0].user.username}" player-2-score="${game.adversaries[0].score}" player-3-username="${game.adversaries[1].user.username}" player-3-score="${game.adversaries[1].score}" player-4-username="${game.adversaries[2].user.username}" player-4-score="${game.adversaries[2].score}"></c-squaregame>`
 			}
+			else
+			{
+				section.innerHTML += `<c-teamgame class="list-group-item" has_won="${game.target_user_info.win}" team-1-score="${game.target_user_info.score}" team-2-score="${game.adversaries[2].score}" player-1-username="${game.target_user_info.user.username}" player-2-username="${game.adversaries[0].user.username}" player-3-username="${game.adversaries[1].user.username}" player-4-username="${game.adversaries[2].user.username}"></c-teamgame>`
+			}
 		}
 	}
 	else
