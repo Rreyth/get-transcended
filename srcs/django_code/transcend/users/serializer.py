@@ -25,7 +25,7 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
 class UserSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email', 'username', 'password', 'avatar', 'created_at', 'wins', 'games', 'winrate', 'login42')
+        fields = ('id', 'email', 'username', 'password', 'avatar', 'created_at', 'wins', 'games', 'winrate', 'login42', 'a2f')
         extra_kwargs = {'password': {'write_only': True}}
 
     def get_avatar_url(self, obj):
@@ -45,6 +45,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         token['username'] = user.username
         token['avatar'] = user.avatar.url if user.avatar and hasattr(user.avatar, 'url') else None
+        token['email'] = user.email
+        token['login42'] = user.login42
 
         return token
 

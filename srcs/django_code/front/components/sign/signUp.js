@@ -235,7 +235,7 @@ const content = /*html*/`
 		<div class="form-group flex-column d-flex row-gap-5">
 
 			<div class="position-relative d-flex align-self-center justify-content-center align-items-center rounded-circle bg-secondary p-2" id="addimg-btn" style="width: 10em; height: 10em; cursor:pointer;">
-				<img class="rounded-circle" id="profile-img" src="/media/frank.svg" style="width: 10em; height: 10em;" />
+				<img class="rounded-circle" id="profile-img" src="/media/frank.svg" style="width: 10em; height: 10em; object-fit: cover; object-position: center;" />
 				<div class="position-absolute d-flex justify-content-center align-items-center rounded-circle bg-primary p-1" style="right:0.3em; bottom:0.3em;">
 					<i class='bx bx-plus bx-sm' style="transform: translate(1%, 4%);"></i>
 				</div>

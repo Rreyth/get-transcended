@@ -86,6 +86,9 @@ class Log42(APIView):
                         refresh["username"] = username
                     else:
                         refresh["username"] = user_data['login']
+                    refresh['avatar'] = user.avatar.url if user.avatar and hasattr(user.avatar, 'url') else None
+                    refresh['email'] = user.email
+                    refresh['login42'] = user.login42
                     return Response({'access' : str(refresh.access_token)}, status=status.HTTP_201_CREATED)
 
                 except Exception as e:
@@ -99,6 +102,14 @@ class Log42(APIView):
                 return Response({'apiError': 'Error connexion api'}, status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e:
             return Response({'apiError': 'Error connexion api', 'details': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class A2fView(APIView):
+    permission_classes = (IsAuthenticated,)
+    parser_classes = [JSONParser, MultiPartParser, FormParser]
+
+    def get(self, request):
+        return Response({ "actived": request.user.a2f }, status=status.HTTP_200_OK)
 
 class ReseachUserView(APIView):
     permission_classes = (IsAuthenticated,)
