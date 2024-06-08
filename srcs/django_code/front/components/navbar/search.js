@@ -1,5 +1,5 @@
 import { Component } from "../../js/component.js";
-import { user, translate, user_token, api } from "../../js/helpers.js";
+import { user, translate, user_token, APIRequest } from "../../js/helpers.js";
 
 export class Search extends Component {
 
@@ -13,7 +13,7 @@ export class Search extends Component {
 	{
 		if (this.friends == null)
 		{
-			const response = await api("/user/friends/", "GET", null, await user_token())
+			const response = await APIRequest.build("/user/friends/", "GET").send()
 			this.friends = await response.json()
 		}
 
@@ -26,21 +26,21 @@ export class Search extends Component {
 		{
 			elements.forEach(ele => {
 				ele.onclick = async () => {
-					const response = await api(`/user/friends/requests/`, 'GET', null, await user_token())
+					const response = await APIRequest.build(`/user/friends/requests/`, 'GET').send()
 					const data = await response.json()
 
 					const friendRequest = data.received.find(req => req.from_user.id == ele.getAttribute('user-id'))
 
 					if (friendRequest)
 					{
-						api(`/user/friends/requests/${friendRequest.id}`, 'POST', null, await user_token())
+						APIRequest.build(`/user/friends/requests/${friendRequest.id}`, 'POST').send()
 
 						ele.classList.remove('bx-user-plus')
 						ele.classList.add('bx-message-dots')
 					}
 					else
 					{
-						api(`/user/friends/requests/`, 'POST', JSON.stringify({ to_user: ele.getAttribute('user-id') }), await user_token())
+						APIRequest.build(`/user/friends/requests/`, 'POST').setBody({ to_user: ele.getAttribute('user-id') }).sendJSON()
 					}
 				}
 			})
@@ -57,7 +57,7 @@ export class Search extends Component {
 			if (this.getAttribute('content') === "")
 				this.innerHTML = await emptySearch();
 			else {
-				let response = await api("/user/search/?username_prefix=" + attrContent, "GET", null, token);
+				let response = await APIRequest.build("/user/search/?username_prefix=" + attrContent, "GET").send();
 				response = await response.json();
 			
 				this.innerHTML = /* html */ `

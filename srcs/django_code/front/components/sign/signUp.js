@@ -1,5 +1,5 @@
 import { Component } from "../../js/component.js";
-import { api } from "../../js/helpers.js"
+import { APIRequest } from "../../js/helpers.js"
 
 export class SignUp extends Component {
     static getName() {
@@ -137,7 +137,7 @@ async function registerUser(username, email, password, file)
 	data.append("password", password);
 	if (file)
 		data.append("avatar", file);
-	const response = await api("/register/", "POST", data);
+	const response = await APIRequest.build("/register/", "POST").setBody(data).send();
 	const res = (await response.json());
 	if (res.username || res.email || res.avatar)
 	{

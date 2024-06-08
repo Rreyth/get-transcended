@@ -1,5 +1,5 @@
 import { Router, render } from "../js/router.js";
-import { api, formatDate, user, user_token } from "../js/helpers.js"
+import { APIRequest, formatDate, user, user_token } from "../js/helpers.js"
 
 Router.notFound(() => {
     render('404')
@@ -34,7 +34,7 @@ Router.set('/pong', async () => {
 })
 
 Router.set('/user/{username}', async (match) => {
-	const response = await api(`/user/${match[1]}`, 'GET', {}, await user_token())
+	const response = await APIRequest.build(`/user/${match[1]}`, 'GET').send()
 	const data = await response.json()
 
 	if (response.status == 404) {
@@ -51,7 +51,7 @@ Router.set('/user/{username}', async (match) => {
 		target_id: data.id,
 	})
 
-	const r = await api(`/user/${match[1]}/games/`, 'GET', {}, await user_token())
+	const r = await APIRequest.build(`/user/${match[1]}/games/`, 'GET').send()
 
 	const games = await r.json()
 	const section = document.querySelector('#games')
