@@ -1,5 +1,5 @@
 import { Component } from "../js/component.js";
-import { user, api, user_token } from "../js/helpers.js"
+import { user, api, user_token, getAvatarUrl } from "../js/helpers.js"
 
 
 export class Settings extends Component {
@@ -15,24 +15,24 @@ export class Settings extends Component {
 		this.innerHTML = await content(userVlue, a2fStatus);
 
 		const saveBtn = this.querySelector("#save-btn");
+		const cpassInput = this.querySelector("#cpass-input");
 
 		this.querySelectorAll("input[filter]").forEach(el => {
 			el.oninput = () => {
 				if ([...this.querySelectorAll("input[filter]")].some(e => e.type != "checkbox" ? e.value.length : e.checked != a2fStatus))
+				{	
 					saveBtn.removeAttribute("disabled");
+					if (!userVlue.login42)
+						cpassInput.removeAttribute("disabled");
+				}
 				else
+				{
 					saveBtn.setAttribute("disabled", "");
+					cpassInput.setAttribute("disabled", "");
+				}
 			}
 		})
     }
-}
-
-
-const getAvatarUrl = (baseUrl) => {
-	if (baseUrl.search("https") != -1)
-		return (baseUrl.replace("/https%3A", "https://"));
-	else
-		return(baseUrl);
 }
 
 const content = async (user, a2f) => /*html*/`
@@ -84,7 +84,7 @@ const content = async (user, a2f) => /*html*/`
 
 				<div class="modal-footer justify-content-between">
 					<div class="d-flex">
-						<input class="form-control mx-2" id="cpass-input" type="password" placeholder="Current password" ${user.login42 ? "disabled" : ""}>
+						<input class="form-control mx-2" id="cpass-input" type="password" placeholder="Current password" disabled>
 					</div>
 					<div>
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

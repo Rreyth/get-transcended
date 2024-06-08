@@ -1,5 +1,5 @@
 import { Router, render } from "../js/router.js";
-import { api, formatDate, user, user_token } from "../js/helpers.js"
+import { api, formatDate, user, user_token, getAvatarUrl } from "../js/helpers.js"
 
 Router.notFound(() => {
     render('404')
@@ -37,19 +37,22 @@ Router.set('/user/{username}', async (match) => {
 	const response = await api(`/user/${match[1]}`, 'GET', {}, await user_token())
 	const data = await response.json()
 
-	if (!response.ok) {
-		return console.log(data)
+	if (response.status == 404) {
+		return render('404')
 	}
 
 	render('profile', {
-		avatar: data.avatar,
+		avatar: getAvatarUrl(data.avatar),
 		username: data.username,
 		wins: data.wins,
 		games: data.games,
 		winrate: data.winrate,
+		target_username: match[1],
+		target_id: data.id,
 	})
 
 	const r = await api(`/user/${match[1]}/games/`, 'GET', {}, await user_token())
+
 	const games = await r.json()
 	const section = document.querySelector('#games')
 

@@ -120,3 +120,10 @@ export const formatDate = (date, format) => {
                  .replace('MM', month)
                  .replace('DD', day);
 }
+
+export const getAvatarUrl = (baseUrl) => {
+	if (baseUrl.search("https") != -1)
+		return (baseUrl.replace("/https%3A", "https://"));
+	else
+		return(baseUrl);
+}
