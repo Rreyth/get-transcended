@@ -25,10 +25,15 @@ export class Component extends HTMLElement
         throw new Error("Name is not define")
     }
 
+    static getExtends()
+    {
+        return {}
+    }
+
     static loader(components = [])
     {
         components.forEach(c => {
-            customElements.define(`c-${c.getName()}`, c)
+            customElements.define(`c-${c.getName()}`, c, c.getExtends())
         })
     }
     

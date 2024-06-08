@@ -37,8 +37,8 @@ Router.set('/user/{username}', async (match) => {
 	const response = await api(`/user/${match[1]}`, 'GET', {}, await user_token())
 	const data = await response.json()
 
-	if (!response.ok) {
-		return console.log(data)
+	if (response.status == 404) {
+		return render('404')
 	}
 
 	render('profile', {
@@ -47,9 +47,12 @@ Router.set('/user/{username}', async (match) => {
 		wins: data.wins,
 		games: data.games,
 		winrate: data.winrate,
+		target_username: match[1],
+		target_id: data.id,
 	})
 
 	const r = await api(`/user/${match[1]}/games/`, 'GET', {}, await user_token())
+
 	const games = await r.json()
 	const section = document.querySelector('#games')
 
