@@ -108,8 +108,7 @@ class ReseachUserView(APIView):
     def get(self, request):
         username_prefix = request.query_params.get('username_prefix', '')
         users = User.objects.filter(username__icontains=username_prefix)[:10]
-        usernames = [user.username for user in users]
-        return Response(usernames, status=status.HTTP_200_OK)
+        return Response(UserSerializer(users, many=True).data, status=status.HTTP_200_OK)
 
 class FriendView(APIView):
     permission_classes = (IsAuthenticated,)
