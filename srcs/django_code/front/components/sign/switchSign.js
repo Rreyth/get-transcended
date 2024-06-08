@@ -1,4 +1,5 @@
 import { Component } from "../../js/component.js";
+import { APIRequest } from "../../js/helpers.js";
 
 export class SSign extends Component {
     static getName() {
@@ -12,9 +13,10 @@ export class SSign extends Component {
 		const code = urlParams.get('code');
 		if (code)
 		{
-			const url = `https://${location.hostname}:${location.port}/api/42?code=${code}`;
-					
-			const response = await fetch(url);
+			// const url = `https://${location.hostname}:${location.port}/api/42?code=${code}`;
+			
+			// const response = await fetch(url);
+			const response = await APIRequest.build(`/42?code=${code}`, 'GET').send();
 			const res = (await response.json());
 			if (res.access)
 			{
