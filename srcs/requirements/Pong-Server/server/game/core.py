@@ -250,6 +250,7 @@ async def handle_game(websocket, path):
 				for key, value in game.clients.items():
 					if value == websocket:
 						del game.clients[key]
+						await game.hub[0].send(json.dumps(game.endMsg(key, 'quit')))
 						await game.sendHub(json.dumps(game.endMsg(key, 'quit')))
 						await game.sendAll(game.endMsg(key, 'quit'))
 						break
@@ -320,10 +321,10 @@ async def parse_msg(msg : dict, websocket):
 					game.tournament.leave(msg['id'])
 					await game.tournament.endMatch(game.players, game, 'leave')
 			else:
-				await game.sendHub(json.dumps(game.endMsg(msg['id'], 'quit')))
+				await game.hub[0].send(json.dumps(game.endMsg(msg['id'], 'quit')))
 				await game.sendAll(game.endMsg(msg['id'], 'quit'))
 				game.is_running = False
-				await websocket.close()
+				await game.closeAll()
 
 	if msg['type'] == 'close':
 		game.is_running = False
