@@ -1,5 +1,5 @@
 import { Component } from "../js/component.js";
-import { user, api, user_token, getAvatarUrl } from "../js/helpers.js"
+import { user, getAvatarUrl, APIRequest } from "../js/helpers.js"
 
 
 export class Settings extends Component {
@@ -9,7 +9,7 @@ export class Settings extends Component {
 	
     async connectedCallback() {
 		const userValue = await user();
-		let a2fStatus = await api("/user/a2f","GET", null, await user_token());
+		let a2fStatus = await APIRequest.build("/user/a2f", "GET").send();
 		a2fStatus = (await a2fStatus.json()).actived
 
 		this.innerHTML = await content(userValue, a2fStatus);
