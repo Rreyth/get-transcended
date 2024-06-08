@@ -1,5 +1,5 @@
 import { Component } from "../js/component.js";
-import { api, user_token } from "../js/helpers.js"
+import { APIRequest, user_token } from "../js/helpers.js"
 import { Cache } from "../js/cache.js";
 import { Friend } from "./chat/friend.js";
 
@@ -30,7 +30,7 @@ export class Chat extends Component {
 
 	async getFriends()
 	{
-		const response = await api('/user/friends/', 'GET', null, await user_token())
+		const response = await APIRequest.build('/user/friends/', 'GET').send()
 
 		if (response.ok)
 		{
@@ -127,7 +127,7 @@ export class Chat extends Component {
 
 	static async fetchDmWith(userId)
 	{
-		const response = await api(`/user/dm/${userId}`, 'GET', null, await user_token());
+		const response = await APIRequest.build(`/user/dm/${userId}`, 'GET').send();
 
 		return await response.json();
 	}

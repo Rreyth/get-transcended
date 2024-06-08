@@ -8,21 +8,22 @@ export class Settings extends Component {
     }
 	
     async connectedCallback() {
-		const userVlue = await user();
+		const userValue = await user();
 		let a2fStatus = await api("/user/a2f","GET", null, await user_token());
 		a2fStatus = (await a2fStatus.json()).actived
 
-		this.innerHTML = await content(userVlue, a2fStatus);
+		this.innerHTML = await content(userValue, a2fStatus);
 
 		const saveBtn = this.querySelector("#save-btn");
 		const cpassInput = this.querySelector("#cpass-input");
+		const avatarBtn = this.querySelector("#avatar-btn");
 
 		this.querySelectorAll("input[filter]").forEach(el => {
 			el.oninput = () => {
 				if ([...this.querySelectorAll("input[filter]")].some(e => e.type != "checkbox" ? e.value.length : e.checked != a2fStatus))
 				{	
 					saveBtn.removeAttribute("disabled");
-					if (!userVlue.login42)
+					if (!userValue.login42)
 						cpassInput.removeAttribute("disabled");
 				}
 				else
@@ -32,6 +33,19 @@ export class Settings extends Component {
 				}
 			}
 		})
+
+		avatarBtn.onclick = () => {document.getElementById('fileInput').click();};
+		document.getElementById('fileInput').onchange = () => {
+			const file = document.getElementById('fileInput').files[0]
+			if (file)
+				document.getElementById('profile-img').src = URL.createObjectURL(file);
+			else
+				document.getElementById('profile-img').src = getAvatarUrl(userValue.avatar);
+		}
+
+		saveBtn.onclick = () => {
+			console.log("coucou");
+		}
     }
 }
 

@@ -26,6 +26,7 @@ export const translate = async (key) => {
     cookieStore.set({ name: "lang", value: default_lang })
     return await translate(key);
 }
+
 export const user_token = async () => {
     const token = await cookieStore.get("token")
 
@@ -35,30 +36,6 @@ export const user_token = async () => {
     }
 
     return token
-}
-
-export const api = async (path, method, formdata, token = null) => {
-	const url = `https://${location.hostname}:${location.port}/api${path}`;
-	const myHeader = new Headers();
-
-	if (path != "/register/")
-	{
-    	myHeader.append("Content-Type", "application/json");
-		if (token)
-			myHeader.append("Authorization", `Bearer ${token}`);
-	}
-	
-	let requestOptions = {
-			method: method,
-			redirect: 'follow',
-			headers: myHeader
-		};
-
-	if (method != "GET")
-		requestOptions.body = formdata;
-
-	const response = await fetch(url, requestOptions);
-	return (response)
 }
 
 export const user = async () => {
@@ -79,10 +56,10 @@ export const user = async () => {
 }
 
 export const auth = async (username, password) => {
-    const response = await api('/token/', 'POST', JSON.stringify({
+    const response = await APIRequest.build('/token/', 'POST').setBody({
         username: username,
         password: password
-    }))
+    }).sendJSON()
 
     if (response.ok)
     {
@@ -97,7 +74,7 @@ export async function token_checker() {
 	if (!token)
 		return;
 
-	const response = await api('/user/', 'GET', undefined, token);
+	const response = await APIRequest.build('/user/', 'GET').send();
 
 	if (!response.ok) { 
 		cookieStore.delete(name="token");
@@ -126,4 +103,73 @@ export const getAvatarUrl = (baseUrl) => {
 		return (baseUrl.replace("/https%3A", "https://"));
 	else
 		return(baseUrl);
+}
+export class APIRequest
+{
+
+    constructor(path, method)
+    {
+        this.headers = new Headers();
+
+        this.setMethod(method)
+            .setPath(path);
+    }
+
+    static build(path, method)
+    {
+        return new APIRequest(path, method);
+    }
+
+    setMethod(method)
+    {
+        this.method = method.toUpperCase();
+
+        return this
+    }
+
+    setPath(path)
+    {
+        this.url = `https://${location.hostname}:${location.port}/api${path[0] == '/' ? path : '/' + path}`;
+
+        return this
+    }
+
+    setBody(body)
+    {
+        this.body = body;
+
+        return this
+    }
+
+    async send()
+    {
+        const options = {
+			method: this.method,
+			redirect: 'follow'
+		};
+        const token = await user_token();
+
+        if (token != null)
+        {
+            this.headers.append("Authorization", `Bearer ${token}`);
+        }
+
+        options.headers = this.headers;
+
+        if (this.method != 'GET')
+        {
+            options.body = this.body;
+        }
+
+        return fetch(this.url, options);
+    }
+
+    sendJSON()
+    {
+        this.headers.append("Content-Type", "application/json");
+        this.body = JSON.stringify(this.body)
+
+        return this.send()
+    }
+
 }
