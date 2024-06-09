@@ -1,11 +1,19 @@
 from rest_framework import serializers
-from .models import PrivateMessage
+from .models import *
 from users.serializer import UserSerializer
 
-class PrivateMessageSerializer(serializers.ModelSerializer):
+class MessageSerializer(serializers.ModelSerializer):
     sender = UserSerializer(read_only=True)
     recever = UserSerializer(read_only=True)
     
     class Meta:
-        model = PrivateMessage
-        fields = ('id', 'content', 'sender', 'recever', 'created_at')
+        model = Message
+        fields = '__all__'
+
+class GroupSerializer(serializers.ModelSerializer):
+    owner = UserSerializer(read_only=True)
+    members = UserSerializer(read_only=True, many=True)
+    
+    class Meta:
+        model = Group
+        fields = '__all__'

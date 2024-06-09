@@ -87,7 +87,8 @@ export class Chat extends Component {
 				if (document.getElementById('msg-area').value === '')
 					return;
 				let msg = Chat.escapeHtml(document.getElementById('msg-area').value)
-				Chat.sendMsg(socket, msg.replace(/\n/g, "<br>"));
+				// Chat.sendMsg(socket, msg.replace(/\n/g, "<br>"));
+				Chat.sendPrivateMessage(socket, Friend.lastFriendActive.username, msg.replace(/\n/g, "<br>"))
 				document.getElementById('msg-area').value = '';
 			}
 		});
@@ -107,22 +108,49 @@ export class Chat extends Component {
 				+ token
 			);
 
-			socket.onmessage = async (event) => {
+			// socket.onmessage = async (event) => {
+			// 	const data = JSON.parse(event.data);
+			// 	const element = document.querySelector("#messages");
+
+			// 	element.innerHTML += `<c-message who="${data.username}" date="${data.date}" content="${data.message}"></c-message>`
+			// 	await new Promise(resolve => requestAnimationFrame(resolve));
+
+			// 	setTimeout(() => {
+			// 		element.scrollTop = element.scrollHeight;
+			// 	}, 5);
+			// };
+
+			// const socket = new WebSocket('ws://' + window.location.host + '/ws/chat/');
+
+			socket.onmessage = function(event) {
 				const data = JSON.parse(event.data);
-				const element = document.querySelector("#messages");
+				const message = data.message;
+				const sender = data.sender;
 
-				element.innerHTML += `<c-message who="${data.username}" date="${data.date}" content="${data.message}"></c-message>`
-				await new Promise(resolve => requestAnimationFrame(resolve));
-
-				setTimeout(() => {
-					element.scrollTop = element.scrollHeight;
-				}, 5);
+				// Ajoutez le message à l'interface utilisateur
+				console.log(sender + ': ' + message);
 			};
 
 			return socket
 		}
 
 		return null
+	}
+
+	static sendMessage(socket, chatType, roomName, message) {
+		socket.send(JSON.stringify({
+			'type': chatType,
+			'room_name': roomName,
+			'message': message
+		}));
+	}
+
+	static sendGroupMessage(socket, groupName, message) {
+		Chat.sendMessage(socket, 'group_chat', groupName, message);
+	}
+
+	static sendPrivateMessage(socket, username, message) {
+		Chat.sendMessage(socket, 'PrivateChat', username, message);
 	}
 
 	static async fetchDmWith(userId)
