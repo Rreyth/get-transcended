@@ -4,7 +4,7 @@ import { Chat } from "../chat.js";
 export class Friend extends Component
 {
 
-    static lastFriendActive = null
+    static friendSelected = null
 
     static getName()
     {
@@ -15,46 +15,21 @@ export class Friend extends Component
     {
         super.connectedCallback()
 
-        this.userId = this.getAttribute("user-id")
-        this.username = this.getAttribute('username')
+        this.classList.add("list-group-item")
+        this.classList.add("list-group-item-action")
 
         this.innerHTML = /* html */`
-        <div class="d-flex justify-content-between align-items-center p-1 bg-secondary rounded-4 border-2 border border-primary gap-2" style="--bs-border-opacity: .0;" id="user-card">
-            <img class="rounded-circle" src="/media/frank.svg" alt="profile" width="25" height="25">
-            <span class="scroll-on-hover">${this.username}</span>
-        </div>
+            <div class="d-flex align-items-center gap-2" id="user-card">
+                <img src="${this.getAttribute('avatar')}" class="rounded-circle" style="width: 2em; height: 2em;" />
+                <span>${this.getAttribute('username')}</span>
+            </div>
         `
-
-        document.addEventListener("DOMContentLoaded", function() {
-            let span = document.querySelector('.scroll-on-hover');
-
-            span.addEventListener("mouseover", function() {
-                this.classList.add('scrolling');
-                span.style.overflow = 'visible';
-                span.style.textOverflow = 'clip';
-            });
-            span.addEventListener("mouseout", function() {
-                this.classList.remove('scrolling');
-                span.style.overflow = 'hidden';
-                span.style.textOverflow = 'ellipsis';
-            });
-
-        });
     }
 
     handleClick(ev)
     {
-        if (this == Friend.lastFriendActive) return;
+        Friend.friendSelected = this
 
-        Chat.displayDmWith(this)
-
-        this.querySelector('#user-card').style = ""
-
-        if (Friend.lastFriendActive != null)
-        {
-            Friend.lastFriendActive.querySelector('#user-card').style = "--bs-border-opacity: .0;"
-        }
-        
-        Friend.lastFriendActive = this
+        Chat.displayDmWith(this.getAttribute('username'))
     }
 }

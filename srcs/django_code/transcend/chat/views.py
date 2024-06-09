@@ -13,11 +13,11 @@ class DMView(APIView):
     parser_classes = [JSONParser, MultiPartParser, FormParser]
     serializer_class = MessageSerializer
 
-    def get(self, request, user):
-        u = User.objects.get(pk=user)
+    def get(self, request, username):
+        u = User.objects.get(username=username)
         messages = Message.objects.filter(Q(receiver=request.user, sender=u) | Q(receiver=u, sender=request.user))
         serializer = MessageSerializer(messages, many=True)
-        
+
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def perform_create(self, serializer):

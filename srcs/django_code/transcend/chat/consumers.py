@@ -39,14 +39,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
             recever.username,
             {
                 'type': 'broadcast',
-                'message': message
+                'message': message,
+                'chat_type': 'PRIVATE',
             }
         )
         await self.channel_layer.group_send(
             self.scope['user'].username,
             {
                 'type': 'broadcast',
-                'message': message
+                'message': message,
+                'chat_type': 'PRIVATE',
             }
         )
 
@@ -68,7 +70,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 member.username,
                 {
                     'type': 'broadcast',
-                    'message': message
+                    'message': message,
+                    'chat_type': 'GROUP',
                 }
             )
 

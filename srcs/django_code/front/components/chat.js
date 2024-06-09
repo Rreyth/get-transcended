@@ -3,6 +3,12 @@ import { APIRequest, user_token } from "../js/helpers.js"
 import { Cache } from "../js/cache.js";
 import { Friend } from "./chat/friend.js";
 
+const State = Object.freeze({
+    DEFAULT: Symbol("default"),
+	FRIEND_SELECTED: Symbol("friend_selected"),
+	GROUP_SELECTED: Symbol("group_selected"),
+});
+
 export class Chat extends Component {
 
 	static getName() {
@@ -42,56 +48,44 @@ export class Chat extends Component {
 
 	async connectedCallback() {
 		this.innerHTML = /* html */`
-			<div class="position-absolute rounded-4 d-inline-flex justify-content-start align-items-start border border-secondary" style="height: 25em; bottom: 5em; right: 0.5em;">
-				<div class="border-secondary border-end d-inline-flex flex-column justify-content-between align-self-stretch">
-					<div class="d-flex align-self-stretch flex-column justify-content-start align-items-center gap-2 p-2" id="chat-friends">
-					</div>
-					
-
-					<div class="d-flex justify-content-around align-items-center border-top border-secondary" style="padding: 0.20em;">
-						<i class='bx bx-group fs-1'></i>
-						<div class="border-secondary border" style="width: 1.5em; height: 0px; transform: rotate(90deg);"></div>
-						<i class='bx bx-user fs-1'></i>
+			<div class="card position-absolute" style="bottom: 5em; right: 0.5em;">
+				<div class="card-header d-flex justify-content-between">
+					<h5 id="chat-title">Chat</h5>
+					<button type="button" class="btn-close" aria-label="Close" id="chat-close"></button>
+				</div>
+				<div class="card-body" id="chat-body">
+					<div class="list-group" id="chat-friends">
 					</div>
 				</div>
-
-				<div class="d-flex flex-column align-items-stretch justify-content-between h-100">
-					<div class="d-flex justify-content-between align-items-center gap-3 p-3 border-bottom border-secondary">
-						<h3 id="friend-name">Personne</h3>
-						<i class='bx bxs-cog fs-2'></i>
-					</div>
-					
-					<div class="d-flex flex-column overflow-auto py-2" style="gap: 0.625rem; padding: 0.3125rem 0.5rem;" id="messages">
-						<p class="text-center w-100">Selectionner un amie !</p>
-					</div>
-
-					<div class="d-flex align-items-center justify-content-center border-top border-secondary gap-2" style="padding: 0.5em;">
-						<textarea class="rounded" placeholder="Votre message..." type="text" name="message" id="msg-area" disabled ></textarea>
-						<i class='bx bx-send fs-3' style="transform: rotate(-30deg);"></i>
-					</div>
+				<div class="card-footer">
+					<input class="form-control form-control-sm" type="text" placeholder="Search" aria-label=".form-control-sm example">
 				</div>
 			</div>
         `;
+
+		this.querySelector('#chat-close').addEventListener('click', () => {
+			this.remove();
+		});
 
 		const socket = await this.setUpWebSocket()
 
 		const friends = await this.getFriends();
 
 		friends.map(friend => {
-			document.querySelector('#chat-friends').innerHTML += `<c-friend user-id="${friend.id}" username="${friend.username}"></c-friend>`
+			document.querySelector('#chat-friends').innerHTML += `<c-friend avatar="${friend.avatar}" username="${friend.username}"></c-friend>`
 		})
 
-		this.querySelector('#msg-area').addEventListener('keydown', function (event) {
-			if (event.key === 'Enter' && !event.shiftKey) {
-				event.preventDefault();
-				if (document.getElementById('msg-area').value === '')
-					return;
-				let msg = Chat.escapeHtml(document.getElementById('msg-area').value)
-				// Chat.sendMsg(socket, msg.replace(/\n/g, "<br>"));
-				Chat.sendPrivateMessage(socket, Friend.lastFriendActive.username, msg.replace(/\n/g, "<br>"))
-				document.getElementById('msg-area').value = '';
-			}
-		});
+		// this.querySelector('#msg-area').addEventListener('keydown', function (event) {
+		// 	if (event.key === 'Enter' && !event.shiftKey) {
+		// 		event.preventDefault();
+		// 		if (document.getElementById('msg-area').value === '')
+		// 			return;
+		// 		let msg = Chat.escapeHtml(document.getElementById('msg-area').value)
+		// 		// Chat.sendMsg(socket, msg.replace(/\n/g, "<br>"));
+		// 		Chat.sendPrivateMessage(socket, Friend.lastFriendActive.username, msg.replace(/\n/g, "<br>"))
+		// 		document.getElementById('msg-area').value = '';
+		// 	}
+		// });
 
 	}
 
@@ -127,8 +121,12 @@ export class Chat extends Component {
 				const message = data.message;
 				const sender = data.sender;
 
-				// Ajoutez le message à l'interface utilisateur
-				console.log(sender + ': ' + message);
+				if (data.chat_type === 'GROUP')
+					console.log('Group chat: ' + sender + ': ' + message);
+				else if (data.chat_type === 'PRIVATE')
+					console.log('Private chat: ' + sender + ': ' + message);
+				else
+					console.log('Unknown chat type: ' + sender + ': ' + message);
 			};
 
 			return socket
@@ -153,49 +151,54 @@ export class Chat extends Component {
 		Chat.sendMessage(socket, 'PrivateChat', username, message);
 	}
 
-	static async fetchDmWith(userId)
+	static async fetchDmWith(username)
 	{
-		const response = await APIRequest.build(`/user/dm/${userId}`, 'GET').send();
+		const response = await APIRequest.build(`/user/dm/${username}`, 'GET').send();
 
 		return await response.json();
 	}
 
-	static async getDmWith(userId)
+	static async getDmWith(username)
 	{
 		let messages = Cache.getOrCreate("messages", {});
 
-		if (messages.hasOwnProperty(userId))
+		if (messages.hasOwnProperty(username))
 		{
-			return messages[userId];
+			return messages[username];
 		}
 		else
 		{
-			messages[userId] = await Chat.fetchDmWith(userId);
+			messages[username] = await Chat.fetchDmWith(username);
 
 			Cache.set("messages", messages);
 
-			return messages[userId];
+			return messages[username];
 		}
 	}
 
-	static async displayDmWith(friendElement)
+	static async displayDmWith(username)
 	{
-		const messages = await Chat.getDmWith(friendElement.userId);
-		let element = document.querySelector('#messages')
+		const messages = await Chat.getDmWith(username);
+		const body = document.querySelector('#chat-body')
 
-		document.querySelector('#friend-name').innerHTML = friendElement.username
-		document.querySelector('#msg-area').removeAttribute('disabled')
+		document.querySelector('#chat-title').innerHTML = username
 
-		element.innerHTML = ""
+		body.innerHTML = ""
 
 		messages.map(message => {
-			element.innerHTML += `<c-message who="${message.sender.username}" date="${message.created_at}" content="${message.content}"></c-message>`
+			const el = document.createElement('c-message');
+
+			el.setAttribute('who', message.sender.username);
+			el.setAttribute('date', message.created_at);
+			el.setAttribute('content', message.content);
+
+			body.appendChild(el);
 		});
 
 		await new Promise(resolve => requestAnimationFrame(resolve));
 
 		setTimeout(() => {
-			element.scrollTop = element.scrollHeight;
+			body.scrollTop = body.scrollHeight;
 		}, 10);
 	}
 
