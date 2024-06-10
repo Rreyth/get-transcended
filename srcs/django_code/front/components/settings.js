@@ -1,5 +1,6 @@
 import { Component } from "../js/component.js";
-import { user, getAvatarUrl, APIRequest } from "../js/helpers.js"
+import { user, getAvatarUrl, APIRequest, translate } from "../js/helpers.js"
+import { Router } from "../js/router.js"
 
 
 export class Settings extends Component {
@@ -43,8 +44,34 @@ export class Settings extends Component {
 				document.getElementById('profile-img').src = getAvatarUrl(userValue.avatar);
 		}
 
-		saveBtn.onclick = () => {
-			console.log("coucou");
+		const allInput = this.querySelectorAll("input");
+		const closeBtn = this.querySelector("#closeModal");
+		const errorBox = this.querySelector("#error-container");
+
+		saveBtn.onclick = async () => {
+			const bodyPrepare = {};
+			allInput.forEach(input => {
+				if (input.value)
+					bodyPrepare[input.name] = input.type == "checkbox" ? input.checked : input.value;
+			});
+			const response = await APIRequest.build("/user/", "PUT").setBody(bodyPrepare).sendJSON();
+			const data = await response.json();
+			if (response.ok)
+			{
+				cookieStore.set({ name: "token", value: data.access});
+				closeBtn.click();
+				Router.run(); 
+				// add success msg
+			}
+			else
+			{
+				errorBox.innerHTML = /*html*/`
+				<div class="alert position-relative top-0 w-100 alert-warning alert-dismissible d-flex" role="alert">
+					<i class='bx bx-error-alt bx-sm' style="margin-right: 0.4em;"></i>
+					<span id="api-error-txt">${await translate("settings." + data.error)}</span>
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>`
+			}
 		}
     }
 }
@@ -53,9 +80,10 @@ const content = async (user, a2f) => /*html*/`
 	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
+				<div id="error-container"></div>
 				<div class="modal-header">
 					<h1 class="modal-title fs-5" id="exampleModalLabel">Settings</h1>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					<button type="button" class="btn-close" id="closeModal" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
 
@@ -75,22 +103,22 @@ const content = async (user, a2f) => /*html*/`
 							<div class="col-md-auto d-flex flex-column justify-content-center align-items-center mx-2 my-2">
 								<span>Auth A2F</span>
 								<div class="form-check form-switch">
-									<input class="form-check-input" filter id="a2f-switch" type="checkbox" role="switch" ${a2f ? "checked" : ""}>
+									<input name="a2f" class="form-check-input" filter id="a2f-switch" type="checkbox" role="switch" ${a2f ? "checked" : ""}>
 								</div>
 							</div>
 
 						</div>
 
 						<div class="col-md d-flex justify-content-center align-items-center my-3 mt-5">
-							<input class="form-control mx-2" filter id="user-input" type="text" placeholder="${user.username}">
+							<input name="username" class="form-control mx-2" filter id="user-input" type="text" placeholder="${user.username}">
 						</div>
 
 						<div class="col-md d-flex justify-content-center align-items-center my-3">
-							<input class="form-control mx-2" filter id="email-input" type="email" placeholder="${user.email}">
+							<input name="email" class="form-control mx-2" filter id="email-input" type="email" placeholder="${user.email}">
 						</div>
 
 						<div class="col-md d-flex justify-content-center align-items-center my-3">
-							<input class="form-control mx-2" filter id="newpass-input" type="password" placeholder="New password" ${user.login42 ? "disabled" : ""}>
+							<input name="password" class="form-control mx-2" filter id="newpass-input" type="password" placeholder="New password" ${user.login42 ? "disabled" : ""}>
 						</div>
 
 					</div>
@@ -98,7 +126,7 @@ const content = async (user, a2f) => /*html*/`
 
 				<div class="modal-footer justify-content-between">
 					<div class="d-flex">
-						<input class="form-control mx-2" id="cpass-input" type="password" placeholder="Current password" disabled>
+						<input name="current_password" class="form-control mx-2" id="cpass-input" type="password" placeholder="Current password" disabled>
 					</div>
 					<div>
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -109,5 +137,5 @@ const content = async (user, a2f) => /*html*/`
 			</div>
 		</div>
 	</div>
-	<input type="file" filter id="fileInput" name="profile_picture" accept="image/*" style="display: none;" />
+	<input type="file" filter id="fileInput" name="avatar" accept="image/*" style="display: none;" />
 `;

@@ -16,9 +16,6 @@ Router.set('/about', () => {
 	render('about')
 })
 
-Router.set('/setting', () => {
-	render('setting')
-})
 
 Router.set('/pong', async () => {
 	if (!await user())

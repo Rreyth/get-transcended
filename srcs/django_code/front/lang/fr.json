@@ -7,5 +7,13 @@
 		"user": "Utilisateur",
 		"msg": "Messages",
 		"rshUser": "Rechercher un utilisateur"
+	},
+	"settings": {
+		"err_current_password_required": "Le mot de passe actuel est requis",
+		"err_current_password_bad": "Mauvais mot de passe (acutel)",
+		"err_exist_user": "Ce nom d'utilisateur existe déjà",
+		"err_exist_email": "Cette email existe déjà",
+		"err_inte_data": "Erreur d'intégrité des données",
+		"err_unexpected": "Une erreur inattendue est survenue"
 	}
 }

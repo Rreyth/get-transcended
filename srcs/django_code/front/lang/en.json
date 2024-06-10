@@ -7,5 +7,13 @@
 		"user": "User",
 		"msg": "Messages",
 		"rshUser": "Search a user"
+	},
+	"settings": {
+		"err_current_password_required": "Current password is required",
+		"err_current_password_bad": "Bad current password",
+		"err_exist_user": "This username alredy exist",
+		"err_exist_email": "This email alredy exist",
+		"err_inte_data": "Data integrity error",
+		"err_unexpected": "An unexpected error are occurred"
 	}
 }
