@@ -16,22 +16,16 @@ export class Settings extends Component {
 		this.innerHTML = await content(userValue, a2fStatus);
 
 		const saveBtn = this.querySelector("#save-btn");
-		const cpassInput = this.querySelector("#cpass-input");
 		const avatarBtn = this.querySelector("#avatar-btn");
+		const username = this.querySelector("#user-input");
+		const email = this.querySelector("#email-input");
 
 		this.querySelectorAll("input[filter]").forEach(el => {
 			el.oninput = () => {
 				if ([...this.querySelectorAll("input[filter]")].some(e => e.type != "checkbox" ? e.value.length : e.checked != a2fStatus))
-				{	
-					saveBtn.removeAttribute("disabled");
-					if (!userValue.login42)
-						cpassInput.removeAttribute("disabled");
-				}
+					setSaveState(true, userValue.login42);
 				else
-				{
-					saveBtn.setAttribute("disabled", "");
-					cpassInput.setAttribute("disabled", "");
-				}
+					setSaveState(false, null)
 			}
 		})
 
@@ -44,17 +38,88 @@ export class Settings extends Component {
 				document.getElementById('profile-img').src = getAvatarUrl(userValue.avatar);
 		}
 
+		const newpassword = this.querySelector("#newpass-input");
+		const badNewPswd = this.querySelector("#error-pswd");
+
+
+		email.onblur = () => {
+			if (email.value != "")
+			{
+				if (!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)))
+				{
+					email.classList.add("is-invalid");
+					setSaveState(false, null);
+				}
+				else
+				{
+					email.classList.remove("is-invalid");
+					setSaveState(true, userValue.login42);
+				}
+			}
+			else
+				email.classList.remove("is-invalid");
+		}
+
+		username.onblur = () => {
+			if (username != "")
+			{
+				if (username.value.length > 10)
+				{
+					username.classList.add("is-invalid");
+					setSaveState(false, null);
+				}
+				else
+				{
+					username.classList.remove("is-invalid");
+					setSaveState(true, userValue.login42);
+				}
+			}
+			else
+				username.classList.remove("is-invalid");
+		}
+		
+		newpassword.onblur = () => {
+			if (newpassword.value != "")
+			{
+				if (!(/[A-Z]/.test(newpassword.value)) || !(/[a-z]/.test(newpassword.value)) || !(/[0-9]/.test(newpassword.value)) || newpassword.value.length < 8)
+				{
+					newpassword.classList.add("is-invalid");
+					badNewPswd.style.display = "block";
+					setSaveState(false, null);
+				}
+				else
+				{
+					newpassword.classList.remove("is-invalid");
+					badNewPswd.style.display = "none";
+					setSaveState(true, userValue.login42);
+				}
+			}
+			else
+			{
+				newpassword.classList.remove("is-invalid");
+				badNewPswd.style.display = "none";
+			}
+		}
+
 		const allInput = this.querySelectorAll("input");
 		const closeBtn = this.querySelector("#closeModal");
 		const errorBox = this.querySelector("#error-container");
 
 		saveBtn.onclick = async () => {
-			const bodyPrepare = {};
+			const bodyPrepare = new FormData();
 			allInput.forEach(input => {
 				if (input.value)
-					bodyPrepare[input.name] = input.type == "checkbox" ? input.checked : input.value;
+				{
+					// bodyPrepare[input.name] = input.type == "checkbox" ? input.checked : input.value;
+					bodyPrepare.append(input.name, input.type == "checkbox" ? input.checked : input.value);
+					if (input.type == "file")
+					{
+						bodyPrepare.append(input.name, input.files[0]);
+					}
+				}
 			});
-			const response = await APIRequest.build("/user/", "PUT").setBody(bodyPrepare).sendJSON();
+			console.log(bodyPrepare);
+			const response = await APIRequest.build("/user/", "PUT").setBody(bodyPrepare).send();
 			const data = await response.json();
 			if (response.ok)
 			{
@@ -74,6 +139,22 @@ export class Settings extends Component {
 			}
 		}
     }
+}
+
+const setSaveState = (setToEnable, isLog42) => {
+	const saveBtn = document.querySelector("#save-btn");
+	const currentPass = document.querySelector("#cpass-input");
+	if (setToEnable)
+	{
+		saveBtn.removeAttribute("disabled");
+		if (!isLog42)
+			currentPass.removeAttribute("disabled");
+	}
+	else
+	{
+		saveBtn.setAttribute("disabled", "");
+		currentPass.setAttribute("disabled", "");
+	}
 }
 
 const content = async (user, a2f) => /*html*/`
@@ -117,9 +198,13 @@ const content = async (user, a2f) => /*html*/`
 							<input name="email" class="form-control mx-2" filter id="email-input" type="email" placeholder="${user.email}">
 						</div>
 
-						<div class="col-md d-flex justify-content-center align-items-center my-3">
+						<div class="col-md d-flex justify-content-center align-items-center mt-3 mb-1">
 							<input name="password" class="form-control mx-2" filter id="newpass-input" type="password" placeholder="New password" ${user.login42 ? "disabled" : ""}>
 						</div>
+						<div class="col-md d-flex justify-content-start align-items-center">
+							<span class="ms-3 text-danger" id="error-pswd" style="display: none; font-size: 0.8em;">doit contenir maj min nombre et >=8<span>
+						</div>
+						
 
 					</div>
 				</div>

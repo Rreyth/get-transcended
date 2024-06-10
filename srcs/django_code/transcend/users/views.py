@@ -45,12 +45,23 @@ class UserView(APIView):
                 return Response({'error': 'err_current_password_required', 'errormsg': 'current_password is required'}, status=status.HTTP_400_BAD_REQUEST)
             if not request.user.check_password(request.data["current_password"]):
                 return Response({'error': 'err_current_password_bad', 'errormsg': 'Bad current_password'}, status=status.HTTP_401_UNAUTHORIZED)
-        
+        if "username" in request.data:
+            if len(request.data["username"]) > 24:
+                return Response({'error': 'err_username_toolong', 'errormsg': 'username is too long'}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
-            for data in request.data:
-                setattr(request.user, data, request.data[data])
+
+            serializer = UserSerializer(request.user, data=request.data, partial=True, context={'request': request})
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            
+            # for data in request.data:
+            #     if data == "password":
+            #         request.user.set_password(request.data[data])
+            #         continue
+            #     setattr(request.user, data, request.data[data])
         
-            request.user.save()
+            # request.user.save()
             refresh = RefreshToken.for_user(request.user)
             refresh["username"] = request.user.username
             refresh["avatar"] = request.user.avatar.url if request.user.avatar and hasattr(request.user.avatar, 'url') else None
@@ -59,13 +70,14 @@ class UserView(APIView):
             return Response({'access' : str(refresh.access_token)}, status=status.HTTP_200_OK)
         except IntegrityError as e:
             if 'username' in str(e):
-                return Response({'error': 'err_exist_user', 'errormsg': 'Le nom d\'utilisateur existe déjà.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'err_exist_user', 'errormsg': 'This username alredy exist'}, status=status.HTTP_400_BAD_REQUEST)
             elif 'email' in str(e):
-                return Response({'error': 'err_exist_email', 'errormsg': 'L\'adresse e-mail existe déjà.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'err_exist_email', 'errormsg': 'This email alredy exist'}, status=status.HTTP_400_BAD_REQUEST)
             else:
-                return Response({'error': 'err_inte_data', 'errormsg': 'Erreur d\'intégrité des données.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'err_inte_data', 'errormsg': 'Data integrity error'}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return Response({'error': 'err_unexpected', 'errormsg': 'Une erreur inattendue est survenue'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            print(str(e), flush=True)
+            return Response({'error': 'err_unexpected', 'errormsg': 'An unexpected error are occurred'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class Log42(APIView):
     parser_classes = [JSONParser, MultiPartParser, FormParser]

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import User, FriendRequest
+from django.core.exceptions import ValidationError
 
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
     """
@@ -36,6 +37,15 @@ class UserSerializer(DynamicFieldsModelSerializer):
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
+        return user
+    
+    def update(self, instance, validated_data):
+        user = super().update(instance, validated_data)
+        try:
+            user.set_password(validated_data['password'])
+            user.save()
+        except KeyError:
+            pass
         return user
     
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):

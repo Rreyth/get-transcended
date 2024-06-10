@@ -14,6 +14,7 @@
 		"err_exist_user": "This username alredy exist",
 		"err_exist_email": "This email alredy exist",
 		"err_inte_data": "Data integrity error",
-		"err_unexpected": "An unexpected error are occurred"
+		"err_unexpected": "An unexpected error are occurred",
+		"err_username_toolong": "This username is too long"
 	}
 }

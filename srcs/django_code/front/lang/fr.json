@@ -14,6 +14,7 @@
 		"err_exist_user": "Ce nom d'utilisateur existe déjà",
 		"err_exist_email": "Cette email existe déjà",
 		"err_inte_data": "Erreur d'intégrité des données",
-		"err_unexpected": "Une erreur inattendue est survenue"
+		"err_unexpected": "Une erreur inattendue est survenue",
+		"err_username_toolong": "Ce nom d'utilisateur est trop long"
 	}
 }
