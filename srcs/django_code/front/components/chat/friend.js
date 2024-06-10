@@ -15,13 +15,13 @@ export class Friend extends Component
     {
         super.connectedCallback()
 
-        this.classList.add("list-group-item")
-        this.classList.add("list-group-item-action")
+        this.username = this.getAttribute('username')
+        this.classList.add("list-group-item", "list-group-item-action")
 
         this.innerHTML = /* html */`
             <div class="d-flex align-items-center gap-2" id="user-card">
-                <img src="${this.getAttribute('avatar')}" class="rounded-circle" style="width: 2em; height: 2em;" />
-                <span>${this.getAttribute('username')}</span>
+                <img src="${this.getAttribute('avatar')}" class="rounded-4" style="width: 2em; height: 2em;" />
+                <span>${this.username}</span>
             </div>
         `
     }

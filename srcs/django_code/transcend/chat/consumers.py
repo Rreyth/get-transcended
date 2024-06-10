@@ -40,7 +40,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             {
                 'type': 'broadcast',
                 'message': message,
-                'chat_type': 'PRIVATE',
+                'room_name': self.scope['user'].username,
             }
         )
         await self.channel_layer.group_send(
@@ -48,7 +48,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             {
                 'type': 'broadcast',
                 'message': message,
-                'chat_type': 'PRIVATE',
+                'room_name': data_json['room_name'],
             }
         )
 
@@ -71,7 +71,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 {
                     'type': 'broadcast',
                     'message': message,
-                    'chat_type': 'GROUP',
+                    'room_name': data_json['room_name'],
                 }
             )
 
@@ -79,5 +79,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'message': event['message'].content,
             'sender': event['message'].sender.username,
-            'date': event['message'].created_at.strftime('%m/%d/%Y')
+            'date': event['message'].created_at.strftime('%m/%d/%Y'),
+            'room_name': event['room_name'],
         }))

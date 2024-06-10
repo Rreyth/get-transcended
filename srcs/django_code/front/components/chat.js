@@ -1,37 +1,31 @@
 import { Component } from "../js/component.js";
 import { APIRequest, user_token } from "../js/helpers.js"
-import { Cache } from "../js/cache.js";
 import { Friend } from "./chat/friend.js";
 
 const State = Object.freeze({
-    DEFAULT: Symbol("default"),
-	FRIEND_SELECTED: Symbol("friend_selected"),
-	GROUP_SELECTED: Symbol("group_selected"),
+	FRIEND_SECTION: Symbol("friend_section"),
+	GROUP_SECTION: Symbol("group_section"),
+	FRIEND_CONVERSATION: Symbol("friend_conversation"),
+	GROUP_CONVERSATION: Symbol("group_conversation"),
 });
+
+const escapeHtml = (text) => {
+	let map = {
+		'&': '&amp;',
+		'<': '&lt;',
+		'>': '&gt;',
+		'"': '&quot;',
+		"'": '&#039;'
+	};
+	return text.replace(/[&<>"']/g, function (m) { return map[m]; });
+}
 
 export class Chat extends Component {
 
+	static state = State.FRIEND_SECTION
+
 	static getName() {
 		return "chat-body"
-	}
-
-	static escapeHtml(text)
-	{
-		let map = {
-			'&': '&amp;',
-			'<': '&lt;',
-			'>': '&gt;',
-			'"': '&quot;',
-			"'": '&#039;'
-		};
-		return text.replace(/[&<>"']/g, function (m) { return map[m]; });
-	}
-
-	static sendMsg(socket, msg) {
-		socket.send(JSON.stringify({
-			'message': msg,
-			'recever_id': Friend.lastFriendActive.getAttribute("user-id")
-		}));
 	}
 
 	async getFriends()
@@ -46,46 +40,83 @@ export class Chat extends Component {
 		return []
 	}
 
+	async getGroups()
+	{
+		const response = await APIRequest.build('/user/friends/', 'GET').send()
+
+		if (response.ok)
+		{
+			return await response.json()
+		}
+
+		return []
+	}
+
 	async connectedCallback() {
 		this.innerHTML = /* html */`
-			<div class="card position-absolute" style="bottom: 5em; right: 0.5em;">
+			<div class="card position-absolute w-25" style="bottom: 5em; right: 0.5em; min-width: 20em;">
 				<div class="card-header d-flex justify-content-between">
-					<h5 id="chat-title">Chat</h5>
+					<h5 class="d-flex align-items-center" id="chat-title">Chat</h5>
 					<button type="button" class="btn-close" aria-label="Close" id="chat-close"></button>
 				</div>
-				<div class="card-body" id="chat-body">
+				<div class="card-body overflow-auto" id="chat-body" style="height: 20em;">
+					<div class="btn-group w-100 mb-4" role="group">
+						<input type="radio" class="btn-check" name="btnradio" id="btn-groups" autocomplete="off">
+						<label class="btn btn-outline-primary" for="btn-groups">Groups</label>
+					
+						<input type="radio" class="btn-check" name="btnradio" id="btn-friends" autocomplete="off" checked>
+						<label class="btn btn-outline-primary" for="btn-friends">Friends</label>
+					</div>
 					<div class="list-group" id="chat-friends">
+					</div>
+					<div class="list-group d-none" id="chat-groups">
 					</div>
 				</div>
 				<div class="card-footer">
-					<input class="form-control form-control-sm" type="text" placeholder="Search" aria-label=".form-control-sm example">
+					<input class="form-control form-control-sm" type="text" placeholder="Search" id="chat-input" />
 				</div>
 			</div>
         `;
 
-		this.querySelector('#chat-close').addEventListener('click', () => {
-			this.remove();
+		this.addClickEvent('#chat-close', () => {
+			Chat.state = State.FRIEND_SECTION
+			this.remove()
 		});
 
-		const socket = await this.setUpWebSocket()
-
-		const friends = await this.getFriends();
-
-		friends.map(friend => {
+		(await this.getFriends()).map(friend => {
 			document.querySelector('#chat-friends').innerHTML += `<c-friend avatar="${friend.avatar}" username="${friend.username}"></c-friend>`
 		})
 
-		// this.querySelector('#msg-area').addEventListener('keydown', function (event) {
-		// 	if (event.key === 'Enter' && !event.shiftKey) {
-		// 		event.preventDefault();
-		// 		if (document.getElementById('msg-area').value === '')
-		// 			return;
-		// 		let msg = Chat.escapeHtml(document.getElementById('msg-area').value)
-		// 		// Chat.sendMsg(socket, msg.replace(/\n/g, "<br>"));
-		// 		Chat.sendPrivateMessage(socket, Friend.lastFriendActive.username, msg.replace(/\n/g, "<br>"))
-		// 		document.getElementById('msg-area').value = '';
-		// 	}
-		// });
+		this.querySelectorAll("input[type=radio]").forEach(input => {
+			input.onchange = (event) => {
+				const friends = this.querySelector("#chat-friends")
+				const groups = this.querySelector('#chat-groups')
+				
+				if (Chat.state == State.FRIEND_SECTION) {
+					friends.classList.add('d-none')
+					groups.classList.remove('d-none')
+					Chat.state = State.GROUP_SECTION
+				} else {
+					groups.classList.add('d-none')
+					friends.classList.remove('d-none')
+					Chat.state = State.FRIEND_SECTION
+				}
+			}
+		})
+
+		const socket = await this.setUpWebSocket();
+
+		this.querySelector('#chat-input').onkeydown = (event) => {
+			if (Chat.state == State.FRIEND_CONVERSATION && event.key === 'Enter' && event.target.value.length) {
+				Chat.sendPrivateMessage(socket, Friend.friendSelected.username, escapeHtml(event.target.value.replace(/\n/g, "<br>")))
+				event.target.value = '';
+			}
+
+			if (Chat.state == State.FRIEND_SECTION)
+			{
+
+			}
+		};
 
 	}
 
@@ -102,37 +133,36 @@ export class Chat extends Component {
 				+ token
 			);
 
-			// socket.onmessage = async (event) => {
-			// 	const data = JSON.parse(event.data);
-			// 	const element = document.querySelector("#messages");
-
-			// 	element.innerHTML += `<c-message who="${data.username}" date="${data.date}" content="${data.message}"></c-message>`
-			// 	await new Promise(resolve => requestAnimationFrame(resolve));
-
-			// 	setTimeout(() => {
-			// 		element.scrollTop = element.scrollHeight;
-			// 	}, 5);
-			// };
-
-			// const socket = new WebSocket('ws://' + window.location.host + '/ws/chat/');
-
 			socket.onmessage = function(event) {
 				const data = JSON.parse(event.data);
-				const message = data.message;
-				const sender = data.sender;
 
-				if (data.chat_type === 'GROUP')
-					console.log('Group chat: ' + sender + ': ' + message);
-				else if (data.chat_type === 'PRIVATE')
-					console.log('Private chat: ' + sender + ': ' + message);
-				else
-					console.log('Unknown chat type: ' + sender + ': ' + message);
+				if (Chat.inRoom(data.room_name))
+				{
+					const body = document.querySelector('#chat-body')
+					const el = document.createElement('c-message');
+
+					el.setAttribute('who', data.sender);
+					el.setAttribute('date', data.date);
+					el.setAttribute('content', data.message);
+
+					body.appendChild(el);
+					setTimeout(() => {
+						body.scrollTop = body.scrollHeight;
+					}, 5);
+				}
 			};
 
 			return socket
 		}
 
 		return null
+	}
+
+	static inRoom(roomName)
+	{
+		if (Chat.state == State.FRIEND_CONVERSATION)
+			return roomName == Friend.friendSelected.username
+		return false
 	}
 
 	static sendMessage(socket, chatType, roomName, message) {
@@ -144,41 +174,18 @@ export class Chat extends Component {
 	}
 
 	static sendGroupMessage(socket, groupName, message) {
-		Chat.sendMessage(socket, 'group_chat', groupName, message);
+		Chat.sendMessage(socket, 'GroupChat', groupName, message);
 	}
 
 	static sendPrivateMessage(socket, username, message) {
 		Chat.sendMessage(socket, 'PrivateChat', username, message);
 	}
 
-	static async fetchDmWith(username)
-	{
-		const response = await APIRequest.build(`/user/dm/${username}`, 'GET').send();
-
-		return await response.json();
-	}
-
-	static async getDmWith(username)
-	{
-		let messages = Cache.getOrCreate("messages", {});
-
-		if (messages.hasOwnProperty(username))
-		{
-			return messages[username];
-		}
-		else
-		{
-			messages[username] = await Chat.fetchDmWith(username);
-
-			Cache.set("messages", messages);
-
-			return messages[username];
-		}
-	}
-
 	static async displayDmWith(username)
 	{
-		const messages = await Chat.getDmWith(username);
+		const response = await APIRequest.build(`/user/dm/${username}`, 'GET').send();
+		const messages = await response.json();
+
 		const body = document.querySelector('#chat-body')
 
 		document.querySelector('#chat-title').innerHTML = username
@@ -200,6 +207,7 @@ export class Chat extends Component {
 		setTimeout(() => {
 			body.scrollTop = body.scrollHeight;
 		}, 10);
-	}
 
+		Chat.state = State.FRIEND_CONVERSATION
+	}
 }
