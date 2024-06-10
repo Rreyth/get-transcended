@@ -26,7 +26,7 @@ function connect_loop() {
 		connect_last = tmp;
 		timer -= 1;
 	}
-	if (timer <= -1) {
+	if (timer <= 0) {
 		clearInterval(loginInterval);
 		connect_hub();
 	}
