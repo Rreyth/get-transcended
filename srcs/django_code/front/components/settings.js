@@ -19,6 +19,12 @@ export class Settings extends Component {
 		const avatarBtn = this.querySelector("#avatar-btn");
 		const username = this.querySelector("#user-input");
 		const email = this.querySelector("#email-input");
+		const test = this.querySelector("#exampleModal");exampleModal
+
+		test.addEventListener ("show.bs.modal", () => {
+			console.log("reload content here");
+		})
+		
 
 		this.querySelectorAll("input[filter]").forEach(el => {
 			el.oninput = () => {
@@ -117,14 +123,13 @@ export class Settings extends Component {
 					}
 				}
 			});
-			console.log(bodyPrepare);
 			const response = await APIRequest.build("/user/", "PUT").setBody(bodyPrepare).send();
 			const data = await response.json();
 			if (response.ok)
 			{
 				cookieStore.set({ name: "token", value: data.access});
 				closeBtn.click();
-				Router.run(); 
+				Router.run();
 				// add success msg
 			}
 			else
