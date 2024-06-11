@@ -44,9 +44,11 @@ export class AddUserModal extends Component
         document.querySelector('#add-friend-btn').onclick = async () => {
             const members = (await (await APIRequest.build(`/user/groups/${Group.groupSelected.groupId}`, 'GET').send()).json()).members
 
-            const newMembers = [...document.querySelectorAll('input[data-friend]')].map(checkbox => {
+            const newMembers = [];
+            
+            [...document.querySelectorAll('input[data-friend]')].map(checkbox => {
                 if (!members.some(m => checkbox.parentElement.getAttribute('username') == m.username))
-                    return checkbox.parentElement.getAttribute('username')
+                    newMembers.push(checkbox.parentElement.getAttribute('username'))
             })
 
             console.log(newMembers)

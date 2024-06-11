@@ -30,8 +30,16 @@ export class CreateGroupModal extends Component
                 </div>
             </div>`
 
-        document.querySelector('#create-group-btn').onclick = () => {
-            APIRequest.build('/user/groups/', 'POST').setBody({ name: document.querySelector('#group-name').value }).sendJSON()
+        document.querySelector('#create-group-btn').onclick = async () => {
+            const response = await APIRequest.build('/user/groups/', 'POST').setBody({ name: document.querySelector('#group-name').value }).sendJSON()
+            const data = await response.json()
+            const el = document.createElement('c-group')
+
+            console.log(data)
+            el.setAttribute('group-id', data.id)
+            el.setAttribute('group-name', data.name)
+
+            document.querySelector('#chat-groups').appendChild(el)
         }
     }
 }

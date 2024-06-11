@@ -42,8 +42,6 @@ class GroupView(APIView):
     
     def put(self, request, group_id):
         group = Group.objects.get(pk=group_id)
-        if request.user != group.owner:
-            return Response(status=status.HTTP_403_FORBIDDEN)
 
         data = request.data
         if 'name' in data:

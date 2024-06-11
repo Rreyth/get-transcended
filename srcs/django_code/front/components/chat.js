@@ -175,6 +175,8 @@ export class Chat extends Component {
 		switch (ev.target.id) {
 			case 'chat-leave-group':
 				APIRequest.build(`/user/groups/${Group.groupSelected.groupId}/leave`, 'POST').send()
+				Group.groupSelected.remove()
+				document.querySelector('#chat-back').click()
 				break;
 		}
 	}
