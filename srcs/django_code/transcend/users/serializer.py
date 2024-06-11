@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import User, FriendRequest
+from django.core.exceptions import ValidationError
 
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
     """
@@ -25,7 +26,7 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
 class UserSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email', 'username', 'password', 'avatar', 'created_at', 'wins', 'games', 'winrate', 'login42')
+        fields = ('id', 'email', 'username', 'password', 'avatar', 'created_at', 'wins', 'games', 'winrate', 'login42', 'a2f')
         extra_kwargs = {'password': {'write_only': True}}
 
     def get_avatar_url(self, obj):
@@ -38,6 +39,15 @@ class UserSerializer(DynamicFieldsModelSerializer):
         user = User.objects.create_user(**validated_data)
         return user
     
+    def update(self, instance, validated_data):
+        user = super().update(instance, validated_data)
+        try:
+            user.set_password(validated_data['password'])
+            user.save()
+        except KeyError:
+            pass
+        return user
+    
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
@@ -45,6 +55,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         token['username'] = user.username
         token['avatar'] = user.avatar.url if user.avatar and hasattr(user.avatar, 'url') else None
+        token['email'] = user.email
+        token['login42'] = user.login42
 
         return token
 
