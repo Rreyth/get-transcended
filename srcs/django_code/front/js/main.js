@@ -16,6 +16,9 @@ import { TeamGame } from "../components/profile/teamgame.js";
 import { Settings } from "../components/settings.js";
 import { FriendBtn } from "../components/profile/friend-btn.js";
 import { Group } from "../components/chat/group.js";
+import { FriendCheckbox } from "../components/chat/friendCheckbox.js";
+import { AddUserModal } from "../components/chat/addUserModal.js";
+import { CreateGroupModal } from "../components/chat/createGroupModal.js";
 
 Component.loader([
 	Navbar,
@@ -34,6 +37,9 @@ Component.loader([
 	Settings,
 	FriendBtn,
 	Group,
+	FriendCheckbox,
+	AddUserModal,
+	CreateGroupModal,
 ])
 
 const navigateTo = url => {

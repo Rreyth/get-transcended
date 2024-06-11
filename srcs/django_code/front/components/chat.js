@@ -55,7 +55,11 @@ export class Chat extends Component {
 	}
 
 	async connectedCallback() {
+		super.connectedCallback()
+
 		this.innerHTML = /* html */`
+			<c-add-user-modal></c-add-user-modal>
+			<c-create-group-modal></c-create-group-modal>
 			<div class="card position-absolute w-25" style="bottom: 5em; right: 0.5em; min-width: 20em;">
 				<div class="card-header d-flex justify-content-between">
 					<div class="d-flex gap-2" id="chat-title">
@@ -74,7 +78,7 @@ export class Chat extends Component {
 					<div class="list-group" id="chat-friends">
 					</div>
 					<div class="list-group d-none" id="chat-groups">
-						<div class="list-group-item list-group-item-action d-flex align-items-center gap-2" id="chat-create-group">
+						<div data-bs-toggle="modal" data-bs-target="#create-group-modal" class="list-group-item list-group-item-action d-flex align-items-center gap-2" id="chat-create-group">
 							<i class='bx bx-plus bx-sm'></i>
 							<span>Cree un groupe</span>
 						</div>
@@ -131,14 +135,14 @@ export class Chat extends Component {
 			if (event.key != 'Enter' || !event.target.value.length)
 				return;
 
-			if (Chat.state == State.FRIEND_CONVERSATION)
+			switch (Chat.state)
 			{
-				Chat.sendPrivateMessage(socket, Friend.friendSelected.username, escapeHtml(event.target.value.replace(/\n/g, "<br>")))
-			}
-
-			if (Chat.state == State.GROUP_CONVERSATION)
-			{
-				Chat.sendGroupMessage(socket, Group.groupSelected.groupId, escapeHtml(event.target.value.replace(/\n/g, "<br>")))
+				case State.FRIEND_CONVERSATION:
+					Chat.sendPrivateMessage(socket, Friend.friendSelected.username, escapeHtml(event.target.value.replace(/\n/g, "<br>")))
+					break;
+				case State.GROUP_CONVERSATION:
+					Chat.sendGroupMessage(socket, Group.groupSelected.groupId, escapeHtml(event.target.value.replace(/\n/g, "<br>")))
+					break;
 			}
 
 			event.target.value = '';
@@ -169,11 +173,8 @@ export class Chat extends Component {
 	handleClick(ev)
 	{
 		switch (ev.target.id) {
-			case 'chat-create-group':
-				break;
-			case 'chat-add-user-group':
-				break;
 			case 'chat-leave-group':
+				APIRequest.build(`/user/groups/${Group.groupSelected.groupId}/leave`, 'POST').send()
 				break;
 		}
 	}
@@ -243,14 +244,14 @@ export class Chat extends Component {
 
 	static async displayConversation(type, id)
 	{
-		const response = await APIRequest.build(`/user/${type == 'GROUP' ? `groups/${id.groupId}` : `dm/${id}`}`, 'GET').send();
+		const response = await APIRequest.build(`/user/${type == 'GROUP' ? `groups/${id.groupId}/messages` : `dm/${id}`}`, 'GET').send();
 		const messages = await response.json();
 		const chatTitle = document.querySelector('#chat-title')
 		const body = document.querySelector('#chat-messages');
 		const options = /* html */`
 			<i class='bx bx-dots-vertical-rounded bx-sm' data-bs-toggle="dropdown"></i>
 			<ul class="dropdown-menu">
-				<li id="chat-add-user-group" class="dropdown-item d-flex align-items-center gap-2"><i class='bx bxs-user-plus bx-sm'></i> Add friend</li>
+				<li class="dropdown-item d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#add-user-modal"><i class='bx bxs-user-plus bx-sm'></i> Add friend</li>
 				<li id="chat-leave-group" class="dropdown-item text-danger d-flex align-items-center gap-2"><i class='bx bx-log-out bx-sm'></i> Leave</li>
 			</ul>`
 
