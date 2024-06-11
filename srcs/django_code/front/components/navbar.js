@@ -1,5 +1,6 @@
 import { Component } from "../js/component.js";
 import { user, translate, token_checker } from "../js/helpers.js";
+import { Chat } from "./chat.js";
 
 export class Navbar extends Component {
 	static getName() {
@@ -27,18 +28,13 @@ export class Navbar extends Component {
 				}
 			})
 
-
-
 			this.querySelector("#seach-user").addEventListener("input", (e) => {
 				let content = this.querySelector(".dropdown-menu");
 				content.innerHTML = `<c-search content="${e.target.value}"></c-search>`;
 			})
 
 			this.querySelector("#msg-btn").addEventListener("click", (e) => {
-				if (document.getElementById("chat"))
-					document.getElementById("chat").remove();
-				else
-					document.querySelector("#chat_box").innerHTML += `<c-chat-body id="chat"></c-chat-body>`;
+				Chat.openOrClose()
 			})
 		}
 	}
@@ -107,5 +103,5 @@ const content = async () => /* html */ `
 
 		</div>
 	</nav>
-	<div id="chat_box"></div>
+	<c-chat-body id="chat"></c-chat-body>
 `;
