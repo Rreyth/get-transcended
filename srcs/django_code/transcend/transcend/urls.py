@@ -34,6 +34,7 @@ urlpatterns = [
     path('api/user/friends/requests/<int:request_id>', FriendRequestView.as_view()),
     path('api/user/dm/<str:username>', DMView.as_view()),
     path('api/user/groups/', GroupView.as_view()),
+    path('api/user/groups/<int:group_id>', GroupMessagesView.as_view()),
     path('api/register/', RegisterUserView.as_view()),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

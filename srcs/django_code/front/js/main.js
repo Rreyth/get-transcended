@@ -15,6 +15,7 @@ import { SquareGame } from "../components/profile/squaregame.js";
 import { TeamGame } from "../components/profile/teamgame.js";
 import { Settings } from "../components/settings.js";
 import { FriendBtn } from "../components/profile/friend-btn.js";
+import { Group } from "../components/chat/group.js";
 
 Component.loader([
 	Navbar,
@@ -32,6 +33,7 @@ Component.loader([
 	TeamGame,
 	Settings,
 	FriendBtn,
+	Group,
 ])
 
 const navigateTo = url => {

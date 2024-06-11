@@ -3,6 +3,7 @@ from .models import *
 from users.models import User
 from asgiref.sync import sync_to_async
 import json
+from channels.db import database_sync_to_async
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -64,8 +65,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
             sender=self.scope['user'],
             group=group
         )
+        
+        members = await database_sync_to_async(list)(group.members.all())
 
-        for member in group.members.all():
+        for member in members:
             await self.channel_layer.group_send(
                 member.username,
                 {

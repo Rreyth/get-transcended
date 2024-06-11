@@ -48,3 +48,14 @@ class GroupView(APIView):
             g.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_403_FORBIDDEN)
+
+class GroupMessagesView(APIView):
+    permission_classes = (IsAuthenticated,)
+    parser_classes = [JSONParser, MultiPartParser, FormParser]
+    
+    def get(self, request, group_id):
+        messages = Message.objects.filter(group_id=group_id)
+        
+        serializer = MessageSerializer(messages, many=True, fields=('id', 'content', 'sender', 'created_at'))
+
+        return Response(serializer.data, status=status.HTTP_200_OK)

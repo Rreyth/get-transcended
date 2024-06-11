@@ -1,5 +1,6 @@
 import { Component } from "../../js/component.js";
 import { Chat } from "../chat.js";
+import { getAvatarUrl } from "../../js/helpers.js"
 
 export class Friend extends Component
 {
@@ -20,7 +21,7 @@ export class Friend extends Component
 
         this.innerHTML = /* html */`
             <div class="d-flex align-items-center gap-2" id="user-card">
-                <img src="${this.getAttribute('avatar')}" class="rounded-4" style="width: 2em; height: 2em;" />
+                <img src="${getAvatarUrl(this.getAttribute('avatar'))}" class="rounded-4" style="width: 2em; height: 2em;" />
                 <span>${this.username}</span>
             </div>
         `
@@ -30,6 +31,6 @@ export class Friend extends Component
     {
         Friend.friendSelected = this
 
-        Chat.displayDmWith(this.getAttribute('username'))
+        Chat.displayConversation('FRIEND', this.username)
     }
 }
