@@ -16,6 +16,7 @@ import { TeamGame } from "../components/profile/teamgame.js";
 import { Settings } from "../components/settings.js";
 import { FriendBtn } from "../components/profile/friend-btn.js";
 import { NavProfile } from "../components/navbar/profile.js";
+import { About } from "../components/about.js";
 
 Component.loader([
 	Navbar,
@@ -34,6 +35,7 @@ Component.loader([
 	Settings,
 	FriendBtn,
 	NavProfile,
+	About,
 ])
 
 const navigateTo = url => {
