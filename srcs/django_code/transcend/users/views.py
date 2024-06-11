@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework_simplejwt.tokens import RefreshToken
 import requests
 import os
+from django.db import IntegrityError
 
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
@@ -39,10 +40,37 @@ class UserView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request):
-        user = User.objects.get(email=request.user.email)
-        user.avatar = request.data['avatar']
-        user.save()
-        return Response({'message': 'Image updated'}, status=status.HTTP_200_OK)
+        if not request.user.login42:
+            if "current_password" not in request.data:
+                return Response({'error': 'err_current_password_required', 'errormsg': 'current_password is required'}, status=status.HTTP_400_BAD_REQUEST)
+            if not request.user.check_password(request.data["current_password"]):
+                return Response({'error': 'err_current_password_bad', 'errormsg': 'Bad current_password'}, status=status.HTTP_401_UNAUTHORIZED)
+        if "username" in request.data:
+            if len(request.data["username"]) > 24:
+                return Response({'error': 'err_username_toolong', 'errormsg': 'username is too long'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+
+            serializer = UserSerializer(request.user, data=request.data, partial=True, context={'request': request})
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+
+            refresh = RefreshToken.for_user(request.user)
+            refresh["username"] = request.user.username
+            refresh["avatar"] = request.user.avatar.url if request.user.avatar and hasattr(request.user.avatar, 'url') else None
+            refresh["email"] = request.user.email
+            refresh['login42'] = request.user.login42
+            return Response({'access' : str(refresh.access_token)}, status=status.HTTP_200_OK)
+        except IntegrityError as e:
+            if 'username' in str(e):
+                return Response({'error': 'err_exist_user', 'errormsg': 'This username alredy exist'}, status=status.HTTP_400_BAD_REQUEST)
+            elif 'email' in str(e):
+                return Response({'error': 'err_exist_email', 'errormsg': 'This email alredy exist'}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'error': 'err_inte_data', 'errormsg': 'Data integrity error'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print(str(e), flush=True)
+            return Response({'error': 'err_unexpected', 'errormsg': 'An unexpected error are occurred'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class Log42(APIView):
     parser_classes = [JSONParser, MultiPartParser, FormParser]
@@ -87,6 +115,9 @@ class Log42(APIView):
                         refresh["username"] = username
                     else:
                         refresh["username"] = user_data['login']
+                    refresh['avatar'] = user.avatar.url if user.avatar and hasattr(user.avatar, 'url') else None
+                    refresh['email'] = user.email
+                    refresh['login42'] = user.login42
                     return Response({'access' : str(refresh.access_token)}, status=status.HTTP_201_CREATED)
 
                 except Exception as e:
@@ -100,6 +131,14 @@ class Log42(APIView):
                 return Response({'apiError': 'Error connexion api'}, status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e:
             return Response({'apiError': 'Error connexion api', 'details': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class A2fView(APIView):
+    permission_classes = (IsAuthenticated,)
+    parser_classes = [JSONParser, MultiPartParser, FormParser]
+
+    def get(self, request):
+        return Response({ "actived": request.user.a2f }, status=status.HTTP_200_OK)
 
 class ReseachUserView(APIView):
     permission_classes = (IsAuthenticated,)

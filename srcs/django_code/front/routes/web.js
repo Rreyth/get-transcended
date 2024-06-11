@@ -1,5 +1,5 @@
 import { Router, render } from "../js/router.js";
-import { APIRequest, formatDate, user, user_token } from "../js/helpers.js"
+import { APIRequest, formatDate, user, getAvatarUrl } from "../js/helpers.js"
 
 Router.notFound(() => {
     render('404')
@@ -16,9 +16,6 @@ Router.set('/about', () => {
 	render('about')
 })
 
-Router.set('/login', () => {
-	render('login')
-})
 
 Router.set('/pong', async () => {
 	if (!await user())
@@ -42,7 +39,7 @@ Router.set('/user/{username}', async (match) => {
 	}
 
 	render('profile', {
-		avatar: data.avatar,
+		avatar: getAvatarUrl(data.avatar),
 		username: data.username,
 		wins: data.wins,
 		games: data.games,

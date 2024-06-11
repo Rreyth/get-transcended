@@ -6,12 +6,12 @@ from django.utils import timezone
 class UserProfileManager(BaseUserManager):
     """Manager for user profiles"""
 
-    def create_user(self, email, username, password=None, avatar=None):
+    def create_user(self, email, username, password=None, avatar=None, **extra_fields):
         if not email:
             raise ValueError('Users must have an email')
 
         email = self.normalize_email(email)
-        user = self.model(email=email, username=username)
+        user = self.model(email=email, username=username, **extra_fields)
 
         if avatar != None:
             user.avatar = avatar
@@ -33,7 +33,8 @@ class User(AbstractBaseUser):
     games = models.IntegerField(default=0)
     winrate = models.IntegerField(default=0)
 
-    login42 = models.CharField(default=None, blank=True, null=True) 
+    login42 = models.CharField(default=None, blank=True, null=True)
+    a2f = models.BooleanField(default=False)
  
     objects = UserProfileManager()
  
