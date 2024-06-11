@@ -46,8 +46,8 @@ export class AddUserModal extends Component
 
             const newMembers = [];
             
-            [...document.querySelectorAll('input[data-friend]')].map(checkbox => {
-                if (!members.some(m => checkbox.parentElement.getAttribute('username') == m.username))
+            [...document.querySelectorAll('input[data-friend]')].forEach(checkbox => {
+                if (!members.some(m => checkbox.parentElement.getAttribute('username') == m.username) && checkbox.checked)
                     newMembers.push(checkbox.parentElement.getAttribute('username'))
             })
 

@@ -92,9 +92,7 @@ export class Chat extends Component {
 			</div>
         `;
 
-		if (this.getAttribute('close'))
-			Chat.close()
-
+		this.classList.add('d-none')
 		Chat.chatInput = this.querySelector('#chat-input')
 
 		this.addClickEvent('#chat-close', () => {

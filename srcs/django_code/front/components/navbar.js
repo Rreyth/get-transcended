@@ -28,8 +28,6 @@ export class Navbar extends Component {
 				}
 			})
 
-			document.querySelector("#chat_box").innerHTML += `<c-chat-body id="chat" close="true"></c-chat-body>`;
-
 			this.querySelector("#seach-user").addEventListener("input", (e) => {
 				let content = this.querySelector(".dropdown-menu");
 				content.innerHTML = `<c-search content="${e.target.value}"></c-search>`;
@@ -105,5 +103,5 @@ const content = async () => /* html */ `
 
 		</div>
 	</nav>
-	<div id="chat_box"></div>
+	<c-chat-body id="chat"></c-chat-body>
 `;
