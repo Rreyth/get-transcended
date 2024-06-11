@@ -37,7 +37,9 @@ export class NavProfile extends Component {
 const content = (user) => /* html */ `
 		<div class="w-100 h-100">
 			<div class="mx-3 mt-2 d-flex" style="">
-				<img class="rounded-4" id="profile-img" src="${getAvatarUrl(user.avatar)}" style="width: 7em; height: 7em; object-fit: cover; object-position: center;" />
+				<div>
+					<img class="rounded-4" id="profile-img" src="${getAvatarUrl(user.avatar)}" style="width: 7em; height: 7em; object-fit: cover; object-position: center;" />
+				</div>
 				<div class="d-flex flex-column justify-content-evenly mx-2 w-100">
 					<span class="text-center w-100" style="font-size: 1.7em; overflow: hidden;">${user.username}</span>
 					<div class="d-flex justify-content-evenly">
