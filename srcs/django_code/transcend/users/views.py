@@ -54,14 +54,7 @@ class UserView(APIView):
             serializer = UserSerializer(request.user, data=request.data, partial=True, context={'request': request})
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            
-            # for data in request.data:
-            #     if data == "password":
-            #         request.user.set_password(request.data[data])
-            #         continue
-            #     setattr(request.user, data, request.data[data])
-        
-            # request.user.save()
+
             refresh = RefreshToken.for_user(request.user)
             refresh["username"] = request.user.username
             refresh["avatar"] = request.user.avatar.url if request.user.avatar and hasattr(request.user.avatar, 'url') else None

@@ -110,7 +110,6 @@ export class Settings extends Component {
 			allInput.forEach(input => {
 				if (input.value)
 				{
-					// bodyPrepare[input.name] = input.type == "checkbox" ? input.checked : input.value;
 					bodyPrepare.append(input.name, input.type == "checkbox" ? input.checked : input.value);
 					if (input.type == "file")
 					{
