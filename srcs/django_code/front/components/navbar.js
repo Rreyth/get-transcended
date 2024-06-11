@@ -23,7 +23,7 @@ export class Navbar extends Component {
 				{
 					if (e.target.parentNode.classList.contains("dropdown-toggle"))
 					{
-						this.querySelector(".dropdown-menu").innerHTML = "";
+						this.querySelector(".dropdown-menu").innerHTML = "<c-navprofile></c-navprofile>";
 					}
 				}
 			})

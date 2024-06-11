@@ -19,6 +19,7 @@ import { Group } from "../components/chat/group.js";
 import { FriendCheckbox } from "../components/chat/friendCheckbox.js";
 import { AddUserModal } from "../components/chat/addUserModal.js";
 import { CreateGroupModal } from "../components/chat/createGroupModal.js";
+import { NavProfile } from "../components/navbar/profile.js";
 
 Component.loader([
 	Navbar,
@@ -40,6 +41,7 @@ Component.loader([
 	FriendCheckbox,
 	AddUserModal,
 	CreateGroupModal,
+	NavProfile,
 ])
 
 const navigateTo = url => {
