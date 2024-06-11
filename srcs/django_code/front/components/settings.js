@@ -22,7 +22,7 @@ export class Settings extends Component {
 		const test = this.querySelector("#exampleModal");exampleModal
 
 		test.addEventListener ("show.bs.modal", () => {
-			console.log("coucou toi");
+			console.log("reload content here");
 		})
 		
 
@@ -129,7 +129,6 @@ export class Settings extends Component {
 			{
 				cookieStore.set({ name: "token", value: data.access});
 				closeBtn.click();
-				
 				Router.run();
 				// add success msg
 			}
