@@ -43,7 +43,7 @@ const content = (user) => /* html */ `
 				<div class="d-flex flex-column justify-content-evenly mx-2 w-100">
 					<span class="text-center w-100" style="font-size: 1.7em; overflow: hidden;">${user.username}</span>
 					<div class="d-flex justify-content-evenly">
-						<button type="button" class="btn btn-outline-secondary d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class='bx bx-cog bx-sm' ></i></button>
+						<button type="button" class="btn btn-outline-secondary d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#settingsModal"><i class='bx bx-cog bx-sm' ></i></button>
 						<button type="button" class="btn btn-outline-danger d-flex align-items-center justify-content-center" id="leave-btn"><i class='bx bx-exit bx-sm'></i></button>
 					</div>
 				</div>

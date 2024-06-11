@@ -9,7 +9,7 @@ export class Settings extends Component {
     }
 	
     async connectedCallback() {
-		const userValue = await user();
+		let userValue = await user();
 		let a2fStatus = await APIRequest.build("/user/a2f", "GET").send();
 		a2fStatus = (await a2fStatus.json()).actived
 
@@ -19,10 +19,42 @@ export class Settings extends Component {
 		const avatarBtn = this.querySelector("#avatar-btn");
 		const username = this.querySelector("#user-input");
 		const email = this.querySelector("#email-input");
-		const test = this.querySelector("#exampleModal");exampleModal
+		const test = this.querySelector("#settingsModal");
+		const fileInput = this.querySelector("#fileInput");
+		const profileImg = this.querySelector("#profile-img");
+		const a2fSwitch = this.querySelector("#a2f-switch");
+		const newpassword = this.querySelector("#newpass-input");
+		const badNewPswd = this.querySelector("#error-pswd");
+		const currentPass = this.querySelector("#cpass-input");
 
-		test.addEventListener ("show.bs.modal", () => {
-			console.log("reload content here");
+		test.addEventListener ("show.bs.modal", async () => {
+			userValue = await user();
+			a2fStatus = await APIRequest.build("/user/a2f", "GET").send();
+			a2fStatus = (await a2fStatus.json()).actived
+
+			fileInput.value = null;
+			profileImg.src = getAvatarUrl(userValue.avatar);
+			
+			username.placeholder = userValue.username;
+			username.value = "";
+			username.classList.remove("is-invalid");
+
+			email.placeholder = userValue.email;
+			email.value = "";
+			email.classList.remove("is-invalid");
+
+			if (a2fStatus)
+				a2fSwitch.checked = true;
+			else
+				a2fSwitch.checked = false;
+
+			newpassword.value = "";
+			newpassword.classList.remove("is-invalid");
+			badNewPswd.style.display = "none";
+
+			currentPass.value = "";
+
+			setSaveState(false, null);
 		})
 		
 
@@ -36,16 +68,14 @@ export class Settings extends Component {
 		})
 
 		avatarBtn.onclick = () => {document.getElementById('fileInput').click();};
-		document.getElementById('fileInput').onchange = () => {
-			const file = document.getElementById('fileInput').files[0]
-			if (file)
-				document.getElementById('profile-img').src = URL.createObjectURL(file);
-			else
-				document.getElementById('profile-img').src = getAvatarUrl(userValue.avatar);
-		}
 
-		const newpassword = this.querySelector("#newpass-input");
-		const badNewPswd = this.querySelector("#error-pswd");
+		fileInput.onchange = () => {
+			const file = fileInput.files[0]
+			if (file)
+				profileImg.src = URL.createObjectURL(file);
+			else
+				profileImg.src = getAvatarUrl(userValue.avatar);
+		}
 
 
 		email.onblur = () => {
@@ -162,12 +192,12 @@ const setSaveState = (setToEnable, isLog42) => {
 }
 
 const content = async (user, a2f) => /*html*/`
-	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div id="error-container"></div>
 				<div class="modal-header">
-					<h1 class="modal-title fs-5" id="exampleModalLabel">Settings</h1>
+					<h1 class="modal-title fs-5" id="settingsModalLabel">Settings</h1>
 					<button type="button" class="btn-close" id="closeModal" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
