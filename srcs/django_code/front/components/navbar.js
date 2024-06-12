@@ -9,9 +9,10 @@ export class Navbar extends Component {
 
 	async connectedCallback() {
 		await token_checker();
-		if (await user() != null)
+		const userInfo = await user();
+		if (userInfo != null)
 		{
-			this.innerHTML = await content();
+			this.innerHTML = await content(userInfo);
 
 			document.addEventListener("click", (e) => {
 				if (e.target.id == "seach-user")
@@ -40,7 +41,7 @@ export class Navbar extends Component {
 	}
 }
 
-const content = async () => /* html */ `
+const content = async (user) => /* html */ `
 	<nav class="navbar fixed-bottom navbar-expand bg-body-tertiary user-select-none">
 		<div class="container-fluid text-center">
 
@@ -75,15 +76,15 @@ const content = async () => /* html */ `
 					<a class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4 text-decoration-none text-reset" href="/" style="width: 3em; height: 3em;">
 						<i class='bx bx-home-alt-2 bx-md'></i>
 					</a>
-					<a class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4 text-decoration-none text-reset" href="#" style="width: 3em; height: 3em;">
+					<a class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4 text-decoration-none text-reset" href="/user/${user.username}" style="width: 3em; height: 3em;">
 						<i class='bx bx-history bx-md'></i>
 					</a>
 					<a class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4 text-decoration-none text-reset" href="/pong" style="width: 3em; height: 3em;">
 						<i class='bx bx-joystick bx-md'></i>
 					</a>
-					<a class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4 text-decoration-none text-reset" href="#" style="width: 3em; height: 3em;">
+					<div class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4" onclick="document.querySelector('#about-container').style.display = 'block';" style="width: 3em; height: 3em; cursor: pointer;">
 						<i class='bx bx-info-circle bx-md'></i>
-					</a>
+					</div>
 				</div>
 
 				<div class="d-flex align-items-center justify-content-center">
