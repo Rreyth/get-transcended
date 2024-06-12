@@ -1,5 +1,6 @@
 import { Component } from "../js/component.js";
-import { APIRequest, user_token } from "../js/helpers.js"
+import { APIRequest } from "../js/helpers.js"
+import { Socket } from "../js/socket.js";
 import { Friend } from "./chat/friend.js";
 import { Group } from "./chat/group.js";
 
@@ -127,7 +128,7 @@ export class Chat extends Component {
 			}
 		})
 
-		const socket = await this.setUpWebSocket();
+		const socket = Socket.routes['/messages'];
 
 		Chat.chatInput.onkeydown = (event) => {
 			if (event.key != 'Enter' || !event.target.value.length)
@@ -136,10 +137,10 @@ export class Chat extends Component {
 			switch (Chat.state)
 			{
 				case State.FRIEND_CONVERSATION:
-					Chat.sendPrivateMessage(socket, Friend.friendSelected.username, escapeHtml(event.target.value.replace(/\n/g, "<br>")))
+					Chat.sendMessage(escapeHtml(event.target.value.replace(/\n/g, "<br>")))
 					break;
 				case State.GROUP_CONVERSATION:
-					Chat.sendGroupMessage(socket, Group.groupSelected.groupId, escapeHtml(event.target.value.replace(/\n/g, "<br>")))
+					Chat.sendMessage(escapeHtml(event.target.value.replace(/\n/g, "<br>")))
 					break;
 			}
 
@@ -179,44 +180,6 @@ export class Chat extends Component {
 		}
 	}
 
-	async setUpWebSocket()
-	{
-		const token = await user_token()
-
-		if (token != null)
-		{
-			const socket = new WebSocket(
-				'wss://'
-				+ window.location.host
-				+ '/ws/messages?token='
-				+ token
-			);
-
-			socket.onmessage = function(event) {
-				const data = JSON.parse(event.data);
-
-				if (Chat.inRoom(data.room_name))
-				{
-					const body = document.querySelector('#chat-messages')
-					const el = document.createElement('c-message');
-
-					el.setAttribute('who', data.sender);
-					el.setAttribute('date', data.date);
-					el.setAttribute('content', data.message);
-
-					body.appendChild(el);
-					setTimeout(() => {
-						body.scrollTop = body.scrollHeight;
-					}, 5);
-				}
-			};
-
-			return socket
-		}
-
-		return null
-	}
-
 	static inRoom(roomName)
 	{
 		if (Chat.state == State.FRIEND_CONVERSATION)
@@ -226,20 +189,19 @@ export class Chat extends Component {
 		return false
 	}
 
-	static sendMessage(socket, chatType, roomName, message) {
-		socket.send(JSON.stringify({
-			'type': chatType,
-			'room_name': roomName,
-			'message': message
-		}));
-	}
-
-	static sendGroupMessage(socket, groupId, message) {
-		Chat.sendMessage(socket, 'GroupChat', groupId, message);
-	}
-
-	static sendPrivateMessage(socket, username, message) {
-		Chat.sendMessage(socket, 'PrivateChat', username, message);
+	static sendMessage(message) {
+		if (Chat.state == State.FRIEND_CONVERSATION)
+		{
+			APIRequest.build(`/user/dm/${Friend.friendSelected.username}`, 'POST').setBody({
+				content: message
+			}).sendJSON()
+		}
+		else if (Chat.state == State.GROUP_CONVERSATION)
+		{
+			APIRequest.build(`user/groups/${Group.groupSelected.groupId}/messages`, 'POST').setBody({
+				content: message
+			}).sendJSON()
+		}
 	}
 
 	static async displayConversation(type, id)
