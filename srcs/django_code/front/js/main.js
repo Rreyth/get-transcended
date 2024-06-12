@@ -15,6 +15,10 @@ import { SquareGame } from "../components/profile/squaregame.js";
 import { TeamGame } from "../components/profile/teamgame.js";
 import { Settings } from "../components/settings.js";
 import { FriendBtn } from "../components/profile/friend-btn.js";
+import { Group } from "../components/chat/group.js";
+import { FriendCheckbox } from "../components/chat/friendCheckbox.js";
+import { AddUserModal } from "../components/chat/addUserModal.js";
+import { CreateGroupModal } from "../components/chat/createGroupModal.js";
 import { NavProfile } from "../components/navbar/profile.js";
 import { About } from "../components/about.js";
 
@@ -34,6 +38,10 @@ Component.loader([
 	TeamGame,
 	Settings,
 	FriendBtn,
+	Group,
+	FriendCheckbox,
+	AddUserModal,
+	CreateGroupModal,
 	NavProfile,
 	About,
 ])

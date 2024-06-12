@@ -1,49 +1,87 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
-from .models import PrivateMessage
+from .models import *
 from users.models import User
 from asgiref.sync import sync_to_async
 import json
+from channels.db import database_sync_to_async
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        await self.channel_layer.group_add(str(self.scope["user"].id), self.channel_name)
-  
         await self.accept()
+        
+        await self.channel_layer.group_add(self.scope['user'].username, self.channel_name)
 
     async def disconnect(self, close_code):
-        await self.close()
-  
-    async def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        message = text_data_json['message']
+        await self.channel_layer.group_discard(self.scope['user'].username, self.channel_name)
 
-        recever = await sync_to_async(User.objects.get, thread_sensitive=True)(pk=text_data_json['recever_id'])
-        is_friend = await sync_to_async(recever.friends.contains, thread_sensitive=True)(self.scope['user'])
+    async def receive(self, text_data):
+        data_json = json.loads(text_data)
+        chat_type = data_json['type']
+
+        if chat_type == 'PrivateChat':
+            await self.send_private_message(data_json)
+        elif chat_type == 'GroupChat':
+            await self.send_group_message(data_json)
+
+    async def send_private_message(self, data_json):
+        recever = await sync_to_async(User.objects.get)(username=data_json['room_name'])
+        is_friend = await sync_to_async(recever.friends.contains)(self.scope['user'])
 
         if not is_friend:
             return
         
-        private_message = await sync_to_async(PrivateMessage.objects.create)(content=message, recever=recever, sender=self.scope['user'])
+        message = await sync_to_async(Message.objects.create)(
+            content=data_json['message'],
+            sender=self.scope['user'],
+            receiver=recever
+        )
 
         await self.channel_layer.group_send(
-            str(text_data_json['recever_id']),
+            recever.username,
             {
                 'type': 'broadcast',
-                'private_message': private_message
+                'message': message,
+                'room_name': self.scope['user'].username,
             }
         )
         await self.channel_layer.group_send(
-            str(self.scope["user"].id),
+            self.scope['user'].username,
             {
                 'type': 'broadcast',
-                'private_message': private_message
+                'message': message,
+                'room_name': data_json['room_name'],
             }
         )
+
+    async def send_group_message(self, data_json):
+        group = await sync_to_async(Group.objects.get)(pk=data_json['room_name'])
+        is_member = await sync_to_async(group.members.contains)(self.scope['user'])
+
+        if not is_member:
+            return
+        
+        message = await sync_to_async(Message.objects.create)(
+            content=data_json['message'],
+            sender=self.scope['user'],
+            group=group
+        )
+        
+        members = await database_sync_to_async(list)(group.members.all())
+
+        for member in members:
+            await self.channel_layer.group_send(
+                member.username,
+                {
+                    'type': 'broadcast',
+                    'message': message,
+                    'room_name': data_json['room_name'],
+                }
+            )
 
     async def broadcast(self, event):
-
         await self.send(text_data=json.dumps({
-            'message': event['private_message'].content,
-            'username': event['private_message'].sender.username,
-            'date': event['private_message'].created_at.strftime('%m/%d/%Y')
+            'message': event['message'].content,
+            'sender': event['message'].sender.username,
+            'date': event['message'].created_at.strftime('%m/%d/%Y'),
+            'room_name': event['room_name'],
         }))
