@@ -14,7 +14,7 @@ export class About extends Component {
 		dragElement(aboutContainer);
 
 		function dragElement(elmnt) {
-			var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+			let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
 			if (document.getElementById("about-header"))
 			{
 				document.getElementById("about-header").onmousedown = dragMouseDown;
