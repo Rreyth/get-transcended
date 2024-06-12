@@ -88,7 +88,7 @@ async function createUserCard(u, friendId)
 		<div class="card mb-3 h-25 my-2 user-search-card" style="width: 80%;">
 			<div class="row g-0">
 				<div class="col-md-4">
-					<c-avatar style="height: 100%;" src="${u.avatar}"></c-avatar>
+					<c-avatar style="height: 100%;" src="${u.avatar}" username="${u.username}"></c-avatar>
 				</div>
 				<div class="col-md-8">
 					<div class="card-body d-flex align-items-center justify-content-center" style="height: 67%;">

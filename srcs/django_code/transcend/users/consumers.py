@@ -18,7 +18,7 @@ class OnlineConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_send(
                 friend.username,
                 {
-                    'type': 'broadcast',
+                    'type': 'user_status',
                     'user': friend,
                     'online': True,
                 }
@@ -35,7 +35,7 @@ class OnlineConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_send(
                 friend.username,
                 {
-                    'type': 'broadcast',
+                    'type': 'user_status',
                     'user': friend,
                     'online': False,
                 }
@@ -43,7 +43,7 @@ class OnlineConsumer(AsyncWebsocketConsumer):
         
         await self.channel_layer.group_discard(self.scope['user'].username, self.channel_name)
         
-    async def broadcast(self, event):
+    async def user_status(self, event):
         await self.send(text_data=json.dumps({
             'username': event['user'].username,
             'online': event['online'],

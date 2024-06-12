@@ -21,5 +21,9 @@ Socket.set('/messages', (event) => {
 })
 
 Socket.set('/user/online', (event) => {
-    console.log(event)
+    const data = JSON.parse(event.data)
+    console.log(data)
+    const elements = document.querySelectorAll(`c-avatar`)
+
+    elements.forEach(el => console.log(el.getAttribute("username")))
 })
