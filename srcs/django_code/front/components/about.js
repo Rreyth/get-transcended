@@ -59,7 +59,7 @@ export class About extends Component {
 }
 
 const content = /*html*/`
-	<div id="about-container">
+	<div id="about-container" class="bg-dark">
 		<div class="d-flex align-items-center bg-body-secondary" id="about-header">
 			<span class="flex-grow-1 text-center">about us</span>
 			<i class='bx bx-x bx-md' style="cursor: pointer;" id="close-about"></i>

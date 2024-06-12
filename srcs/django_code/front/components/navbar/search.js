@@ -95,9 +95,9 @@ async function createUserCard(u, friendId)
 						<span class="text-truncate" style="font-size: 1.5em;">${u.username}</span>
 					</div>
 					<div class="d-flex align-items-start justify-content-evenly btns btns-${u.username}" style="height: 33%;">
-						<a href="/user/${u.username}" class="text-decoration-none text-reset"><i class='bx bxs-user-detail rounded-circle bg-light border border-dark p-1' id="bt-profile"></i></a>
-						<i class='bx ${friendId ? 'bx-message-dots' : 'bx-user-plus'} rounded-circle bg-light border border-dark p-1' style="cursor: pointer;" data-request="${friendId ? 'message' : 'friend'}" user-id="${u.id}"></i>
-						<i class='bx bx-joystick rounded-circle bg-light border border-dark p-1' style="cursor: pointer;"></i>
+						<a href="/user/${u.username}" class="text-decoration-none text-reset"><i class='bx bxs-user-detail rounded-circle bg-body-secondary text-white border border-dark p-1' id="bt-profile"></i></a>
+						<i class='bx ${friendId ? 'bx-message-dots' : 'bx-user-plus'} rounded-circle bg-body-secondary text-white border border-dark p-1' style="cursor: pointer;" data-request="${friendId ? 'message' : 'friend'}" user-id="${u.id}"></i>
+						<i class='bx bx-joystick rounded-circle bg-body-secondary text-white border border-dark p-1' style="cursor: pointer;"></i>
 					</div>
 				</div>
 			</div>
