@@ -19,3 +19,7 @@ Socket.set('/messages', (event) => {
         }, 5);
     }
 })
+
+Socket.set('/user/online', (event) => {
+    console.log("test ?")
+})
