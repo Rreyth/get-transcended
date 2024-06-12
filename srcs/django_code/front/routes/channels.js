@@ -21,5 +21,5 @@ Socket.set('/messages', (event) => {
 })
 
 Socket.set('/user/online', (event) => {
-    console.log("test ?")
+    console.log(event)
 })
