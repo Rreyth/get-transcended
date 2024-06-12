@@ -86,9 +86,9 @@ const content = async (user) => /* html */ `
 					<a class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4 text-decoration-none text-reset" href="/pong" style="width: 3em; height: 3em;">
 						<i class='bx bx-joystick bx-md'></i>
 					</a>
-					<a class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4 text-decoration-none text-reset" href="#" style="width: 3em; height: 3em;">
+					<div class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4" onclick="document.querySelector('#about-container').style.display = 'block';" style="width: 3em; height: 3em; cursor: pointer;">
 						<i class='bx bx-info-circle bx-md'></i>
-					</a>
+					</div>
 				</div>
 
 				<div class="d-flex align-items-center justify-content-center">
