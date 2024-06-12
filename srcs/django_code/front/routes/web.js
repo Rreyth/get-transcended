@@ -41,6 +41,7 @@ Router.set('/user/{username}', async (match) => {
 	render('profile', {
 		avatar: getAvatarUrl(data.avatar),
 		username: data.username,
+		connected: data.online,
 		wins: data.wins,
 		games: data.games,
 		winrate: data.winrate,

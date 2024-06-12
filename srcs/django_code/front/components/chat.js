@@ -101,7 +101,7 @@ export class Chat extends Component {
 		});
 
 		(await this.getFriends()).forEach(friend => {
-			document.querySelector('#chat-friends').innerHTML += `<c-friend avatar="${friend.avatar}" username="${friend.username}"></c-friend>`
+			document.querySelector('#chat-friends').innerHTML += `<c-friend avatar="${friend.avatar}" username="${friend.username}" connected="${friend.online}"></c-friend>`
 		});
 
 		(await this.getGroups()).forEach(group => {

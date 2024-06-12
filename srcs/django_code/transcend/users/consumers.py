@@ -19,13 +19,12 @@ class OnlineConsumer(AsyncWebsocketConsumer):
                 friend.username,
                 {
                     'type': 'user_status',
-                    'user': friend,
+                    'user': self.scope["user"],
                     'online': True,
                 }
             )
         
     async def disconnect(self, close_code):
-        print("test", flush=True)
         self.scope["user"].online = False
         await sync_to_async(self.scope["user"].save)()
         
@@ -36,7 +35,7 @@ class OnlineConsumer(AsyncWebsocketConsumer):
                 friend.username,
                 {
                     'type': 'user_status',
-                    'user': friend,
+                    'user': self.scope["user"],
                     'online': False,
                 }
             )

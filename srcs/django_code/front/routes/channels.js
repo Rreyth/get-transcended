@@ -22,8 +22,14 @@ Socket.set('/messages', (event) => {
 
 Socket.set('/user/online', (event) => {
     const data = JSON.parse(event.data)
-    console.log(data)
-    const elements = document.querySelectorAll(`c-avatar`)
+    const elements = document.querySelectorAll(`c-avatar[username=${data.username}]`)
 
-    elements.forEach(el => console.log(el.getAttribute("username")))
+    elements.forEach(avatar => {
+        const img = avatar.querySelector('img');
+
+        if (data.online)
+            img.className = img.className.replace('secondary', 'success')
+        else
+            img.className = img.className.replace('success', 'secondary')
+    })
 })

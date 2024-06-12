@@ -38,7 +38,7 @@ const content = (user) => /* html */ `
 		<div class="w-100 h-100">
 			<div class="mx-3 mt-2 d-flex" style="">
 				<div>
-					<c-avatar src="${user.avatar}" style="width: 7em; height: 7em;" username="${user.username}"></c-avatar>
+					<c-avatar src="${user.avatar}" style="width: 7em; height: 7em;" username="${user.username}" connected="true"></c-avatar>
 				</div>
 				<div class="d-flex flex-column justify-content-evenly mx-2 w-100">
 					<span class="text-center w-100" style="font-size: 1.7em; overflow: hidden;">${user.username}</span>

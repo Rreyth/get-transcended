@@ -21,7 +21,7 @@ export class Friend extends Component
 
         this.innerHTML = /* html */`
             <div class="d-flex align-items-center gap-2" id="user-card">
-                <c-avatar src="${this.getAttribute('avatar')}" style="width: 2em; height: 2em;" username="${this.username}"></c-avatar>
+                <c-avatar src="${this.getAttribute('avatar')}" style="width: 2em; height: 2em;" username="${this.username}" connected="${this.getAttribute('connected')}"></c-avatar>
                 <span>${this.username}</span>
             </div>
         `
