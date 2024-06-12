@@ -60,13 +60,13 @@ export class About extends Component {
 
 const content = /*html*/`
 	<div id="about-container">
-		<div class="d-flex align-items-center bg-primary" id="about-header">
+		<div class="d-flex align-items-center bg-body-secondary" id="about-header">
 			<span class="flex-grow-1 text-center">about us</span>
 			<i class='bx bx-x bx-md' style="cursor: pointer;" id="close-about"></i>
 		</div>
 		<div class="row mx-1 my-2 user-select-none">
 
-			<div class="col d-flex flex-column align-items-center mx-1 rounded-3" style="border: 0.1em solid black;">
+			<div class="col d-flex flex-column align-items-center mx-1 rounded-3 card border-light">
 				<div>
 					<img class="rounded-4 mt-3" src="https://cdn.intra.42.fr/users/bc8f6250a88ae6316c4207e18fb99776/ltuffery.jpg" style="width: 7em; height: 7em; object-fit: cover; object-position: center;"/>
 				</div>
@@ -80,7 +80,7 @@ const content = /*html*/`
 				</div>
 			</div>
 
-			<div class="col d-flex flex-column align-items-center mx-1 rounded-3" style="border: 0.1em solid black;">
+			<div class="col d-flex flex-column align-items-center mx-1 rounded-3 card border-light">
 				<div>
 					<img class="rounded-4 mt-3" src="https://cdn.intra.42.fr/users/39294f3af6fdff159c137a24f6639c9f/tdhaussy.jpg" style="width: 7em; height: 7em; object-fit: cover; object-position: center;"/>
 				</div>
@@ -89,12 +89,12 @@ const content = /*html*/`
 				<p class="mt-1">Etudiant 42 a Angouleme</p>
 				<div class="d-flex justify-content-evenly w-100 mb-3">
 					<a href="https://github.com/Rreyth" id="1" class='bx bxl-github bx-sm text-decoration-none text-reset'></a>
-					<a href="" class='bx bxl-linkedin-square bx-sm text-decoration-none text-reset'></a>
-					<a href="mailto:" class='bx bx-mail-send bx-sm text-decoration-none text-reset'></a>
+					<a href="" id="1" class='bx bxl-linkedin-square bx-sm text-decoration-none text-reset'></a>
+					<a href="mailto:" id="1" class='bx bx-mail-send bx-sm text-decoration-none text-reset'></a>
 				</div>
 			</div>
 
-			<div class="col d-flex flex-column align-items-center mx-1 rounded-3" style="border: 0.1em solid black;">
+			<div class="col d-flex flex-column align-items-center mx-1 rounded-3 card border-light">
 				<div>
 					<img class="rounded-4 mt-3" src="https://cdn.intra.42.fr/users/2fbb03a196de09235a1d843b6081ce7d/njegat.jpg" style="width: 7em; height: 7em; object-fit: cover; object-position: center;"/>
 				</div>
@@ -112,9 +112,9 @@ const content = /*html*/`
 	</div>
 	<style>
 		#about-container {
-			//display: none;
+			display: none;
 			width: 40em;
-			height: 25em;
+			height: 24.3em;
 			position: absolute;
 			top: 50%;
 			left: 50%;
