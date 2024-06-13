@@ -55,12 +55,12 @@ function render_text(core, nb_players) {
 		}
 		let names_pos = [];
 		for (let i = 1; i < 5; i++)
-			names_pos.push((text[i].length > 3) ? text[i].length * 0.005 : text[i].length * 0.015);
+			names_pos.push((text[i].length > 3) ? text[i].length * 0.009 : text[i].length * 0.012);
 		pos.push([canvas.width / 2, canvas.height * 0.03],
-				[canvas.width * names_pos[0], canvas.height * 0.03],
-				[canvas.width * (names_pos[1] * 3), canvas.height * 0.03],
-				[canvas.width * (1 - names_pos[2]), canvas.height * 0.03],
-				[canvas.width * (1 - (names_pos[3] * 3)), canvas.height * 0.03]);
+				[canvas.width * names_pos[0] * 0.5, canvas.height * 0.03],
+				[canvas.width * (names_pos[1] * 2), canvas.height * 0.03],
+				[canvas.width * (1 - names_pos[2] * 0.5), canvas.height * 0.03],
+				[canvas.width * (1 - (names_pos[3] * 2)), canvas.height * 0.03]);
 	}
 	ctx.fillStyle = color;
 	ctx.font = Math.floor(canvas.height * 0.05) + "px pong-teko";
