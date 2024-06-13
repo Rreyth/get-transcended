@@ -2,6 +2,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
+from users.models import User
 
 class OnlineConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -12,11 +13,11 @@ class OnlineConsumer(AsyncWebsocketConsumer):
         self.scope["user"].online = True
         await sync_to_async(self.scope["user"].save)()
         
-        friends = await database_sync_to_async(list)(self.scope["user"].friends.all())
+        users = await database_sync_to_async(list)(User.objects.filter(online=True))
 
-        for friend in friends:
+        for u in users:
             await self.channel_layer.group_send(
-                friend.username,
+                u.username,
                 {
                     'type': 'user_status',
                     'user': self.scope["user"],
@@ -28,11 +29,11 @@ class OnlineConsumer(AsyncWebsocketConsumer):
         self.scope["user"].online = False
         await sync_to_async(self.scope["user"].save)()
         
-        friends = await database_sync_to_async(list)(self.scope["user"].friends.all())
+        users = await database_sync_to_async(list)(User.objects.filter(online=True))
 
-        for friend in friends:
+        for u in users:
             await self.channel_layer.group_send(
-                friend.username,
+                u.username,
                 {
                     'type': 'user_status',
                     'user': self.scope["user"],

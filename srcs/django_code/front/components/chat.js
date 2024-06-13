@@ -128,8 +128,6 @@ export class Chat extends Component {
 			}
 		})
 
-		const socket = Socket.routes['/messages'];
-
 		Chat.chatInput.onkeydown = (event) => {
 			if (event.key != 'Enter' || !event.target.value.length)
 				return;

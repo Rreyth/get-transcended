@@ -4,11 +4,8 @@ import json
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.accept()
-        
-        # await self.channel_layer.group_add(self.scope['user'].username, self.channel_name)
 
     async def disconnect(self, close_code):
-        # await self.channel_layer.group_discard(self.scope['user'].username, self.channel_name)
         pass
 
     async def receive(self, text_data):
