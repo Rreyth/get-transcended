@@ -3,7 +3,7 @@
         "model": "chat.group",
         "pk": 1,
         "fields": {
-          "name": "general",
+          "name": "main",
           "owner_id": 1
         }
     }
