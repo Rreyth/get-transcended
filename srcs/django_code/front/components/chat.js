@@ -167,13 +167,16 @@ export class Chat extends Component {
 
 	}
 
-	handleClick(ev)
+	async handleClick(ev)
 	{
 		switch (ev.target.id) {
 			case 'chat-leave-group':
-				APIRequest.build(`/user/groups/${Group.groupSelected.groupId}/leave`, 'POST').send()
-				Group.groupSelected.remove()
-				document.querySelector('#chat-back').click()
+				const response = await APIRequest.build(`/user/groups/${Group.groupSelected.groupId}/leave`, 'POST').send()
+				if (response.ok)
+				{
+					Group.groupSelected.remove()
+					document.querySelector('#chat-back').click()
+				}
 				break;
 		}
 	}

@@ -1,0 +1,10 @@
+[
+    {
+        "model": "chat.group",
+        "pk": 1,
+        "fields": {
+          "name": "main",
+          "owner_id": 1
+        }
+    }
+]
