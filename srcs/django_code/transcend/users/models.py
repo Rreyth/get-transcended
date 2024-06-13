@@ -37,11 +37,15 @@ class User(AbstractBaseUser):
     a2f = models.BooleanField(default=False)
     
     online = models.BooleanField(default=False)
+    blocked_users = models.ManyToManyField("User", blank=True, related_name="blocked")
  
     objects = UserProfileManager()
  
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
+    
+    def get_non_blocked_friends(self):
+        return self.friends.exclude(pk__in=self.blocked_users.all())
 
     def __str__(self) -> str:
         return self.username

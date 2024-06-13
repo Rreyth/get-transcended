@@ -165,13 +165,14 @@ class FriendView(APIView):
 
         if target:
             friend = get_object_or_404(User, username=target)
-            if friend in request.user.friends.all():
+            if friend in request.user.get_non_blocked_friends():
                 serializer = UserSerializer(friend)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else:
                 return Response({"detail": "Friend not found"}, status=status.HTTP_404_NOT_FOUND)
         else:
-            serializer = UserSerializer(request.user.friends, many=True)
+            non_blocked_friends = request.user.get_non_blocked_friends()
+            serializer = UserSerializer(non_blocked_friends, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
 class FriendRequestsView(APIView):
@@ -240,3 +241,20 @@ class ProfileView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+class BlockUserView(APIView):
+    permission_classes = (IsAuthenticated,)
+    parser_classes = [JSONParser, MultiPartParser, FormParser]
+
+    def post(self, request):
+        if not 'user' in request.data:
+            return Response({'message': 'user field is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if request.data['user'] == request.user.username:
+            return Response({'message': 'You can\'t block yourself'}, status=status.HTTP_403_FORBIDDEN)
+
+        user = User.objects.get(username=request.data['user'])
+
+        request.user.blocked_users.add(user)
+
+        return Response({'message': 'Success'}, status=status.HTTP_200_OK)
