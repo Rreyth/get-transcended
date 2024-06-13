@@ -251,8 +251,9 @@ async def handle_game(websocket, path):
 					if value == websocket:
 						del game.clients[key]
 						await game.hub[0].send(json.dumps(game.endMsg(key, 'quit')))
-						await game.sendHub(json.dumps(game.endMsg(key, 'quit')))
 						await game.sendAll(game.endMsg(key, 'quit'))
+						game.is_running = False
+						await game.closeAll()
 						break
 			game.is_running = False
 		clients.discard(websocket)
