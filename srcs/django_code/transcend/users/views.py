@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from users.models import User, FriendRequest
+from chat.models import Group
 from .serializer import UserSerializer, FriendRequestSerializer, CustomTokenObtainPairSerializer
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
@@ -26,6 +27,9 @@ class RegisterUserView(APIView):
             token = CustomTokenObtainPairSerializer(data=request.data)
 
             if token.is_valid():
+                group = Group.objects.get(pk=1)
+
+                group.members.add(user)
                 return Response(token.validated_data, status=status.HTTP_201_CREATED)
             else:
                 return Response(token.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -113,6 +117,9 @@ class Log42(APIView):
                     refresh = RefreshToken.for_user(user)
                     if created:
                         refresh["username"] = username
+                        group = Group.objects.get(pk=1)
+
+                        group.members.add(user)
                     else:
                         refresh["username"] = user_data['login']
                     refresh['avatar'] = user.avatar.url if user.avatar and hasattr(user.avatar, 'url') else None
