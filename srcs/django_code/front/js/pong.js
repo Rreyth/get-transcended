@@ -127,8 +127,13 @@ function parse_msg(event) {
 			console.log("Connection success");
 			game.start(GameHub);
 			if (link_code) {
-				game.menu.buttons[5].name = link_code[1];
-				game.menu.setValues("JOIN", game);
+				if (link_code[1] == "create") {
+					game.menu.setValues("ONLINE", game);	
+				}
+				else {
+					game.menu.buttons[5].name = link_code[1];
+					game.menu.setValues("JOIN", game);
+				}
 			}
 			gameInterval = Thread.new(game_loop, 10);
 		}
