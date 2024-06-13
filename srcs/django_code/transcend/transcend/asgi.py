@@ -20,9 +20,11 @@ django.setup()
 
 from chat.consumers import ChatConsumer
 from users.middleware import JwtAuthMiddlewareStack
+from users.consumers import *
 
 websocket_urlpatterns = [
-    path('ws/messages', ChatConsumer.as_asgi())
+    path('ws/messages', ChatConsumer.as_asgi()),
+    path('ws/user/online', OnlineConsumer.as_asgi()),
 ]
 
 application = ProtocolTypeRouter({
