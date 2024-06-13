@@ -178,6 +178,13 @@ export class Chat extends Component {
 					document.querySelector('#chat-back').click()
 				}
 				break;
+			case 'chat-block-user':
+				await APIRequest.build(`/user/blocks`, 'POST').setBody({
+					user: Friend.friendSelected.username
+				}).sendJSON()
+				Friend.friendSelected.remove()
+				document.querySelector('#chat-back').click()
+				break;
 		}
 	}
 
@@ -190,12 +197,17 @@ export class Chat extends Component {
 		return false
 	}
 
-	static sendMessage(message) {
+	static async sendMessage(message) {
 		if (Chat.state == State.FRIEND_CONVERSATION)
 		{
-			APIRequest.build(`/user/dm/${Friend.friendSelected.username}`, 'POST').setBody({
+			const response = await APIRequest.build(`/user/dm/${Friend.friendSelected.username}`, 'POST').setBody({
 				content: message
 			}).sendJSON()
+
+			if (!response.ok)
+			{
+				Chat.sendEphemeral('Cet utilisateur vous a bloqué.', 'danger-subtle', 'danger')
+			}
 		}
 		else if (Chat.state == State.GROUP_CONVERSATION)
 		{
@@ -205,6 +217,20 @@ export class Chat extends Component {
 		}
 	}
 
+	static sendEphemeral(content, color, subColor)
+	{
+		const body = document.querySelector('#chat-messages');
+
+		const el = document.createElement('div');
+		el.classList.add('card', 'border', 'border-2', 'rounded-4', `bg-${color}`, `border-${subColor}`, 'my-3')
+		el.innerHTML = /* html */`
+			<div class="card-body">
+				${content}
+			</div>`
+
+		body.appendChild(el);
+	}
+
 	static async displayConversation(type, id)
 	{
 		const response = await APIRequest.build(`/user/${type == 'GROUP' ? `groups/${id.groupId}/messages` : `dm/${id}`}`, 'GET').send();
@@ -212,16 +238,16 @@ export class Chat extends Component {
 		const chatTitle = document.querySelector('#chat-title')
 		const body = document.querySelector('#chat-messages');
 		const options = /* html */`
-			<i class='bx bx-dots-vertical-rounded bx-sm' data-bs-toggle="dropdown"></i>
-			<ul class="dropdown-menu">
-				<li class="dropdown-item d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#add-user-modal"><i class='bx bxs-user-plus bx-sm'></i> Add friend</li>
-				<li id="chat-leave-group" class="dropdown-item text-danger d-flex align-items-center gap-2"><i class='bx bx-log-out bx-sm'></i> Leave</li>
-			</ul>`
+			<li class="dropdown-item d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#add-user-modal"><i class='bx bxs-user-plus bx-sm'></i> Add friend</li>
+			<li id="chat-leave-group" class="dropdown-item text-danger d-flex align-items-center gap-2"><i class='bx bx-log-out bx-sm'></i> Leave</li>`
 
 		chatTitle.innerHTML = /* html */`
 			<div class="dropstart d-flex align-items-center">
 				<i class='bx bx-left-arrow-alt bx-sm' id="chat-back"></i>
-				${type == 'GROUP' ? options : ''}
+				<i class='bx bx-dots-vertical-rounded bx-sm' data-bs-toggle="dropdown"></i>
+				<ul class="dropdown-menu">
+					${type == 'GROUP' ? options : /* html */`<li id="chat-block-user" class="dropdown-item text-danger d-flex align-items-center gap-2"><i class='bx bx-block'></i> Bloquer</li>`}
+				</ul>
 			</div>
 			${type == 'GROUP' ? id.groupName : id}
 		`

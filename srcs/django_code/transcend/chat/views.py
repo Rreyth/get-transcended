@@ -31,6 +31,9 @@ class DMView(APIView):
             receiver = User.objects.get(username=username)
         except User.DoesNotExist:
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        if request.user in receiver.blocked_users.all():
+            return Response(status=status.HTTP_403_FORBIDDEN)
         
         message = Message.objects.create(content=request.data['content'], sender=request.user, receiver=receiver)
         channel_layer = get_channel_layer()

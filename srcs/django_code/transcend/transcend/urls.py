@@ -26,6 +26,7 @@ urlpatterns = [
     path('api/42/', Log42.as_view()),
     path('api/user/a2f', A2fView.as_view()),
     path('api/user/', UserView.as_view()),
+    path('api/user/blocks', BlockUserView.as_view()),
     path('api/user/<str:username>', ProfileView.as_view()),
     path('api/user/<str:username>/games/', GamesView.as_view()),
     path('api/user/search/', ReseachUserView.as_view()),
