@@ -108,4 +108,48 @@ Router.set('/user/{username}', async (match) => {
 			</div>
 		</li>`
 	}
+
+	document.querySelector("#games-filter").onchange = (e) => {
+		const allElement = document.querySelectorAll("c-teamgame, c-quickgame, c-squaregame");
+		const setEquiv = {
+			"1v1": "c-quickgame",
+			"2v2": "c-teamgame",
+			"1v3": "c-squaregame",
+		}
+
+		if (e.target.value != "all")
+		{
+			allElement.forEach(el => {
+				if (setEquiv[e.target.value] == el.tagName.toLowerCase())
+					el.style.display = "block";
+				else
+					el.style.display = "none";
+			});
+		}
+		else
+			allElement.forEach(el => {el.style.display = "block"});
+
+		updateBorders();
+	}
+	function updateBorders() {
+		const items = document.querySelectorAll("c-teamgame, c-quickgame, c-squaregame");
+		let visibleItems = [...items].filter(item => item.style.display !== 'none');
+		
+		// Reset border-radius for all items
+		items.forEach(item => {
+			item.style.borderTopLeftRadius = '';
+			item.style.borderTopRightRadius = '';
+			item.style.borderBottomLeftRadius = '';
+			item.style.borderBottomRightRadius = '';
+			item.style.borderTop = '';
+		});
+
+		if (visibleItems.length > 0) {
+			visibleItems[0].style.borderTop = `1px solid var(--bs-list-group-border-color)`;
+			visibleItems[0].style.borderTopLeftRadius = 'inherit';
+			visibleItems[0].style.borderTopRightRadius = 'inherit';
+			visibleItems[visibleItems.length - 1].style.borderBottomLeftRadius = 'inherit';
+			visibleItems[visibleItems.length - 1].style.borderBottomRightRadius = 'inherit';
+		}
+	}
 })
