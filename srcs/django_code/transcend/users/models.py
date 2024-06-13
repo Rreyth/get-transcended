@@ -35,6 +35,8 @@ class User(AbstractBaseUser):
 
     login42 = models.CharField(default=None, blank=True, null=True)
     a2f = models.BooleanField(default=False)
+    
+    online = models.BooleanField(default=False)
  
     objects = UserProfileManager()
  

@@ -7,6 +7,8 @@ from django.db.models import Q
 from users.models import User
 from .models import *
 from .serializer import *
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 class DMView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -14,11 +16,44 @@ class DMView(APIView):
     serializer_class = MessageSerializer
 
     def get(self, request, username):
-        u = User.objects.get(username=username)
+        try:
+            u = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
         messages = Message.objects.filter(Q(receiver=request.user, sender=u) | Q(receiver=u, sender=request.user))
         serializer = MessageSerializer(messages, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request, username):
+        try:
+            receiver = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        message = Message.objects.create(content=request.data['content'], sender=request.user, receiver=receiver)
+        channel_layer = get_channel_layer()
+
+        async_to_sync(channel_layer.group_send)(
+            receiver.username,
+            {
+                'type': 'broadcast',
+                'message': message,
+                'room_name': self.request.user.username,
+            }
+        )
+        
+        async_to_sync(channel_layer.group_send)(
+            self.request.user.username,
+            {
+                'type': 'broadcast',
+                'message': message,
+                'room_name': receiver.username,
+            }
+        )
+        
+        return Response({'message': 'Created'}, status=status.HTTP_201_CREATED)
 
     def perform_create(self, serializer):
         serializer.save(sender=self.request.user, receiver=self.request.user)
@@ -64,6 +99,10 @@ class GroupLeaveView(APIView):
         group = Group.objects.get(pk=group_id)
         
         group.members.remove(request.user)
+        
+        if (group.members.count() == 0):
+            group.delete()
+
         return Response(status=status.HTTP_200_OK)
 
 class GroupsView(APIView):
@@ -94,3 +133,25 @@ class GroupMessagesView(APIView):
         serializer = MessageSerializer(messages, many=True, fields=('id', 'content', 'sender', 'created_at'))
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, group_id):
+        try:
+            group = Group.objects.get(pk=group_id)
+        except Group.DoesNotExist:
+            return Response({'error': 'Group not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        message = Message.objects.create(content=request.data['content'], sender=request.user, group=group)
+        
+        channel_layer = get_channel_layer()
+
+        for member in group.members.all():
+            async_to_sync(channel_layer.group_send)(
+                member.username,
+                {
+                    'type': 'broadcast',
+                    'message': message,
+                    'room_name': group.id,
+                }
+            )
+
+        return Response({'message': 'Created'}, status=status.HTTP_201_CREATED)

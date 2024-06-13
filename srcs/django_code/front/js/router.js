@@ -7,7 +7,7 @@ export const render = (file, vars = {}) => {
         .then(html => {
 
             for (const property in vars) {
-                html = html.replace(`{{ ${property} }}`, vars[property])
+                html = html.replaceAll(`{{ ${property} }}`, vars[property])
             }
 
             document.querySelector('#content').innerHTML = html;

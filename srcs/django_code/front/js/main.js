@@ -20,6 +20,7 @@ import { FriendCheckbox } from "../components/chat/friendCheckbox.js";
 import { AddUserModal } from "../components/chat/addUserModal.js";
 import { CreateGroupModal } from "../components/chat/createGroupModal.js";
 import { NavProfile } from "../components/navbar/profile.js";
+import { Avatar } from "../components/avatar.js";
 import { About } from "../components/about.js";
 
 Component.loader([
@@ -43,6 +44,7 @@ Component.loader([
 	AddUserModal,
 	CreateGroupModal,
 	NavProfile,
+	Avatar,
 	About,
 ])
 
