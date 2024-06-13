@@ -97,7 +97,7 @@ class GroupView(APIView):
 class GroupLeaveView(APIView):
     def post(self, request, group_id):
         if group_id == 1:
-            return Response({'message': 'You can\'t leave general chat'}, status=status.HTTP_403_FORBIDDEN)
+            return Response({'message': 'You can\'t leave main chat'}, status=status.HTTP_403_FORBIDDEN)
         
         group = Group.objects.get(pk=group_id)
         
