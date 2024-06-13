@@ -4,14 +4,16 @@ import json
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.accept()
+        
+        await self.channel_layer.group_add(f"{self.scope['user'].username}_chat", self.channel_name)
 
     async def disconnect(self, close_code):
-        pass
+        await self.channel_layer.group_discard(f"{self.scope['user'].username}_chat", self.channel_name)
 
     async def receive(self, text_data):
         pass
 
-    async def broadcast(self, event):
+    async def send_message(self, event):
         await self.send(text_data=json.dumps({
             'message': event['message'].content,
             'sender': event['message'].sender.username,
