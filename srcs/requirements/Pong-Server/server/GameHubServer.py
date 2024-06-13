@@ -357,13 +357,13 @@ async def handle_client(websocket):
 				break
 
 	finally:
+		await quit_room(websocket)
 		for key, player in clients.items():
 			if player.websocket == websocket:
 				del clients[key]
 				if is_registered(websocket):
 					del registered[key]
 				break
-		await quit_room(websocket)
 
 async def quit_room(websocket):
 	global rooms, used_port, used_id, clients
