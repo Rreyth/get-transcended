@@ -36,18 +36,18 @@ class DMView(APIView):
         channel_layer = get_channel_layer()
 
         async_to_sync(channel_layer.group_send)(
-            receiver.username,
+            f"{receiver.username}_chat",
             {
-                'type': 'broadcast',
+                'type': 'send_message',
                 'message': message,
                 'room_name': self.request.user.username,
             }
         )
         
         async_to_sync(channel_layer.group_send)(
-            self.request.user.username,
+            f"{self.request.user.username}_chat",
             {
-                'type': 'broadcast',
+                'type': 'send_message',
                 'message': message,
                 'room_name': receiver.username,
             }
@@ -149,9 +149,9 @@ class GroupMessagesView(APIView):
 
         for member in group.members.all():
             async_to_sync(channel_layer.group_send)(
-                member.username,
+                f"{member.username}_chat",
                 {
-                    'type': 'broadcast',
+                    'type': 'send_message',
                     'message': message,
                     'room_name': group.id,
                 }
