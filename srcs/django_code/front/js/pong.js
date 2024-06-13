@@ -12,6 +12,8 @@ import { Tournament } from "./game/Tournament.js";
 import { Thread } from "./thread.js";
 import { user, user_token } from "./helpers.js"
 
+const link_code = window.location.search.match(/=(.*)/);
+
 let timer;
 let connect_last;
 let loginInterval;
@@ -124,6 +126,10 @@ function parse_msg(event) {
 		if (msg.success == "true") {
 			console.log("Connection success");
 			game.start(GameHub);
+			if (link_code) {
+				game.menu.buttons[5].name = link_code[1];
+				game.menu.setValues("JOIN", game);
+			}
 			gameInterval = Thread.new(game_loop, 10);
 		}
 		else {
