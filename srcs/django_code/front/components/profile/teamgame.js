@@ -15,10 +15,11 @@ export class TeamGame extends Component
     connectedCallback()
     {
         const bgColor = this.getAttribute('has_won') == 'true' ? 'text-bg-success' : 'text-bg-danger'
+		const time = new Date(this.getAttribute("at"));
 
         this.innerHTML = /*html*/`<li class="row d-flex align-items-center">
             <div class="col">
-                ${this.getAttribute("at")}
+                ${time.getHours()}h${time.getMinutes()}
             </div>
             <div class="col ms-2 fw-bold">
                 ${this.getAttribute("player-1-username")} - ${this.link(this.getAttribute("player-2-username"))} 

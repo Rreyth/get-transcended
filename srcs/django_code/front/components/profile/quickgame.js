@@ -9,20 +9,23 @@ export class QuickGame extends Component
 
     connectedCallback()
     {
-        const bgColor = this.getAttribute('has_won') == 'true' ? 'text-bg-success' : 'text-bg-danger'
+		const time = new Date(this.getAttribute("at"));
+		const targetUser = JSON.parse(this.getAttribute('target-user'));
+		const opponent = JSON.parse(this.getAttribute('opponent'));
+        const bgColor = targetUser.win ? 'text-bg-success' : 'text-bg-danger';
 
         this.innerHTML = /*html*/`<li class="row d-flex align-items-center">
             <div class="col">
-                ${this.getAttribute("at")}
+                ${time.getHours()}h${time.getMinutes()}
             </div>
             <div class="col ms-2 fw-bold">
-                ${this.getAttribute("target-user-username")}
+                ${targetUser.user.username}
             </div>
             <div class="col d-flex justify-content-center">
-                <span class="badge rounded-pill ${bgColor}">${this.getAttribute('target-user-score')} - ${this.getAttribute('opponent-score')}</span>
+                <span class="badge rounded-pill ${bgColor}">${targetUser.score} - ${opponent.score}</span>
             </div>
             <div class="col ms-2 fw-bold text-end">
-                <a href="/user/${this.getAttribute('opponent')}">${this.getAttribute('opponent')}</a>
+                <a href="/user/${opponent.user.username}">${opponent.user.username}</a>
             </div>
         </li>`
     }

@@ -72,11 +72,11 @@ Router.set('/user/{username}', async (match) => {
 
 			if (game.players.length == 2)
 			{
-				subSection.innerHTML += `<c-quickgame class="list-group-item" at="${new Date(game.created_at).getHours()}h${new Date(game.created_at).getMinutes()}min" target-user-username="${game.target_user_info.user.username}" target-user-score="${game.target_user_info.score}" opponent="${game.adversaries[0].user.username}" opponent-score="${game.adversaries[0].score}" has_won="${game.target_user_info.win}"></c-quickgame>`
+				subSection.innerHTML += `<c-quickgame class="list-group-item" at="${game.created_at}" target-user=${JSON.stringify(game.target_user_info)} opponent=${JSON.stringify(game.adversaries[0])}></c-quickgame>`
 			}
 			else if (game.square)
 			{
-				subSection.innerHTML += `<c-squaregame class="list-group-item" at="${new Date(game.created_at).getHours()}h${new Date(game.created_at).getMinutes()}min" player-winner-score="${game.score}" player-1-username="${game.target_user_info.user.username}" player-1-score="${game.target_user_info.score}" player-2-username="${game.adversaries[0].user.username}" player-2-score="${game.adversaries[0].score}" player-3-username="${game.adversaries[1].user.username}" player-3-score="${game.adversaries[1].score}" player-4-username="${game.adversaries[2].user.username}" player-4-score="${game.adversaries[2].score}"></c-squaregame>`
+				subSection.innerHTML += `<c-squaregame class="list-group-item" at="${game.created_at}" main-player=${JSON.stringify(game.target_user_info)} opponent-player=${JSON.stringify(game.adversaries)} ></c-squaregame>`
 			}
 			else
 			{
@@ -96,7 +96,7 @@ Router.set('/user/{username}', async (match) => {
 				players.splice(indexOfPlayer, 1)
 				players.splice(indexOfMate % 2 ? indexOfMate - 1 : indexOfMate, 1)
 				
-				subSection.innerHTML += `<c-teamgame class="list-group-item" at="${new Date(game.created_at).getHours()}h${new Date(game.created_at).getMinutes()}min" has_won="${game.target_user_info.win}" team-1-score="${game.target_user_info.score}" team-2-score="${otherScore}" player-1-username="${game.target_user_info.user.username}" player-2-username="${game.players[indexOfMate].user.username}" player-3-username="${players[0]}" player-4-username="${players[1]}"></c-teamgame>`
+				subSection.innerHTML += `<c-teamgame class="list-group-item" at="${game.created_at}" has_won="${game.target_user_info.win}" team-1-score="${game.target_user_info.score}" team-2-score="${otherScore}" player-1-username="${game.target_user_info.user.username}" player-2-username="${game.players[indexOfMate].user.username}" player-3-username="${players[0]}" player-4-username="${players[1]}"></c-teamgame>`
 			}
 		}
 	}
