@@ -96,12 +96,7 @@ const content = async (user) => /* html */ `
 						<c-langbtn></c-langbtn>
 					</div>
 				</div>
-
-
-
 			</div>
-
-
 		</div>
 	</nav>
 	<c-chat-body id="chat"></c-chat-body>

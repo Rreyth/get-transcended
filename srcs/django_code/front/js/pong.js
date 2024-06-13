@@ -11,6 +11,7 @@ import { update_sizes } from "./game/update.js";
 import { Tournament } from "./game/Tournament.js";
 import { Thread } from "./thread.js";
 import { user, user_token } from "./helpers.js"
+import { Cache } from "./cache.js";
 
 const link_code = window.location.search.match(/=(.*)/);
 
@@ -118,7 +119,7 @@ function invalid_token() {
 	ctx.fillStyle = "white";
 }
 
-function parse_msg(event) {
+async function parse_msg(event) {
 	let msg = JSON.parse(event.data);
 	let room_id = 0;
 	let wait_nb = 0;
@@ -293,6 +294,8 @@ function parse_msg(event) {
 			game.wait_screen = new WaitScreen(room_id, game.id, Object.keys(game.custom_menu.players).length, "CUSTOM");
 		}
 		game.state = "waiting";
+
+		Cache.set("last-room-id", room_id);
 	}
 	else if (msg.type == "TournamentRoom") {
 		game.GamePort = msg.port;

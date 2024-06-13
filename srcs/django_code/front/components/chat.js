@@ -1,6 +1,5 @@
 import { Component } from "../js/component.js";
 import { APIRequest } from "../js/helpers.js"
-import { Socket } from "../js/socket.js";
 import { Friend } from "./chat/friend.js";
 import { Group } from "./chat/group.js";
 
@@ -195,6 +194,17 @@ export class Chat extends Component {
 		if (Chat.state == State.GROUP_CONVERSATION)
 			return roomName == Group.groupSelected.groupId
 		return false
+	}
+
+	static async sendInviteCode(username, code) {
+		const response = await APIRequest.build(`/user/dm/${username}`, 'POST').setBody({
+			content: `[invite code=${code}]`
+		}).sendJSON()
+
+		if (!response.ok)
+		{
+			Chat.sendEphemeral('Cet utilisateur vous a bloqué.', 'danger-subtle', 'danger')
+		}
 	}
 
 	static async sendMessage(message) {

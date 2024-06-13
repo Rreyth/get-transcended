@@ -1,5 +1,8 @@
+import { Cache } from "../../js/cache.js";
 import { Component } from "../../js/component.js";
 import { user, translate, user_token, APIRequest } from "../../js/helpers.js";
+import { redirect } from "../../js/router.js";
+import { Chat } from "../chat.js";
 
 export class Search extends Component {
 
@@ -73,6 +76,19 @@ export class Search extends Component {
 				`;
 
 				this.setFriendAction(this.querySelectorAll('i[data-request="friend"]'))
+				this.querySelectorAll('#nav-invite-game').forEach(el => {
+					el.onclick = () => {
+						redirect('/pong?code=create')
+
+						setTimeout(async () => {
+	
+							const room_id = Cache.get('last-room-id')
+	
+							if (room_id)
+								Chat.sendInviteCode(el.getAttribute("username"), room_id)
+						}, 1000)
+					}
+				})
 			}
 		}
 	}
@@ -97,12 +113,14 @@ async function createUserCard(u, friendId)
 					<div class="d-flex align-items-start justify-content-evenly btns btns-${u.username}" style="height: 33%;">
 						<a href="/user/${u.username}" class="text-decoration-none text-reset"><i class='bx bxs-user-detail rounded-circle bg-body-secondary text-white border border-dark p-1' id="bt-profile"></i></a>
 						<i class='bx ${friendId ? 'bx-message-dots' : 'bx-user-plus'} rounded-circle bg-body-secondary text-white border border-dark p-1' style="cursor: pointer;" data-request="${friendId ? 'message' : 'friend'}" user-id="${u.id}"></i>
-						<i class='bx bx-joystick rounded-circle bg-body-secondary text-white border border-dark p-1' style="cursor: pointer;"></i>
+						<i id="nav-invite-game" username="${u.username}" class='bx bx-joystick rounded-circle bg-body-secondary text-white border border-dark p-1' style="cursor: pointer;"></i>
 					</div>
 				</div>
 			</div>
 		</div>
 	`);
+
+
 }
 
 const emptySearch = async () =>/* html */ `
