@@ -87,10 +87,10 @@ async function createUserCard(u, friendId)
 	return ( /* html */`
 		<div class="card mb-3 h-25 my-2 user-search-card" style="width: 80%;">
 			<div class="row g-0">
-				<div class="col-md-4">
+				<div class="col-4">
 					<c-avatar style="height: 100%;" src="${u.avatar}" username="${u.username}" connected="${u.online}"></c-avatar>
 				</div>
-				<div class="col-md-8">
+				<div class="col-8">
 					<div class="card-body d-flex align-items-center justify-content-center" style="height: 67%;">
 						<span class="text-truncate" style="font-size: 1.5em;">${u.username}</span>
 					</div>
