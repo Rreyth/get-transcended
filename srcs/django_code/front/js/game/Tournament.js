@@ -9,15 +9,7 @@ import { Obstacle } from "./Obstacle.js";
 import { Ball } from "./Ball.js";
 import { AI } from "./AI.js";
 import { Wall } from "./Wall.js";
-
-function NextMatchEvent(opponent) {
-	const event = new CustomEvent('NextMatchEvent', {
-		detail: {
-			opponent: opponent
-		}
-	});
-	window.dispatchEvent(event);
-}
+import { Chat } from "../../components/chat.js" 
 
 const img = new Image();
 img.src = "/static/js/game/tournament_end.jpg";
@@ -214,8 +206,7 @@ export class Tournament {
 		const players_id = [this.matches[this.match_index][0].nb, this.matches[this.match_index][1].nb];
 		if (players_id.includes(id)) {
 			this.notified = true;
-			const opponent = (this.matches[this.match_index][0].nb != id) ? this.matches[this.match_index][0].name : this.matches[this.match_index][1].name;
-			NextMatchEvent(opponent);
+			Chat.sendEphemeral("C'est à toi de jouer !", "primary-subtle", "info")
 		}
 	}
 
