@@ -18,7 +18,7 @@ export class SignUp extends Component {
 		inputUser.addEventListener("input", (e) => {
 			if (e.target.value.length > lengthUserMax)
 			{
-				this.querySelector("#input-user").style.color = "#a51221";
+				this.querySelector("#input-user").style.color = "#C0192A";
 				createPopover(e.target, "popover-user", "Le nom d'utilisateur ne peux pas depasser 10 charactere");
 			}
 			else
@@ -56,7 +56,7 @@ export class SignUp extends Component {
 				dropdownMenu.classList.remove('show');
 				if (!emailIsValid(inputEmail.value) && inputEmail.value != "")
 				{
-					inputEmail.style.color = '#a51221';
+					inputEmail.style.color = '#C0192A';
 					createPopover(inputEmail, "popover-email", "mal formater");
 				}
 				else
@@ -73,17 +73,17 @@ export class SignUp extends Component {
 
 			if (passwordIsGood.includes(false) && e.target.value != "")
 			{
-				inputPass.style.color = "#a51221";
+				inputPass.style.color = "#C0192A";
 				createPopover(inputPass, "popover-pass", "none");
 				setPopoverContent("popover-pass", passPopoverContent);
 				if (passwordIsGood[0] == true)
-					this.querySelector("#passContent1").style.color = "green";
+					this.querySelector("#passContent1").style.color = "lightgreen";
 				if (passwordIsGood[1] == true)
-					this.querySelector("#passContent2").style.color = "green";
+					this.querySelector("#passContent2").style.color = "lightgreen";
 				if (passwordIsGood[2] == true)
-					this.querySelector("#passContent3").style.color = "green";
+					this.querySelector("#passContent3").style.color = "lightgreen";
 				if (passwordIsGood[3] == true)
-					this.querySelector("#passContent4").style.color = "green";
+					this.querySelector("#passContent4").style.color = "lightgreen";
 			}
 			else
 				removeError(inputPass, "popover-pass");
@@ -166,7 +166,7 @@ async function registerUser(username, email, password, file)
 
 function removeError(input, popover)
 {
-	input.style.color = "black";
+	input.style.color = "";
 	const selectPopover = document.querySelector(`.${popover}`);
 	if (selectPopover != null)
 	{
@@ -260,24 +260,9 @@ const content = /*html*/`
 		<div class="red-popover" id="popover-container"></div>
 		<input type="file" id="fileInput" name="profile_picture" accept="image/*" style="display: none;" />
 	<style>
-    /* Style CSS pour le Popover rouge */
-    .red-popover .popover {
-        //background-color: #f8d7da27;
-        border-color: #f5c6cb;
-    }
 	.red-popover .popover-body
 	{
-		color: #721c24;
+		color: #DF0F24;
 	}
-	.red-popover {
-		filter: drop-shadow(1px 0px 0px #f8d7da)
-        drop-shadow(-1px 0px 0px #f8d7da)
-        drop-shadow(0px 1px 0px #f8d7da)
-        drop-shadow(0px -1px 0px #f8d7da)
-        drop-shadow(1px 1px 0px #f8d7da)
-        drop-shadow(-1px -1px 0px #f8d7da)
-        drop-shadow(-1px 1px 0px #f8d7da)
-        drop-shadow(1px -1px 0px #f8d7da)
-    }
 </style>
 `;
