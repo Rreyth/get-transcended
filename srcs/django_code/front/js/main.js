@@ -1,5 +1,5 @@
 import { Component } from "./component.js"
-import { Router, redirect } from "./router.js";
+import { Router } from "./router.js";
 import { Navbar } from "../components/navbar.js";
 import { Chat } from "../components/chat.js";
 import { Message } from "../components/chat/message.js";
@@ -51,16 +51,9 @@ Component.loader([
 ])
 
 window.addEventListener("popstate", (e) => {
-  Router.run();
+	Router.run();
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-	document.body.addEventListener("click", e => {
-		if (e.target.localName == "a" && e.target.id != 1){
-			e.preventDefault();
-			redirect(e.target.href);
-		}
-	});
-
-	Router.run()
+	Router.run();
 });

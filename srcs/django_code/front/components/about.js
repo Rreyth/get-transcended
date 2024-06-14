@@ -5,7 +5,7 @@ export class About extends Component {
 	static getName() {
 		return "about";
     }
-	
+
     async connectedCallback() {
 		this.innerHTML = content;
 
@@ -74,9 +74,9 @@ const content = /*html*/`
 				<span class="align-self-start mt-3" style="font-size: 1.3em;">About :</span>
 				<p class="mt-1">Etudiant 42 a Angouleme</p>
 				<div class="d-flex justify-content-evenly w-100 mb-3">
-					<a href="https://github.com/ltuffery" id="1" class='bx bxl-github bx-sm text-decoration-none text-reset'></a>
-					<a href="https://fr.linkedin.com/in/leo-tuffery-1399b12b0" id="1" class='bx bxl-linkedin-square bx-sm text-decoration-none text-reset'></a>
-					<a href="mailto:contact@xn--lo-bja.dev" id="1" class='bx bx-mail-send bx-sm text-decoration-none text-reset'></a>
+					<a href="https://github.com/ltuffery" class='bx bxl-github bx-sm text-decoration-none text-reset'></a>
+					<a href="https://fr.linkedin.com/in/leo-tuffery-1399b12b0" class='bx bxl-linkedin-square bx-sm text-decoration-none text-reset'></a>
+					<a href="mailto:contact@xn--lo-bja.dev" class='bx bx-mail-send bx-sm text-decoration-none text-reset'></a>
 				</div>
 			</div>
 
@@ -88,9 +88,9 @@ const content = /*html*/`
 				<span class="align-self-start mt-3" style="font-size: 1.3em;">About :</span>
 				<p class="mt-1">Etudiant 42 a Angouleme</p>
 				<div class="d-flex justify-content-evenly w-100 mb-3">
-					<a href="https://github.com/Rreyth" id="1" class='bx bxl-github bx-sm text-decoration-none text-reset'></a>
-					<a href="" id="1" class='bx bxl-linkedin-square bx-sm text-decoration-none text-reset'></a>
-					<a href="mailto:" id="1" class='bx bx-mail-send bx-sm text-decoration-none text-reset'></a>
+					<a href="https://github.com/Rreyth" class='bx bxl-github bx-sm text-decoration-none text-reset'></a>
+					<a href="" class='bx bxl-linkedin-square bx-sm text-decoration-none text-reset'></a>
+					<a href="mailto:" class='bx bx-mail-send bx-sm text-decoration-none text-reset'></a>
 				</div>
 			</div>
 
@@ -102,9 +102,9 @@ const content = /*html*/`
 				<span class="align-self-start mt-3" style="font-size: 1.3em;">About :</span>
 				<p class="mt-1">Etudiant 42 a Angouleme</p>
 				<div class="d-flex justify-content-evenly w-100 mb-3">
-					<a href="https://github.com/swotex" id="1" class='bx bxl-github bx-sm text-decoration-none text-reset'></a>
-					<a href="https://fr.linkedin.com/in/nicolas-jegat-b13440179" id="1" class='bx bxl-linkedin-square bx-sm text-decoration-none text-reset'></a>
-					<a href="mailto:nicojegat21@gmail.com" id="1" class='bx bx-mail-send bx-sm text-decoration-none text-reset'></a>
+					<a href="https://github.com/swotex" class='bx bxl-github bx-sm text-decoration-none text-reset'></a>
+					<a href="https://fr.linkedin.com/in/nicolas-jegat-b13440179" class='bx bxl-linkedin-square bx-sm text-decoration-none text-reset'></a>
+					<a href="mailto:nicojegat21@gmail.com" class='bx bx-mail-send bx-sm text-decoration-none text-reset'></a>
 				</div>
 			</div>
 
