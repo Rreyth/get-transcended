@@ -1,23 +1,23 @@
 import { Router, render } from "../js/router.js";
 import { APIRequest, formatDate, user, getAvatarUrl } from "../js/helpers.js"
 
-Router.notFound(() => {
-    render('404')
+Router.notFound(async () => {
+    await render('404')
 })
 
 Router.set('/', async () => {
 	if (await user() == null)
-		return render('sign')
+		return await render('sign')
 
 
 	const response = await APIRequest.build("/user/leaderboard", "GET").send();
 	const users = await response.json();
 
-	render('home', {
+	await render('home', {
 		winners: JSON.stringify(users)
 	})
 
-	const responseuseless = await APIRequest.build("/user/leaderboard", "GET").send();
+	// const responseuseless = await APIRequest.build("/user/leaderboard", "GET").send();
 	let userContainer = document.querySelector("#board-user-container");
 
 	users.forEach((e, index) => {
@@ -33,16 +33,16 @@ Router.set('/', async () => {
 
 }).setName('home')
 
-Router.set('/about', () => {
-	render('about')
+Router.set('/about', async () => {
+	await render('about')
 })
 
 
 Router.set('/pong', async () => {
 	if (!await user())
-		render('sign')
+		await render('sign')
 	else {
-		render('pong')
+		await render('pong')
 		await new Promise(resolve => setTimeout(resolve, 10))
 		import("../js/pong.js").then(async m => {
 			await m.reset()
@@ -59,7 +59,7 @@ Router.set('/user/{username}', async (match) => {
 		return render('404')
 	}
 
-	render('profile', {
+	await render('profile', {
 		avatar: getAvatarUrl(data.avatar),
 		username: data.username,
 		connected: data.online,

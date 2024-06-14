@@ -1,18 +1,28 @@
 import { Thread } from "./thread.js";
 import { token_checker } from "./helpers.js";
 
-export const render = (file, vars = {}) => {
-    fetch(`/static/html/${file}.html`)
-        .then(response => response.text())
-        .then(html => {
+export const render = async (file, vars = {}) => {
+	const response = await fetch(`/static/html/${file}.html`);
+	if (response.ok)
+	{
+		let html = await response.text();
+		for (const property in vars) {
+			html = html.replaceAll(`{{ ${property} }}`, vars[property])
+		}
 
-            for (const property in vars) {
-                html = html.replaceAll(`{{ ${property} }}`, vars[property])
-            }
+		document.querySelector('#content').innerHTML = html;
+	}
+    // fetch(`/static/html/${file}.html`)
+    //     .then(response => response.text())
+    //     .then(html => {
 
-            document.querySelector('#content').innerHTML = html;
-        })
-        .catch(error => console.error('Error loading page:', error));
+    //         for (const property in vars) {
+    //             html = html.replaceAll(`{{ ${property} }}`, vars[property])
+    //         }
+
+    //         document.querySelector('#content').innerHTML = html;
+    //     })
+    //     .catch(error => console.error('Error loading page:', error));
 }
 
 export const redirect = (path) => {
