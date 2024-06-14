@@ -17,7 +17,7 @@ export class SquareGame extends Component
 }
 
 const addPlayer = (username, win, score, me) => {
-	const userHTML = me ? username : `<a href="/user/${username}">${username}</a>`;
+	const userHTML = me ? username : `<a is="c-link" href="/user/${username}">${username}</a>`;
 
 	return `
 		<div class=" ms-2 fw-bold">

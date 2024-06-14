@@ -25,7 +25,7 @@ export class QuickGame extends Component
                 <span class="badge rounded-pill ${bgColor}">${targetUser.score} - ${opponent.score}</span>
             </div>
             <div class="col ms-2 fw-bold text-end">
-                <a href="/user/${opponent.user.username}">${opponent.user.username}</a>
+                <a is="c-link" href="/user/${opponent.user.username}">${opponent.user.username}</a>
             </div>
         </li>`
     }
