@@ -15,6 +15,14 @@ export const render = (file, vars = {}) => {
         .catch(error => console.error('Error loading page:', error));
 }
 
+export const redirect = (path) => {
+    if (location.pathname + location.search == path)
+        return
+
+    window.history.pushState(null, null, path)
+    Router.run()
+}
+
 class Route
 {
 
