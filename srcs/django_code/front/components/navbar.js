@@ -73,13 +73,13 @@ const content = async (user) => /* html */ `
 					</div>
 				</div>
 				<div class="d-flex align-items-center justify-content-center">
-					<a class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4 text-decoration-none text-reset" href="/" style="width: 3em; height: 3em;">
+					<a is="c-link" class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4 text-decoration-none text-reset" href="/" style="width: 3em; height: 3em;">
 						<i class='bx bx-home-alt-2 bx-md'></i>
 					</a>
-					<a class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4 text-decoration-none text-reset" href="/user/${user.username}" style="width: 3em; height: 3em;">
+					<a is="c-link" class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4 text-decoration-none text-reset" href="/user/${user.username}" style="width: 3em; height: 3em;">
 						<i class='bx bx-history bx-md'></i>
 					</a>
-					<a class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4 text-decoration-none text-reset" href="/pong" style="width: 3em; height: 3em;">
+					<a is="c-link" class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4 text-decoration-none text-reset" href="/pong" style="width: 3em; height: 3em;">
 						<i class='bx bx-joystick bx-md'></i>
 					</a>
 					<div class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4" onclick="document.querySelector('#about-container').style.display = 'block';" style="width: 3em; height: 3em; cursor: pointer;">

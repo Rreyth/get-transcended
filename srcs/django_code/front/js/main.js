@@ -22,6 +22,7 @@ import { CreateGroupModal } from "../components/chat/createGroupModal.js";
 import { NavProfile } from "../components/navbar/profile.js";
 import { Avatar } from "../components/avatar.js";
 import { About } from "../components/about.js";
+import { Link } from "../components/link.js";
 
 Component.loader([
 	Navbar,
@@ -46,10 +47,11 @@ Component.loader([
 	NavProfile,
 	Avatar,
 	About,
+	Link,
 ])
 
 window.addEventListener("popstate", (e) => {
-	Router.run()
+  Router.run();
 });
 
 document.addEventListener("DOMContentLoaded", () => {
