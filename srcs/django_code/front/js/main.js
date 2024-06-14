@@ -22,6 +22,8 @@ import { CreateGroupModal } from "../components/chat/createGroupModal.js";
 import { NavProfile } from "../components/navbar/profile.js";
 import { Avatar } from "../components/avatar.js";
 import { About } from "../components/about.js";
+import { Podium } from "../components/leaderboard/podium.js";
+import { LeadUser } from "../components/leaderboard/leaduser.js";
 
 Component.loader([
 	Navbar,
@@ -46,6 +48,8 @@ Component.loader([
 	NavProfile,
 	Avatar,
 	About,
+	Podium,
+	LeadUser,
 ])
 
 window.addEventListener("popstate", (e) => {

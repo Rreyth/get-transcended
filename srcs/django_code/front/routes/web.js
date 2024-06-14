@@ -7,9 +7,30 @@ Router.notFound(() => {
 
 Router.set('/', async () => {
 	if (await user() == null)
-		render('sign')
-	else
-		render('home')
+		return render('sign')
+
+
+	const response = await APIRequest.build("/user/leaderboard", "GET").send();
+	const users = await response.json();
+
+	render('home', {
+		winners: JSON.stringify(users)
+	})
+
+	const responseuseless = await APIRequest.build("/user/leaderboard", "GET").send();
+	let userContainer = document.querySelector("#board-user-container");
+
+	users.forEach((e, index) => {
+		const el = document.createElement('c-leaduser');
+		el.setAttribute("id", index + 1);
+		el.setAttribute("name", e.username);
+		el.setAttribute("wins", e.wins);
+
+		el.classList.add("list-group-item", "d-flex", "justify-content-between");
+
+		userContainer.appendChild(el);
+	});
+
 }).setName('home')
 
 Router.set('/about', () => {
