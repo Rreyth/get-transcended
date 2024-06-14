@@ -1,5 +1,5 @@
 import { Thread } from "./thread.js";
-import { token_checker } from "./helpers.js";
+import { token_checker, user_token } from "./helpers.js";
 
 export const render = (file, vars = {}) => {
     fetch(`/static/html/${file}.html`)
@@ -29,11 +29,13 @@ class Route
     name = ""
     path = ""
     callback = null
+    authenticate = false
 
-    constructor(path, callback)
+    constructor(path, callback, auth)
     {
         this.path = path
         this.callback = callback
+        this.authenticate = auth
     }
 
     setName(name)
@@ -47,11 +49,11 @@ export class Router
     static routes = {}
     static notFoundAction = null
 
-    static set(path, callback)
+    static set(path, callback, authenticate = false)
     {
         path = path.replace(/\/+$/, '').replace(/{\w+}/, "([^/]+)")  
 
-        const route = new Route(path, callback)
+        const route = new Route(path, callback, authenticate)
 
         this.routes[path] = route
 
@@ -87,6 +89,12 @@ export class Router
         if (exist)
         {
             await token_checker();
+
+            if (route.authenticate && !(await user_token()))
+            {
+                return redirect('/');
+            }
+
             route.callback(match)
         }
         else

@@ -12,23 +12,15 @@ Router.set('/', async () => {
 		render('home')
 }).setName('home')
 
-Router.set('/about', () => {
-	render('about')
-})
-
-
 Router.set('/pong', async () => {
-	if (!await user())
-		render('sign')
-	else {
-		render('pong')
-		await new Promise(resolve => setTimeout(resolve, 10))
-		import("../js/pong.js").then(async m => {
-			await m.reset()
-			m.connect_hub()
-		})
-	}
-})
+	render('pong')
+
+	await new Promise(resolve => setTimeout(resolve, 10))
+	import("../js/pong.js").then(async m => {
+		await m.reset()
+		m.connect_hub()
+	})
+}, true)
 
 Router.set('/user/{username}', async (match) => {
 	const response = await APIRequest.build(`/user/${match[1]}`, 'GET').send()
@@ -152,4 +144,4 @@ Router.set('/user/{username}', async (match) => {
 			visibleItems[visibleItems.length - 1].style.borderBottomRightRadius = 'inherit';
 		}
 	}
-})
+}, true)
