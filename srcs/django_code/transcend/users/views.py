@@ -258,3 +258,11 @@ class BlockUserView(APIView):
         request.user.blocked_users.add(user)
 
         return Response({'message': 'Success'}, status=status.HTTP_200_OK)
+
+class LeaderBoardView(APIView):
+    permission_classes = (IsAuthenticated,)
+    parser_classes = [JSONParser, MultiPartParser, FormParser]
+
+    def get(self, request):
+        user = User.objects.all().order_by("-wins").exclude(pk=1)
+        return Response(UserSerializer(user, many=True).data, status=status.HTTP_200_OK)

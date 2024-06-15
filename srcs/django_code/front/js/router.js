@@ -1,26 +1,25 @@
 import { Thread } from "./thread.js";
 import { token_checker, user_token } from "./helpers.js";
 
-export const render = (file, vars = {}) => {
-    fetch(`/static/html/${file}.html`)
-        .then(response => response.text())
-        .then(html => {
+export const render = async (file, vars = {}) => {
+	const response = await fetch(`/static/html/${file}.html`);
+	if (response.ok)
+	{
+		let html = await response.text();
+		for (const property in vars) {
+			html = html.replaceAll(`{{ ${property} }}`, vars[property])
+		}
 
-            for (const property in vars) {
-                html = html.replaceAll(`{{ ${property} }}`, vars[property])
-            }
-
-            document.querySelector('#content').innerHTML = html;
-        })
-        .catch(error => console.error('Error loading page:', error));
+		document.querySelector('#content').innerHTML = html;
+	}
 }
 
 export const redirect = (path) => {
-    if (location.pathname + location.search == path)
-        return
+	if (location.pathname + location.search == path)
+		return
 
-    window.history.pushState(null, null, path)
-    Router.run()
+	window.history.pushState(null, null, path)
+	Router.run()
 }
 
 class Route
@@ -38,16 +37,16 @@ class Route
         this.authenticate = auth
     }
 
-    setName(name)
-    {
-        this.name = name
-    }
+	setName(name)
+	{
+		this.name = name
+	}
 }
 
 export class Router
 {
-    static routes = {}
-    static notFoundAction = null
+	static routes = {}
+	static notFoundAction = null
 
     static set(path, callback, authenticate = false)
     {
@@ -55,36 +54,36 @@ export class Router
 
         const route = new Route(path, callback, authenticate)
 
-        this.routes[path] = route
+		this.routes[path] = route
 
-        return route
-    }
+		return route
+	}
 
-    static notFound(callback)
-    {
-        this.notFoundAction = callback
-    }
+	static notFound(callback)
+	{
+		this.notFoundAction = callback
+	}
 
-    static async run()
-    {
-        Thread.clearAll()
+	static async run()
+	{
+		Thread.clearAll()
 
-        let pathname = location.pathname.replace(/\/+$/, '')
-        let route = null;
-        let match = null;
+		let pathname = location.pathname.replace(/\/+$/, '')
+		let route = null;
+		let match = null;
 
-        let exist = Object.keys(this.routes).some(function(key) {
-            const m = pathname.match(new RegExp(`^${key}$`))
+		let exist = Object.keys(this.routes).some(function(key) {
+			const m = pathname.match(new RegExp(`^${key}$`))
 
-            if (m != null) {
-                route = Router.routes[key]
-                match = m
+			if (m != null) {
+				route = Router.routes[key]
+				match = m
 
-                return true
-            }
+				return true
+			}
 
-            return false
-        });
+			return false
+		});
 
         if (exist)
         {
@@ -105,14 +104,14 @@ export class Router
 }
 
 export const route = (name) => {
-    let path = null
-    
-    Router.routes.map(r => {
-        if (name == r.name)
-        {
-            path = r.path
-        }
-    })
+	let path = null
+	
+	Router.routes.map(r => {
+		if (name == r.name)
+		{
+			path = r.path
+		}
+	})
 
-    return path
+	return path
 }

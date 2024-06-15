@@ -1,19 +1,39 @@
 import { Router, render } from "../js/router.js";
 import { APIRequest, formatDate, user, getAvatarUrl } from "../js/helpers.js"
 
-Router.notFound(() => {
-    render('404')
+Router.notFound(async () => {
+    await render('404')
 })
 
 Router.set('/', async () => {
 	if (await user() == null)
-		render('sign')
-	else
-		render('home')
+		return await render('sign')
+
+
+	const response = await APIRequest.build("/user/leaderboard", "GET").send();
+	const users = await response.json();
+
+	await render('home', {
+		winners: JSON.stringify(users)
+	})
+
+	let userContainer = document.querySelector("#board-user-container");
+
+	users.forEach((e, index) => {
+		const el = document.createElement('c-leaduser');
+		el.setAttribute("id", index + 1);
+		el.setAttribute("name", e.username);
+		el.setAttribute("wins", e.wins);
+
+		el.classList.add("list-group-item", "d-flex", "justify-content-between");
+
+		userContainer.appendChild(el);
+	});
+
 }).setName('home')
 
 Router.set('/pong', async () => {
-	render('pong')
+	await render('pong')
 
 	await new Promise(resolve => setTimeout(resolve, 10))
 	import("../js/pong.js").then(async m => {
@@ -30,7 +50,7 @@ Router.set('/user/{username}', async (match) => {
 		return render('404')
 	}
 
-	render('profile', {
+	await render('profile', {
 		avatar: getAvatarUrl(data.avatar),
 		username: data.username,
 		connected: data.online,

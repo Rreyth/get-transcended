@@ -1,1 +1,21 @@
-coucou
+<div class="container-fluid text-center h-100">
+	<div class="justify-content-center h-100">
+		<div class="col">
+			<c-clock class="d-flex flex-column"></c-clock>
+		</div>
+		<div class="col d-flex justify-content-center mt-5">
+
+			<div class="card">
+				<div class="card-header">
+					<c-podium winners='{{ winners }}'></c-podium>
+				</div>
+				<div class="card-body overflow-auto" style="max-height: 25em;">
+					<ul class="list-group list-group-flush" id="board-user-container">
+						<!-- user content -->
+					</ul>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
