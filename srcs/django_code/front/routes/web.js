@@ -17,7 +17,6 @@ Router.set('/', async () => {
 		winners: JSON.stringify(users)
 	})
 
-	// const responseuseless = await APIRequest.build("/user/leaderboard", "GET").send();
 	let userContainer = document.querySelector("#board-user-container");
 
 	users.forEach((e, index) => {

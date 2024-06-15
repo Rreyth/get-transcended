@@ -12,109 +12,98 @@ export const render = async (file, vars = {}) => {
 
 		document.querySelector('#content').innerHTML = html;
 	}
-    // fetch(`/static/html/${file}.html`)
-    //     .then(response => response.text())
-    //     .then(html => {
-
-    //         for (const property in vars) {
-    //             html = html.replaceAll(`{{ ${property} }}`, vars[property])
-    //         }
-
-    //         document.querySelector('#content').innerHTML = html;
-    //     })
-    //     .catch(error => console.error('Error loading page:', error));
 }
 
 export const redirect = (path) => {
-    if (location.pathname + location.search == path)
-        return
+	if (location.pathname + location.search == path)
+		return
 
-    window.history.pushState(null, null, path)
-    Router.run()
+	window.history.pushState(null, null, path)
+	Router.run()
 }
 
 class Route
 {
 
-    name = ""
-    path = ""
-    callback = null
+	name = ""
+	path = ""
+	callback = null
 
-    constructor(path, callback)
-    {
-        this.path = path
-        this.callback = callback
-    }
+	constructor(path, callback)
+	{
+		this.path = path
+		this.callback = callback
+	}
 
-    setName(name)
-    {
-        this.name = name
-    }
+	setName(name)
+	{
+		this.name = name
+	}
 }
 
 export class Router
 {
-    static routes = {}
-    static notFoundAction = null
+	static routes = {}
+	static notFoundAction = null
 
-    static set(path, callback)
-    {
-        path = path.replace(/\/+$/, '').replace(/{\w+}/, "([^/]+)")  
+	static set(path, callback)
+	{
+		path = path.replace(/\/+$/, '').replace(/{\w+}/, "([^/]+)")  
 
-        const route = new Route(path, callback)
+		const route = new Route(path, callback)
 
-        this.routes[path] = route
+		this.routes[path] = route
 
-        return route
-    }
+		return route
+	}
 
-    static notFound(callback)
-    {
-        this.notFoundAction = callback
-    }
+	static notFound(callback)
+	{
+		this.notFoundAction = callback
+	}
 
-    static async run()
-    {
-        Thread.clearAll()
+	static async run()
+	{
+		Thread.clearAll()
 
-        let pathname = location.pathname.replace(/\/+$/, '')
-        let route = null;
-        let match = null;
+		let pathname = location.pathname.replace(/\/+$/, '')
+		let route = null;
+		let match = null;
 
-        let exist = Object.keys(this.routes).some(function(key) {
-            const m = pathname.match(new RegExp(`^${key}$`))
+		let exist = Object.keys(this.routes).some(function(key) {
+			const m = pathname.match(new RegExp(`^${key}$`))
 
-            if (m != null) {
-                route = Router.routes[key]
-                match = m
+			if (m != null) {
+				route = Router.routes[key]
+				match = m
 
-                return true
-            }
+				return true
+			}
 
-            return false
-        });
+			return false
+		});
 
-        if (exist)
-        {
-            await token_checker();
-            route.callback(match)
-        }
-        else
-        {
-            this.notFoundAction()
-        }
-    }
+		if (exist)
+		{
+			await token_checker();
+			route.callback(match)
+		}
+		else
+		{
+			this.notFoundAction()
+		}
+	}
 }
 
 export const route = (name) => {
-    let path = null
-    
-    Router.routes.map(r => {
-        if (name == r.name)
-        {
-            path = r.path
-        }
-    })
+	let path = null
+	
+	Router.routes.map(r => {
+		if (name == r.name)
+		{
+			path = r.path
+		}
+	})
 
-    return path
+	return path
 }
