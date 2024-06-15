@@ -8,8 +8,11 @@ export class Socket
     {
         const token = await user_token()
 
-        this.routes[path] = new WebSocket(`wss://${window.location.host}/ws${path}${token != null ? '?token=' + token : ''}`)
-        this.routes[path].onmessage = callback
+        if (token)
+        {
+            this.routes[path] = new WebSocket(`wss://${window.location.host}/ws${path}?token=${token}`)
+            this.routes[path].onmessage = callback
+        }
     }
 
 }

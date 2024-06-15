@@ -1,5 +1,5 @@
 import { Thread } from "./thread.js";
-import { token_checker } from "./helpers.js";
+import { token_checker, user_token } from "./helpers.js";
 
 export const render = async (file, vars = {}) => {
 	const response = await fetch(`/static/html/${file}.html`);
@@ -25,15 +25,17 @@ export const redirect = (path) => {
 class Route
 {
 
-	name = ""
-	path = ""
-	callback = null
+    name = ""
+    path = ""
+    callback = null
+    authenticate = false
 
-	constructor(path, callback)
-	{
-		this.path = path
-		this.callback = callback
-	}
+    constructor(path, callback, auth)
+    {
+        this.path = path
+        this.callback = callback
+        this.authenticate = auth
+    }
 
 	setName(name)
 	{
@@ -46,11 +48,11 @@ export class Router
 	static routes = {}
 	static notFoundAction = null
 
-	static set(path, callback)
-	{
-		path = path.replace(/\/+$/, '').replace(/{\w+}/, "([^/]+)")  
+    static set(path, callback, authenticate = false)
+    {
+        path = path.replace(/\/+$/, '').replace(/{\w+}/, "([^/]+)")  
 
-		const route = new Route(path, callback)
+        const route = new Route(path, callback, authenticate)
 
 		this.routes[path] = route
 
@@ -83,16 +85,22 @@ export class Router
 			return false
 		});
 
-		if (exist)
-		{
-			await token_checker();
-			route.callback(match)
-		}
-		else
-		{
-			this.notFoundAction()
-		}
-	}
+        if (exist)
+        {
+            await token_checker();
+
+            if (route.authenticate && !(await user_token()))
+            {
+                return redirect('/');
+            }
+
+            route.callback(match)
+        }
+        else
+        {
+            this.notFoundAction()
+        }
+    }
 }
 
 export const route = (name) => {

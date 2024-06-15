@@ -62,7 +62,7 @@ export class Search extends Component {
 			else {
 				let response = await APIRequest.build("/user/search/?username_prefix=" + attrContent, "GET").send();
 				response = await response.json();
-			
+
 				this.innerHTML = /* html */ `
 					<div class="w-100 h-100 d-flex align-items-center flex-column overflow-auto">
 						${(await Promise.all(response.map(async u => createUserCard(u, (await this.getFriends()).find(e => e.username == u.username))))).join('')}
@@ -81,9 +81,9 @@ export class Search extends Component {
 						redirect('/pong?code=create')
 
 						setTimeout(async () => {
-	
+
 							const room_id = Cache.get('last-room-id')
-	
+
 							if (room_id)
 								Chat.sendInviteCode(el.getAttribute("username"), room_id)
 						}, 1000)
@@ -111,7 +111,7 @@ async function createUserCard(u, friendId)
 						<span class="text-truncate" style="font-size: 1.5em;">${u.username}</span>
 					</div>
 					<div class="d-flex align-items-start justify-content-evenly btns btns-${u.username}" style="height: 33%;">
-						<a href="/user/${u.username}" class="text-decoration-none text-reset"><i class='bx bxs-user-detail rounded-circle bg-body-secondary text-white border border-dark p-1' id="bt-profile"></i></a>
+						<a is="c-link" href="/user/${u.username}" class="text-decoration-none text-reset"><i class='bx bxs-user-detail rounded-circle bg-body-secondary text-white border border-dark p-1' id="bt-profile"></i></a>
 						<i class='bx ${friendId ? 'bx-message-dots' : 'bx-user-plus'} rounded-circle bg-body-secondary text-white border border-dark p-1' style="cursor: pointer;" data-request="${friendId ? 'message' : 'friend'}" user-id="${u.id}"></i>
 						<i id="nav-invite-game" username="${u.username}" class='bx bx-joystick rounded-circle bg-body-secondary text-white border border-dark p-1' style="cursor: pointer;"></i>
 					</div>

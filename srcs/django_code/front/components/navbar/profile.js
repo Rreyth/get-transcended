@@ -61,7 +61,7 @@ const content = (user) => /* html */ `
 			</div>
 
 			<div class="w-100 mt-3 d-flex flex-column align-items-center position-absolute bottom-0">
-				<a href="/user/${user.username}" class="btn btn-outline-primary mb-3" style="width: 80%;">Profile</a>
+				<a is="c-link" href="/user/${user.username}" class="btn btn-outline-primary mb-3" style="width: 80%;">Profile</a>
 			</div>
 		</div>
 	`;

@@ -2,7 +2,7 @@ import { Component } from "../../js/component.js";
 import { user } from "../../js/helpers.js";
 
 const messageParser = (text) => {
-	text = text.replace(/\[invite code=([\w]{4})\]/, '<a href="/pong?code=$1">Join my game room</a>')
+	text = text.replace(/\[invite code=([\w]{4})\]/, '<a is="c-link" href="/pong?code=$1">Join my game room</a>')
 	text = text.replace(/\*\*(\w+)\*\*/, "<b>$1</b>")
 	text = text.replace(/_(\w+)_/, "<i>$1</i>")
 

@@ -1,5 +1,5 @@
 import { Component } from "./component.js"
-import { Router, redirect } from "./router.js";
+import { Router } from "./router.js";
 import { Navbar } from "../components/navbar.js";
 import { Chat } from "../components/chat.js";
 import { Message } from "../components/chat/message.js";
@@ -24,6 +24,7 @@ import { Avatar } from "../components/avatar.js";
 import { About } from "../components/about.js";
 import { Podium } from "../components/leaderboard/podium.js";
 import { LeadUser } from "../components/leaderboard/leaduser.js";
+import { Link } from "../components/link.js";
 
 Component.loader([
 	Navbar,
@@ -50,19 +51,13 @@ Component.loader([
 	About,
 	Podium,
 	LeadUser,
+	Link,
 ])
 
 window.addEventListener("popstate", (e) => {
-	Router.run()
+	Router.run();
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-	document.body.addEventListener("click", e => {
-		if (e.target.localName == "a" && e.target.id != 1){
-			e.preventDefault();
-			redirect(e.target.href);
-		}
-	});
-
-	Router.run()
+	Router.run();
 });
