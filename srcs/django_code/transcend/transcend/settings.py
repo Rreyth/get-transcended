@@ -79,7 +79,7 @@ ROOT_URLCONF = 'transcend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'transcend', 'templates')],
+        'DIRS': ['/app/front/html'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
