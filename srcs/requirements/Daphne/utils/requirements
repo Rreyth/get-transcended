@@ -9,3 +9,5 @@ djangorestframework-simplejwt
 tzdata
 PyJWT
 Pillow
+factory_boy
+pytz
