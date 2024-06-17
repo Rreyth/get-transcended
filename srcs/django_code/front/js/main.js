@@ -54,10 +54,10 @@ Component.loader([
 	Link,
 ])
 
-window.addEventListener("popstate", (e) => {
-	Router.run();
-});
+// window.addEventListener("popstate", (e) => {
+// 	Router.run();
+// });
 
-document.addEventListener("DOMContentLoaded", () => {
-	Router.run();
-});
+// document.addEventListener("DOMContentLoaded", () => {
+// 	Router.run();
+// });

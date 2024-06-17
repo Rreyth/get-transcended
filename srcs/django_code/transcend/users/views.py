@@ -16,6 +16,27 @@ from django.db import IntegrityError
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 
+from django.http import HttpRequest
+from django.shortcuts import render
+
+def spa_render(request, path, context=None):
+    if request.headers.get('X-Source') == "SPA":
+        return render(request, path, context=context)
+    return render(request, 'index.html')
+
+def home(request: HttpRequest):
+    return spa_render(request, 'home.html')
+
+def sign(request: HttpRequest):
+    return spa_render(request, 'sign.html')
+
+def profile(request: HttpRequest, username):
+    print(f"User: {username}")
+    return spa_render(request, 'profile.html')
+
+def pong(request: HttpRequest):
+    return spa_render(request, 'pong.html')
+
 class RegisterUserView(APIView):
     parser_classes = [JSONParser, MultiPartParser, FormParser]
     def post(self, request):
