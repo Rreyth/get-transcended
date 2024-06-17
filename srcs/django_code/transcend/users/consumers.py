@@ -11,7 +11,7 @@ class OnlineConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_add(self.scope['user'].username, self.channel_name)
 
         self.scope["user"].online = True
-        await sync_to_async(self.scope["user"].save)()
+        await sync_to_async(self.scope["user"].save)(update_fields=['online'])
         
         users = await database_sync_to_async(list)(User.objects.filter(online=True))
 
@@ -27,7 +27,7 @@ class OnlineConsumer(AsyncWebsocketConsumer):
         
     async def disconnect(self, close_code):
         self.scope["user"].online = False
-        await sync_to_async(self.scope["user"].save)()
+        await sync_to_async(self.scope["user"].save)(update_fields=['online'])
         
         users = await database_sync_to_async(list)(User.objects.filter(online=True))
 
