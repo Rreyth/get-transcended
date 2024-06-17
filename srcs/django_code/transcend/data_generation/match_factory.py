@@ -29,17 +29,14 @@ class MatchFactory(DjangoModelFactory):
 	borderless = factory.Faker('boolean') # a changer
 	obstacle = factory.Faker('boolean') # a changer
 	mode = factory.LazyFunction(lambda: ["quick", "square", "team"][fake.random_int(min=0, max=2)])
-	if (mode == "square"):
-		square = True
-	else:
-		square = False
+	square = factory.LazyAttribute(lambda this: True if this.mode == "square" else False)
 	score = factory.LazyFunction(lambda: fake.random_int(min=10, max=20))
 
 def get_random_users(nb):
 	random_users = []
 	for i in range (nb):
 		rand_user = User.objects.annotate(random_value=Random()).order_by('random_value').first()
-		while (rand_user in random_users):
+		while ((rand_user in random_users) or rand_user.username == "AI"):
 			rand_user = User.objects.annotate(random_value=Random()).order_by('random_value').first()
 		random_users.append(rand_user)
 		# print(rand_user.username)
