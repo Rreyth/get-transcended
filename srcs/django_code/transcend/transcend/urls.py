@@ -13,35 +13,21 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.contrib import admin
 from django.urls import include, path
-from users.views import *
-from chat.views import *
-from game.views import GameStorageView, GamesView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
 
 urlpatterns = [
-    path('', include('users.urls')),
-    path('api/42/', Log42.as_view()),
-    path('api/user/a2f', A2fView.as_view()),
-    path('api/user/', UserView.as_view()),
-    path('api/user/leaderboard', LeaderBoardView.as_view()),
-    path('api/user/blocks', BlockUserView.as_view()),
-    path('api/user/<str:username>', ProfileView.as_view()),
-    path('api/user/<str:username>/games/', GamesView.as_view()),
-    path('api/user/search/', ReseachUserView.as_view()),
-    path('api/user/friends/', FriendView.as_view()),
-    path('api/user/friends/requests/', FriendRequestsView.as_view()),
-    path('api/user/friends/requests/<int:request_id>', FriendRequestView.as_view()),
-    path('api/user/dm/<str:username>', DMView.as_view()),
-    path('api/user/groups/', GroupsView.as_view()),
-    path('api/user/groups/<int:group_id>', GroupView.as_view()),
-    path('api/user/groups/<int:group_id>/leave', GroupLeaveView.as_view()),
-    path('api/user/groups/<int:group_id>/messages', GroupMessagesView.as_view()),
-    path('api/register/', RegisterUserView.as_view()),
+    path('admin/', admin.site.urls),
+	path('', include('transcend.views.urls')),
+    path('', include('users.views.urls')),
+    path('', include('users.api.urls')),
+    path('', include('game.views.urls')),
+    path('', include('game.api.urls')),
+    path('', include('chat.api.urls')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/game/', GameStorageView.as_view())
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh')
 ]
