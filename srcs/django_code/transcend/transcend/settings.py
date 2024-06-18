@@ -41,6 +41,7 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'nginx', address]
 # Application definition
 
 INSTALLED_APPS = [
+	'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -192,7 +193,7 @@ SIMPLE_JWT = {
     'TOKEN_TYPE_CLAIM': 'token_type',
     'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
     'TOKEN_OBTAIN_SERIALIZER': "users.serializer.CustomTokenObtainPairSerializer",
-    
+
     'JTI_CLAIM': 'jti',
 
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
