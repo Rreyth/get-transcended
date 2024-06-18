@@ -121,7 +121,7 @@ class Log42(APIView):
 
                         group.members.add(user)
                     else:
-                        refresh["username"] = user_data['login']
+                        refresh["username"] = user.username
                     refresh['avatar'] = user.avatar.url if user.avatar and hasattr(user.avatar, 'url') else None
                     refresh['email'] = user.email
                     refresh['login42'] = user.login42
