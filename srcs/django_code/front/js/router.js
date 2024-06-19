@@ -50,7 +50,7 @@ export class Router
 
     static set(path, callback, authenticate = false)
     {
-        path = path.replace(/\/+$/, '').replace(/{\w+}/, "([^/]+)")  
+        path = path.replace(/\/+$/, '').replace(/{\w+}/, "([^/]+)")
 
         const route = new Route(path, callback, authenticate)
 
@@ -105,7 +105,7 @@ export class Router
 
 export const route = (name) => {
 	let path = null
-	
+
 	Router.routes.map(r => {
 		if (name == r.name)
 		{

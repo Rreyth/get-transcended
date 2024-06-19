@@ -25,7 +25,9 @@ import { About } from "../components/about.js";
 import { Podium } from "../components/leaderboard/podium.js";
 import { LeadUser } from "../components/leaderboard/leaduser.js";
 import { Link } from "../components/link.js";
-import { Pong } from "../components/pong.js";
+import { Pong } from "../components/pong/pong.js";
+import { Leaderboard } from "../components/leaderboard/leaderboard.js";
+import { Profile } from "../components/profile/profile.js";
 
 Component.loader([
 	Navbar,
@@ -53,7 +55,9 @@ Component.loader([
 	Podium,
 	LeadUser,
 	Link,
-	Pong
+	Pong,
+	Leaderboard,
+	Profile
 ])
 
 // window.addEventListener("popstate", (e) => {
