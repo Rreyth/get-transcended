@@ -11,3 +11,4 @@ PyJWT
 Pillow
 factory_boy
 pytz
+argparse
