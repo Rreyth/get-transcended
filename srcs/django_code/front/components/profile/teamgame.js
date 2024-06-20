@@ -9,27 +9,44 @@ export class TeamGame extends Component
 
     link(username)
     {
-        return `<a is="c-link" href="/user/${username}">${username}</a>`
+        return `<a href="/profile/${username}">${username}</a>`
     }
 
     connectedCallback()
     {
-        const bgColor = this.getAttribute('has_won') == 'true' ? 'text-bg-success' : 'text-bg-danger'
-		const time = new Date(this.getAttribute("at"));
+        const at = new Date(this.getAttribute("at"));
+        const player = JSON.parse(this.getAttribute("player"));
+		const all_players = JSON.parse(this.getAttribute("all-players"));
 
-        this.innerHTML = /*html*/`<li class="row d-flex align-items-center">
-            <div class="col">
-                ${time.getHours()}h${time.getMinutes()}
-            </div>
-            <div class="col ms-2 fw-bold">
-                ${this.getAttribute("player-1-username")} - ${this.link(this.getAttribute("player-2-username"))}
-            </div>
-            <div class="col d-flex justify-content-center">
-                <span class="badge rounded-pill ${bgColor}">${this.getAttribute('team-1-score')} - ${this.getAttribute('team-2-score')}</span>
-            </div>
-            <div class="col ms-2 fw-bold text-end">
-                ${this.link(this.getAttribute("player-3-username"))} - ${this.link(this.getAttribute("player-4-username"))}
-            </div>
-        </li>`
+        let players_team = [];
+        let opponents_team = [];
+
+        players_team.push(player);
+
+        for (const p of all_players) {
+            if (p.score == player.score && p.user.id != player.user.id)
+                players_team.push(p);
+            else if (p.user.id != player.user.id)
+                opponents_team.push(p);
+        }
+
+        const bgColor = player.win ? 'text-bg-success' : 'text-bg-danger';
+
+        this.innerHTML = `
+            <li class="row d-flex align-items-center justify-content-between">
+                <div class="col">
+                    ${at.getHours()}h${at.getMinutes()}
+                </div>
+                <div class="col ms-2 fw-bold">
+                    ${players_team[0].user.username} - ${this.link(players_team[1].user.username)}
+                </div>
+                <div class="col d-flex justify-content-center">
+                    <span class="badge rounded-pill ${bgColor}">${players_team[0].score} - ${opponents_team[0].score}</span>
+                </div>
+                <div class="col ms-2 fw-bold text-end">
+                    ${this.link(opponents_team[0].user.username)} - ${this.link(opponents_team[1].user.username)}
+                </div>
+            </li>
+        `;
     }
 }
