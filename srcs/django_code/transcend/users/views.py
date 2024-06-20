@@ -183,7 +183,9 @@ class FriendRequestsView(APIView):
         if 'to_user' not in request.data:
             return Response({'message': 'to_user field is required'}, status=status.HTTP_400_BAD_REQUEST)
 
-        req, created = FriendRequest.objects.get_or_create(from_user=request.user, to_user_id=int(request.data['to_user']))
+        user = User.objects.get(username=request.data['to_user'])
+
+        req, created = FriendRequest.objects.get_or_create(from_user=request.user, to_user=user)
         if created:
             return Response({'message': 'Friend request created'}, status=status.HTTP_201_CREATED)
         else:
