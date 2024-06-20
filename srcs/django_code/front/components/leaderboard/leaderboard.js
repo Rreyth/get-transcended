@@ -1,5 +1,5 @@
 import { MyRouter } from "../../js/MyRouter.js";
-import { user, APIRequest } from "../../js/helpers.js";
+import { user, APIRequest, user_token } from "../../js/helpers.js";
 
 export class Leaderboard extends HTMLElement {
 	async connectedCallback() {
@@ -27,8 +27,9 @@ export class Leaderboard extends HTMLElement {
 			</div>
 		`;
 
+		// todo: await user() == null pas suffisant pour detecter si l'utilisateur n'est pas login (faire une fonction)
 		if (await user() == null)
-			MyRouter.push('sign');
+			MyRouter.push('login');
 
 		const response = await APIRequest.build("/user/leaderboard", "GET").send();
 		const users = await response.json();

@@ -1,3 +1,4 @@
+import { MyRouter } from "../../js/MyRouter.js";
 import { Component } from "../../js/component.js";
 import { auth } from "../../js/helpers.js";
 
@@ -18,8 +19,8 @@ export class Login extends Component {
 			if (e.key === 'Enter')
 				connect(inputUser.value, inputPass.value);
 		})
-		
-		
+
+
     }
 }
 
@@ -27,7 +28,8 @@ async function connect(username, password)
 {
 	const response = await auth(username, password);
 	if (response)
-		location.reload();
+		// location.reload();
+		MyRouter.push("/");
 	else
 		document.querySelector("#alert-id").classList.add("show");
 }

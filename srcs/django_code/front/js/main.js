@@ -28,6 +28,8 @@ import { Link } from "../components/link.js";
 import { Pong } from "../components/pong/pong.js";
 import { Leaderboard } from "../components/leaderboard/leaderboard.js";
 import { Profile } from "../components/profile/profile.js";
+import { ProfileHeader } from "../components/profile/profileheader.js";
+import { ProfileCard } from "../components/profile/profilecard.js";
 
 Component.loader([
 	Navbar,
@@ -57,7 +59,9 @@ Component.loader([
 	Link,
 	Pong,
 	Leaderboard,
-	Profile
+	Profile,
+	ProfileHeader,
+	ProfileCard
 ])
 
 // window.addEventListener("popstate", (e) => {
