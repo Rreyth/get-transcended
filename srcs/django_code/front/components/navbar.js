@@ -7,6 +7,8 @@ export class Navbar extends Component {
 		return "nav";
 	}
 
+	// todo: MyRouter.push trop rapide et userInfo == null
+
 	async connectedCallback() {
 		await token_checker();
 		const userInfo = await user();

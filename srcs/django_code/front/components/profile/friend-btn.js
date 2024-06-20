@@ -18,7 +18,9 @@ export class FriendBtn extends HTMLButtonElement
 
     async connectedCallback()
     {
-        if ((await user()).username == this.getAttribute('target_username'))
+        const username = await user().username
+        // todo: username == undefined = token invalide ?
+        if (username == undefined || username == this.getAttribute('target_username'))
         {
             this.remove();
             return ;

@@ -1,11 +1,11 @@
 import { MyRouter } from "../../js/MyRouter.js";
-import { APIRequest, getAvatarUrl } from "../../js/helpers.js";
+import { APIRequest, formatDate, getAvatarUrl } from "../../js/helpers.js";
 
 export class Profile extends HTMLElement {
 	async connectedCallback() {
 		let html = `
 			<div class="mx-auto pt-4 d-flex flex-column gap-4" style="max-width: 70%;">
-				<div class="d-flex align-items-center justify-content-between">
+				<!-- <div class="d-flex align-items-center justify-content-between">
 					<div class="d-flex align-items-center gap-4">
 						<c-avatar src="{{ avatar }}" style="width: 8em; height: 8em;" username="{{ username }}"
 							connected="{{ connected }}"></c-avatar>
@@ -13,12 +13,12 @@ export class Profile extends HTMLElement {
 					</div>
 					<button is="c-friend-btn" class="btn btn-lg" id="btn-friend" target_username="{{ target_username }}"
 						target_id="{{ target_id }}">Add friend</button>
-				</div>
-				<!-- <c-profileheader avatar="{{ avatar }}" username="{{ username }}" connected="{{ connected }}" ></c-profileheader> -->
+				</div> -->
+				<c-profileheader avatar="{{ avatar }}" username="{{ username }}" connected="{{ connected }}" target_username="{{ target_username }} target_id="{{ target_id }}" ></c-profileheader>
 				<div class="card-group text-center">
-					<c-profilecard title="Total wins" value="0"></c-profilecard>
-					<c-profilecard title="Total games" value="0"></c-profilecard>
-					<c-profilecard title="Winrate" value="0"></c-profilecard>
+					<c-profilecard title="Total wins" value="{{ wins }}"></c-profilecard>
+					<c-profilecard title="Total games" value="{{ games }}"></c-profilecard>
+					<c-profilecard title="Winrate" value="{{ winrate }}%"></c-profilecard>
 				</div>
 				<div>
 					<select class="form-select" id="games-filter">
@@ -35,11 +35,14 @@ export class Profile extends HTMLElement {
 
 		const url = window.location.pathname;
 		const user = url.substring(url.lastIndexOf('/') + 1);
-		const response = await APIRequest.build(`/user/${user}`, 'GET').send()
-		const data = await response.json()
+		const response = await APIRequest.build(`/user/${user}`, 'GET').send();
+		const data = await response.json();
 
 		if (response.status == 404) {
-			MyRouter.push('404') // yessss
+			MyRouter.push('404');
+		}
+		if (response.status == 401) {
+			MyRouter.push('login');
 		}
 
 		let context = {
@@ -48,7 +51,7 @@ export class Profile extends HTMLElement {
 			connected: data.online,
 			wins: data.wins,
 			games: data.games,
-			winrate: data.winrate,
+			winrate: data.wins * 100 / data.games,
 			target_username: user,
 			target_id: data.id,
 		}
@@ -116,6 +119,50 @@ export class Profile extends HTMLElement {
 					Aucune partie jouée encore
 				</div>
 			</li>`
+		}
+
+		document.querySelector("#games-filter").onchange = (e) => {
+			const allElement = document.querySelectorAll("c-teamgame, c-quickgame, c-squaregame");
+			const setEquiv = {
+				"1v1": "c-quickgame",
+				"2v2": "c-teamgame",
+				"1v3": "c-squaregame",
+			}
+
+			if (e.target.value != "all")
+			{
+				allElement.forEach(el => {
+					if (setEquiv[e.target.value] == el.tagName.toLowerCase())
+						el.style.display = "block";
+					else
+						el.style.display = "none";
+				});
+			}
+			else
+				allElement.forEach(el => {el.style.display = "block"});
+
+			updateBorders();
+		}
+		function updateBorders() {
+			const items = document.querySelectorAll("c-teamgame, c-quickgame, c-squaregame");
+			let visibleItems = [...items].filter(item => item.style.display !== 'none');
+
+			// Reset border-radius for all items
+			items.forEach(item => {
+				item.style.borderTopLeftRadius = '';
+				item.style.borderTopRightRadius = '';
+				item.style.borderBottomLeftRadius = '';
+				item.style.borderBottomRightRadius = '';
+				item.style.borderTop = '';
+			});
+
+			if (visibleItems.length > 0) {
+				visibleItems[0].style.borderTop = `1px solid var(--bs-list-group-border-color)`;
+				visibleItems[0].style.borderTopLeftRadius = 'inherit';
+				visibleItems[0].style.borderTopRightRadius = 'inherit';
+				visibleItems[visibleItems.length - 1].style.borderBottomLeftRadius = 'inherit';
+				visibleItems[visibleItems.length - 1].style.borderBottomRightRadius = 'inherit';
+			}
 		}
 
 	}
