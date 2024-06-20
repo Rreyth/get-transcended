@@ -32,7 +32,7 @@ export class Search extends Component {
 					const response = await APIRequest.build(`/user/friends/requests/`, 'GET').send()
 					const data = await response.json()
 
-					const friendRequest = data.received.find(req => req.from_user.id == ele.getAttribute('user-id'))
+					const friendRequest = data.received.find(req => req.from_user.username == ele.getAttribute('user-username'))
 
 					if (friendRequest)
 					{
@@ -43,7 +43,7 @@ export class Search extends Component {
 					}
 					else
 					{
-						APIRequest.build(`/user/friends/requests/`, 'POST').setBody({ to_user: ele.getAttribute('user-id') }).sendJSON()
+						APIRequest.build(`/user/friends/requests/`, 'POST').setBody({ to_user: ele.getAttribute('user-username') }).sendJSON()
 					}
 				}
 			})
@@ -89,6 +89,11 @@ export class Search extends Component {
 						}, 1000)
 					}
 				})
+				this.querySelectorAll('i[data-request="message"]').forEach(e => {
+					e.onclick = () => {
+						Chat.openConversation(e.getAttribute('user-username'))
+					}
+				})
 			}
 		}
 	}
@@ -112,7 +117,7 @@ async function createUserCard(u, friendId)
 					</div>
 					<div class="d-flex align-items-start justify-content-evenly btns btns-${u.username}" style="height: 33%;">
 						<a is="c-link" href="/user/${u.username}" class="text-decoration-none text-reset"><i class='bx bxs-user-detail rounded-circle bg-body-secondary text-white border border-dark p-1' id="bt-profile"></i></a>
-						<i class='bx ${friendId ? 'bx-message-dots' : 'bx-user-plus'} rounded-circle bg-body-secondary text-white border border-dark p-1' style="cursor: pointer;" data-request="${friendId ? 'message' : 'friend'}" user-id="${u.id}"></i>
+						<i class='bx ${friendId ? 'bx-message-dots' : 'bx-user-plus'} rounded-circle bg-body-secondary text-white border border-dark p-1' style="cursor: pointer;" data-request="${friendId ? 'message' : 'friend'}" user-username="${u.username}"></i>
 						<i id="nav-invite-game" username="${u.username}" class='bx bx-joystick rounded-circle bg-body-secondary text-white border border-dark p-1' style="cursor: pointer;"></i>
 					</div>
 				</div>
