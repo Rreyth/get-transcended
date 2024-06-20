@@ -12,6 +12,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 import requests
 import os
 from django.db import IntegrityError
+import pyotp
 
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
@@ -146,6 +147,15 @@ class A2fView(APIView):
 
     def get(self, request):
         return Response({ "actived": request.user.a2f }, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        userCode = str(request.data["a2f_code"])
+        hotp = pyotp.HOTP(request.user.a2f_secret)
+        if hotp.verify(userCode):
+            request.user.a2f = True
+            request.user.save()
+            return Response({"succes": True}, status=status.HTTP_200_OK)
+        return Response({"succes": False}, status=status.HTTP_400_BAD_REQUEST)
 
 class ReseachUserView(APIView):
     permission_classes = (IsAuthenticated,)

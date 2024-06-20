@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.validators import validate_email
 from django.utils import timezone
+import pyotp
 
 class UserProfileManager(BaseUserManager):
     """Manager for user profiles"""
@@ -35,6 +36,7 @@ class User(AbstractBaseUser):
 
     login42 = models.CharField(default=None, blank=True, null=True)
     a2f = models.BooleanField(default=False)
+	a2f_secret = models.TextField(default=pyotp.random_base32())
     
     online = models.BooleanField(default=False)
     blocked_users = models.ManyToManyField("User", blank=True, related_name="blocked")
