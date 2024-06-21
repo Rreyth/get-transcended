@@ -12,6 +12,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 import requests
 import os
 from django.db import IntegrityError
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
@@ -209,6 +211,23 @@ class FriendRequestView(APIView):
                 friendRequest.to_user.friends.add(friendRequest.from_user)
                 friendRequest.from_user.friends.add(friendRequest.to_user)
                 friendRequest.delete()
+                
+                channel_layer = get_channel_layer()
+                async_to_sync(channel_layer.group_send)(
+                    f"{friendRequest.from_user.username}_friend",
+                    {
+                        'type': 'friend_accept',
+                        'user': UserSerializer(friendRequest.to_user).data
+                    }
+                )
+                
+                async_to_sync(channel_layer.group_send)(
+                    f"{friendRequest.to_user.username}_friend",
+                    {
+                        'type': 'friend_accept',
+                        'user': UserSerializer(friendRequest.from_user).data
+                    }
+                )
 
                 return Response({'message': 'Success'}, status=status.HTTP_200_OK)
             else:

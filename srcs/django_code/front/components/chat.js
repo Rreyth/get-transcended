@@ -100,7 +100,7 @@ export class Chat extends Component {
 		});
 
 		(await this.getFriends()).forEach(friend => {
-			document.querySelector('#chat-friends').innerHTML += `<c-friend avatar="${friend.avatar}" username="${friend.username}" connected="${friend.online}"></c-friend>`
+			Chat.addFriend(friend)
 		});
 
 		(await this.getGroups()).forEach(group => {
@@ -290,6 +290,11 @@ export class Chat extends Component {
 		}, 10);
 
 		Chat.state = type == 'GROUP' ? State.GROUP_CONVERSATION : State.FRIEND_CONVERSATION
+	}
+
+	static addFriend(user)
+	{
+		document.querySelector('#chat-friends').innerHTML += `<c-friend avatar="${user.avatar}" username="${user.username}" connected="${user.online}"></c-friend>`
 	}
 
 	static close()

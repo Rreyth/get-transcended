@@ -1,6 +1,6 @@
 import { Cache } from "../../js/cache.js";
 import { Component } from "../../js/component.js";
-import { user, translate, user_token, APIRequest } from "../../js/helpers.js";
+import { user, translate, APIRequest } from "../../js/helpers.js";
 import { redirect } from "../../js/router.js";
 import { Chat } from "../chat.js";
 
@@ -50,30 +50,29 @@ export class Search extends Component {
 		}
 	}
 
+	async loadContent()
+	{
+		const r = await APIRequest.build("/user/friends/", "GET").send()
+		let attrContent = this.getAttribute('content');
+		let response = await APIRequest.build("/user/search/?username_prefix=" + attrContent, "GET").send();
+		
+		response = await response.json();
+		this.friends = await r.json()
+
+		this.innerHTML = /* html */ `
+			<div class="w-100 h-100 d-flex align-items-center flex-column overflow-auto">
+				${(await Promise.all(response.map(async u => createUserCard(u, (await this.getFriends()).find(e => e.username == u.username))))).join('')}
+			</div>
+		`;
+	}
+
 	async connectedCallback() {
 		super.connectedCallback();
 		if (await user() != null) {
-			let token = await user_token();
-			let attrContent = this.getAttribute('content');
-
-
 			if (this.getAttribute('content') === "")
 				this.innerHTML = await emptySearch();
 			else {
-				let response = await APIRequest.build("/user/search/?username_prefix=" + attrContent, "GET").send();
-				response = await response.json();
-
-				this.innerHTML = /* html */ `
-					<div class="w-100 h-100 d-flex align-items-center flex-column overflow-auto">
-						${(await Promise.all(response.map(async u => createUserCard(u, (await this.getFriends()).find(e => e.username == u.username))))).join('')}
-					</div>
-					<style>
-						.user-search-card:hover
-						{
-							border-color: blue;
-						}
-					</style>
-				`;
+				await this.loadContent()
 
 				this.setFriendAction(this.querySelectorAll('i[data-request="friend"]'))
 				this.querySelectorAll('#nav-invite-game').forEach(el => {
