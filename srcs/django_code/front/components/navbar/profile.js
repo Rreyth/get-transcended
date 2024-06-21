@@ -30,6 +30,7 @@ export class NavProfile extends Component {
 				cookieStore.delete("token");
 				MyRouter.push('login');
 				window.dispatchEvent(new Event("refreshUser"));
+				console.log("dispatched event \"refreshUser\" (profile)");
 			}
 		}
 	}

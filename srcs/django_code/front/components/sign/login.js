@@ -30,6 +30,7 @@ async function connect(username, password)
 	if (response) {
 		MyRouter.push("/");
 		window.dispatchEvent(new Event("refreshUser"));
+		console.log("dispatched event \"refreshUser\" (login)");
 	}
 	else
 		document.querySelector("#alert-id").classList.add("show");

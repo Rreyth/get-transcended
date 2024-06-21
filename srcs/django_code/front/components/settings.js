@@ -12,6 +12,9 @@ export class Settings extends Component {
 		let userValue = await user();
 		if (!userValue)
 			return ;
+
+		console.log("in settings");
+
 		let a2fStatus = await APIRequest.build("/user/a2f", "GET").send();
 		a2fStatus = (await a2fStatus.json()).actived
 

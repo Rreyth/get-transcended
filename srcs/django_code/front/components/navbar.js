@@ -12,14 +12,14 @@ export class Navbar extends Component {
 		// utils pour refresh un composant au besoin
 		window.removeEventListener("refreshUser", this.connectedCallback.bind(this));
 		window.addEventListener("refreshUser", this.connectedCallback.bind(this));
+		
+		console.log("navbar refreshed");
 
 		await token_checker();
 		const userInfo = await user();
 
 		if (userInfo != null)
 		{
-			console.log("this: ", this);
-			console.log("userInfo: ", userInfo);
 			this.innerHTML = await content(userInfo);
 
 			document.addEventListener("click", (e) => {
@@ -46,6 +46,8 @@ export class Navbar extends Component {
 				Chat.openOrClose()
 			})
 		}
+		else
+			this.innerHTML = "";
 	}
 }
 
