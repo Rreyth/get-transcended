@@ -27,9 +27,10 @@ export class Login extends Component {
 async function connect(username, password)
 {
 	const response = await auth(username, password);
-	if (response)
-		// location.reload();
+	if (response) {
 		MyRouter.push("/");
+		window.dispatchEvent(new Event("refreshUser"));
+	}
 	else
 		document.querySelector("#alert-id").classList.add("show");
 }

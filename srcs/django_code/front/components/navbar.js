@@ -7,13 +7,19 @@ export class Navbar extends Component {
 		return "nav";
 	}
 
-	// todo: MyRouter.push trop rapide et userInfo == null
-
 	async connectedCallback() {
+
+		// utils pour refresh un composant au besoin
+		window.removeEventListener("refreshUser", this.connectedCallback.bind(this));
+		window.addEventListener("refreshUser", this.connectedCallback.bind(this));
+
 		await token_checker();
 		const userInfo = await user();
+
 		if (userInfo != null)
 		{
+			console.log("this: ", this);
+			console.log("userInfo: ", userInfo);
 			this.innerHTML = await content(userInfo);
 
 			document.addEventListener("click", (e) => {
@@ -42,6 +48,7 @@ export class Navbar extends Component {
 		}
 	}
 }
+
 
 const content = async (user) => /* html */ `
 	<nav class="navbar fixed-bottom navbar-expand bg-body-tertiary user-select-none">

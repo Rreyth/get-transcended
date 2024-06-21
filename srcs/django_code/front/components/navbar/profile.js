@@ -28,8 +28,8 @@ export class NavProfile extends Component {
 			}
 			this.querySelector("#leave-btn").onclick = () => {
 				cookieStore.delete("token");
-				// location.reload();
-				MyRouter.push('/');
+				MyRouter.push('login');
+				window.dispatchEvent(new Event("refreshUser"));
 			}
 		}
 	}
