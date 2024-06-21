@@ -26,8 +26,8 @@ class MatchFactory(DjangoModelFactory):
 
 	created_at = factory.LazyAttribute(lambda this: this.gen_date)
 	online = factory.Faker('boolean')
-	borderless = factory.Faker('boolean') # a changer
-	obstacle = factory.Faker('boolean') # a changer
+	borderless = factory.Faker('boolean')
+	obstacle = factory.Faker('boolean')
 	mode = factory.LazyFunction(lambda: ["quick", "square", "team"][fake.random_int(min=0, max=2)])
 	square = factory.LazyAttribute(lambda this: True if this.mode == "square" else False)
 	score = factory.LazyFunction(lambda: fake.random_int(min=10, max=20))
@@ -39,7 +39,6 @@ def get_random_users(nb):
 		while ((rand_user in random_users) or rand_user.username == "AI"):
 			rand_user = User.objects.annotate(random_value=Random()).order_by('random_value').first()
 		random_users.append(rand_user)
-		# print(rand_user.username)
 	return random_users
 
 def addWinner(match, users, winners):
