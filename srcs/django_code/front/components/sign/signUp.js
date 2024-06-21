@@ -158,6 +158,8 @@ async function registerUser(username, email, password, file)
 		cookieStore.set({name: 'token', value: res.access});
 		// location.reload();
 		MyRouter.push('/');
+		window.dispatchEvent(new Event("refreshUser"));
+		console.log("dispatched event \"refreshUser\" (signUp)");
 	}
 	else
 	{
