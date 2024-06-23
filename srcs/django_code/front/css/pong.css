@@ -17,3 +17,13 @@ canvas {
 	font-weight: normal;
 	font-style: normal;
 }
+
+.clickable {
+	cursor: pointer;
+	padding: 6px;
+	width: fit-content;
+}
+
+.bg-blue {
+	background-color: blue;
+}
