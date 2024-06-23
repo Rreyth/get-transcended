@@ -10,50 +10,12 @@ export class Navbar extends Component {
 	async connectedCallback() {
 
 		// utils pour refresh un composant au besoin
-		window.removeEventListener("refreshUser", this.test.bind(this));
-		window.addEventListener("refreshUser", this.test.bind(this));
-
-		console.log("navbar refreshed");
-
-		await token_checker();
-		const userInfo = await user();
-
-		if (userInfo != null)
-		{
-			this.innerHTML = await content(userInfo);
-
-			document.addEventListener("click", (e) => {
-				if (e.target.id == "seach-user")
-				{
-					this.querySelector(".dropdown-menu").innerHTML = `<c-search content="${e.target.value}"></c-search>`;
-					this.querySelector(".dropdown-toggle").click();
-				}
-				else if (e.target.classList.contains("bx"))
-				{
-					if (e.target.parentNode.classList.contains("dropdown-toggle"))
-					{
-						this.querySelector(".dropdown-menu").innerHTML = "<c-navprofile></c-navprofile>";
-					}
-				}
-			})
-
-			this.querySelector("#seach-user").addEventListener("input", (e) => {
-				let content = this.querySelector(".dropdown-menu");
-				content.innerHTML = `<c-search content="${e.target.value}"></c-search>`;
-			})
-
-			this.querySelector("#msg-btn").addEventListener("click", (e) => {
-				Chat.openOrClose()
-			})
-		}
-		else
-			this.innerHTML = "";
+		window.removeEventListener("refreshNavbar", this.realCallback.bind(this));
+		window.addEventListener("refreshNavbar", this.realCallback.bind(this));
 	}
 
-	async test() {
+	async realCallback() {
 		
-		console.log("navbar refreshed");
-
 		await token_checker();
 		const userInfo = await user();
 

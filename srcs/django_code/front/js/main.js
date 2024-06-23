@@ -1,5 +1,4 @@
 import { Component } from "./component.js"
-import { Router } from "./router.js";
 import { Navbar } from "../components/navbar.js";
 import { Chat } from "../components/chat.js";
 import { Message } from "../components/chat/message.js";

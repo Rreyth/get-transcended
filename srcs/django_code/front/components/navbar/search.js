@@ -1,7 +1,7 @@
 import { Cache } from "../../js/cache.js";
 import { Component } from "../../js/component.js";
 import { user, translate, user_token, APIRequest } from "../../js/helpers.js";
-import { redirect } from "../../js/router.js";
+import { Router } from "../../js/router.js";
 import { Chat } from "../chat.js";
 
 export class Search extends Component {
@@ -78,7 +78,7 @@ export class Search extends Component {
 				this.setFriendAction(this.querySelectorAll('i[data-request="friend"]'))
 				this.querySelectorAll('#nav-invite-game').forEach(el => {
 					el.onclick = () => {
-						redirect('/pong?code=create')
+						Router.push('/pong?code=create');
 
 						setTimeout(async () => {
 

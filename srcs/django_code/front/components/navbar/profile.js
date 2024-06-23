@@ -1,4 +1,4 @@
-import { MyRouter } from "../../js/MyRouter.js";
+import { Router } from "../../js/router.js";
 import { Component } from "../../js/component.js";
 import { user, getAvatarUrl, APIRequest } from "../../js/helpers.js"
 
@@ -28,9 +28,7 @@ export class NavProfile extends Component {
 			}
 			this.querySelector("#leave-btn").onclick = () => {
 				cookieStore.delete("token");
-				MyRouter.push('login');
-				window.dispatchEvent(new Event("refreshUser"));
-				console.log("dispatched event \"refreshUser\" (profile)");
+				Router.push('login');
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-import { MyRouter } from "../../js/MyRouter.js";
+import { Router } from "../../js/router.js";
 import { Component } from "../../js/component.js";
 import { auth } from "../../js/helpers.js";
 
@@ -28,9 +28,7 @@ async function connect(username, password)
 {
 	const response = await auth(username, password);
 	if (response) {
-		MyRouter.push("/");
-		window.dispatchEvent(new Event("refreshUser"));
-		console.log("dispatched event \"refreshUser\" (login)");
+		Router.push("/");
 	}
 	else
 		document.querySelector("#alert-id").classList.add("show");

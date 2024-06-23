@@ -1,4 +1,4 @@
-import { MyRouter } from "../../js/MyRouter.js";
+import { Router } from "../../js/router.js";
 import { Component } from "../../js/component.js";
 import { APIRequest } from "../../js/helpers.js"
 
@@ -157,9 +157,7 @@ async function registerUser(username, email, password, file)
 		document.querySelector("#alert-id").classList.remove("show");
 		cookieStore.set({name: 'token', value: res.access});
 		// location.reload();
-		MyRouter.push('/');
-		window.dispatchEvent(new Event("refreshUser"));
-		console.log("dispatched event \"refreshUser\" (signUp)");
+		Router.push('/');
 	}
 	else
 	{

@@ -1,4 +1,4 @@
-import { MyRouter } from "../../js/MyRouter.js";
+import { Router } from "../../js/router.js";
 import { APIRequest, formatDate, getAvatarUrl } from "../../js/helpers.js";
 
 export class Profile extends HTMLElement {
@@ -10,10 +10,10 @@ export class Profile extends HTMLElement {
 		const data = await response.json();
 		
 		if (response.status == 404) {
-			MyRouter.push('404');
+			Router.push('404');
 		}
 		if (response.status == 401) {
-			MyRouter.push('login');
+			Router.push('login');
 		}
 		
 		let context = {
