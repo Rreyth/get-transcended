@@ -1,5 +1,6 @@
 from .config import *
 from .Vec2 import *
+from Ball import try_collide
 
 class Obstacle:
 	def __init__(self):
@@ -24,5 +25,12 @@ class Obstacle:
 		norm.scale(dotProduct(dir, norm) * 2)
 		res = dir - norm
   
+		self.unstuckBall(ball, rad)
+  
 		rad = atan2(res.y, res.x)
 		ball.dir = degrees(rad)
+  
+	def unstuckBall(self, ball, rad):
+		while try_collide(ball.center[0].x, ball.center[0].y, ball.radius, [], False, self, ball.ai_hitbox):
+			ball.center[0].x -= (1 * cos(rad))
+			ball.center[0].y -= (1 * sin(rad))
