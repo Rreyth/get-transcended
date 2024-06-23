@@ -1,3 +1,4 @@
+import { Router } from "../../js/router.js";
 import { Component } from "../../js/component.js";
 import { user, getAvatarUrl, APIRequest } from "../../js/helpers.js"
 
@@ -27,7 +28,7 @@ export class NavProfile extends Component {
 			}
 			this.querySelector("#leave-btn").onclick = () => {
 				cookieStore.delete("token");
-				location.reload();
+				Router.push('login');
 			}
 		}
 	}

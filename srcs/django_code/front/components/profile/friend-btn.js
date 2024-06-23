@@ -18,13 +18,18 @@ export class FriendBtn extends HTMLButtonElement
 
     async connectedCallback()
     {
-        if ((await user()).username == this.getAttribute('target_username'))
-            this.remove()
+        const username = await user().username
+        // todo: username == undefined = token invalide ?
+        if (username == undefined || username == this.getAttribute('target_username'))
+        {
+            this.remove();
+            return ;
+        }
 
         const friends = await APIRequest.build(`/user/friends/?target=${this.getAttribute('target_username')}`, 'GET').send();
         const requests = await APIRequest.build(`/user/friends/requests/`, 'GET').send();
         const data = await requests.json()
-        
+
         const request_sended = data.send.some(e => e.to_user.username == this.getAttribute('target_username'))
         const request_reveived = data.received.find(e => e.from_user.username == this.getAttribute('target_username'))
 

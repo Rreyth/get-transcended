@@ -1,5 +1,4 @@
 import { Component } from "./component.js"
-import { Router } from "./router.js";
 import { Navbar } from "../components/navbar.js";
 import { Chat } from "../components/chat.js";
 import { Message } from "../components/chat/message.js";
@@ -25,6 +24,11 @@ import { About } from "../components/about.js";
 import { Podium } from "../components/leaderboard/podium.js";
 import { LeadUser } from "../components/leaderboard/leaduser.js";
 import { Link } from "../components/link.js";
+import { Pong } from "../components/pong/pong.js";
+import { Leaderboard } from "../components/leaderboard/leaderboard.js";
+import { Profile } from "../components/profile/profile.js";
+import { ProfileHeader } from "../components/profile/profileheader.js";
+import { ProfileCard } from "../components/profile/profilecard.js";
 
 Component.loader([
 	Navbar,
@@ -52,12 +56,9 @@ Component.loader([
 	Podium,
 	LeadUser,
 	Link,
+	Pong,
+	Leaderboard,
+	Profile,
+	ProfileHeader,
+	ProfileCard
 ])
-
-window.addEventListener("popstate", (e) => {
-	Router.run();
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-	Router.run();
-});
