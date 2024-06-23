@@ -161,4 +161,4 @@ cython_debug/
 .idea/
 
 srcs/django_code/etc
-srcs/django_code/transcend/profile
+srcs/django_code/transcend/profile/*

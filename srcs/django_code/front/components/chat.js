@@ -310,6 +310,21 @@ export class Chat extends Component {
 		chat.classList.remove('d-none')
 	}
 
+	static openConversation(username)
+	{
+		const ele = document.querySelector(`c-friend[username=${username}]`)
+
+		if (ele != null)
+		{
+			if (Chat.state != State.FRIEND_CONVERSATION)
+				ele.click();
+			else if (Chat.state == State.FRIEND_CONVERSATION && Friend.friendSelected.username != username)
+				ele.click();
+		}
+
+		Chat.open()
+	}
+
 	static openOrClose()
 	{
 		const chat = document.querySelector(`c-${Chat.getName()}`)
