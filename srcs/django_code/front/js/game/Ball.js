@@ -229,7 +229,7 @@ function randInt(min, max) {
 	return Math.floor(Math.random() * (max - min) + min);
 }
 
-function try_collide(x, y, radius, players, walls, obstacle, ai_hitbox = false) {
+export function try_collide(x, y, radius, players, walls, obstacle, ai_hitbox = false) {
 	let ball_box = new Vec2(x - radius, y - radius);
 
 	for (let player of players)
