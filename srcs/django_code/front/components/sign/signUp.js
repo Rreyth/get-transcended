@@ -156,7 +156,6 @@ async function registerUser(username, email, password, file)
 	{
 		document.querySelector("#alert-id").classList.remove("show");
 		cookieStore.set({name: 'token', value: res.access});
-		// location.reload();
 		Router.push('/');
 	}
 	else

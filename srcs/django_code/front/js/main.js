@@ -62,11 +62,3 @@ Component.loader([
 	ProfileHeader,
 	ProfileCard
 ])
-
-// window.addEventListener("popstate", (e) => {
-// 	Router.run();
-// });
-
-// document.addEventListener("DOMContentLoaded", () => {
-// 	Router.run();
-// });

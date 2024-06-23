@@ -8,14 +8,12 @@ export class Navbar extends Component {
 	}
 
 	async connectedCallback() {
-
-		// utils pour refresh un composant au besoin
 		window.removeEventListener("refreshNavbar", this.realCallback.bind(this));
 		window.addEventListener("refreshNavbar", this.realCallback.bind(this));
 	}
 
 	async realCallback() {
-		
+
 		await token_checker();
 		const userInfo = await user();
 
