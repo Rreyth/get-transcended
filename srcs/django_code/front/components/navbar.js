@@ -8,8 +8,15 @@ export class Navbar extends Component {
 	}
 
 	async connectedCallback() {
+		window.removeEventListener("refreshNavbar", this.realCallback.bind(this));
+		window.addEventListener("refreshNavbar", this.realCallback.bind(this));
+	}
+
+	async realCallback() {
+
 		await token_checker();
 		const userInfo = await user();
+
 		if (userInfo != null)
 		{
 			this.innerHTML = await content(userInfo);
@@ -38,8 +45,11 @@ export class Navbar extends Component {
 				Chat.openOrClose()
 			})
 		}
+		else
+			this.innerHTML = "";
 	}
 }
+
 
 const content = async (user) => /* html */ `
 	<nav class="navbar fixed-bottom navbar-expand bg-body-tertiary user-select-none">
