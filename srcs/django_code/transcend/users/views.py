@@ -175,9 +175,9 @@ class A2fConnexionView(APIView):
 
     def post(self, request):
         userCode = str(request.data["a2f_code"])
-        totp = pyotp.TOTP(request.user.a2f_secret)
+        user = User.objects.get(username=request.data["username"])
+        totp = pyotp.TOTP(user.a2f_secret)
         if totp.verify(userCode):
-            user = User.objects.get(username=request.data["username"])
             refresh = RefreshToken.for_user(user)
             refresh["username"] = user.username
             refresh['avatar'] = user.avatar.url if user.avatar and hasattr(user.avatar, 'url') else None

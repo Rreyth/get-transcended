@@ -1,6 +1,5 @@
 import { Component } from "../../js/component.js";
 import { APIRequest } from "../../js/helpers.js";
-import { A2fModal } from "./a2fModal.js";
 
 export class SSign extends Component {
     static getName() {
@@ -23,7 +22,9 @@ export class SSign extends Component {
 			}
 			else if (res.a2f)
 			{
-				A2fModal.setWho(res.username);
+				let ele = document.createElement("c-a2fmodal");
+				ele.setAttribute("username", res.username);
+				this.appendChild(ele);
 			}
 			else
 			{
