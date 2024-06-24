@@ -1,5 +1,6 @@
 import { Vec2, dotProduct } from "./Vec2.js";
 import { canvas, ctx, ctx_circle } from "./canvas.js";
+import { try_collide } from "./Ball.js"
 
 export class Obstacle {
 	constructor() {
@@ -27,8 +28,18 @@ export class Obstacle {
 		norm.normalize();
 		norm.scale(dotProduct(dir, norm) * 2);
 		const res = dir.sub(norm);
+
+		this.unstuckBall(ball, rad);
+
 		rad = Math.atan2(res.y, res.x);
 		ball.dir = rad * (180 / Math.PI);
+	}
+
+	unstuckBall(ball, rad) {
+		while (try_collide(ball.center[0].x, ball.center[0].y, ball.radius, [], false, this, ball.ai_hitbox)) {
+			ball.center[0].x -= (Math.cos(rad) * 1);
+			ball.center[0].y -= (Math.sin(rad) * 1);
+		}
 	}
 
 	responsive() {

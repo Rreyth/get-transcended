@@ -25,6 +25,7 @@ from users.consumers import *
 websocket_urlpatterns = [
     path('ws/messages', ChatConsumer.as_asgi()),
     path('ws/user/online', OnlineConsumer.as_asgi()),
+    path('ws/user/friends', FriendAcceptConsumer.as_asgi()),
 ]
 
 application = ProtocolTypeRouter({

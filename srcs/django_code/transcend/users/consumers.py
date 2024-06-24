@@ -48,3 +48,17 @@ class OnlineConsumer(AsyncWebsocketConsumer):
             'username': event['user'].username,
             'online': event['online'],
         }))
+
+class FriendAcceptConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        await self.accept()
+        
+        await self.channel_layer.group_add(f"{self.scope['user'].username}_friend", self.channel_name)
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(f"{self.scope['user'].username}_friend", self.channel_name)
+    
+    async def friend_accept(self, event):
+        await self.send(text_data=json.dumps({
+            'user': event['user'],
+        }))

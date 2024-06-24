@@ -11,4 +11,6 @@ PyJWT
 Pillow
 pyotp
 qrcode
-qrcode[pil]
+factory_boy
+pytz
+argparse

@@ -33,3 +33,11 @@ Socket.set('/user/online', (event) => {
             img.className = img.className.replace('success', 'secondary')
     })
 })
+
+Socket.set('/user/friends', (event) => {
+    const data = JSON.parse(event.data)
+
+    document.querySelectorAll(`[data-trd-friend=${data.user.username}]`).forEach(element => element.connectedCallback())
+    document.querySelector('c-search').loadContent()
+    Chat.addFriend(data.user)
+})

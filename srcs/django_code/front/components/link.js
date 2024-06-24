@@ -1,4 +1,4 @@
-import { redirect } from "../js/router.js";
+import { Router } from "../js/router.js"
 
 export class Link extends HTMLAnchorElement {
 	connectedCallback() {
@@ -8,7 +8,7 @@ export class Link extends HTMLAnchorElement {
 	handleClick(ev) {
 		ev.preventDefault();
 		ev.stopPropagation();
-		redirect(this.href);
+		Router.push(this.href);
 	}
 
 	static getName() {

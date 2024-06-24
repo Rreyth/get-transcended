@@ -100,7 +100,7 @@ export class Chat extends Component {
 		});
 
 		(await this.getFriends()).forEach(friend => {
-			document.querySelector('#chat-friends').innerHTML += `<c-friend avatar="${friend.avatar}" username="${friend.username}" connected="${friend.online}"></c-friend>`
+			Chat.addFriend(friend)
 		});
 
 		(await this.getGroups()).forEach(group => {
@@ -292,6 +292,11 @@ export class Chat extends Component {
 		Chat.state = type == 'GROUP' ? State.GROUP_CONVERSATION : State.FRIEND_CONVERSATION
 	}
 
+	static addFriend(user)
+	{
+		document.querySelector('#chat-friends').innerHTML += `<c-friend avatar="${user.avatar}" username="${user.username}" connected="${user.online}"></c-friend>`
+	}
+
 	static close()
 	{
 		const chat = document.querySelector(`c-${Chat.getName()}`)
@@ -308,6 +313,21 @@ export class Chat extends Component {
 		const chat = document.querySelector(`c-${Chat.getName()}`)
 
 		chat.classList.remove('d-none')
+	}
+
+	static openConversation(username)
+	{
+		const ele = document.querySelector(`c-friend[username=${username}]`)
+
+		if (ele != null)
+		{
+			if (Chat.state != State.FRIEND_CONVERSATION)
+				ele.click();
+			else if (Chat.state == State.FRIEND_CONVERSATION && Friend.friendSelected.username != username)
+				ele.click();
+		}
+
+		Chat.open()
 	}
 
 	static openOrClose()

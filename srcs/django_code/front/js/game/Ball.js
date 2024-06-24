@@ -9,6 +9,8 @@ export class Ball {
 		this.ai_hitbox = false;
 		this.borderless = borderless;
 		this.radius = Math.floor(canvas.height * 0.01);
+		if (this.radius < 1)
+			this.radius = 1;
 		this.center = [new Vec2(canvas.width / 2, canvas.height / 2)];
 		if (borderless) {
 			this.center.push(new Vec2(this.center[0].x, this.center[0].y + canvas.height));
@@ -210,6 +212,8 @@ export class Ball {
 	responsive(old_sizes) {
 		this.speed_per_sec = canvas.width / 3;
 		this.radius = Math.floor(canvas.height * 0.01);
+		if (this.radius < 1)
+			this.radius = 1;
 		const pos_ratio = [this.center[0].x / old_sizes[0], this.center[0].y / old_sizes[1]];
 		this.center[0] = new Vec2(pos_ratio[0] * canvas.width, pos_ratio[1] * canvas.height);
 		if (this.borderless) {
@@ -229,7 +233,7 @@ function randInt(min, max) {
 	return Math.floor(Math.random() * (max - min) + min);
 }
 
-function try_collide(x, y, radius, players, walls, obstacle, ai_hitbox = false) {
+export function try_collide(x, y, radius, players, walls, obstacle, ai_hitbox = false) {
 	let ball_box = new Vec2(x - radius, y - radius);
 
 	for (let player of players)

@@ -12,6 +12,7 @@ export class Settings extends Component {
 		let userValue = await user();
 		if (!userValue)
 			return ;
+
 		let a2fStatus = await APIRequest.build("/user/a2f", "GET").send();
 		const responseA2f = await a2fStatus.json();
 		console.log(responseA2f);
@@ -190,8 +191,6 @@ const save = async (bodyPrepare, closeBtn, errorBox) => {
 	{
 		cookieStore.set({ name: "token", value: data.access});
 		closeBtn.click();
-		Router.run();
-		// add success msg
 	}
 	else
 	{

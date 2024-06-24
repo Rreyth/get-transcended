@@ -1,3 +1,4 @@
+import { Router } from "../../js/router.js";
 import { Component } from "../../js/component.js";
 import { APIRequest } from "../../js/helpers.js"
 
@@ -21,6 +22,11 @@ export class SignUp extends Component {
 				this.querySelector("#input-user").style.color = "#C0192A";
 				createPopover(e.target, "popover-user", "Le nom d'utilisateur ne peux pas depasser 10 charactere");
 			}
+			else if (!e.target.value.match(/^[A-Za-z0-9_]*$/) && e.target.value.length > 0)
+			{
+				this.querySelector("#input-user").style.color = "#C0192A";
+				createPopover(e.target, "popover-user", "Le nom d'utilisateur doit contenir uniquement des caractères alphanumériques");
+			}
 			else
 				removeError(inputUser, "popover-user");
 		})
@@ -39,12 +45,12 @@ export class SignUp extends Component {
 			}
 			else
 				dropdownMenu.classList.remove('show');
-			
+
 		})
 
 		dropdownMenu.addEventListener('mousedown', (e) => {
 			e.preventDefault();
-			
+
 			if (e.target.classList.contains('dropdown-item'))
 			{
 				inputEmail.value = e.target.innerHTML;
@@ -62,7 +68,7 @@ export class SignUp extends Component {
 				else
 					removeError(inputEmail, "popover-email");
 		});
-		
+
 		inputEmail.addEventListener("focus", (e) => {
 			if (e.target.value.includes("@") === false && e.target.value != "")
 				dropdownMenu.classList.add('show');
@@ -88,7 +94,7 @@ export class SignUp extends Component {
 			else
 				removeError(inputPass, "popover-pass");
 		});
-		
+
 		imgBtn.addEventListener("click", (e) => {
 			document.getElementById('fileInput').click();
 		})
@@ -130,6 +136,8 @@ async function registerUser(username, email, password, file)
 		return;
 	else if (username.length > lengthUserMax)
 		return;
+	else if (!username.match(/^[A-Za-z0-9_]*$/))
+		return;
 
 	const data = new FormData();
 	data.append("username", username);
@@ -155,7 +163,7 @@ async function registerUser(username, email, password, file)
 	{
 		document.querySelector("#alert-id").classList.remove("show");
 		cookieStore.set({name: 'token', value: res.access});
-		location.reload();
+		Router.push('/');
 	}
 	else
 	{

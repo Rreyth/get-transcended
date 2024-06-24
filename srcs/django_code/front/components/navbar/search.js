@@ -1,7 +1,7 @@
 import { Cache } from "../../js/cache.js";
 import { Component } from "../../js/component.js";
-import { user, translate, user_token, APIRequest } from "../../js/helpers.js";
-import { redirect } from "../../js/router.js";
+import { user, translate, APIRequest } from "../../js/helpers.js";
+import { Router } from "../../js/router.js";
 import { Chat } from "../chat.js";
 
 export class Search extends Component {
@@ -32,7 +32,7 @@ export class Search extends Component {
 					const response = await APIRequest.build(`/user/friends/requests/`, 'GET').send()
 					const data = await response.json()
 
-					const friendRequest = data.received.find(req => req.from_user.id == ele.getAttribute('user-id'))
+					const friendRequest = data.received.find(req => req.from_user.username == ele.getAttribute('user-username'))
 
 					if (friendRequest)
 					{
@@ -43,42 +43,57 @@ export class Search extends Component {
 					}
 					else
 					{
-						APIRequest.build(`/user/friends/requests/`, 'POST').setBody({ to_user: ele.getAttribute('user-id') }).sendJSON()
+						APIRequest.build(`/user/friends/requests/`, 'POST').setBody({ to_user: ele.getAttribute('user-username') }).sendJSON()
 					}
 				}
 			})
 		}
 	}
 
+	async createCards()
+	{
+		const attrContent = this.getAttribute('content');
+		let response = await APIRequest.build("/user/search/?username_prefix=" + attrContent, "GET").send();
+		const friends = await this.getFriends();
+
+		response = await response.json();
+
+		let cards = await response.map(async u => {
+			const isFriend = friends.find(e => e.username == u.username)
+			
+			return createUserCard(u, isFriend)
+		})
+
+		cards = await Promise.all(cards)
+
+		return cards.join('')
+	}
+
+	async loadContent()
+	{
+		const r = await APIRequest.build("/user/friends/", "GET").send()
+
+		this.friends = await r.json()
+
+		this.innerHTML = /* html */ `
+			<div class="w-100 h-100 d-flex align-items-center flex-column overflow-auto">
+				${await this.createCards()}
+			</div>
+		`;
+	}
+
 	async connectedCallback() {
 		super.connectedCallback();
 		if (await user() != null) {
-			let token = await user_token();
-			let attrContent = this.getAttribute('content');
-
-
 			if (this.getAttribute('content') === "")
 				this.innerHTML = await emptySearch();
 			else {
-				let response = await APIRequest.build("/user/search/?username_prefix=" + attrContent, "GET").send();
-				response = await response.json();
-
-				this.innerHTML = /* html */ `
-					<div class="w-100 h-100 d-flex align-items-center flex-column overflow-auto">
-						${(await Promise.all(response.map(async u => createUserCard(u, (await this.getFriends()).find(e => e.username == u.username))))).join('')}
-					</div>
-					<style>
-						.user-search-card:hover
-						{
-							border-color: blue;
-						}
-					</style>
-				`;
+				await this.loadContent()
 
 				this.setFriendAction(this.querySelectorAll('i[data-request="friend"]'))
 				this.querySelectorAll('#nav-invite-game').forEach(el => {
 					el.onclick = () => {
-						redirect('/pong?code=create')
+						Router.push('/pong?code=create');
 
 						setTimeout(async () => {
 
@@ -87,6 +102,11 @@ export class Search extends Component {
 							if (room_id)
 								Chat.sendInviteCode(el.getAttribute("username"), room_id)
 						}, 1000)
+					}
+				})
+				this.querySelectorAll('i[data-request="message"]').forEach(e => {
+					e.onclick = () => {
+						Chat.openConversation(e.getAttribute('user-username'))
 					}
 				})
 			}
@@ -112,7 +132,7 @@ async function createUserCard(u, friendId)
 					</div>
 					<div class="d-flex align-items-start justify-content-evenly btns btns-${u.username}" style="height: 33%;">
 						<a is="c-link" href="/user/${u.username}" class="text-decoration-none text-reset"><i class='bx bxs-user-detail rounded-circle bg-body-secondary text-white border border-dark p-1' id="bt-profile"></i></a>
-						<i class='bx ${friendId ? 'bx-message-dots' : 'bx-user-plus'} rounded-circle bg-body-secondary text-white border border-dark p-1' style="cursor: pointer;" data-request="${friendId ? 'message' : 'friend'}" user-id="${u.id}"></i>
+						<i class='bx ${friendId ? 'bx-message-dots' : 'bx-user-plus'} rounded-circle bg-body-secondary text-white border border-dark p-1' style="cursor: pointer;" data-request="${friendId ? 'message' : 'friend'}" user-username="${u.username}"></i>
 						<i id="nav-invite-game" username="${u.username}" class='bx bx-joystick rounded-circle bg-body-secondary text-white border border-dark p-1' style="cursor: pointer;"></i>
 					</div>
 				</div>

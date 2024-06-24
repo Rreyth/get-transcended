@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.validators import validate_email
 from django.utils import timezone
 import pyotp
+from transcend.views.utils import validate_alphanumeric
 
 class UserProfileManager(BaseUserManager):
     """Manager for user profiles"""
@@ -23,7 +24,7 @@ class UserProfileManager(BaseUserManager):
         return user
 
 class User(AbstractBaseUser):
-    username = models.CharField(max_length=25, unique=True)
+    username = models.CharField(max_length=25, unique=True, validators=[validate_alphanumeric])
     avatar = models.ImageField(upload_to='profile/', blank=True, default='media/frank.svg')
     email = models.EmailField(max_length=255, unique=True, validators=[validate_email])
     friends = models.ManyToManyField("User", blank=True)
