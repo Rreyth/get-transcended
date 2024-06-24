@@ -23,7 +23,7 @@ class Log42(APIView):
                 'client_id': CLIENT_ID,
                 'client_secret': CLIENT_SECRET,
                 'code': code,
-                'redirect_uri': 'https://localhost:44433/'
+                'redirect_uri': 'https://localhost:44433/login'
             })
 
 

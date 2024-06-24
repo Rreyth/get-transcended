@@ -3,13 +3,18 @@ import { user, token_checker } from "./helpers.js";
 
 export class Router {
   static async push(pathname) {
-    
+
     await token_checker();
     const userInfo = await user();
     
-    if (userInfo == null && pathname != "/login" && pathname != "login") {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+
+    if (userInfo == null && !code) {
       pathname = "/login";
     }
+    else if (userInfo && (pathname == "/login" || pathname == "login"))
+      pathname = "/";
     
     Thread.clearAll();
     const url = new URL(pathname, window.location.origin);
