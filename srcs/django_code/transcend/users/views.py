@@ -146,13 +146,17 @@ class A2fView(APIView):
     parser_classes = [JSONParser, MultiPartParser, FormParser]
 
     def get(self, request):
-        return Response({ "actived": request.user.a2f }, status=status.HTTP_200_OK)
+        url_generate = pyotp.totp.TOTP(request.user.a2f_secret).provisioning_uri(name=request.user.email, issuer_name='Transcendence')
+        return Response({ "actived": request.user.a2f, "url":  url_generate}, status=status.HTTP_200_OK)
 
     def post(self, request):
         userCode = str(request.data["a2f_code"])
         hotp = pyotp.HOTP(request.user.a2f_secret)
         if hotp.verify(userCode):
-            request.user.a2f = True
+            if request.user.a2f == False:
+                request.user.a2f = True
+            else:
+                request.user.a2f = False
             request.user.save()
             return Response({"succes": True}, status=status.HTTP_200_OK)
         return Response({"succes": False}, status=status.HTTP_400_BAD_REQUEST)

@@ -13,7 +13,9 @@ export class Settings extends Component {
 		if (!userValue)
 			return ;
 		let a2fStatus = await APIRequest.build("/user/a2f", "GET").send();
-		a2fStatus = (await a2fStatus.json()).actived
+		const responseA2f = await a2fStatus.json();
+		console.log(responseA2f);
+		a2fStatus = responseA2f.actived
 
 		this.innerHTML = await content(userValue, a2fStatus);
 
@@ -155,24 +157,30 @@ export class Settings extends Component {
 					}
 				}
 			});
-			const response = await APIRequest.build("/user/", "PUT").setBody(bodyPrepare).send();
-			const data = await response.json();
-			if (response.ok)
+			if (a2fSwitch.checked != a2fStatus)
 			{
-				cookieStore.set({ name: "token", value: data.access});
-				closeBtn.click();
-				Router.run();
-				// add success msg
+				document.querySelector("#settings-code-modal").style.display = "none";
+				document.querySelector("#a2f-code-modal").style.display = "block";
+				// ask code / qr code
 			}
-			else
-			{
-				errorBox.innerHTML = /*html*/`
-				<div class="alert position-relative top-0 w-100 alert-warning alert-dismissible d-flex" role="alert">
-					<i class='bx bx-error-alt bx-sm' style="margin-right: 0.4em;"></i>
-					<span id="api-error-txt">${await translate("settings." + data.error)}</span>
-					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-				</div>`
-			}
+			// const response = await APIRequest.build("/user/", "PUT").setBody(bodyPrepare).send();
+			// const data = await response.json();
+			// if (response.ok)
+			// {
+			// 	cookieStore.set({ name: "token", value: data.access});
+			// 	closeBtn.click();
+			// 	Router.run();
+			// 	// add success msg
+			// }
+			// else
+			// {
+			// 	errorBox.innerHTML = /*html*/`
+			// 	<div class="alert position-relative top-0 w-100 alert-warning alert-dismissible d-flex" role="alert">
+			// 		<i class='bx bx-error-alt bx-sm' style="margin-right: 0.4em;"></i>
+			// 		<span id="api-error-txt">${await translate("settings." + data.error)}</span>
+			// 		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			// 	</div>`
+			// }
 		}
     }
 }
@@ -196,7 +204,20 @@ const setSaveState = (setToEnable, isLog42) => {
 const content = async (user, a2f) => /*html*/`
 	<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered">
-			<div class="modal-content">
+
+
+
+			<div class="modal-content" id="a2f-code-modal" style="display: none;">
+				<div class="modal-body">
+					<p>Modal body text goes here.</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary">Save changes</button>
+				</div>
+			</div>
+
+			<div class="modal-content" id="settings-code-modal">
 				<div id="error-container"></div>
 				<div class="modal-header">
 					<h1 class="modal-title fs-5" id="settingsModalLabel">Settings</h1>
