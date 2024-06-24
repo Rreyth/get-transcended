@@ -83,7 +83,7 @@ const content = /*html*/`
 
 		<hr />
 
-		<a class="d-flex text-decoration-none text-reset" href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-b5e0cf73ba0e68a7e2bc9e5fa86d0f242be05def4e3de852c9e804e95b398350&redirect_uri=https%3A%2F%2Flocalhost%3A44433%2F&response_type=code">
+		<a class="d-flex text-decoration-none text-reset" href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-75a7d436e9402c12a2fb544a8545365a7e2c22ade0e4f9bbb1e9931c22c2cb5c&redirect_uri=https%3A%2F%2Flocalhost%3A44433%2Flogin&response_type=code">
 			<div class="d-flex flex-row align-items-center gap-2 fs-3">
 				<div class="d-flex justify-center align-items-center rounded-circle bg-secondary p-2">
 					<img src="/media/42_logo.svg" style="height: 1.8em; width: 1.8em;">
