@@ -50,18 +50,34 @@ export class Search extends Component {
 		}
 	}
 
+	async createCards()
+	{
+		const attrContent = this.getAttribute('content');
+		let response = await APIRequest.build("/user/search/?username_prefix=" + attrContent, "GET").send();
+		const friends = await this.getFriends();
+
+		response = await response.json();
+
+		let cards = await response.map(async u => {
+			const isFriend = friends.find(e => e.username == u.username)
+			
+			return createUserCard(u, isFriend)
+		})
+
+		cards = await Promise.all(cards)
+
+		return cards.join('')
+	}
+
 	async loadContent()
 	{
 		const r = await APIRequest.build("/user/friends/", "GET").send()
-		let attrContent = this.getAttribute('content');
-		let response = await APIRequest.build("/user/search/?username_prefix=" + attrContent, "GET").send();
-		
-		response = await response.json();
+
 		this.friends = await r.json()
 
 		this.innerHTML = /* html */ `
 			<div class="w-100 h-100 d-flex align-items-center flex-column overflow-auto">
-				${(await Promise.all(response.map(async u => createUserCard(u, (await this.getFriends()).find(e => e.username == u.username))))).join('')}
+				${await this.createCards()}
 			</div>
 		`;
 	}
