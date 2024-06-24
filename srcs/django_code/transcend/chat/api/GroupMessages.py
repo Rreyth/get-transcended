@@ -7,6 +7,7 @@ from chat.models import *
 from chat.serializer import *
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from transcend.views.utils import escape_html_in_data
 
 class GroupMessagesView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -25,7 +26,7 @@ class GroupMessagesView(APIView):
         except Group.DoesNotExist:
             return Response({'error': 'Group not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        message = Message.objects.create(content=request.data['content'], sender=request.user, group=group)
+        message = Message.objects.create(content=escape_html_in_data(request.data['content']), sender=request.user, group=group)
 
         channel_layer = get_channel_layer()
 
