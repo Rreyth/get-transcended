@@ -32,10 +32,13 @@ export class CreateGroupModal extends Component
 
         document.querySelector('#create-group-btn').onclick = async () => {
             const response = await APIRequest.build('/user/groups/', 'POST').setBody({ name: document.querySelector('#group-name').value }).sendJSON()
+
+            if (!response.ok)
+                return
+
             const data = await response.json()
             const el = document.createElement('c-group')
 
-            console.log(data)
             el.setAttribute('group-id', data.id)
             el.setAttribute('group-name', data.name)
 

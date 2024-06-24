@@ -22,6 +22,11 @@ export class SignUp extends Component {
 				this.querySelector("#input-user").style.color = "#C0192A";
 				createPopover(e.target, "popover-user", "Le nom d'utilisateur ne peux pas depasser 10 charactere");
 			}
+			else if (!e.target.value.match(/^[A-Za-z0-9_]*$/) && e.target.value.length > 0)
+			{
+				this.querySelector("#input-user").style.color = "#C0192A";
+				createPopover(e.target, "popover-user", "Le nom d'utilisateur doit contenir uniquement des caractères alphanumériques");
+			}
 			else
 				removeError(inputUser, "popover-user");
 		})
@@ -130,6 +135,8 @@ async function registerUser(username, email, password, file)
 	else if (passwordCheck(password).includes(false))
 		return;
 	else if (username.length > lengthUserMax)
+		return;
+	else if (!username.match(/^[A-Za-z0-9_]*$/))
 		return;
 
 	const data = new FormData();

@@ -9,6 +9,7 @@ from chat.models import *
 from chat.serializer import *
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from transcend.views.utils import escape_html_in_data
 
 class DMView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -35,7 +36,7 @@ class DMView(APIView):
         if request.user in receiver.blocked_users.all():
             return Response(status=status.HTTP_403_FORBIDDEN)
 
-        message = Message.objects.create(content=request.data['content'], sender=request.user, receiver=receiver)
+        message = Message.objects.create(content=escape_html_in_data(request.data['content']), sender=request.user, receiver=receiver)
         channel_layer = get_channel_layer()
 
         async_to_sync(channel_layer.group_send)(
