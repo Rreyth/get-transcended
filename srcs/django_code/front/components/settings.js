@@ -17,7 +17,7 @@ export class Settings extends Component {
 		console.log(responseA2f);
 		a2fStatus = responseA2f.actived
 
-		this.innerHTML = await content(userValue, a2fStatus);
+		this.innerHTML = await content(userValue, a2fStatus, responseA2f.qrcode);
 
 		const saveBtn = this.querySelector("#save-btn");
 		const avatarBtn = this.querySelector("#avatar-btn");
@@ -59,6 +59,8 @@ export class Settings extends Component {
 			currentPass.value = "";
 
 			setSaveState(false, null);
+			document.querySelector("#settings-code-modal").style.display = "block";
+			document.querySelector("#a2f-code-modal").style.display = "none";
 		})
 		
 
@@ -144,6 +146,8 @@ export class Settings extends Component {
 		const allInput = this.querySelectorAll("input");
 		const closeBtn = this.querySelector("#closeModal");
 		const errorBox = this.querySelector("#error-container");
+		const saveQrcodeBtn = this.querySelector("#save-qrcode-btn");
+		const a2fCode = this.querySelector("#a2f-code-input");
 
 		saveBtn.onclick = async () => {
 			const bodyPrepare = new FormData();
@@ -161,28 +165,43 @@ export class Settings extends Component {
 			{
 				document.querySelector("#settings-code-modal").style.display = "none";
 				document.querySelector("#a2f-code-modal").style.display = "block";
-				// ask code / qr code
+				saveQrcodeBtn.onclick = async() => {
+					const form = new FormData();
+					form.append("a2f_code", a2fCode.value);
+					const response = await APIRequest.build("/user/a2f", "POST").setBody(form).send();
+					const success = (await response.json()).succes;
+					if (response.ok && success == true)
+						save(bodyPrepare, closeBtn, errorBox);
+					else
+						console.log("bad");
+				}
 			}
-			// const response = await APIRequest.build("/user/", "PUT").setBody(bodyPrepare).send();
-			// const data = await response.json();
-			// if (response.ok)
-			// {
-			// 	cookieStore.set({ name: "token", value: data.access});
-			// 	closeBtn.click();
-			// 	Router.run();
-			// 	// add success msg
-			// }
-			// else
-			// {
-			// 	errorBox.innerHTML = /*html*/`
-			// 	<div class="alert position-relative top-0 w-100 alert-warning alert-dismissible d-flex" role="alert">
-			// 		<i class='bx bx-error-alt bx-sm' style="margin-right: 0.4em;"></i>
-			// 		<span id="api-error-txt">${await translate("settings." + data.error)}</span>
-			// 		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-			// 	</div>`
-			// }
+			else
+				save(bodyPrepare, closeBtn, errorBox)
+
 		}
     }
+}
+
+const save = async (bodyPrepare, closeBtn, errorBox) => {
+	const response = await APIRequest.build("/user/", "PUT").setBody(bodyPrepare).send();
+	const data = await response.json();
+	if (response.ok)
+	{
+		cookieStore.set({ name: "token", value: data.access});
+		closeBtn.click();
+		Router.run();
+		// add success msg
+	}
+	else
+	{
+		errorBox.innerHTML = /*html*/`
+		<div class="alert position-relative top-0 w-100 alert-warning alert-dismissible d-flex" role="alert">
+			<i class='bx bx-error-alt bx-sm' style="margin-right: 0.4em;"></i>
+			<span id="api-error-txt">${await translate("settings." + data.error)}</span>
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>`
+	}
 }
 
 const setSaveState = (setToEnable, isLog42) => {
@@ -201,19 +220,22 @@ const setSaveState = (setToEnable, isLog42) => {
 	}
 }
 
-const content = async (user, a2f) => /*html*/`
+const content = async (user, a2f, qrcode) => /*html*/`
 	<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered">
 
 
 
 			<div class="modal-content" id="a2f-code-modal" style="display: none;">
-				<div class="modal-body">
-					<p>Modal body text goes here.</p>
+				<div class="modal-body d-flex flex-column justify-content-center align-items-center">
+					<div class="d-flex flex-column justify-content-center align-items-center">
+						${qrcode}
+						<input name="codea2f" class="form-control mx-2" filter id="a2f-code-input" type="text" placeholder="Your code"> <!-- need trad -->
+					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Save changes</button>
+					<button type="button" class="btn btn-primary" id="save-qrcode-btn">Save changes</button>
 				</div>
 			</div>
 

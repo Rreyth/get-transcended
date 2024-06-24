@@ -13,6 +13,10 @@ import requests
 import os
 from django.db import IntegrityError
 import pyotp
+import qrcode
+import qrcode.image.svg
+from qrcode.image.styles.moduledrawers.svg import SvgSquareDrawer
+from qrcode.image.styles.colormasks import SolidFillColorMask
 
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
@@ -122,6 +126,8 @@ class Log42(APIView):
 
                         group.members.add(user)
                     else:
+                        if (user.a2f == True):
+                            return Response({'a2f' : "a2f is needed", "username" : user.username}, status=status.HTTP_200_OK)
                         refresh["username"] = user.username
                     refresh['avatar'] = user.avatar.url if user.avatar and hasattr(user.avatar, 'url') else None
                     refresh['email'] = user.email
@@ -147,19 +153,39 @@ class A2fView(APIView):
 
     def get(self, request):
         url_generate = pyotp.totp.TOTP(request.user.a2f_secret).provisioning_uri(name=request.user.email, issuer_name='Transcendence')
-        return Response({ "actived": request.user.a2f, "url":  url_generate}, status=status.HTTP_200_OK)
+        qr = qrcode.QRCode(image_factory=qrcode.image.svg.SvgPathImage)
+        qr.add_data(url_generate)
+        qr.make(fit=True)
+
+        img = qr.make_image()
+        svg = img.to_string(encoding='unicode')
+
+        svg = svg.replace('fill="#000000"', f'fill="white"')
+        return Response({ "actived": request.user.a2f, "qrcode": svg }, status=status.HTTP_200_OK)
 
     def post(self, request):
         userCode = str(request.data["a2f_code"])
-        hotp = pyotp.HOTP(request.user.a2f_secret)
-        if hotp.verify(userCode):
-            if request.user.a2f == False:
-                request.user.a2f = True
-            else:
-                request.user.a2f = False
-            request.user.save()
+        totp = pyotp.TOTP(request.user.a2f_secret)
+        if totp.verify(userCode):
             return Response({"succes": True}, status=status.HTTP_200_OK)
         return Response({"succes": False}, status=status.HTTP_400_BAD_REQUEST)
+
+class A2fConnexionView(APIView):
+    parser_classes = [JSONParser, MultiPartParser, FormParser]
+
+    def post(self, request):
+        userCode = str(request.data["a2f_code"])
+        totp = pyotp.TOTP(request.user.a2f_secret)
+        if totp.verify(userCode):
+            user = User.objects.get(username=request.data["username"])
+            refresh = RefreshToken.for_user(user)
+            refresh["username"] = user.username
+            refresh['avatar'] = user.avatar.url if user.avatar and hasattr(user.avatar, 'url') else None
+            refresh['email'] = user.email
+            if (user.login42):
+                refresh['login42'] = user.login42
+            return Response({'access' : str(refresh.access_token)}, status=status.HTTP_200_OK)
+        return Response({"a2f": "a2f_code_false"}, status=status.HTTP_400_BAD_REQUEST)
 
 class ReseachUserView(APIView):
     permission_classes = (IsAuthenticated,)
