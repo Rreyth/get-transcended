@@ -1,0 +1,94 @@
+{
+	"close": "I am Groot",
+	"save": "I am Groot",
+	"create": "I am Groot",
+	"all": "I am Groot",
+	"upload": "I am Groot",
+    "home": {
+		"welcome": "I am Groot"
+    },
+	"nav": {
+		"user": "I am Groot",
+		"msg": "I am Groot",
+		"research_user": "I am Groot",
+		"profile": "I am Groot",
+		"messages": "I am Groot"
+	},
+	"stats": {
+		"your_winrate": "I am Groot",
+		"game_win": "I am Groot",
+		"game_play": "I am Groot"
+	},
+	"settings": {
+		"errors": {
+			"current_password_required": "I am Groot",
+			"current_password_bad": "I am Groot",
+			"exist_user": "I am Groot",
+			"exist_email": "I am Groot",
+			"inte_data": "I am Groot",
+			"unexpected": "I am Groot",
+			"username_toolong": "I am Groot",
+			"password_error": "I am Groot"
+		},
+		"title": "I am Groot",
+		"profile_picture": "I am Groot",
+		"2fa": "I am Groot",
+		"new_password": "I am Groot",
+		"current_password": "I am Groot"
+	},
+	"chat": {
+		"add_user": "I am Groot",
+		"group_name": "I am Groot",
+		"groups": "I am Groot",
+		"friends": "I am Groot",
+		"create_group": "I am Groot"
+	},
+	"profile": {
+		"accept_request": "I am Groot",
+		"total_wins": "I am Groot",
+		"total_games": "I am Groot",
+		"winrate": "I am Groot",
+		"add_friend": "I am Groot",
+		"no_games": "I am Groot"
+	},
+	"forms": {
+		"username": "I am Groot",
+		"email": "I am Groot",
+		"password": "I am Groot",
+		"log_in": "I am Groot",
+		"sign_up": "I am Groot",
+		"42sign_in": "I am Groot",
+		"errors": {
+			"username_too_long": "I am Groot",
+			"alphanumeric_username": "I am Groot",
+			"wrong_format": "I am Groot",
+			"contain_a_maj": "I am Groot",
+			"contain_a_min": "I am Groot",
+			"contain_a_number": "I am Groot",
+			"contain_more": "I am Groot",
+			"username_already_use": "I am Groot",
+			"email_already_use": "I am Groot",
+			"bad_image": "I am Groot",
+			"internal_error": "I am Groot"
+		}
+	},
+	"about": {
+		"about_us": "I am Groot",
+		"about": "I am Groot",
+		"42_stud": "I am Groot"
+	},
+	"time": {
+		"january": "I am Groot",
+		"february": "I am Groot",
+		"march": "I am Groot",
+		"april": "I am Groot",
+		"may": "I am Groot",
+		"june": "I am Groot",
+		"july": "I am Groot",
+		"august": "I am Groot",
+		"september": "I am Groot",
+		"october": "I am Groot",
+		"november": "I am Groot",
+		"december": "I am Groot"
+	}
+}

@@ -1,5 +1,5 @@
 import { Router } from "../../js/router.js";
-import { APIRequest, formatDate, getAvatarUrl } from "../../js/helpers.js";
+import { APIRequest, formatDate, getAvatarUrl, translate } from "../../js/helpers.js";
 
 export class Profile extends HTMLElement {
 	async connectedCallback() {
@@ -27,7 +27,7 @@ export class Profile extends HTMLElement {
 			target_id: data.id,
 		}
 
-		this.innerHTML = content(context);
+		this.innerHTML = await content(context);
 		
 		const r = await APIRequest.build(`/user/${user}/games/`, 'GET').send()
 
@@ -80,7 +80,7 @@ export class Profile extends HTMLElement {
 		{
 			section.innerHTML = `<li class="row d-flex align-items-center">
 				<div class="col text-center fs-1">
-					Aucune partie jouée encore
+					${ await translate("profile.no_games") }
 				</div>
 			</li>`
 		}
@@ -139,7 +139,7 @@ export class Profile extends HTMLElement {
 	}
 }
 
-const content = (context) => /* html */`
+const content = async (context) => /* html */`
 	<div class="mx-auto pt-4 d-flex flex-column gap-4" style="max-width: 70%;">
 		<c-profileheader
 			avatar="${context.avatar}"
@@ -150,19 +150,19 @@ const content = (context) => /* html */`
 		>
 		</c-profileheader>
 		<div class="card-group text-center">
-			<c-profilecard title="Total wins" value="${context.wins}"></c-profilecard>
-			<c-profilecard title="Total games" value="${context.games}"></c-profilecard>
-			<c-profilecard title="Winrate" value="${context.winrate}%"></c-profilecard>
+			<c-profilecard title="${ await translate("profile.total_wins") }" value="${context.wins}"></c-profilecard>
+			<c-profilecard title="${ await translate("profile.total_games") }" value="${context.games}"></c-profilecard>
+			<c-profilecard title="${ await translate("profile.winrate") }" value="${context.winrate}%"></c-profilecard>
 		</div>
 		<div>
 			<select class="form-select" id="games-filter">
-				<option value="all" selected>ALL</option>
+				<option value="all" selected>${ await translate("all") }</option>
 				<option value="1v1">1V1</option>
 				<option value="2v2">2V2</option>
 				<option value="1v3">1V3</option>
 			</select>
 		</div>
-			<div class="list-group" id="games">
+		<div class="list-group" id="games">
 		</div>
 	</div>
 `;

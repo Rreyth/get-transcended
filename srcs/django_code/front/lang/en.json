@@ -1,20 +1,91 @@
 {
-	"word": "word",
-    "home": {
-		"welcome": "welcome"
-    },
+	"close": "Close",
+	"save": "Save",
+	"create": "Create",
+	"all": "All",
+	"upload": "Upload",
 	"nav": {
 		"user": "User",
 		"msg": "Messages",
-		"rshUser": "Search a user"
+		"research_user": "Search for a user",
+		"profile": "My profile",
+		"messages": "My messages"
+	},
+	"stats": {
+		"your_winrate": "Your win rate",
+		"game_win": "Games won",
+		"game_play": "Games played"
 	},
 	"settings": {
-		"err_current_password_required": "Current password is required",
-		"err_current_password_bad": "Bad current password",
-		"err_exist_user": "This username alredy exist",
-		"err_exist_email": "This email alredy exist",
-		"err_inte_data": "Data integrity error",
-		"err_unexpected": "An unexpected error are occurred",
-		"err_username_toolong": "This username is too long"
+		"errors": {
+			"current_password_required": "The current password is required",
+			"current_password_bad": "Incorrect current password",
+			"exist_user": "This username already exists",
+			"exist_email": "This email already exists",
+			"inte_data": "Data integrity error",
+			"unexpected": "An unexpected error occurred",
+			"username_toolong": "This username is too long",
+			"password_error": "Must contain uppercase, lowercase, number, and at least 8 characters"
+		},
+		"title": "Settings",
+		"profile_picture": "Profile picture",
+		"2fa": "Enable 2FA",
+		"new_password": "New password",
+		"current_password": "Current password"
+	},
+	"chat": {
+		"add_user": "Add a user",
+		"group_name": "Group name",
+		"groups": "My groups",
+		"friends": "My friends",
+		"create_group": "Create a group"
+	},
+	"profile": {
+		"accept_request": "Accept friend request",
+		"total_wins": "Total games won",
+		"total_games": "Total games played",
+		"winrate": "Win rate",
+		"add_friend": "Add as friend",
+		"no_games": "No games played"
+	},
+	"forms": {
+		"username": "Username",
+		"email": "Email",
+		"password": "Password",
+		"log_in": "Log in",
+		"sign_up": "Sign up",
+		"42sign_in": "Log in with 42",
+		"errors": {
+			"username_too_long": "Username cannot exceed 10 characters",
+			"alphanumeric_username": "Username must contain only alphanumeric characters",
+			"wrong_format": "Wrong format",
+			"contain_a_maj": "Must contain at least one upper",
+			"contain_a_min": "Must contain at least one lowercase",
+			"contain_a_number": "Must contain at least one number",
+			"contain_more": "Must be at least 8",
+			"username_already_use": "Username already in use",
+			"email_already_use": "Email already in use",
+			"bad_image": "Bad image",
+			"internal_error": "Internal error, try again later"
+		}
+	},
+	"about": {
+		"about_us": "About us",
+		"about": "About",
+		"42_stud": "42 student in Angoulême"
+	},
+	"time": {
+		"january": "January",
+		"february": "February",
+		"march": "March",
+		"april": "April",
+		"may": "May",
+		"june": "June",
+		"july": "July",
+		"august": "August",
+		"september": "September",
+		"october": "October",
+		"november": "November",
+		"december": "December"
 	}
 }

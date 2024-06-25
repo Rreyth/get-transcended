@@ -1,5 +1,5 @@
 import { Component } from "../../js/component.js";
-import { APIRequest } from "../../js/helpers.js";
+import { APIRequest, translate } from "../../js/helpers.js";
 
 export class SSign extends Component {
     static getName() {
@@ -68,7 +68,7 @@ const content = /*html*/`
 				<div class="d-flex justify-center align-items-center rounded-circle bg-secondary p-2">
 					<i class='bx bx-log-in bx-lg'></i>
 				</div>
-				<span>Sign in</span>
+				<span>${ await translate("forms.log_in") }</span>
 			</div>
 		</div>
 
@@ -77,7 +77,7 @@ const content = /*html*/`
 				<div class="d-flex justify-center align-items-center rounded-circle bg-secondary p-2">
 					<i class='bx bx-user-plus bx-lg'></i>
 				</div>
-				<span>Sign up</span>
+				<span>${ await translate("forms.sign_up") }</span>
 			</div>
 		</div>
 
@@ -88,7 +88,7 @@ const content = /*html*/`
 				<div class="d-flex justify-center align-items-center rounded-circle bg-secondary p-2">
 					<img src="/media/42_logo.svg" style="height: 1.8em; width: 1.8em;">
 				</div>
-				<span>42 Sign in</span>
+				<span>${ await translate("forms.42sign_in") }</span>
 			</div>
 		</a>
 	</div>

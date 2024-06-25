@@ -37,5 +37,7 @@ export class Router {
 }
 
 window.addEventListener("load", () => {
-  Router.push(window.location.pathname + window.location.search)
+  setTimeout(() => {
+    Router.push(window.location.pathname + window.location.search)
+  }, 200)
 });
