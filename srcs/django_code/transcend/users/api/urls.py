@@ -14,9 +14,9 @@ from .User import *
 from .CustomToken import *
 
 urlpatterns = [
-	path('api/42/', Log42.as_view()),
+    path('api/42/', Log42.as_view()),
     path('api/user/a2f', A2fView.as_view()),
-	path('api/user/a2fConnexion', A2fConnexionView.as_view()),
+    path('api/user/a2fConnexion', A2fConnexionView.as_view()),
     path('api/user/', UserView.as_view()),
     path('api/user/leaderboard', LeaderboardView.as_view()),
     path('api/user/blocks', BlockUserView.as_view()),
@@ -26,5 +26,5 @@ urlpatterns = [
     path('api/user/friends/requests/', FriendRequestsView.as_view()),
     path('api/user/friends/requests/<int:request_id>', FriendRequestView.as_view()),
     path('api/register/', RegisterUserView.as_view()),
-	path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
 ]

@@ -30,7 +30,7 @@ export class Settings extends Component {
 		const newpassword = this.querySelector("#newpass-input");
 		const badNewPswd = this.querySelector("#error-pswd");
 		const currentPass = this.querySelector("#cpass-input");
-		const Qrcode = this.querySelector("#qrcode");
+		const qrcode = this.querySelector("#qrcode");
 		const a2fCode = this.querySelector("#a2f-code-input");
 
 		test.addEventListener ("show.bs.modal", async () => {
@@ -63,7 +63,7 @@ export class Settings extends Component {
 
 			setSaveState(false, null);
 
-			Qrcode.innerHTML = responseA2f.qrcode;
+			qrcode.innerHTML = responseA2f.qrcode;
 			a2fCode.value = "";
 
 			document.querySelector("#settings-code-modal").style.display = "block";
@@ -230,8 +230,6 @@ const setSaveState = (setToEnable, isLog42) => {
 const content = async (user, a2f, qrcode) => /*html*/`
 	<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered">
-
-
 
 			<div class="modal-content" id="a2f-code-modal" style="display: none;">
 				<div class="alert alert-danger alert-dismissible" id="error-a2f-code" style="display: none;" role="alert">

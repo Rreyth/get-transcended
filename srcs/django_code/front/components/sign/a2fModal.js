@@ -16,7 +16,6 @@ export class A2fModal extends Component {
 
 		const btSave = this.querySelector("#a2f-save");
 		const codeInput = this.querySelector("#a2f-code-input");
-
 	
 		btSave.onclick = async() => {
 			let response = null;
