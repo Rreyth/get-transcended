@@ -8,6 +8,7 @@ export class A2fModal extends Component {
 
     async connectedCallback() {
 		const username = this.getAttribute("username");
+		const password = this.getAttribute("password");
 		this.innerHTML = content(username);
 
 		const btModal = this.querySelector("#a2f-bt-modal");
@@ -16,16 +17,36 @@ export class A2fModal extends Component {
 		const btSave = this.querySelector("#a2f-save");
 		const codeInput = this.querySelector("#a2f-code-input");
 
+	
 		btSave.onclick = async() => {
-			const bodyPrepare = new FormData();
-			bodyPrepare.append("username", username);
-			bodyPrepare.append("a2f_code", codeInput.value);
-			const response = await APIRequest.build("/user/a2fConnexion", "POST").setBody(bodyPrepare).send();
-			const res = await response.json();
-			if (response.ok && res.access)
+			let response = null;
+			let res = null;
+			if (this.getAttribute("type") == "log42")
+			{
+				const bodyPrepare = new FormData();
+				bodyPrepare.append("username", username);
+				bodyPrepare.append("a2f_code", codeInput.value);
+				response = await APIRequest.build("/user/a2fConnexion", "POST").setBody(bodyPrepare).send();
+				res = await response.json();
+			}
+			else if (this.getAttribute("type") == "log")
+			{
+				const bodyPrepare = new FormData();
+				bodyPrepare.append("username", username);
+				bodyPrepare.append("password", password);
+				bodyPrepare.append("otp_token", codeInput.value);
+				response = await APIRequest.build("/token/", "POST").setBody(bodyPrepare).send();
+				res = await response.json();
+			}
+			if (response && response.ok && res.access)
 			{
 				cookieStore.set({name: 'token', value: res.access});
-				location.href = location.href.split('?')[0];
+				location.href = location.href.split('?')[0]; //need change
+			}
+			else
+			{
+				console.log(res);
+				//bad code
 			}
 		}
     }

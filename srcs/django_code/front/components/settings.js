@@ -15,7 +15,6 @@ export class Settings extends Component {
 
 		let a2fStatus = await APIRequest.build("/user/a2f", "GET").send();
 		const responseA2f = await a2fStatus.json();
-		console.log(responseA2f);
 		a2fStatus = responseA2f.actived
 
 		this.innerHTML = await content(userValue, a2fStatus, responseA2f.qrcode);
@@ -149,6 +148,7 @@ export class Settings extends Component {
 		const errorBox = this.querySelector("#error-container");
 		const saveQrcodeBtn = this.querySelector("#save-qrcode-btn");
 		const a2fCode = this.querySelector("#a2f-code-input");
+		const errorA2fMsg = this.querySelector("#error-a2f-code");
 
 		saveBtn.onclick = async () => {
 			const bodyPrepare = new FormData();
@@ -174,7 +174,7 @@ export class Settings extends Component {
 					if (response.ok && success == true)
 						save(bodyPrepare, closeBtn, errorBox);
 					else
-						console.log("bad");
+						errorA2fMsg.style.display = "block";
 				}
 			}
 			else
@@ -187,6 +187,7 @@ export class Settings extends Component {
 const save = async (bodyPrepare, closeBtn, errorBox) => {
 	const response = await APIRequest.build("/user/", "PUT").setBody(bodyPrepare).send();
 	const data = await response.json();
+	console.log(data);
 	if (response.ok)
 	{
 		cookieStore.set({ name: "token", value: data.access});
@@ -226,6 +227,10 @@ const content = async (user, a2f, qrcode) => /*html*/`
 
 
 			<div class="modal-content" id="a2f-code-modal" style="display: none;">
+				<div class="alert alert-danger alert-dismissible" id="error-a2f-code" style="display: none;" role="alert">
+					<div>wrong auth code</div>
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>
 				<div class="modal-body d-flex flex-column justify-content-center align-items-center">
 					<div class="d-flex flex-column justify-content-center align-items-center">
 						${qrcode}

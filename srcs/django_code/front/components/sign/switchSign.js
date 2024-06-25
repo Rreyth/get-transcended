@@ -23,6 +23,7 @@ export class SSign extends Component {
 			else if (res.a2f)
 			{
 				let ele = document.createElement("c-a2fmodal");
+				ele.setAttribute("type", "log42");
 				ele.setAttribute("username", res.username);
 				this.appendChild(ele);
 			}

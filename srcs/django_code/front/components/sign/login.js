@@ -13,25 +13,36 @@ export class Login extends Component {
 		const inputPass = this.querySelector("#input-pass");
 
 		this.querySelector("#signin-btn").addEventListener("click", (e) => {
-			connect(inputUser.value, inputPass.value);
+			connect(inputUser.value, inputPass.value, this);
 		})
 		this.addEventListener('keydown', (e) => {
 			if (e.key === 'Enter')
-				connect(inputUser.value, inputPass.value);
+				connect(inputUser.value, inputPass.value, this);
 		})
 
 
     }
 }
 
-async function connect(username, password)
+async function connect(username, password, me)
 {
 	const response = await auth(username, password);
-	if (response) {
+	if (response === true) {
 		Router.push("/");
 	}
-	else
+	else if (response.error)
 		document.querySelector("#alert-id").classList.add("show");
+	else
+	{
+		if (response.otp_token == "2faNeeded")
+		{
+			let ele = document.createElement("c-a2fmodal");
+			ele.setAttribute("type", "log");
+			ele.setAttribute("username", username);
+			ele.setAttribute("password", password);
+			me.appendChild(ele);
+		}
+	}
 }
 
 const content = /*html*/`
