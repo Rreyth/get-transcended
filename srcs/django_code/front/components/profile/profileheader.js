@@ -8,13 +8,11 @@ export class ProfileHeader extends HTMLElement {
 					<h2>${this.getAttribute("username")}</h2>
 				</div>
 				<button is="c-friend-btn" class="btn btn-lg" id="btn-friend" target_username="${this.getAttribute("target_username")}"
-					target_id="${this.getAttribute("target_id")}">Add friend
+					target_id="${this.getAttribute("target_id")}" data-trd-friend="${this.getAttribute("target_username")}">Add friend
 				</button>
 			</div>
 		`;
 	}
-
-	// todo: rajouter un if sur le <button> comme ça pas besoin de l'afficher puis le supprimer
 
 	static getName() {
 		return "profileheader";
