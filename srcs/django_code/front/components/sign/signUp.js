@@ -123,7 +123,7 @@ export class SignUp extends Component {
 const passPopoverContent = /* html */ `
 	<p id="passContent1">${ await translate("forms.errors.contain_a_maj") }</p>
 	<p id="passContent2">${ await translate("forms.errors.contain_a_min") }</p>
-	<p id="passContent3">${ await translate("forms.errors.contain_a_nomber") }</p>
+	<p id="passContent3">${ await translate("forms.errors.contain_a_number") }</p>
 	<p id="passContent4">${ await translate("forms.errors.contain_more") }</p>
 
 `;
