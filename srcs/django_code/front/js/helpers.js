@@ -1,30 +1,42 @@
+import { Cache } from "./cache.js"
+
 export const translate = async (key) => {
-    const default_lang = "en"
+    const DEFAULT_LANG = "en"
     let lang = await cookieStore.get("lang")
 
     if (lang == null)
     {
-        cookieStore.set({ name: "lang", value: default_lang })
-        lang = { value: default_lang }
+        cookieStore.set({ name: "lang", value: DEFAULT_LANG })
+        lang = { value: DEFAULT_LANG }
     }
 
-    const response = await fetch(`https://${location.hostname}:${location.port}/static/lang/${lang.value}.json`)
+    let data = Cache.get(`lang-${lang}`)
 
-    if (response.ok)
+    if (data == null)
     {
-        let keys = key.split(".")
-        let value = null
+        const response = await fetch(`https://${location.hostname}:${location.port}/static/lang/${lang.value}.json`)
+        console.log(data)
 
-        for (let k of keys)
+        if (!response.ok)
         {
-            value = value == null ? (await response.json())[k] : value[k]
+            cookieStore.set({ name: "lang", value: DEFAULT_LANG })
+
+            return await translate(key);
         }
 
-        return value
+        data = await response.json()
+        Cache.set(`lang-${lang}`, data)
     }
 
-    cookieStore.set({ name: "lang", value: default_lang })
-    return await translate(key);
+    let keys = key.split(".")
+    let value = null
+
+    for (let k of keys)
+    {
+        value = value == null ? data[k] : value[k]
+    }
+
+    return value
 }
 
 export const user_token = async () => {
