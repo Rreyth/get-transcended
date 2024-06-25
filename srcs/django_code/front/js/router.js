@@ -18,7 +18,7 @@ export class Router {
       pathname = "/";
     
     Thread.clearAll();
-	Socket.run();
+    Socket.run();
 
     const url = new URL(pathname, window.location.origin);
     const response = await fetch(url, { headers: { "X-Source": "SPA" } });
