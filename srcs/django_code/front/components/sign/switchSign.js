@@ -13,15 +13,19 @@ export class SSign extends Component {
 		const code = urlParams.get('code');
 		if (code)
 		{
-			// const url = `https://${location.hostname}:${location.port}/api/42?code=${code}`;
-
-			// const response = await fetch(url);
 			const response = await APIRequest.build(`/42?code=${code}`, 'GET').send();
 			const res = (await response.json());
 			if (res.access)
 			{
 				cookieStore.set({name: 'token', value: res.access});
 				location.href = location.href.split('?')[0];
+			}
+			else if (res.a2f)
+			{
+				let ele = document.createElement("c-a2fmodal");
+				ele.setAttribute("type", "log42");
+				ele.setAttribute("username", res.username);
+				this.appendChild(ele);
 			}
 			else
 			{

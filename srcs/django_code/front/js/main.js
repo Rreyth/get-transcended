@@ -24,6 +24,7 @@ import { About } from "../components/about.js";
 import { Podium } from "../components/leaderboard/podium.js";
 import { LeadUser } from "../components/leaderboard/leaduser.js";
 import { Link } from "../components/link.js";
+import { A2fModal } from "../components/sign/a2fModal.js";
 import { Pong } from "../components/pong/pong.js";
 import { Leaderboard } from "../components/leaderboard/leaderboard.js";
 import { Profile } from "../components/profile/profile.js";
@@ -56,6 +57,7 @@ Component.loader([
 	Podium,
 	LeadUser,
 	Link,
+	A2fModal,
 	Pong,
 	Leaderboard,
 	Profile,

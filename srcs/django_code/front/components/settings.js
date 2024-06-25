@@ -14,9 +14,10 @@ export class Settings extends Component {
 			return ;
 
 		let a2fStatus = await APIRequest.build("/user/a2f", "GET").send();
-		a2fStatus = (await a2fStatus.json()).actived
+		let responseA2f = await a2fStatus.json();
+		a2fStatus = responseA2f.actived;
 
-		this.innerHTML = await content(userValue, a2fStatus);
+		this.innerHTML = await content(userValue, a2fStatus, responseA2f.qrcode);
 
 		const saveBtn = this.querySelector("#save-btn");
 		const avatarBtn = this.querySelector("#avatar-btn");
@@ -29,11 +30,14 @@ export class Settings extends Component {
 		const newpassword = this.querySelector("#newpass-input");
 		const badNewPswd = this.querySelector("#error-pswd");
 		const currentPass = this.querySelector("#cpass-input");
+		const qrcode = this.querySelector("#qrcode");
+		const a2fCode = this.querySelector("#a2f-code-input");
 
 		test.addEventListener ("show.bs.modal", async () => {
 			userValue = await user();
 			a2fStatus = await APIRequest.build("/user/a2f", "GET").send();
-			a2fStatus = (await a2fStatus.json()).actived
+			responseA2f = (await a2fStatus.json());
+			a2fStatus = responseA2f.actived;
 
 			fileInput.value = null;
 			profileImg.src = getAvatarUrl(userValue.avatar);
@@ -58,6 +62,12 @@ export class Settings extends Component {
 			currentPass.value = "";
 
 			setSaveState(false, null);
+
+			qrcode.innerHTML = responseA2f.qrcode;
+			a2fCode.value = "";
+
+			document.querySelector("#settings-code-modal").style.display = "block";
+			document.querySelector("#a2f-code-modal").style.display = "none";
 		})
 		
 
@@ -143,6 +153,8 @@ export class Settings extends Component {
 		const allInput = this.querySelectorAll("input");
 		const closeBtn = this.querySelector("#closeModal");
 		const errorBox = this.querySelector("#error-container");
+		const saveQrcodeBtn = this.querySelector("#save-qrcode-btn");
+		const errorA2fMsg = this.querySelector("#error-a2f-code");
 
 		saveBtn.onclick = async () => {
 			const bodyPrepare = new FormData();
@@ -156,26 +168,47 @@ export class Settings extends Component {
 					}
 				}
 			});
-			const response = await APIRequest.build("/user/", "PUT").setBody(bodyPrepare).send();
-			const data = await response.json();
-			if (response.ok)
+			if (a2fSwitch.checked != a2fStatus)
 			{
-				cookieStore.set({ name: "token", value: data.access});
-				closeBtn.click();
-				Router.run();
-				// add success msg
+				document.querySelector("#settings-code-modal").style.display = "none";
+				document.querySelector("#a2f-code-modal").style.display = "block";
+				saveQrcodeBtn.onclick = async() => {
+					const form = new FormData();
+					form.append("a2f_code", a2fCode.value);
+					const response = await APIRequest.build("/user/a2f", "POST").setBody(form).send();
+					const success = (await response.json()).succes;
+					if (response.ok && success == true)
+						save(bodyPrepare, closeBtn, errorBox);
+					else
+						errorA2fMsg.style.display = "block";
+				}
 			}
 			else
-			{
-				errorBox.innerHTML = /*html*/`
-				<div class="alert position-relative top-0 w-100 alert-warning alert-dismissible d-flex" role="alert">
-					<i class='bx bx-error-alt bx-sm' style="margin-right: 0.4em;"></i>
-					<span id="api-error-txt">${await translate("settings." + data.error)}</span>
-					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-				</div>`
-			}
+				save(bodyPrepare, closeBtn, errorBox)
+
 		}
     }
+}
+
+const save = async (bodyPrepare, closeBtn, errorBox) => {
+	const response = await APIRequest.build("/user/", "PUT").setBody(bodyPrepare).send();
+	const data = await response.json();
+	if (response.ok)
+	{
+		cookieStore.set({ name: "token", value: data.access});
+		closeBtn.click();
+	}
+	else
+	{
+		document.querySelector("#a2f-code-modal").style.display = "none";
+		document.querySelector("#settings-code-modal").style.display = "block";
+		errorBox.innerHTML = /*html*/`
+		<div class="alert position-relative top-0 w-100 alert-warning alert-dismissible d-flex" role="alert">
+			<i class='bx bx-error-alt bx-sm' style="margin-right: 0.4em;"></i>
+			<span id="api-error-txt">${await translate("settings." + data.error)}</span>
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>`
+	}
 }
 
 const setSaveState = (setToEnable, isLog42) => {
@@ -194,10 +227,28 @@ const setSaveState = (setToEnable, isLog42) => {
 	}
 }
 
-const content = async (user, a2f) => /*html*/`
+const content = async (user, a2f, qrcode) => /*html*/`
 	<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered">
-			<div class="modal-content">
+
+			<div class="modal-content" id="a2f-code-modal" style="display: none;">
+				<div class="alert alert-danger alert-dismissible" id="error-a2f-code" style="display: none;" role="alert">
+					<div>wrong auth code</div>
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>
+				<div class="modal-body d-flex flex-column justify-content-center align-items-center">
+					<div class="d-flex flex-column justify-content-center align-items-center">
+						<div id="qrcode">${qrcode}</div>
+						<input name="codea2f" class="form-control mx-2" filter id="a2f-code-input" type="text" placeholder="Your code"> <!-- need trad -->
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary" id="save-qrcode-btn">Save changes</button>
+				</div>
+			</div>
+
+			<div class="modal-content" id="settings-code-modal">
 				<div id="error-container"></div>
 				<div class="modal-header">
 					<h1 class="modal-title fs-5" id="settingsModalLabel">${ await translate("settings.title") }</h1>

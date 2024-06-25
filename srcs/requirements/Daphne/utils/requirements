@@ -9,6 +9,8 @@ djangorestframework-simplejwt
 tzdata
 PyJWT
 Pillow
+pyotp
+qrcode
 factory_boy
 pytz
 argparse

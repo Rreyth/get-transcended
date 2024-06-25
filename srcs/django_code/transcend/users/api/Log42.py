@@ -57,6 +57,8 @@ class Log42(APIView):
 
                         group.members.add(user)
                     else:
+                        if (user.a2f == True):
+                            return Response({'a2f' : "a2f is needed", "username" : user.username}, status=status.HTTP_200_OK)
                         refresh["username"] = user.username
                     refresh['avatar'] = user.avatar.url if user.avatar and hasattr(user.avatar, 'url') else None
                     refresh['email'] = user.email
