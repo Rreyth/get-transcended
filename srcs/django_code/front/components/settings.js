@@ -187,7 +187,6 @@ export class Settings extends Component {
 const save = async (bodyPrepare, closeBtn, errorBox) => {
 	const response = await APIRequest.build("/user/", "PUT").setBody(bodyPrepare).send();
 	const data = await response.json();
-	console.log(data);
 	if (response.ok)
 	{
 		cookieStore.set({ name: "token", value: data.access});
@@ -195,6 +194,8 @@ const save = async (bodyPrepare, closeBtn, errorBox) => {
 	}
 	else
 	{
+		document.querySelector("#a2f-code-modal").style.display = "none";
+		document.querySelector("#settings-code-modal").style.display = "block";
 		errorBox.innerHTML = /*html*/`
 		<div class="alert position-relative top-0 w-100 alert-warning alert-dismissible d-flex" role="alert">
 			<i class='bx bx-error-alt bx-sm' style="margin-right: 0.4em;"></i>
