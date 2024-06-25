@@ -14,7 +14,6 @@ export class NavProfile extends Component {
 		{
 			let ele = document.createElement("c-settings");
 			document.body.appendChild(ele);
-			console.log("coucou");
 		}
 		const userValue = await user();
 		if (userValue != null) {

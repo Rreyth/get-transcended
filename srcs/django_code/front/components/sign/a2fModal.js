@@ -41,12 +41,11 @@ export class A2fModal extends Component {
 			if (response && response.ok && res.access)
 			{
 				cookieStore.set({name: 'token', value: res.access});
-				location.href = location.href.split('?')[0]; //need change
+				location.href = location.href.split('?')[0];
 			}
 			else
 			{
-				console.log(res);
-				//bad code
+				document.querySelector("#error-a2f-code").style.display = "block";
 			}
 		}
     }
@@ -57,6 +56,10 @@ const content = (username) => /*html*/`
 	<div class="modal fade" id="a2f-modal" tabindex="-1" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
+				<div class="alert alert-danger alert-dismissible" id="error-a2f-code" style="display: none;" role="alert">
+					<div>wrong auth code</div>
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>
 				<div class="modal-header">
 					<h1 class="modal-title fs-5">${username}</h1>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
