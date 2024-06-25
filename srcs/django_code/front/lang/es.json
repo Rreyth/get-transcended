@@ -1,0 +1,94 @@
+{
+	"close": "Cerrar",
+	"save": "Guardar",
+	"create": "Crear",
+	"all": "Todo",
+	"upload": "Subir",
+    "home": {
+		"welcome": "Bienvenido"
+    },
+	"nav": {
+		"user": "Usuario",
+		"msg": "Mensajes",
+		"research_user": "Buscar un usuario",
+		"profile": "Mi perfil",
+		"messages": "Mi mensajería"
+	},
+	"stats": {
+		"your_winrate": "Tu tasa de victorias",
+		"game_win": "Partidas ganadas",
+		"game_play": "Partidas jugadas"
+	},
+	"settings": {
+		"errors": {
+			"current_password_required": "Se requiere la contraseña actual",
+			"current_password_bad": "Contraseña incorrecta (actual)",
+			"exist_user": "Este nombre de usuario ya existe",
+			"exist_email": "Este correo electrónico ya existe",
+			"inte_data": "Error de integridad de datos",
+			"unexpected": "Ocurrió un error inesperado",
+			"username_toolong": "Este nombre de usuario es demasiado largo",
+			"passord_error": "Debe contener mayúscula, minúscula, número y >=8 caracteres"
+		},
+		"title": "Configuraciones",
+		"profile_picture": "Foto de perfil",
+		"a2f": "Activar 2FA",
+		"new_password": "Nueva contraseña",
+		"current_password": "Contraseña actual"
+	},
+	"chat": {
+		"add_user": "Agregar un usuario",
+		"group_name": "Nombre del grupo",
+		"groups": "Mis grupos",
+		"friends": "Mis amigos",
+		"create_group": "Crear un grupo"
+	},
+	"profile": {
+		"accept_request": "Aceptar solicitud de amistad",
+		"total_wins": "Total de partidas ganadas",
+		"total_games": "Total de partidas jugadas",
+		"winrate": "Tasa de victorias",
+		"add_friend": "Agregar como amigo",
+        "no_games": "Ninguna partida jugada"
+	},
+	"forms": {
+		"username": "Nombre de usuario",
+		"email": "Correo electrónico",
+		"password": "Contraseña",
+		"log_in": "Iniciar sesión",
+		"sign_up": "Registrarse",
+		"42sign_in": "Iniciar sesión con 42",
+		"errors": {
+			"username_too_long": "El nombre de usuario no puede exceder 10 caracteres",
+			"alphanumeric_username": "El nombre de usuario debe contener solo caracteres alfanuméricos",
+			"wrong_format": "Formato incorrecto",
+			"contain_a_maj": "Debe contener una letra mayúscula",
+			"contain_a_min": "Debe contener una letra minúscula",
+			"contain_a_number": "Debe contener un número",
+			"contain_more": "Debe ser >=8",
+			"username_already_use": "Nombre de usuario ya en uso",
+			"email_already_use": "Correo electrónico ya en uso",
+			"bad_image": "Imagen incorrecta",
+			"internal_error": "Error interno, inténtalo más tarde"
+		}
+	},
+	"about": {
+		"about_us": "Sobre nosotros",
+		"about": "Acerca de",
+		"42_stud": "Estudiante de 42 en Angoulême"
+	},
+	"time": {
+		"january": "Enero",
+		"february": "Febrero",
+		"march": "Marzo",
+		"april": "Abril",
+		"may": "Mayo",
+		"june": "Junio",
+		"july": "Julio",
+		"august": "Agosto",
+		"september": "Septiembre",
+		"october": "Octubre",
+		"november": "Noviembre",
+		"december": "Diciembre"
+	}
+}
