@@ -38,6 +38,8 @@ Socket.set('/user/friends', (event) => {
     const data = JSON.parse(event.data)
 
     document.querySelectorAll(`[data-trd-friend=${data.user.username}]`).forEach(element => element.connectedCallback())
-    document.querySelector('c-search').loadContent()
+    const comp = document.querySelector('c-search')
+    if (comp)
+        comp.loadContent()
     Chat.addFriend(data.user)
 })

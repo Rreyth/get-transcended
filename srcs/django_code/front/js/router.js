@@ -1,5 +1,6 @@
 import { Thread } from "./thread.js";
 import { user, token_checker } from "./helpers.js";
+import { Socket } from "./socket.js";
 
 export class Router {
   static async push(pathname) {
@@ -17,6 +18,8 @@ export class Router {
       pathname = "/";
     
     Thread.clearAll();
+    Socket.run();
+
     const url = new URL(pathname, window.location.origin);
     const response = await fetch(url, { headers: { "X-Source": "SPA" } });
     const text = await response.text();
