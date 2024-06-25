@@ -1,4 +1,4 @@
-import { user_token, user, APIRequest } from "../../js/helpers.js"
+import { user, APIRequest, translate } from "../../js/helpers.js"
 
 export class FriendBtn extends HTMLButtonElement
 {
@@ -18,8 +18,7 @@ export class FriendBtn extends HTMLButtonElement
 
     async connectedCallback()
     {
-        const username = await user().username
-        // todo: username == undefined = token invalide ?
+        const username = (await user()).username
         if (username == undefined || username == this.getAttribute('target_username'))
         {
             this.remove();
@@ -41,7 +40,7 @@ export class FriendBtn extends HTMLButtonElement
         else if (request_reveived != undefined)
         {
             this.classList.add('btn-success')
-            this.innerHTML = "Accept friend request"
+            this.innerHTML = await translate("profile.accept_request")
 
             this.onclick = async (e) => {
                 APIRequest.build(`/user/friends/requests/${request_reveived.id}`, 'POST').send()
@@ -51,12 +50,12 @@ export class FriendBtn extends HTMLButtonElement
         }
         else if (!friends.ok)
         {
-            let target_id = this.getAttribute('target_id')
+            let target_username = this.getAttribute('target_username')
             this.classList.add('btn-primary')
 
             this.onclick = async (e) => {
                 APIRequest.build(`/user/friends/requests/`, 'POST').setBody({
-                    to_user: target_id,
+                    to_user: target_username,
                 }).sendJSON()
 
                 e.target.disabled = true

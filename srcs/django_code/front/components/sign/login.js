@@ -1,6 +1,6 @@
 import { Router } from "../../js/router.js";
 import { Component } from "../../js/component.js";
-import { auth } from "../../js/helpers.js";
+import { auth, translate } from "../../js/helpers.js";
 
 export class Login extends Component {
     static getName() {
@@ -55,10 +55,10 @@ const content = /*html*/`
 				<div class="alert alert-danger collapse" id="alert-id" role="alert">
 					Password or user is wrong
 				</div>
-				<input class="form-control" id="input-user" type="text" placeholder="Username">
-				<input class="form-control" id="input-pass" type="password" placeholder="Password">
+				<input class="form-control" id="input-user" type="text" placeholder="${ await translate("forms.username") }">
+				<input class="form-control" id="input-pass" type="password" placeholder="${ await translate("forms.password") }">
 			</div>
-			<button type="button" class="btn btn-primary" id="signin-btn">Log In</button>
+			<button type="button" class="btn btn-primary" id="signin-btn">${ await translate("forms.log_in") }</button>
 		</div>
 	</div>
 `;

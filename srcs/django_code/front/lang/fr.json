@@ -1,20 +1,93 @@
 {
-    "word": "mot",
-    "home": {
-		"welcome": "bienvenue"
-    },
+	"close": "Fermer",
+	"save": "Enregistrer",
+	"create": "Créer",
+	"all": "Tout",
+	"upload": "Téléverser",
+	"search": "Rechercher",
 	"nav": {
 		"user": "Utilisateur",
 		"msg": "Messages",
-		"rshUser": "Rechercher un utilisateur"
+		"research_user": "Rechercher un utilisateur",
+		"profile": "Mon profil",
+		"messages": "Ma messagerie"
+	},
+	"stats": {
+		"your_winrate": "Ton taux de victoire",
+		"game_win": "Parties gagnées",
+		"game_play": "Parties jouées"
 	},
 	"settings": {
-		"err_current_password_required": "Le mot de passe actuel est requis",
-		"err_current_password_bad": "Mauvais mot de passe (acutel)",
-		"err_exist_user": "Ce nom d'utilisateur existe déjà",
-		"err_exist_email": "Cette email existe déjà",
-		"err_inte_data": "Erreur d'intégrité des données",
-		"err_unexpected": "Une erreur inattendue est survenue",
-		"err_username_toolong": "Ce nom d'utilisateur est trop long"
+		"errors": {
+			"current_password_required": "Le mot de passe actuel est requis",
+			"current_password_bad": "Mauvais mot de passe actuel",
+			"exist_user": "Ce nom d'utilisateur existe déjà",
+			"exist_email": "Cet email existe déjà",
+			"inte_data": "Erreur d'intégrité des données",
+			"unexpected": "Une erreur inattendue est survenue",
+			"username_toolong": "Ce nom d'utilisateur est trop long",
+			"password_error": "Doit contenir majuscule, minuscule, nombre et au moins 8 caractères"
+		},
+		"title": "Paramètres",
+		"profile_picture": "Photo de profil",
+		"2fa": "Activer l'A2F",
+		"new_password": "Nouveau mot de passe",
+		"current_password": "Mot de passe actuel"
+	},
+	"chat": {
+		"add_user": "Ajouter un utilisateur",
+		"group_name": "Nom du groupe",
+		"groups": "Mes groupes",
+		"friends": "Mes amis",
+		"create_group": "Créer un groupe",
+		"input_placeholder": "Votre message"
+	},
+	"profile": {
+		"accept_request": "Accepter la demande d'amis",
+		"total_wins": "Total de parties gagnées",
+		"total_games": "Total des parties jouées",
+		"winrate": "Taux de victoire",
+		"add_friend": "Ajouter en ami",
+		"no_games": "Aucune partie jouée"
+	},
+	"forms": {
+		"username": "Nom d'utilisateur",
+		"email": "Email",
+		"password": "Mot de passe",
+		"log_in": "Connexion",
+		"sign_up": "Inscription",
+		"42sign_in": "Connexion avec 42",
+		"errors": {
+			"username_too_long": "Le nom d'utilisateur ne peut pas dépasser 10 caractères",
+			"alphanumeric_username": "Le nom d'utilisateur doit contenir uniquement des caractères alphanumériques",
+			"wrong_format": "Mauvais format",
+			"contain_a_maj": "Doit contenir au moins une majuscule",
+			"contain_a_min": "Doit contenir au moins une minuscule",
+			"contain_a_number": "Doit contenir au moins un nombre",
+			"contain_more": "Doit être au moins de 8 caractères",
+			"username_already_use": "Nom d'utilisateur déjà utilisé",
+			"email_already_use": "Email déjà utilisé",
+			"bad_image": "Mauvaise image",
+			"internal_error": "Erreur interne, essayez plus tard"
+		}
+	},
+	"about": {
+		"about_us": "À propos de nous",
+		"about": "À propos",
+		"42_stud": "Étudiant 42 à Angoulême"
+	},
+	"time": {
+		"january": "Janvier",
+		"february": "Février",
+		"march": "Mars",
+		"april": "Avril",
+		"may": "Mai",
+		"june": "Juin",
+		"july": "Juillet",
+		"august": "Août",
+		"september": "Septembre",
+		"october": "Octobre",
+		"november": "Novembre",
+		"december": "Décembre"
 	}
 }

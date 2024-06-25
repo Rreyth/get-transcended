@@ -1,5 +1,5 @@
 import { Component } from "../js/component.js";
-import { APIRequest } from "../js/helpers.js"
+import { APIRequest, translate } from "../js/helpers.js"
 import { Friend } from "./chat/friend.js";
 import { Group } from "./chat/group.js";
 
@@ -70,17 +70,17 @@ export class Chat extends Component {
 				<div class="card-body overflow-auto" id="chat-body" style="height: 20em;">
 					<div class="btn-group w-100 mb-4" role="group">
 						<input type="radio" class="btn-check" name="btnradio" id="btn-groups" autocomplete="off">
-						<label class="btn btn-outline-primary" for="btn-groups">Groups</label>
+						<label class="btn btn-outline-primary" for="btn-groups">${ await translate("chat.groups") }</label>
 					
 						<input type="radio" class="btn-check" name="btnradio" id="btn-friends" autocomplete="off" checked>
-						<label class="btn btn-outline-primary" for="btn-friends">Friends</label>
+						<label class="btn btn-outline-primary" for="btn-friends">${ await translate("chat.friends") }</label>
 					</div>
 					<div class="list-group" id="chat-friends">
 					</div>
 					<div class="list-group d-none" id="chat-groups">
 						<div data-bs-toggle="modal" data-bs-target="#create-group-modal" class="list-group-item list-group-item-action d-flex align-items-center gap-2" id="chat-create-group">
 							<i class='bx bx-plus bx-sm'></i>
-							<span>Cree un groupe</span>
+							<span>${ await translate("chat.create_group") }</span>
 						</div>
 					</div>
 				</div>
@@ -262,12 +262,13 @@ export class Chat extends Component {
 			${type == 'GROUP' ? id.groupName : id}
 		`
 
-		document.querySelector('#chat-back').onclick = () => {
+		document.querySelector('#chat-back').onclick = async () => {
 			chatTitle.innerHTML = /* html */`<h5>Chat</h5>`
 			body.innerHTML = ""
 			document.querySelector('#chat-body').classList.remove('d-none')
 			body.classList.add('d-none')
 			Chat.state = type == 'GROUP' ? State.GROUP_SECTION : State.FRIEND_SECTION 
+			Chat.chatInput.placeholder = await translate("search")
 		}
 
 		messages.map(message => {

@@ -1,6 +1,7 @@
 import { Component } from "../../js/component.js";
 import { APIRequest } from "../../js/helpers.js";
 import { Group } from "./group.js";
+import { translate } from "../../js/helpers.js";
 
 export class AddUserModal extends Component
 {
@@ -18,7 +19,7 @@ export class AddUserModal extends Component
                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5">Add user</h1>
+                            <h1 class="modal-title fs-5">${await translate("chat.add_user")}</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body" id="add-user-modal-body">

@@ -18,12 +18,12 @@ class UserView(APIView):
     def put(self, request):
         if not request.user.login42:
             if "current_password" not in request.data:
-                return Response({'error': 'err_current_password_required', 'errormsg': 'current_password is required'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'errors.current_password_required', 'errormsg': 'current_password is required'}, status=status.HTTP_400_BAD_REQUEST)
             if not request.user.check_password(request.data["current_password"]):
-                return Response({'error': 'err_current_password_bad', 'errormsg': 'Bad current_password'}, status=status.HTTP_401_UNAUTHORIZED)
+                return Response({'error': 'errors.current_password_bad', 'errormsg': 'Bad current_password'}, status=status.HTTP_401_UNAUTHORIZED)
         if "username" in request.data:
             if len(request.data["username"]) > 24:
-                return Response({'error': 'err_username_toolong', 'errormsg': 'username is too long'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'errors.username_toolong', 'errormsg': 'username is too long'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             serializer = UserSerializer(request.user, data=request.data, partial=True, context={'request': request})
@@ -38,11 +38,11 @@ class UserView(APIView):
             return Response({'access' : str(refresh.access_token)}, status=status.HTTP_200_OK)
         except IntegrityError as e:
             if 'username' in str(e):
-                return Response({'error': 'err_exist_user', 'errormsg': 'This username alredy exist'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'errors.exist_user', 'errormsg': 'This username alredy exist'}, status=status.HTTP_400_BAD_REQUEST)
             elif 'email' in str(e):
-                return Response({'error': 'err_exist_email', 'errormsg': 'This email alredy exist'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'errors.exist_email', 'errormsg': 'This email alredy exist'}, status=status.HTTP_400_BAD_REQUEST)
             else:
-                return Response({'error': 'err_inte_data', 'errormsg': 'Data integrity error'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'errors.inte_data', 'errormsg': 'Data integrity error'}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             print(str(e), flush=True)
-            return Response({'error': 'err_unexpected', 'errormsg': 'An unexpected error are occurred'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'error': 'errors.unexpected', 'errormsg': 'An unexpected error are occurred'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

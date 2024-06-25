@@ -1,6 +1,6 @@
 import { Router } from "../../js/router.js";
 import { Component } from "../../js/component.js";
-import { APIRequest } from "../../js/helpers.js"
+import { APIRequest, translate } from "../../js/helpers.js"
 
 export class SignUp extends Component {
     static getName() {
@@ -16,16 +16,16 @@ export class SignUp extends Component {
 		const imgBtn = this.querySelector("#addimg-btn");
 		let file;
 
-		inputUser.addEventListener("input", (e) => {
+		inputUser.addEventListener("input", async (e) => {
 			if (e.target.value.length > lengthUserMax)
 			{
 				this.querySelector("#input-user").style.color = "#C0192A";
-				createPopover(e.target, "popover-user", "Le nom d'utilisateur ne peux pas depasser 10 charactere");
+				createPopover(e.target, "popover-user", await translate("forms.errors.username_too_long"));
 			}
 			else if (!e.target.value.match(/^[A-Za-z0-9_]*$/) && e.target.value.length > 0)
 			{
 				this.querySelector("#input-user").style.color = "#C0192A";
-				createPopover(e.target, "popover-user", "Le nom d'utilisateur doit contenir uniquement des caractères alphanumériques");
+				createPopover(e.target, "popover-user", await translate("forms.errors.alphanumeric_username"));
 			}
 			else
 				removeError(inputUser, "popover-user");
@@ -58,12 +58,12 @@ export class SignUp extends Component {
 			}
 		});
 
-		inputEmail.addEventListener("blur", (e) => {
+		inputEmail.addEventListener("blur", async (e) => {
 				dropdownMenu.classList.remove('show');
 				if (!emailIsValid(inputEmail.value) && inputEmail.value != "")
 				{
 					inputEmail.style.color = '#C0192A';
-					createPopover(inputEmail, "popover-email", "mal formater");
+					createPopover(inputEmail, "popover-email", await translate("forms.errors.wrong_format"));
 				}
 				else
 					removeError(inputEmail, "popover-email");
@@ -121,10 +121,10 @@ export class SignUp extends Component {
 
 
 const passPopoverContent = /* html */ `
-	<p id="passContent1">doit contenir une maj</p>
-	<p id="passContent2">doit contenir une min</p>
-	<p id="passContent3">doit contenir un nombre</p>
-	<p id="passContent4">doit etre >=8</p>
+	<p id="passContent1">${ await translate("forms.errors.contain_a_maj") }</p>
+	<p id="passContent2">${ await translate("forms.errors.contain_a_min") }</p>
+	<p id="passContent3">${ await translate("forms.errors.contain_a_number") }</p>
+	<p id="passContent4">${ await translate("forms.errors.contain_more") }</p>
 
 `;
 
@@ -152,11 +152,11 @@ async function registerUser(username, email, password, file)
 		document.querySelector("#alert-id").innerHTML = "";
 
 		if (res.username)
-			document.querySelector("#alert-id").innerHTML += "<span>username is already used</span>";
+			document.querySelector("#alert-id").innerHTML += `<span>${ await translate("forms.errors.username_already_use") }</span>`;
 		if (res.email)
-			document.querySelector("#alert-id").innerHTML += "<span>email is already used</span>";
+			document.querySelector("#alert-id").innerHTML += `<span>${ await translate("forms.errors.email_already_use") }</span>`;
 		if (res.avatar)
-			document.querySelector("#alert-id").innerHTML += "<span>bad image input</span>";
+			document.querySelector("#alert-id").innerHTML += `<span>${ await translate("forms.errors.bad_image") }</span>`;
 		document.querySelector("#alert-id").classList.add("show");
 	}
 	else if (res.access)
@@ -167,7 +167,7 @@ async function registerUser(username, email, password, file)
 	}
 	else
 	{
-		document.querySelector("#alert-id").innerHTML = "Internal error, try later";
+		document.querySelector("#alert-id").innerHTML = await translate("forms.errors.internal_error");
 		document.querySelector("#alert-id").classList.add("show");
 	}
 }
@@ -252,17 +252,17 @@ const content = /*html*/`
 				</div>
 
 			<div class="flex-column d-flex row-gap-4">
-				<div class="alert alert-danger row collapse" id="alert-id" role="alert">
-					error msg
-				</div>
-				<input class="form-control" id="input-user" type="text" placeholder="Username">
-				<input class="form-control" id="input-email" type="email" placeholder="Email">
+				<div class="alert alert-danger row collapse" id="alert-id" role="alert"></div>
+
+				<input class="form-control" id="input-user" type="text" placeholder="${ await translate("forms.username") }">
+				<input class="form-control" id="input-email" type="email" placeholder="${ await translate("forms.email") }">
+
 				<div class="dropdown-menu" id="dropdownMenu">
 					<!-- Contenu du dropdown -->
 				</div>
-				<input class="form-control" id="input-pass" type="password" placeholder="Password">
+				<input class="form-control" id="input-pass" type="password" placeholder="${ await translate("forms.password") }">
 			</div>
-			<button type="button" class="btn btn-primary" id="singup-btn">Sing up</button>
+			<button type="button" class="btn btn-primary" id="singup-btn">${ await translate("forms.sign_up") }</button>
 		</div>
 		</div>
 		<div class="red-popover" id="popover-container"></div>

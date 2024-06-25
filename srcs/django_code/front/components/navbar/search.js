@@ -93,7 +93,7 @@ export class Search extends Component {
 				this.setFriendAction(this.querySelectorAll('i[data-request="friend"]'))
 				this.querySelectorAll('#nav-invite-game').forEach(el => {
 					el.onclick = () => {
-						Router.push('/pong?code=create');
+						Router.push('/pong?room=create');
 
 						setTimeout(async () => {
 
@@ -146,6 +146,6 @@ async function createUserCard(u, friendId)
 const emptySearch = async () =>/* html */ `
 	<div class="w-100 h-100 d-flex justify-content-center align-items-center">
 		<i class='bx bx-search-alt bx-lg' ></i>
-		<span style="font-size: 1.5em; margin-left: 1em; width: 60%">${await translate("nav.rshUser")}</span>
+		<span style="font-size: 1.5em; margin-left: 1em; width: 60%">${await translate("nav.research_user")}</span>
 	</div>
 `;
