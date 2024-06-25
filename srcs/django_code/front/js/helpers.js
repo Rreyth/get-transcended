@@ -64,7 +64,7 @@ export const auth = async (username, password) => {
 	const res = await response.json();
     if (response.ok && res.access)
     {
-        cookieStore.set({ name: "token", value: (await response.json()).access });
+        cookieStore.set({ name: "token", value: res.access });
 		return (true);
     }
 	return (res);

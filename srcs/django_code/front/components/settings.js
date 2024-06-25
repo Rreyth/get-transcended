@@ -14,8 +14,8 @@ export class Settings extends Component {
 			return ;
 
 		let a2fStatus = await APIRequest.build("/user/a2f", "GET").send();
-		const responseA2f = await a2fStatus.json();
-		a2fStatus = responseA2f.actived
+		let responseA2f = await a2fStatus.json();
+		a2fStatus = responseA2f.actived;
 
 		this.innerHTML = await content(userValue, a2fStatus, responseA2f.qrcode);
 
@@ -30,11 +30,14 @@ export class Settings extends Component {
 		const newpassword = this.querySelector("#newpass-input");
 		const badNewPswd = this.querySelector("#error-pswd");
 		const currentPass = this.querySelector("#cpass-input");
+		const Qrcode = this.querySelector("#qrcode");
+		const a2fCode = this.querySelector("#a2f-code-input");
 
 		test.addEventListener ("show.bs.modal", async () => {
 			userValue = await user();
 			a2fStatus = await APIRequest.build("/user/a2f", "GET").send();
-			a2fStatus = (await a2fStatus.json()).actived
+			responseA2f = (await a2fStatus.json());
+			a2fStatus = responseA2f.actived;
 
 			fileInput.value = null;
 			profileImg.src = getAvatarUrl(userValue.avatar);
@@ -59,6 +62,10 @@ export class Settings extends Component {
 			currentPass.value = "";
 
 			setSaveState(false, null);
+
+			Qrcode.innerHTML = responseA2f.qrcode;
+			a2fCode.value = "";
+
 			document.querySelector("#settings-code-modal").style.display = "block";
 			document.querySelector("#a2f-code-modal").style.display = "none";
 		})
@@ -147,7 +154,6 @@ export class Settings extends Component {
 		const closeBtn = this.querySelector("#closeModal");
 		const errorBox = this.querySelector("#error-container");
 		const saveQrcodeBtn = this.querySelector("#save-qrcode-btn");
-		const a2fCode = this.querySelector("#a2f-code-input");
 		const errorA2fMsg = this.querySelector("#error-a2f-code");
 
 		saveBtn.onclick = async () => {
@@ -234,7 +240,7 @@ const content = async (user, a2f, qrcode) => /*html*/`
 				</div>
 				<div class="modal-body d-flex flex-column justify-content-center align-items-center">
 					<div class="d-flex flex-column justify-content-center align-items-center">
-						${qrcode}
+						<div id="qrcode">${qrcode}</div>
 						<input name="codea2f" class="form-control mx-2" filter id="a2f-code-input" type="text" placeholder="Your code"> <!-- need trad -->
 					</div>
 				</div>
