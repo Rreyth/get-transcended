@@ -93,7 +93,7 @@ export class Search extends Component {
 				this.setFriendAction(this.querySelectorAll('i[data-request="friend"]'))
 				this.querySelectorAll('#nav-invite-game').forEach(el => {
 					el.onclick = () => {
-						Router.push('/pong?code=create');
+						Router.push('/pong?room=create');
 
 						setTimeout(async () => {
 

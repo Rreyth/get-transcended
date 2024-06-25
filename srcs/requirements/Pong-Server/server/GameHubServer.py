@@ -280,20 +280,21 @@ async def handle_quickGame(client_msg, websocket):
 		await send_to_DB(response)
 
 	elif client_msg['online'] == 'true':
-		for room in rooms.values():
-			if not room.full and room.type == 'quickGame':
-				await room.sendAll({"type" : "join"})
-				for player in clients.values():
-					if player.websocket == websocket:
-						room.players.append(player)
-						break
-				room.players_nb += 1
-				await websocket.send(json.dumps({'type' : 'GameRoom', 'ID' : room.id, 'port' : room.port, 'pos' : room.players_nb}))
-				id = room.id
-				await full_room(room.id, websocket)
-				if id in rooms.keys() and rooms[room.id].full:
-					await run_game(room.id, websocket)
-				return
+		if client_msg['cmd'] != 'create':
+			for room in rooms.values():
+				if not room.full and room.type == 'quickGame':
+					await room.sendAll({"type" : "join"})
+					for player in clients.values():
+						if player.websocket == websocket:
+							room.players.append(player)
+							break
+					room.players_nb += 1
+					await websocket.send(json.dumps({'type' : 'GameRoom', 'ID' : room.id, 'port' : room.port, 'pos' : room.players_nb}))
+					id = room.id
+					await full_room(room.id, websocket)
+					if id in rooms.keys() and rooms[room.id].full:
+						await run_game(room.id, websocket)
+					return
 
 		port = starting_port
 		while port in used_port or port in forbiden_port: port += 1
