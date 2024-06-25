@@ -47,7 +47,7 @@ const content = (context) => /* html */`
 					<div class="card-header">
 						<c-podium winners='${context.winners}'></c-podium>
 					</div>
-					<div class="card-body overflow-auto" style="max-height: 25em;">
+					<div class="card-body overflow-auto" style="max-height: 40vh;">
 						<ul class="list-group list-group-flush" id="board-user-container">
 							<!-- user content -->
 						</ul>
