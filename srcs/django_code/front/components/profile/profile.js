@@ -80,7 +80,7 @@ export class Profile extends HTMLElement {
 		{
 			section.innerHTML = `<li class="row d-flex align-items-center">
 				<div class="col text-center fs-1">
-					Aucune partie jouée encore
+					${ await translate("profile.no_games") }
 				</div>
 			</li>`
 		}
