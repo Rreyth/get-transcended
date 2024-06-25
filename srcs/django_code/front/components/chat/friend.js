@@ -1,6 +1,6 @@
 import { Component } from "../../js/component.js";
 import { Chat } from "../chat.js";
-import { getAvatarUrl } from "../../js/helpers.js"
+import { translate } from "../../js/helpers.js"
 
 export class Friend extends Component
 {
@@ -27,10 +27,11 @@ export class Friend extends Component
         `
     }
 
-    handleClick(ev)
+    async handleClick(ev)
     {
         Friend.friendSelected = this
 
         Chat.displayConversation('FRIEND', this.username)
+        Chat.chatInput.placeholder = await translate("chat.input_placeholder")
     }
 }

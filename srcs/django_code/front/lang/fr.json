@@ -4,6 +4,7 @@
 	"create": "Créer",
 	"all": "Tout",
 	"upload": "Téléverser",
+	"search": "Rechercher",
 	"nav": {
 		"user": "Utilisateur",
 		"msg": "Messages",
@@ -38,7 +39,8 @@
 		"group_name": "Nom du groupe",
 		"groups": "Mes groupes",
 		"friends": "Mes amis",
-		"create_group": "Créer un groupe"
+		"create_group": "Créer un groupe",
+		"input_placeholder": "Votre message"
 	},
 	"profile": {
 		"accept_request": "Accepter la demande d'amis",
