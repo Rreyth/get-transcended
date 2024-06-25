@@ -1,6 +1,6 @@
 import { Router } from "../../js/router.js";
 import { Component } from "../../js/component.js";
-import { user, getAvatarUrl, APIRequest } from "../../js/helpers.js"
+import { user, APIRequest, translate } from "../../js/helpers.js"
 
 export class NavProfile extends Component {
 
@@ -35,7 +35,7 @@ export class NavProfile extends Component {
 
 }
 
-const content = (user) => /* html */ `
+const content = async (user) => /* html */ `
 		<div class="w-100 h-100">
 			<div class="mx-3 mt-2 w-100 d-flex" style="">
 				<div class="col-md-auto">
@@ -50,19 +50,19 @@ const content = (user) => /* html */ `
 				</div>
 			</div>
 			<div class="mx-3 mt-5 d-flex align-item-center">
-				<i class='bx bx-crown bx-sm' style="color: #FFD700;"></i> <span class="ms-2">Your winrate :</span> <span class="ms-2" id="winrate-info"></span>
+				<i class='bx bx-crown bx-sm' style="color: #FFD700;"></i> <span class="ms-2">${ await translate("stats.your_winrate") } :</span> <span class="ms-2" id="winrate-info"></span>
 			</div>
 
 			<div class="mx-3 mt-3 d-flex align-item-center">
-				<i class='bx bx-cool bx-sm' style="color: #27AE60;"></i></i> <span class="ms-2">Game win :</span> <span class="ms-2" id="win-game"></span>
+				<i class='bx bx-cool bx-sm' style="color: #27AE60;"></i></i> <span class="ms-2">${ await translate("stats.game_win") } :</span> <span class="ms-2" id="win-game"></span>
 			</div>
 
 			<div class="mx-3 mt-3 d-flex align-item-center">
-				<i class='bx bx-basketball bx-sm' style="color: #3498DB;"></i></i> <span class="ms-2">Game played :</span> <span class="ms-2" id="game-played"></span>
+				<i class='bx bx-basketball bx-sm' style="color: #3498DB;"></i></i> <span class="ms-2">${ await translate("stats.game_play") } :</span> <span class="ms-2" id="game-played"></span>
 			</div>
 
 			<div class="w-100 mt-3 d-flex flex-column align-items-center position-absolute bottom-0">
-				<a is="c-link" href="/user/${user.username}" class="btn btn-outline-primary mb-3" style="width: 80%;">Profile</a>
+				<a is="c-link" href="/user/${user.username}" class="btn btn-outline-primary mb-3" style="width: 80%;">${ await translate("nav.profile") }</a>
 			</div>
 		</div>
 	`;

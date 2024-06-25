@@ -200,7 +200,7 @@ const content = async (user, a2f) => /*html*/`
 			<div class="modal-content">
 				<div id="error-container"></div>
 				<div class="modal-header">
-					<h1 class="modal-title fs-5" id="settingsModalLabel">Settings</h1>
+					<h1 class="modal-title fs-5" id="settingsModalLabel">${ await translate("settings.title") }</h1>
 					<button type="button" class="btn-close" id="closeModal" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
@@ -212,14 +212,14 @@ const content = async (user, a2f) => /*html*/`
 								<div class="d-flex align-items-center justify-content-evenly w-100">
 									<img class="rounded-4" id="profile-img" src="${getAvatarUrl(user.avatar)}" style="width: 6em; height: 6em; object-fit: cover; object-position: center;"/>
 									<div class="d-flex flex-column align-items-start ms-3">
-										<span style="font-size: 1.3em;">Profile picture</span>
+										<span style="font-size: 1.3em;">${ await translate("settings.profile_picture") }</span>
 										<span style="font-size: 0.8em; margin-bottom: 0.4em; color: grey;">jpg - png - gif</span>
-										<button type="button" id="avatar-btn" class="btn btn-outline-secondary">Upload</button>
+										<button type="button" id="avatar-btn" class="btn btn-outline-secondary">${ await translate("upload") }</button>
 									</div>
 								</div>
 							</div>
 							<div class="col-md-auto d-flex flex-column justify-content-center align-items-center mx-2 my-2">
-								<span>Auth A2F</span>
+								<span>${ await translate("settings.a2f") }</span>
 								<div class="form-check form-switch">
 									<input name="a2f" class="form-check-input" filter id="a2f-switch" type="checkbox" role="switch" ${a2f ? "checked" : ""}>
 								</div>
@@ -236,10 +236,10 @@ const content = async (user, a2f) => /*html*/`
 						</div>
 
 						<div class="col-md d-flex justify-content-center align-items-center mt-3 mb-1">
-							<input name="password" class="form-control mx-2" filter id="newpass-input" type="password" placeholder="New password" ${user.login42 ? "disabled" : ""}>
+							<input name="password" class="form-control mx-2" filter id="newpass-input" type="password" placeholder="${ await translate("settings.new_password") }" ${user.login42 ? "disabled" : ""}>
 						</div>
 						<div class="col-md d-flex justify-content-start align-items-center">
-							<span class="ms-3 text-danger" id="error-pswd" style="display: none; font-size: 0.8em;">doit contenir maj min nombre et >=8<span>
+							<span class="ms-3 text-danger" id="error-pswd" style="display: none; font-size: 0.8em;">${ await translate("settings.errors.password_error") }<span>
 						</div>
 						
 
@@ -248,11 +248,11 @@ const content = async (user, a2f) => /*html*/`
 
 				<div class="modal-footer justify-content-between">
 					<div class="d-flex">
-						<input name="current_password" class="form-control mx-2" id="cpass-input" type="password" placeholder="Current password" disabled>
+						<input name="current_password" class="form-control mx-2" id="cpass-input" type="password" placeholder="${ await translate("settings.current_password") }" disabled>
 					</div>
 					<div>
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-						<button type="button" id="save-btn" class="btn btn-primary" disabled>Save</button>
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${ await translate("close") }</button>
+						<button type="button" id="save-btn" class="btn btn-primary" disabled>${ await translate("save") }</button>
 					</div>
 				</div>
 				

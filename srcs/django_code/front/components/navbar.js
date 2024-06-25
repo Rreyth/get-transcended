@@ -100,7 +100,7 @@ const content = async (user) => /* html */ `
 				<div class="d-flex align-items-center justify-content-center">
 					<div class="d-flex align-items-center justify-content-center bg-secondary p-2 mx-2 rounded-4" id="msg-btn" style="width: 14em; height: 3em;">
 						<i class='bx bx-chat bx-md' ></i>
-						<span class="w-100">MESSAGES</span>
+						<span class="w-100">${ await translate("nav.messages") }</span>
 					</div>
 					<div class="mx-2" style="height: 3em; width: 3em;">
 						<c-langbtn></c-langbtn>

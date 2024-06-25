@@ -1,4 +1,5 @@
 import { Component } from "../js/component.js";
+import { translate } from "../js/helpers.js";
 import { Thread } from "../js/thread.js";
 
 export class Clock extends Component {
@@ -15,9 +16,22 @@ export class Clock extends Component {
 	
 			return format;
 	}
-	getDate()
+	async getDate()
 	{
-		const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+		const month = [
+			await translate("time.january"),
+			await translate("time.february"),
+			await translate("time.march"),
+			await translate("time.april"),
+			await translate("time.may"),
+			await translate("time.june"),
+			await translate("time.july"),
+			await translate("time.august"),
+			await translate("time.september"),
+			await translate("time.october"),
+			await translate("time.november"),
+			await translate("time.december")
+		];
 		let date = new Date();
 
 		const day = (date.getDate() < 10) ? '0' + date.getDate() : date.getDate();

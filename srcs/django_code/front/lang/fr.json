@@ -1,20 +1,93 @@
 {
-    "word": "mot",
+	"close": "Fermer",
+	"save": "Save",
+	"create": "Create",
+	"all": "Tout",
+	"upload": "Upload",
     "home": {
 		"welcome": "bienvenue"
     },
 	"nav": {
 		"user": "Utilisateur",
 		"msg": "Messages",
-		"rshUser": "Rechercher un utilisateur"
+		"research_user": "Rechercher un utilisateur",
+		"profile": "Mon profile",
+		"messages": "Ma messagerie"
+	},
+	"stats": {
+		"your_winrate": "Ton taux de victoire",
+		"game_win": "Parties gagner",
+		"game_play": "Parties jouer"
 	},
 	"settings": {
-		"err_current_password_required": "Le mot de passe actuel est requis",
-		"err_current_password_bad": "Mauvais mot de passe (acutel)",
-		"err_exist_user": "Ce nom d'utilisateur existe déjà",
-		"err_exist_email": "Cette email existe déjà",
-		"err_inte_data": "Erreur d'intégrité des données",
-		"err_unexpected": "Une erreur inattendue est survenue",
-		"err_username_toolong": "Ce nom d'utilisateur est trop long"
+		"errors" : {
+			"current_password_required": "Le mot de passe actuel est requis",
+			"current_password_bad": "Mauvais mot de passe (acutel)",
+			"exist_user": "Ce nom d'utilisateur existe déjà",
+			"exist_email": "Cette email existe déjà",
+			"inte_data": "Erreur d'intégrité des données",
+			"unexpected": "Une erreur inattendue est survenue",
+			"username_toolong": "Ce nom d'utilisateur est trop long",
+			"passord_error": "Doit contenir maj min nombre et >=8"
+		},
+		"title": "Paramettres",
+		"profile_picture": "Photo de profile",
+		"a2f": "Activer l'A2F",
+		"new_password": "Nouveau mot de passe",
+		"current_password": "Mot de passe actuel"
+	},
+	"chat": {
+		"add_user": "Ajouter un utilisateur",
+		"group_name": "Nom du groupe",
+		"groups": "Mes groupes",
+		"friends": "Mes amies",
+		"create_group": "Cree un groupe"
+	},
+	"profile": {
+		"accept_request": "Accepter la demande d'amis",
+		"total_wins": "Total de parties gagner",
+		"total_games": "Total des parties jouer",
+		"winrate": "Taux de victoire",
+		"add_friend": "Ajouter en amies"
+	},
+	"forms": {
+		"username": "Nom d'utilisateur",
+		"email": "Email",
+		"password": "Mot de passe",
+		"log_in": "Connexion",
+		"sign_up": "Inscription",
+		"42sign_in": "Connexion avec 42",
+		"errors": {
+			"username_too_long": "Le nom d'utilisateur ne peux pas depasser 10 charactere",
+			"alphanumeric_username": "Le nom d'utilisateur doit contenir uniquement des caractères alphanumériques",
+			"wrong_format": "Mauvais format",
+			"contain_a_maj": "Doit contenir une maj",
+			"contain_a_min": "Doit contenir une min",
+			"contain_a_number": "Doit contenir un nombre",
+			"contain_more": "Doit etre >=8",
+			"username_already_use": "Nom d'utilisateur deja utiliser",
+			"email_already_use": "Email deja utiliser",
+			"bad_image": "Mauvaise image",
+			"internal_error": "Erreur interne, essayer plus tard"
+		}
+	},
+	"about": {
+		"about_us": "A propos de nous",
+		"about": "A propos",
+		"42_stud": "Etudiant 42 a Angouleme"
+	},
+	"time": {
+		"january": "Janvier",
+		"february": "Fevrier",
+		"march": "Mars",
+		"april": "Avril",
+		"may": "Mai",
+		"june": "Juin",
+		"july": "juillet",
+		"august": "Aout",
+		"september": "Septembre",
+		"october": "Octobre",
+		"november": "Novembre",
+		"december": "Descembre"
 	}
 }

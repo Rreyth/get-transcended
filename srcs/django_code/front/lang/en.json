@@ -1,12 +1,11 @@
 {
-	"word": "word",
     "home": {
 		"welcome": "welcome"
     },
 	"nav": {
 		"user": "User",
 		"msg": "Messages",
-		"rshUser": "Search a user"
+		"research_user": "Search a user"
 	},
 	"settings": {
 		"err_current_password_required": "Current password is required",
