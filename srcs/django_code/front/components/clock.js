@@ -38,15 +38,15 @@ export class Clock extends Component {
 		return day + ' ' + month[date.getMonth()] + ' ' + date.getFullYear();
 	}
 
-    connectedCallback() {
+    async connectedCallback() {
 		this.innerHTML = content;
 
 		this.querySelector('#clock-time').innerHTML = this.getHours();
-		this.querySelector('#clock-date').innerHTML = this.getDate();
+		this.querySelector('#clock-date').innerHTML = await this.getDate();
 
-		Thread.new(() => {
+		Thread.new(async () => {
 			this.querySelector('#clock-time').innerHTML = this.getHours();
-			this.querySelector('#clock-date').innerHTML = this.getDate();
+			this.querySelector('#clock-date').innerHTML = await this.getDate();
 		}, 1000);
 
     }
