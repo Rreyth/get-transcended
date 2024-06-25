@@ -10,6 +10,12 @@ export class NavProfile extends Component {
 
 	async connectedCallback() {
 		super.connectedCallback();
+		if (document.querySelector("c-settings") == null)
+		{
+			let ele = document.createElement("c-settings");
+			document.body.appendChild(ele);
+			console.log("coucou");
+		}
 		const userValue = await user();
 		if (userValue != null) {
 			this.innerHTML = content(userValue);
