@@ -28,11 +28,11 @@
 			"inte_data": "I am Groot",
 			"unexpected": "I am Groot",
 			"username_toolong": "I am Groot",
-			"passord_error": "I am Groot"
+			"password_error": "I am Groot"
 		},
 		"title": "I am Groot",
 		"profile_picture": "I am Groot",
-		"a2f": "I am Groot",
+		"2fa": "I am Groot",
 		"new_password": "I am Groot",
 		"current_password": "I am Groot"
 	},

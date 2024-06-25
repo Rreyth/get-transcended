@@ -219,7 +219,7 @@ const content = async (user, a2f) => /*html*/`
 								</div>
 							</div>
 							<div class="col-md-auto d-flex flex-column justify-content-center align-items-center mx-2 my-2">
-								<span>${ await translate("settings.a2f") }</span>
+								<span>${ await translate("settings.2fa") }</span>
 								<div class="form-check form-switch">
 									<input name="a2f" class="form-check-input" filter id="a2f-switch" type="checkbox" role="switch" ${a2f ? "checked" : ""}>
 								</div>

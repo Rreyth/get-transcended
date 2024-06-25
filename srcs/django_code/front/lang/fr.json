@@ -19,17 +19,17 @@
 	"settings": {
 		"errors": {
 			"current_password_required": "Le mot de passe actuel est requis",
-			"current_password_bad": "Mauvais mot de passe (actuel)",
+			"current_password_bad": "Mauvais mot de passe actuel",
 			"exist_user": "Ce nom d'utilisateur existe déjà",
 			"exist_email": "Cet email existe déjà",
 			"inte_data": "Erreur d'intégrité des données",
 			"unexpected": "Une erreur inattendue est survenue",
 			"username_toolong": "Ce nom d'utilisateur est trop long",
-			"passord_error": "Doit contenir majuscule, minuscule, nombre et >=8 caractères"
+			"password_error": "Doit contenir majuscule, minuscule, nombre et au moins 8 caractères"
 		},
 		"title": "Paramètres",
 		"profile_picture": "Photo de profil",
-		"a2f": "Activer l'A2F",
+		"2fa": "Activer l'A2F",
 		"new_password": "Nouveau mot de passe",
 		"current_password": "Mot de passe actuel"
 	},
@@ -59,10 +59,10 @@
 			"username_too_long": "Le nom d'utilisateur ne peut pas dépasser 10 caractères",
 			"alphanumeric_username": "Le nom d'utilisateur doit contenir uniquement des caractères alphanumériques",
 			"wrong_format": "Mauvais format",
-			"contain_a_maj": "Doit contenir une majuscule",
-			"contain_a_min": "Doit contenir une minuscule",
-			"contain_a_number": "Doit contenir un nombre",
-			"contain_more": "Doit être >=8",
+			"contain_a_maj": "Doit contenir au moins une majuscule",
+			"contain_a_min": "Doit contenir au moins une minuscule",
+			"contain_a_number": "Doit contenir au moins un nombre",
+			"contain_more": "Doit être au moins de 8 caractères",
 			"username_already_use": "Nom d'utilisateur déjà utilisé",
 			"email_already_use": "Email déjà utilisé",
 			"bad_image": "Mauvaise image",
