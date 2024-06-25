@@ -93,8 +93,15 @@ export function connect_hub() {
 	const socket = "wss://" + window.location.hostname + ":8765";
 	GameHub = new WebSocket(socket);
 	GameHub.onerror = hub_error;
+	GameHub.onclose = hub_close;
 	GameHub.onopen = hub_open;
 	GameHub.onmessage = parse_msg;
+}
+
+function hub_close() {
+	clearInterval(gameInterval);
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	clearAll();
 }
 
 function hub_error(error) {
@@ -121,7 +128,6 @@ async function parse_msg(event) {
 	let wait_nb = 0;
 	if (msg.type == "connectionRpl") {
 		if (msg.success == "true") {
-			console.log("Connection success");
 			game.start(GameHub);
 			let link_code = window.location.search.match(/room=(.*)/);
 			if (link_code) {
@@ -339,7 +345,9 @@ export async function reset() {
 	token = await user_token();
 }
 
-window.addEventListener("ThreadClearEvent", function(event) {
+window.addEventListener("ThreadClearEvent", clearAll);
+
+function clearAll() {
 	GameHub = false;
 	if (game.GameHub) {
 		game.GameHub.close();
@@ -353,4 +361,4 @@ window.addEventListener("ThreadClearEvent", function(event) {
 	window.removeEventListener('keyup', keyup_event);
 	canvas.removeEventListener('wheel', wheel_event);
 	canvas.removeEventListener("click", game.mouse_input);
-});
+}
