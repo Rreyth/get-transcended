@@ -15,7 +15,6 @@ export const translate = async (key) => {
     if (data == null)
     {
         const response = await fetch(`https://${location.hostname}:${location.port}/static/lang/${lang.value}.json`)
-        console.log(data)
 
         if (!response.ok)
         {
