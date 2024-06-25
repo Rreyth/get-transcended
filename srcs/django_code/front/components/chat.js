@@ -262,12 +262,13 @@ export class Chat extends Component {
 			${type == 'GROUP' ? id.groupName : id}
 		`
 
-		document.querySelector('#chat-back').onclick = () => {
+		document.querySelector('#chat-back').onclick = async () => {
 			chatTitle.innerHTML = /* html */`<h5>Chat</h5>`
 			body.innerHTML = ""
 			document.querySelector('#chat-body').classList.remove('d-none')
 			body.classList.add('d-none')
 			Chat.state = type == 'GROUP' ? State.GROUP_SECTION : State.FRIEND_SECTION 
+			Chat.chatInput.placeholder = await translate("search")
 		}
 
 		messages.map(message => {

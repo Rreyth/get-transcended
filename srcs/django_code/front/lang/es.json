@@ -4,6 +4,7 @@
 	"create": "Crear",
 	"all": "Todo",
 	"upload": "Subir",
+	"search": "Buscar",
     "home": {
 		"welcome": "Bienvenido"
     },
@@ -34,7 +35,8 @@
 		"profile_picture": "Foto de perfil",
 		"2fa": "Activar 2FA",
 		"new_password": "Nueva contraseña",
-		"current_password": "Contraseña actual"
+		"current_password": "Contraseña actual",
+		"input_placeholder": "Su mensaje"
 	},
 	"chat": {
 		"add_user": "Agregar un usuario",

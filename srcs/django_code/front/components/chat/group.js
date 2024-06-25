@@ -1,5 +1,6 @@
 import { Component } from "../../js/component.js";
 import { Chat } from "../chat.js";
+import { translate } from "../../js/helpers.js"
 
 export class Group extends Component
 {
@@ -26,9 +27,11 @@ export class Group extends Component
         `
     }
 
-    handleClick(ev)
-    {
-        Chat.displayConversation('GROUP', this)
+    async handleClick(ev)
+    {      
         Group.groupSelected = this
+
+        Chat.displayConversation('GROUP', this)
+        Chat.chatInput.placeholder = await translate("chat.input_placeholder")
     }
 }
