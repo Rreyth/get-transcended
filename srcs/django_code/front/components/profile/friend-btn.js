@@ -1,4 +1,4 @@
-import { user, APIRequest } from "../../js/helpers.js"
+import { user, APIRequest, translate } from "../../js/helpers.js"
 
 export class FriendBtn extends HTMLButtonElement
 {
@@ -40,7 +40,7 @@ export class FriendBtn extends HTMLButtonElement
         else if (request_reveived != undefined)
         {
             this.classList.add('btn-success')
-            this.innerHTML = "Accept friend request"
+            this.innerHTML = await translate("profile.accept_request")
 
             this.onclick = async (e) => {
                 APIRequest.build(`/user/friends/requests/${request_reveived.id}`, 'POST').send()

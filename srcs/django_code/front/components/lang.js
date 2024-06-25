@@ -34,6 +34,10 @@ export class LangBtn extends Component {
 			this.setLang("es");
 			location.reload();
 		})
+		this.addClickEvent('#gr-lang', (e) => {
+			this.setLang("gr");
+			location.reload();
+		})
     }
 }
 
@@ -46,6 +50,7 @@ const content = /*html*/`
 	<li class="dropdown-item active" id="en-lang">EN</li>
 	<li class="dropdown-item" id="fr-lang">FR</li>
 	<li class="dropdown-item" id="es-lang">ES</li>
+	<li class="dropdown-item" id="gr-lang">GR</li>
 </ul>
 </div>
 <style>
