@@ -13,8 +13,6 @@ import { Thread } from "./thread.js";
 import { user, user_token } from "./helpers.js"
 import { Cache } from "./cache.js";
 
-const link_code = window.location.search.match(/=(.*)/);
-
 let timer;
 let connect_last;
 let loginInterval;
@@ -95,14 +93,12 @@ export function connect_hub() {
 	const socket = "wss://" + window.location.hostname + ":8765";
 	GameHub = new WebSocket(socket);
 	GameHub.onerror = hub_error;
-	GameHub.onclose = hub_error;
 	GameHub.onopen = hub_open;
 	GameHub.onmessage = parse_msg;
 }
 
 function hub_error(error) {
 	clearInterval(gameInterval);
-	console.error("Connection failed: ", error);
 	timer = 5;
 	connect_last = Date.now() / 1000;
 	loginInterval = Thread.new(connect_loop, 1000);
@@ -127,14 +123,16 @@ async function parse_msg(event) {
 		if (msg.success == "true") {
 			console.log("Connection success");
 			game.start(GameHub);
+			let link_code = window.location.search.match(/room=(.*)/);
 			if (link_code) {
 				if (link_code[1] == "create") {
-					game.menu.setValues("ONLINE", game);	
+					game.GameHub.send(JSON.stringify({"type" : "quickGame", "cmd" : "create", "online" : "true"}));
 				}
 				else {
 					game.menu.buttons[5].name = link_code[1];
 					game.menu.setValues("JOIN", game);
 				}
+				link_code = false;
 			}
 			gameInterval = Thread.new(game_loop, 10);
 		}
@@ -342,6 +340,14 @@ export async function reset() {
 }
 
 window.addEventListener("ThreadClearEvent", function(event) {
+	GameHub = false;
+	if (game.GameHub) {
+		game.GameHub.close();
+	}
+	if (game.GameRoom) {
+		game.GameRoom.close();
+		game.GameRoom = false;
+	}
 	window.removeEventListener("resize", resize_all);
 	window.removeEventListener('keydown', keydown_event);
 	window.removeEventListener('keyup', keyup_event);
