@@ -12,7 +12,7 @@ export class NavProfile extends Component {
 		super.connectedCallback();
 		const userValue = await user();
 		if (userValue != null) {
-			this.innerHTML = content(userValue);
+			this.innerHTML = await content(userValue);
 
 			const userRequest = await APIRequest.build("/user/", "GET").send();
 			const userInfo = await userRequest.json();

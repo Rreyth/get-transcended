@@ -27,7 +27,7 @@ export class Profile extends HTMLElement {
 			target_id: data.id,
 		}
 
-		this.innerHTML = content(context);
+		this.innerHTML = await content(context);
 		
 		const r = await APIRequest.build(`/user/${user}/games/`, 'GET').send()
 
