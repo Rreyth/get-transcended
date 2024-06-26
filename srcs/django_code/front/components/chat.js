@@ -203,7 +203,7 @@ export class Chat extends Component {
 
 		if (!response.ok)
 		{
-			Chat.sendEphemeral('Cet utilisateur vous a bloqué.', 'danger-subtle', 'danger')
+			Chat.sendEphemeral(await translate('chat.block'), 'danger-subtle', 'danger')
 		}
 	}
 
@@ -216,7 +216,7 @@ export class Chat extends Component {
 
 			if (!response.ok)
 			{
-				Chat.sendEphemeral('Cet utilisateur vous a bloqué.', 'danger-subtle', 'danger')
+				Chat.sendEphemeral(await translate('chat.block'), 'danger-subtle', 'danger')
 			}
 		}
 		else if (Chat.state == State.GROUP_CONVERSATION)

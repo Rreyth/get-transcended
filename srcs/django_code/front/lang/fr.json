@@ -42,7 +42,8 @@
 		"friends": "Mes amis",
 		"create_group": "Créer un groupe",
 		"input_placeholder": "Votre message",
-		"room": "Rejoins ma partie"
+		"room": "Rejoins ma partie",
+		"block": "Cet utilisateur vous a bloqué."
 	},
 	"profile": {
 		"accept_request": "Accepter la demande d'amis",

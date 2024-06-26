@@ -45,7 +45,8 @@
 		"friends": "I am Groot",
 		"create_group": "I am Groot",
 		"input_placeholder": "I am Groot",
-		"room": "I am Groot"
+		"room": "I am Groot",
+		"block": "I am Groot"
 	},
 	"profile": {
 		"accept_request": "I am Groot",

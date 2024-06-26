@@ -42,7 +42,8 @@
 		"friends": "My friends",
 		"create_group": "Create a group",
 		"input_placeholder": "Your message",
-		"room": "Join my game room"
+		"room": "Join my game room",
+		"block": "This user blocked you."
 	},
 	"profile": {
 		"accept_request": "Accept friend request",
