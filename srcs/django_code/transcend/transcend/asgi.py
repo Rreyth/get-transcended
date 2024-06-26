@@ -18,7 +18,7 @@ from django.urls import path
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'transcend.settings')
 django.setup()
 
-from chat.consumers import ChatConsumer
+from chat.consumers import *
 from users.middleware import JwtAuthMiddlewareStack
 from users.consumers import *
 
@@ -26,6 +26,7 @@ websocket_urlpatterns = [
     path('ws/messages', ChatConsumer.as_asgi()),
     path('ws/user/online', OnlineConsumer.as_asgi()),
     path('ws/user/friends', FriendAcceptConsumer.as_asgi()),
+    path('ws/user/groups', GroupConsumer.as_asgi()),
 ]
 
 application = ProtocolTypeRouter({
