@@ -1,39 +1,24 @@
-import { Cache } from "./cache.js"
+import en from "../lang/en.json" with { type: "json" }
+import fr from "../lang/fr.json" with { type: "json" }
+import es from "../lang/es.json" with { type: "json" }
+import gr from "../lang/gr.json" with { type: "json" }
+
+const LANG_MAP = { en, fr, es, gr }
+const DEFAULT_LANG = "en"
 
 export const translate = async (key) => {
-    const DEFAULT_LANG = "en"
-    let lang = await cookieStore.get("lang")
+    const langFromCookie = await cookieStore.get("lang")
+    const lang = langFromCookie?.value ?? DEFAULT_LANG
 
-    if (lang == null)
-    {
-        cookieStore.set({ name: "lang", value: DEFAULT_LANG })
-        lang = { value: DEFAULT_LANG }
-    }
+    if (!langFromCookie) { cookieStore.set({ name: "lang", value: DEFAULT_LANG }) }
 
-    let data = Cache.get(`lang-${lang}`)
+    const currentLang = LANG_MAP[lang];
 
-    if (data == null)
-    {
-        const response = await fetch(`https://${location.hostname}:${location.port}/static/lang/${lang.value}.json`)
+    const keys = key.split(".")
+    let value = currentLang[keys.shift()]
 
-        if (!response.ok)
-        {
-            cookieStore.set({ name: "lang", value: DEFAULT_LANG })
-
-            return await translate(key);
-        }
-
-        data = await response.json()
-        Cache.set(`lang-${lang}`, data)
-    }
-
-    let keys = key.split(".")
-    let value = null
-
-    for (let k of keys)
-    {
-        value = value == null ? data[k] : value[k]
-    }
+    for (const k of keys)
+        value = value[k];
 
     return value
 }
@@ -71,7 +56,7 @@ export const auth = async (username, password) => {
         username: username,
         password: password
     }).sendJSON()
-	
+
 	const res = await response.json();
     if (response.ok && res.access)
     {
@@ -88,7 +73,7 @@ export async function token_checker() {
 
 	const response = await APIRequest.build('/user/', 'GET').send();
 
-	if (!response.ok) { 
+	if (!response.ok) {
 		cookieStore.delete(name="token");
 		return;
 	}
