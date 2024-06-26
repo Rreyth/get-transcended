@@ -21,32 +21,36 @@ export class Navbar extends Component {
 		{
 			this.innerHTML = await content(userInfo);
 
-			document.addEventListener("click", (e) => {
-				if (e.target.id == "seach-user")
-				{
-					this.querySelector(".dropdown-menu").innerHTML = `<c-search content="${e.target.value}"></c-search>`;
-					this.querySelector(".dropdown-toggle").click();
-				}
-				else if (e.target.classList.contains("bx"))
-				{
-					if (e.target.parentNode.classList.contains("dropdown-toggle"))
-					{
-						this.querySelector(".dropdown-menu").innerHTML = "<c-navprofile></c-navprofile>";
-					}
-				}
-			})
-
-			this.querySelector("#seach-user").addEventListener("input", (e) => {
-				let content = this.querySelector(".dropdown-menu");
-				content.innerHTML = `<c-search content="${e.target.value}"></c-search>`;
-			})
-
-			this.querySelector("#msg-btn").addEventListener("click", (e) => {
-				Chat.openOrClose()
-			})
+			this.addEventListener("click", this.onSearchClick);
+			this.addEventListener("input", this.onSearchInput);
+			this.querySelector("#msg-btn").addEventListener("click", this.onMsgBtnClick);
 		}
 		else
 			this.innerHTML = "";
+	}
+
+	onSearchClick(e) {
+		if (e.target.id == "seach-user")
+		{
+			this.querySelector(".dropdown-menu").innerHTML = `<c-search content="${e.target.value}"></c-search>`;
+			this.querySelector(".dropdown-toggle").click();
+		}
+		else if (e.target.classList.contains("bx"))
+		{
+			if (e.target.parentNode.classList.contains("dropdown-toggle"))
+			{
+				this.querySelector(".dropdown-menu").innerHTML = "<c-navprofile></c-navprofile>";
+			}
+		}
+	}
+
+	onSearchInput() {
+		let content = this.querySelector(".dropdown-menu");
+		content.innerHTML = `<c-search content="${e.target.value}"></c-search>`;
+	}
+
+	onMsgBtnClick() {
+		Chat.openOrClose()
 	}
 }
 
