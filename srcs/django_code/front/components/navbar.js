@@ -9,6 +9,7 @@ export class Navbar extends Component {
 
 	async connectedCallback() {
 		window.removeEventListener("refreshNavbar", this.realCallback.bind(this));
+		document.removeEventListener("click", this.clickEvent);
 		window.addEventListener("refreshNavbar", this.realCallback.bind(this));
 	}
 
@@ -21,23 +22,10 @@ export class Navbar extends Component {
 		{
 			this.innerHTML = await content(userInfo);
 
-			document.addEventListener("click", (e) => {
-				if (e.target.id == "seach-user")
-				{
-					this.querySelector(".dropdown-menu").innerHTML = `<c-search content="${e.target.value}"></c-search>`;
-					this.querySelector(".dropdown-toggle").click();
-				}
-				else if (e.target.classList.contains("bx"))
-				{
-					if (e.target.parentNode.classList.contains("dropdown-toggle"))
-					{
-						this.querySelector(".dropdown-menu").innerHTML = "<c-navprofile></c-navprofile>";
-					}
-				}
-			})
+			document.addEventListener("click", this.clickEvent);
 
 			this.querySelector("#seach-user").addEventListener("input", (e) => {
-				let content = this.querySelector(".dropdown-menu");
+				let content = this.querySelector("#nav-menu");
 				content.innerHTML = `<c-search content="${e.target.value}"></c-search>`;
 			})
 
@@ -47,6 +35,21 @@ export class Navbar extends Component {
 		}
 		else
 			this.innerHTML = "";
+	}
+
+	clickEvent(e) {
+		if (e.target.id == "seach-user")
+		{
+			this.querySelector("#nav-menu").innerHTML = `<c-search content="${e.target.value}"></c-search>`;
+			this.querySelector(".dropdown-toggle").click();
+		}
+		else if (e.target.classList.contains("bx"))
+		{
+			if (e.target.parentNode.classList.contains("dropdown-toggle"))
+			{
+				this.querySelector("#nav-menu").innerHTML = "<c-navprofile></c-navprofile>";
+			}
+		}
 	}
 }
 
@@ -68,7 +71,7 @@ const content = async (user) => /* html */ `
 							<span class="d-flex align-items-center justify-content-center bg-secondary rounded-4 dropdown-toggle" id="content-none" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside" style="cursor: pointer; width: 3em; height: 3em;">
 								<i class='bx bx-user bx-md'></i>
 							</span>
-							<div class="dropdown-menu mb-2" style="margin-left: -1.5em; height: 25em; width: 22em;">
+							<div class="dropdown-menu mb-2" id="nav-menu" style="margin-left: -1.5em; height: 25em; width: 22em;">
 								<!-- User menu or search -->
 							</div>
 						</div>
