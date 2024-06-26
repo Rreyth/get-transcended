@@ -5,6 +5,7 @@
 	"all": "Todo",
 	"upload": "Subir",
 	"search": "Buscar",
+	"nobody": "Nadie",
     "home": {
 		"welcome": "Bienvenido"
     },
@@ -44,7 +45,8 @@
 		"groups": "Mis grupos",
 		"friends": "Mis amigos",
 		"create_group": "Crear un grupo",
-		"input_placeholder": "Tu mensaje"
+		"input_placeholder": "Tu mensaje",
+		"room": "Unirse a mi juego"
 	},
 	"profile": {
 		"accept_request": "Aceptar solicitud de amistad",

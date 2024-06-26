@@ -1,8 +1,8 @@
 import { Component } from "../../js/component.js";
-import { user } from "../../js/helpers.js";
+import { user, translate } from "../../js/helpers.js";
 
-const messageParser = (text) => {
-	text = text.replace(/\[invite code=([\w]{4})\]/, '<a is="c-link" href="/pong?room=$1">Join my game room</a>')
+const messageParser = async (text) => {
+	text = text.replace(/\[invite code=([\w]{4})\]/, `<a is="c-link" href="/pong?room=$1">${await translate('chat.room')}</a>`)
 	text = text.replace(/\*\*(\w+)\*\*/, "<b>$1</b>")
 	text = text.replace(/_(\w+)_/, "<i>$1</i>")
 
@@ -28,7 +28,7 @@ export class Message extends Component {
             <span>${who}</span>
             <div class="d-flex flex-column text-wrap justify-content-end align-items-start ${who == (await user()).username ? "bg-primary" : "bg-secondary"}" style="max-width: 9.375rem; padding: 0.3125rem; ${userStyle}; overflow-wrap: break-word;">
                 <p class="align-self-stretch">
-                    ${messageParser(this.getAttribute('content'))}
+                    ${await messageParser(this.getAttribute('content'))}
                 </p>
                 <span class="align-self-stretch" style="font-size: 0.5rem;">${this.getAttribute('date')}</span>
             </div>

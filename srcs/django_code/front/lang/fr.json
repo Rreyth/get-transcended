@@ -5,6 +5,7 @@
 	"all": "Tout",
 	"upload": "Téléverser",
 	"search": "Rechercher",
+	"nobody": "Personne",
 	"nav": {
 		"user": "Utilisateur",
 		"msg": "Messages",
@@ -40,7 +41,8 @@
 		"groups": "Mes groupes",
 		"friends": "Mes amis",
 		"create_group": "Créer un groupe",
-		"input_placeholder": "Votre message"
+		"input_placeholder": "Votre message",
+		"room": "Rejoins ma partie"
 	},
 	"profile": {
 		"accept_request": "Accepter la demande d'amis",

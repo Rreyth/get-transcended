@@ -5,6 +5,7 @@
 	"all": "All",
 	"upload": "Upload",
 	"search": "Search",
+	"nobody": "Nobody",
 	"nav": {
 		"user": "User",
 		"msg": "Messages",
@@ -40,7 +41,8 @@
 		"groups": "My groups",
 		"friends": "My friends",
 		"create_group": "Create a group",
-		"input_placeholder": "Your message"
+		"input_placeholder": "Your message",
+		"room": "Join my game room"
 	},
 	"profile": {
 		"accept_request": "Accept friend request",
