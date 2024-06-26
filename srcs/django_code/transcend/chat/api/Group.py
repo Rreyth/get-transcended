@@ -7,6 +7,8 @@ from django.db.models import Q
 from users.models import User
 from chat.models import *
 from chat.serializer import *
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 class GroupView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -39,6 +41,16 @@ class GroupView(APIView):
                     try:
                         user = User.objects.get(username=member)
                         group.members.add(user)
+                        
+                        channel_layer = get_channel_layer()
+
+                        async_to_sync(channel_layer.group_send)(
+                            f"{user.username}_group",
+                            {
+                                'type': 'new_group',
+                                'group': GroupSerializer(group).data,
+                            }
+                        )
                     except User.DoesNotExist:
                         return Response({'error': f'User with id {member} does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
 

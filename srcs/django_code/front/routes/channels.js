@@ -43,3 +43,9 @@ Socket.set('/user/friends', (event) => {
         comp.loadContent()
     Chat.addFriend(data.user)
 })
+
+Socket.set('/user/groups', (event) => {
+    const data = JSON.parse(event.data)
+
+    document.querySelector('#chat-groups').innerHTML += `<c-group group-id=${data.group.id} group-name=${data.group.name}></c-group>`
+})

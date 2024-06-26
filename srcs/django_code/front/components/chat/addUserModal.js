@@ -52,8 +52,6 @@ export class AddUserModal extends Component
                     newMembers.push(checkbox.parentElement.getAttribute('username'))
             })
 
-            console.log(newMembers)
-
             APIRequest.build(`/user/groups/${Group.groupSelected.groupId}`, 'PUT').setBody({
                 members: newMembers,
             }).sendJSON()
