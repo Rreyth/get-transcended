@@ -303,17 +303,17 @@ export class Chat extends Component {
 		const chat = document.querySelector(`c-${Chat.getName()}`)
 
 		if (!chat.classList.contains('d-none'))
-		{
-			Chat.state = State.FRIEND_SECTION
 			chat.classList.add('d-none')
-		}
 	}
 
 	static open()
 	{
 		const chat = document.querySelector(`c-${Chat.getName()}`)
+		const body = document.querySelector('#chat-messages')
 
 		chat.classList.remove('d-none')
+
+		body.scrollTop = body.scrollHeight;
 	}
 
 	static openConversation(username)
