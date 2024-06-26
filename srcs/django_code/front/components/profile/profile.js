@@ -23,7 +23,6 @@ export class Profile extends HTMLElement {
 			wins: data.wins,
 			games: data.games,
 			winrate: data.winrate,
-			// winrate: data.games ? data.wins * 100 / data.games : 0,
 			target_username: user,
 			target_id: data.id,
 		}

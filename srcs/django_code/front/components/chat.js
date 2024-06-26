@@ -60,7 +60,7 @@ export class Chat extends Component {
 		this.innerHTML = /* html */`
 			<c-add-user-modal></c-add-user-modal>
 			<c-create-group-modal></c-create-group-modal>
-			<div class="card position-absolute w-25" style="bottom: 5em; right: 0.5em; min-width: 20em;">
+			<div class="card position-fixed w-25" style="bottom: 5em; right: 0.5em; min-width: 20em;">
 				<div class="card-header d-flex justify-content-between">
 					<div class="d-flex gap-2" id="chat-title">
 						<h5>Chat</h5>
