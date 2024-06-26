@@ -87,7 +87,7 @@ export class Chat extends Component {
 				<div class="card-body overflow-auto d-none" id="chat-messages" style="height: 20em;">
 				</div>
 				<div class="card-footer">
-					<input class="form-control form-control-sm" type="text" placeholder="Search" id="chat-input" />
+					<input class="form-control form-control-sm" type="text" placeholder="${await translate("search")}" id="chat-input" />
 				</div>
 			</div>
         `;

@@ -1,5 +1,6 @@
 import { Component } from "../../js/component.js";
 import { APIRequest } from "../../js/helpers.js";
+import { translate } from "../../js/helpers.js";
 
 export class A2fModal extends Component {
     static getName() {
@@ -9,7 +10,7 @@ export class A2fModal extends Component {
     async connectedCallback() {
 		const username = this.getAttribute("username");
 		const password = this.getAttribute("password");
-		this.innerHTML = content(username);
+		this.innerHTML = await content(username);
 
 		const btModal = this.querySelector("#a2f-bt-modal");
 		btModal.click();
@@ -50,13 +51,13 @@ export class A2fModal extends Component {
     }
 }
 
-const content = (username) => /*html*/`
+const content = async (username) => /*html*/`
 	<button id="a2f-bt-modal" style="display: none;" data-bs-toggle="modal" data-bs-target="#a2f-modal"></button>
 	<div class="modal fade" id="a2f-modal" tabindex="-1" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="alert alert-danger alert-dismissible" id="error-a2f-code" style="display: none;" role="alert">
-					<div>wrong auth code</div>
+					<div>${await translate("2fa.bad_auth_code")}</div>
 					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 				</div>
 				<div class="modal-header">
@@ -64,11 +65,11 @@ const content = (username) => /*html*/`
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-					<input class="form-control" id="a2f-code-input" type="text" placeholder="Your a2f code"><!-- need translation -->
+					<input class="form-control" id="a2f-code-input" type="text" placeholder="${await translate("2fa.placeholder_code")}">
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button id="a2f-save" type="button" class="btn btn-primary">Save changes</button>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${await translate("close")}</button>
+					<button id="a2f-save" type="button" class="btn btn-primary">${await translate("save")}</button>
 				</div>
 			</div>
 		</div>

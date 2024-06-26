@@ -92,5 +92,10 @@
 		"october": "I am Groot",
 		"november": "I am Groot",
 		"december": "I am Groot"
+	},
+	"2fa":
+	{
+		"placeholder_code": "I am Groot",
+		"bad_auth_code": "I am Groot"
 	}
 }

@@ -43,7 +43,8 @@
 		"group_name": "Nombre del grupo",
 		"groups": "Mis grupos",
 		"friends": "Mis amigos",
-		"create_group": "Crear un grupo"
+		"create_group": "Crear un grupo",
+		"input_placeholder": "Tu mensaje"
 	},
 	"profile": {
 		"accept_request": "Aceptar solicitud de amistad",
@@ -92,5 +93,10 @@
 		"october": "Octubre",
 		"november": "Noviembre",
 		"december": "Diciembre"
+	},
+	"2fa":
+	{
+		"placeholder_code": "Introduce tu código 2FA",
+		"bad_auth_code": "Código 2FA incorrecto"
 	}
 }

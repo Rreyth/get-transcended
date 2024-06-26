@@ -89,5 +89,10 @@
 		"october": "October",
 		"november": "November",
 		"december": "December"
+	},
+	"2fa":
+	{
+		"placeholder_code": "Enter your 2FA code",
+		"bad_auth_code": "Bad 2FA code"
 	}
 }

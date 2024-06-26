@@ -1,7 +1,5 @@
 import { Component } from "../js/component.js";
 import { user, getAvatarUrl, APIRequest, translate } from "../js/helpers.js"
-import { Router } from "../js/router.js"
-
 
 export class Settings extends Component {
 	static getName() {
@@ -233,18 +231,18 @@ const content = async (user, a2f, qrcode) => /*html*/`
 
 			<div class="modal-content" id="a2f-code-modal" style="display: none;">
 				<div class="alert alert-danger alert-dismissible" id="error-a2f-code" style="display: none;" role="alert">
-					<div>wrong auth code</div>
+					<div>${await translate("2fa.bad_auth_code")}</div>
 					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 				</div>
 				<div class="modal-body d-flex flex-column justify-content-center align-items-center">
 					<div class="d-flex flex-column justify-content-center align-items-center">
 						<div id="qrcode">${qrcode}</div>
-						<input name="codea2f" class="form-control mx-2" filter id="a2f-code-input" type="text" placeholder="Your code"> <!-- need trad -->
+						<input name="codea2f" class="form-control mx-2" filter id="a2f-code-input" type="text" placeholder="${await translate("2fa.placeholder_code")}"> <!-- need trad -->
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary" id="save-qrcode-btn">Save changes</button>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${await translate("close")}</button>
+					<button type="button" class="btn btn-primary" id="save-qrcode-btn">${await translate("save")}</button>
 				</div>
 			</div>
 
