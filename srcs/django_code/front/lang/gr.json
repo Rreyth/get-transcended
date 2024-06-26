@@ -5,6 +5,7 @@
 	"all": "I am Groot",
 	"upload": "I am Groot",
 	"search": "I am Groot",
+	"nobody": "I am Groot",
     "home": {
 		"welcome": "I am Groot"
     },
@@ -43,7 +44,12 @@
 		"groups": "I am Groot",
 		"friends": "I am Groot",
 		"create_group": "I am Groot",
-		"input_placeholder": "I am Groot"
+		"input_placeholder": "I am Groot",
+		"room": "I am Groot",
+		"block_warn": "I am Groot",
+		"block_btn": "I am Groot",
+		"add_friend": "I am Groot",
+		"leave": "I am Groot"
 	},
 	"profile": {
 		"accept_request": "I am Groot",

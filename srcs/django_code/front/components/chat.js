@@ -203,7 +203,7 @@ export class Chat extends Component {
 
 		if (!response.ok)
 		{
-			Chat.sendEphemeral('Cet utilisateur vous a bloqué.', 'danger-subtle', 'danger')
+			Chat.sendEphemeral(await translate('chat.block_warn'), 'danger-subtle', 'danger')
 		}
 	}
 
@@ -216,7 +216,7 @@ export class Chat extends Component {
 
 			if (!response.ok)
 			{
-				Chat.sendEphemeral('Cet utilisateur vous a bloqué.', 'danger-subtle', 'danger')
+				Chat.sendEphemeral(await translate('chat.block_warn'), 'danger-subtle', 'danger')
 			}
 		}
 		else if (Chat.state == State.GROUP_CONVERSATION)
@@ -248,15 +248,15 @@ export class Chat extends Component {
 		const chatTitle = document.querySelector('#chat-title')
 		const body = document.querySelector('#chat-messages');
 		const options = /* html */`
-			<li class="dropdown-item d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#add-user-modal"><i class='bx bxs-user-plus bx-sm'></i> Add friend</li>
-			<li id="chat-leave-group" class="dropdown-item text-danger d-flex align-items-center gap-2"><i class='bx bx-log-out bx-sm'></i> Leave</li>`
+			<li class="dropdown-item d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#add-user-modal"><i class='bx bxs-user-plus bx-sm'></i> ${await translate('chat.add_friend')}</li>
+			<li id="chat-leave-group" class="dropdown-item text-danger d-flex align-items-center gap-2"><i class='bx bx-log-out bx-sm'></i> ${await translate('chat.leave')}</li>`
 
 		chatTitle.innerHTML = /* html */`
 			<div class="dropstart d-flex align-items-center">
 				<i class='bx bx-left-arrow-alt bx-sm' id="chat-back"></i>
 				<i class='bx bx-dots-vertical-rounded bx-sm' data-bs-toggle="dropdown"></i>
 				<ul class="dropdown-menu">
-					${type == 'GROUP' ? options : /* html */`<li id="chat-block-user" class="dropdown-item text-danger d-flex align-items-center gap-2"><i class='bx bx-block'></i> Bloquer</li>`}
+					${type == 'GROUP' ? options : /* html */`<li id="chat-block-user" class="dropdown-item text-danger d-flex align-items-center gap-2"><i class='bx bx-block'></i> ${await translate('chat.block_btn')}</li>`}
 				</ul>
 			</div>
 			${type == 'GROUP' ? id.groupName : id}
