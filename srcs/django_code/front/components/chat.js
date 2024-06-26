@@ -239,6 +239,10 @@ export class Chat extends Component {
 			</div>`
 
 		body.appendChild(el);
+
+		setTimeout(() => {
+			body.scrollTop = body.scrollHeight;
+		}, 10);
 	}
 
 	static async displayConversation(type, id)
@@ -303,17 +307,17 @@ export class Chat extends Component {
 		const chat = document.querySelector(`c-${Chat.getName()}`)
 
 		if (!chat.classList.contains('d-none'))
-		{
-			Chat.state = State.FRIEND_SECTION
 			chat.classList.add('d-none')
-		}
 	}
 
 	static open()
 	{
 		const chat = document.querySelector(`c-${Chat.getName()}`)
+		const body = document.querySelector('#chat-messages')
 
 		chat.classList.remove('d-none')
+
+		body.scrollTop = body.scrollHeight;
 	}
 
 	static openConversation(username)
