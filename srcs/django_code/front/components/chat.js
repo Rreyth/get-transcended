@@ -239,6 +239,10 @@ export class Chat extends Component {
 			</div>`
 
 		body.appendChild(el);
+
+		setTimeout(() => {
+			body.scrollTop = body.scrollHeight;
+		}, 10);
 	}
 
 	static async displayConversation(type, id)
