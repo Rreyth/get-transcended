@@ -23,7 +23,7 @@ export class Game {
 	start(websocket) {
 		this.state = "menu";
 		this.mode = "none";
-		this.max_score = 10;
+		this.max_score = 5;
 		this.ai = [];
 		this.pressed = [];
 		this.online = false;

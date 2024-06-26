@@ -1,6 +1,6 @@
 from .config import *
 from .Vec2 import *
-from Ball import try_collide
+from .Ball import try_collide
 
 class Obstacle:
 	def __init__(self):

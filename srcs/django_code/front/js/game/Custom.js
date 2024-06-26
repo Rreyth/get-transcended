@@ -13,7 +13,7 @@ export class CustomMenu {
 	constructor() {
 		this.size = [canvas.width * 0.2, canvas.height * 0.1];
 		this.mod_size = [canvas.width * 0.11, canvas.height * 0.07];
-		this.score = 10;
+		this.score = 5;
 		this.ai_nb = 0;
 		this.max_ai = 2;
 		this.down_buttons = [new Button("BACK TO MENU", this.size[0] * 0.1, canvas.height - (this.size[1] * 1.4), this.size[0], this.size[1]),
@@ -57,7 +57,7 @@ export class CustomMenu {
 				if (b.name === "BACK TO MENU") {
 					core.state = "menu";
 					core.mode = "none";
-					core.max_score = 10;
+					core.max_score = 5;
 					core.custom_menu = false;
 					break;
 				}

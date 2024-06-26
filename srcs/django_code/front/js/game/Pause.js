@@ -30,7 +30,7 @@ export class Pause {
 					if (!core.online) {
 						core.GameHub.send(JSON.stringify(core.endMsg("quit")));
 						core.ai = [];
-						core.max_score = 10;
+						core.max_score = 5;
 					}
 					else {
 						if (!core.tournament)

@@ -161,7 +161,7 @@ export function escape_handler(core) {
 	if (core.state === "end" || core.state === "custom" || core.state === "tournament menu") {
 		core.state = "menu";
 		core.mode = "none";
-		core.max_score = 10;
+		core.max_score = 5;
 		core.custom_menu = false;
 		core.tournament_menu = false;
 		core.online = false;

@@ -501,7 +501,7 @@ export class Tournament {
 		if (is_colliding(pos, [0, 0], this.button.hitbox.pos, [this.button.width, this.button.height])) {
 			core.state = "menu";
 			core.mode = "none";
-			core.max_score = 10;
+			core.max_score = 5;
 			core.online = false;
 			core.tournament_menu = false;
 			core.tournament = false;
