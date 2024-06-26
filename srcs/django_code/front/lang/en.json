@@ -46,7 +46,8 @@
 		"block_warn": "This user blocked you.",
 		"block_btn": "Block",
 		"add_friend": "Add friend",
-		"leave": "Leave"
+		"leave": "Leave",
+		"tournament": "It's your turn to play!"
 	},
 	"profile": {
 		"accept_request": "Accept friend request",

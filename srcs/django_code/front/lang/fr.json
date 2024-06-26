@@ -46,7 +46,8 @@
 		"block_warn": "Cet utilisateur vous a bloqué.",
 		"block_btn": "Bloquer",
 		"add_friend": "Ajouter un ami",
-		"leave": "Partir"
+		"leave": "Partir",
+		"tournament": "C'est à toi de jouer!"
 	},
 	"profile": {
 		"accept_request": "Accepter la demande d'amis",

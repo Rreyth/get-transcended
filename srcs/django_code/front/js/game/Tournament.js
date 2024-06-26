@@ -10,6 +10,7 @@ import { Ball } from "./Ball.js";
 import { AI } from "./AI.js";
 import { Wall } from "./Wall.js";
 import { Chat } from "../../components/chat.js" 
+import { translate } from "../helpers.js";
 
 const img = new Image();
 img.src = "/static/js/game/tournament_end.jpg";
@@ -200,17 +201,17 @@ export class Tournament {
 		}
 	}
 
-	notifyNextMatch(id) {
+	async notifyNextMatch(id) {
 		if (this.notified)
 			return;
 		const players_id = [this.matches[this.match_index][0].nb, this.matches[this.match_index][1].nb];
 		if (players_id.includes(id)) {
 			this.notified = true;
-			Chat.sendEphemeral("C'est à toi de jouer !", "primary-subtle", "info")
+			Chat.sendEphemeral(await translate('chat.tournament'), "primary-subtle", "info")
 		}
 	}
 
-	onlineUpdate(msg, core) {
+	async onlineUpdate(msg, core) {
 		if ('cmd' in msg) {
 			if (msg.cmd === 'StartMatch')
 				this.onlineStart(msg.states, core);
@@ -237,7 +238,7 @@ export class Tournament {
 		this.state = msg.state;
 		this.timer[0] = msg.timer;
 		this.match_index = msg.index;
-		this.notifyNextMatch(core.tournament_id);
+		await this.notifyNextMatch(core.tournament_id);
 	}
 
 	leave(id) {
