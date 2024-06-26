@@ -44,7 +44,9 @@
 		"input_placeholder": "Your message",
 		"room": "Join my game room",
 		"block_warn": "This user blocked you.",
-		"block_btn": "Block"
+		"block_btn": "Block",
+		"add_friend": "Add friend",
+		"leave": "Leave"
 	},
 	"profile": {
 		"accept_request": "Accept friend request",

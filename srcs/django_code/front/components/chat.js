@@ -248,8 +248,8 @@ export class Chat extends Component {
 		const chatTitle = document.querySelector('#chat-title')
 		const body = document.querySelector('#chat-messages');
 		const options = /* html */`
-			<li class="dropdown-item d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#add-user-modal"><i class='bx bxs-user-plus bx-sm'></i> Add friend</li>
-			<li id="chat-leave-group" class="dropdown-item text-danger d-flex align-items-center gap-2"><i class='bx bx-log-out bx-sm'></i> Leave</li>`
+			<li class="dropdown-item d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#add-user-modal"><i class='bx bxs-user-plus bx-sm'></i> ${await translate('chat.add_friend')}</li>
+			<li id="chat-leave-group" class="dropdown-item text-danger d-flex align-items-center gap-2"><i class='bx bx-log-out bx-sm'></i> ${await translate('chat.leave')}</li>`
 
 		chatTitle.innerHTML = /* html */`
 			<div class="dropstart d-flex align-items-center">

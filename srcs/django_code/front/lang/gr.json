@@ -47,7 +47,9 @@
 		"input_placeholder": "I am Groot",
 		"room": "I am Groot",
 		"block_warn": "I am Groot",
-		"block_btn": "I am Groot"
+		"block_btn": "I am Groot",
+		"add_friend": "I am Groot",
+		"leave": "I am Groot"
 	},
 	"profile": {
 		"accept_request": "I am Groot",

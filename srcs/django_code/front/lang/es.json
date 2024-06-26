@@ -48,7 +48,9 @@
 		"input_placeholder": "Tu mensaje",
 		"room": "Unirse a mi juego",
 		"block_warn": "Este usuario te bloqueó.",
-		"block_btn": "Bloquear"
+		"block_btn": "Bloquear",
+		"add_friend": "Agregar amigo",
+		"leave": "Salir"
 	},
 	"profile": {
 		"accept_request": "Aceptar solicitud de amistad",
