@@ -47,7 +47,8 @@
 		"create_group": "Crear un grupo",
 		"input_placeholder": "Tu mensaje",
 		"room": "Unirse a mi juego",
-		"block": "Este usuario te bloqueó."
+		"block_warn": "Este usuario te bloqueó.",
+		"block_btn": "Bloquear"
 	},
 	"profile": {
 		"accept_request": "Aceptar solicitud de amistad",

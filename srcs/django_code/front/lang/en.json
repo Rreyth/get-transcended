@@ -43,7 +43,8 @@
 		"create_group": "Create a group",
 		"input_placeholder": "Your message",
 		"room": "Join my game room",
-		"block": "This user blocked you."
+		"block_warn": "This user blocked you.",
+		"block_btn": "Block"
 	},
 	"profile": {
 		"accept_request": "Accept friend request",

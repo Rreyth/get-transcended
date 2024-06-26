@@ -43,7 +43,8 @@
 		"create_group": "Créer un groupe",
 		"input_placeholder": "Votre message",
 		"room": "Rejoins ma partie",
-		"block": "Cet utilisateur vous a bloqué."
+		"block_warn": "Cet utilisateur vous a bloqué.",
+		"block_btn": "Bloquer"
 	},
 	"profile": {
 		"accept_request": "Accepter la demande d'amis",
