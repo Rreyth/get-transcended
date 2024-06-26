@@ -89,5 +89,9 @@
 		"october": "Octobre",
 		"november": "Novembre",
 		"december": "Décembre"
+	},
+	"2fa": {
+		"placeholder_code": "Entrez votre code A2F",
+		"bad_auth_code": "Mauvais code A2F"
 	}
 }
