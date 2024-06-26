@@ -14,7 +14,7 @@ class CustomMenu:
 		self.mod_size = [winWidth * 0.11, winHeight * 0.07]
 		self.font = pg.font.Font(font, int(winHeight * 0.06))
 		self.title_font = pg.font.Font(font, int(winHeight * 0.085))
-		self.score = 10
+		self.score = 5
 		self.ai_nb = 0
 		self.max_ai = 2
 		self.down_buttons = [Button("BACK TO MENU", 25, winHeight - self.size[1] - 25, self.size[0], self.size[1], winHeight * 0.085),
@@ -56,7 +56,7 @@ class CustomMenu:
 				if button.name == "BACK TO MENU":
 					core.state = "menu"
 					core.mode = "none"
-					core.max_score = 10
+					core.max_score = 5
 					core.custom_menu = False
 					break
 				elif button.name == "START":

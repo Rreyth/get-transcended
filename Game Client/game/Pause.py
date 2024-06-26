@@ -28,7 +28,7 @@ class Pause:
 						core.start_screen = False
 						core.wait_screen = False
 						core.ai = []
-						core.max_score = 10
+						core.max_score = 5
 					else:
 						await core.GameRoom.send(json.dumps({'type' : 'quitGame', 'id' : core.id}))
 				core.pause[0] = False

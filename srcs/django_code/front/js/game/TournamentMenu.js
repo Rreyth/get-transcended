@@ -13,7 +13,7 @@ export class TournamentMenu {
 	constructor() {
 		this.size = [canvas.width * 0.2, canvas.height * 0.1];
 		this.mod_size = [canvas.width * 0.11, canvas.height * 0.07];
-		this.score = 10;
+		this.score = 5;
 		this.ai_nb = 0;
 		this.max_ai = 2;
 		this.nb_players = 2;
@@ -54,7 +54,7 @@ export class TournamentMenu {
 				if (b.name === "BACK TO MENU") {
 					core.state = "menu";
 					core.mode = "none";
-					core.max_score = 10;
+					core.max_score = 5;
 					core.tournament_menu = false;
 					break;
 				}

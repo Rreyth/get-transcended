@@ -13,7 +13,7 @@ class TournamentMenu:
 	def __init__(self):
 		self.size = [winWidth * 0.2, winHeight * 0.1]
 		self.mod_size = [winWidth * 0.11, winHeight * 0.07]
-		self.score = 10
+		self.score = 5
 		self.ai_nb = 0
 		self.max_ai = 2
 		self.nb_players = 2
@@ -55,7 +55,7 @@ class TournamentMenu:
 				if b.name == "BACK TO MENU":
 					core.state = "menu"
 					core.mode = "none"
-					core.max_score = 10
+					core.max_score = 5
 					core.tournament_menu = False
 				elif b.name == "START":
 					await self.start(core)

@@ -426,7 +426,7 @@ class Tournament:
 		if self.button.hitbox.collidepoint(mousePos):
 			core.state = "menu"
 			core.mode = "none"
-			core.max_score = 10
+			core.max_score = 5
 			core.online = False
 			core.tournament_menu = False
 			core.tournament = False

@@ -86,7 +86,7 @@ export class End {
 			core.wait_screen = false;
 			core.custom_menu = false;
 			core.ai = [];
-			core.max_score = 10;
+			core.max_score = 5;
 			core.online = false;
 		}
 	}

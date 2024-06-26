@@ -40,7 +40,7 @@ class Game:
 		self.requiered = 2
 		self.ball = Ball(False)
 		self.players = [Player(1, "Player1", 2, False, False), Player(2, "Player2", 2, False, False)]
-		self.max_score = 10
+		self.max_score = 5
 		self.walls = [Wall("up", False), Wall("down", False)]
     
 	def initCustom(self, msg : dict):

@@ -90,6 +90,6 @@ class End:
 			core.wait_screen = False
 			core.custom_menu = False
 			core.ai = []
-			core.max_score = 10
+			core.max_score = 5
 			core.online = False
 
