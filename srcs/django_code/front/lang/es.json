@@ -50,7 +50,8 @@
 		"block_warn": "Este usuario te bloqueó.",
 		"block_btn": "Bloquear",
 		"add_friend": "Agregar amigo",
-		"leave": "Salir"
+		"leave": "Salir",
+		"tournament": "¡Es tu turno!"
 	},
 	"profile": {
 		"accept_request": "Aceptar solicitud de amistad",

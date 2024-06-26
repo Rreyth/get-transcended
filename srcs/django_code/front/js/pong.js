@@ -159,7 +159,7 @@ async function parse_msg(event) {
 		game.state = (game.tournament) ? "tournament" : "start";
 	else if (msg.type == "update") {
 		if ('tournament' in msg) {
-			game.tournament.onlineUpdate(msg, game);
+			await game.tournament.onlineUpdate(msg, game);
 			return;
 		}
 		if ("timer" in msg) {
