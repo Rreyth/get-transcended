@@ -43,7 +43,8 @@
 		"group_name": "Nombre del grupo",
 		"groups": "Mis grupos",
 		"friends": "Mis amigos",
-		"create_group": "Crear un grupo"
+		"create_group": "Crear un grupo",
+		"input_placeholder": "Tu mensaje"
 	},
 	"profile": {
 		"accept_request": "Aceptar solicitud de amistad",
