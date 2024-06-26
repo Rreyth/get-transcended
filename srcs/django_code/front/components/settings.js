@@ -178,7 +178,13 @@ export class Settings extends Component {
 					if (response.ok && success == true)
 						save(bodyPrepare, closeBtn, errorBox);
 					else
-						errorA2fMsg.style.display = "block";
+					{
+						errorA2fMsg.innerHTML = /*html*/ `
+						<div class="alert alert-danger alert-dismissible" role="alert">
+							<div>${await translate("2fa.bad_auth_code")}</div>
+							<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>`;
+					}
 				}
 			}
 			else
@@ -230,10 +236,9 @@ const content = async (user, a2f, qrcode) => /*html*/`
 		<div class="modal-dialog modal-dialog-centered">
 
 			<div class="modal-content" id="a2f-code-modal" style="display: none;">
-				<div class="alert alert-danger alert-dismissible" id="error-a2f-code" style="display: none;" role="alert">
-					<div>${await translate("2fa.bad_auth_code")}</div>
-					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-				</div>
+
+				<div id="error-a2f-code"></div>
+
 				<div class="modal-body d-flex flex-column justify-content-center align-items-center">
 					<div class="d-flex flex-column justify-content-center align-items-center">
 						<div id="qrcode">${qrcode}</div>
