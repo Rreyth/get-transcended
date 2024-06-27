@@ -2,7 +2,11 @@ import { Router } from "../js/router.js"
 
 export class Link extends HTMLAnchorElement {
 	connectedCallback() {
-		this.addEventListener("click", this.handleClick, true);
+		this.addEventListener("click", this.handleClick);
+	}
+
+	disconnectedCallback() {
+		this.removeEventListener("click", this.handleClick);
 	}
 
 	handleClick(ev) {

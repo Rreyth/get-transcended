@@ -9,7 +9,6 @@ export class Navbar extends Component {
 
 	async connectedCallback() {
 		window.removeEventListener("refreshNavbar", this.realCallback.bind(this));
-		document.removeEventListener("click", this.clickEvent);
 		window.addEventListener("refreshNavbar", this.realCallback.bind(this));
 	}
 
@@ -22,22 +21,15 @@ export class Navbar extends Component {
 		{
 			this.innerHTML = await content(userInfo);
 
-			document.addEventListener("click", this.clickEvent);
-
-			this.querySelector("#seach-user").addEventListener("input", (e) => {
-				let content = this.querySelector("#nav-menu");
-				content.innerHTML = `<c-search content="${e.target.value}"></c-search>`;
-			})
-
-			this.querySelector("#msg-btn").addEventListener("click", (e) => {
-				Chat.openOrClose()
-			})
+			document.addEventListener("click", this.onSearchClick);
+			this.addEventListener("input", this.onSearchInput);
+			this.querySelector("#msg-btn").addEventListener("click", this.onMsgBtnClick);
 		}
 		else
 			this.innerHTML = "";
 	}
 
-	clickEvent(e) {
+	onSearchClick(e) {
 		if (e.target.id == "seach-user")
 		{
 			this.querySelector("#nav-menu").innerHTML = `<c-search content="${e.target.value}"></c-search>`;
@@ -50,6 +42,15 @@ export class Navbar extends Component {
 				this.querySelector("#nav-menu").innerHTML = "<c-navprofile></c-navprofile>";
 			}
 		}
+	}
+
+	onSearchInput(e) {
+		let content = this.querySelector("#nav-menu");
+		content.innerHTML = `<c-search content="${e.target.value}"></c-search>`;
+	}
+
+	onMsgBtnClick() {
+		Chat.openOrClose()
 	}
 }
 
