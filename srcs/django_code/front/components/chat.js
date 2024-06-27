@@ -312,10 +312,26 @@ export class Chat extends Component {
 
 	static open()
 	{
-		const chat = document.querySelector(`c-${Chat.getName()}`)
-		const body = document.querySelector('#chat-messages')
+		const chat = document.querySelector(`c-${Chat.getName()}`);
+		const body = document.querySelector('#chat-messages');
 
-		chat.classList.remove('d-none')
+		chat.classList.remove('d-none');
+
+		const friends = document.querySelector("#chat-friends");
+		const groups = document.querySelector('#chat-groups');
+		const friends_btn = document.querySelector('#btn-friends');
+		const groups_btn = document.querySelector('#btn-groups');
+
+		if (this.state == State.FRIEND_SECTION) {
+			friends.classList.remove('d-none');
+			groups.classList.add('d-none');
+		}
+		else {
+			friends.classList.add('d-none');
+			groups.classList.remove('d-none');
+			groups_btn.setAttribute('checked', '');
+			friends_btn.removeAttribute('checked');
+		}
 
 		body.scrollTop = body.scrollHeight;
 	}
