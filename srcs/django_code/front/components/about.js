@@ -7,7 +7,7 @@ export class About extends Component {
     }
 
     async connectedCallback() {
-		this.innerHTML = content;
+		this.innerHTML = await content();
 
 		const aboutContainer = this.querySelector("#about-container");
 
@@ -58,7 +58,7 @@ export class About extends Component {
     }
 }
 
-const content = /*html*/`
+const content = async () => /*html*/`
 	<div id="about-container" class="bg-dark">
 		<div class="d-flex align-items-center bg-body-secondary" id="about-header">
 			<span class="flex-grow-1 text-center">${ await translate("about.about_us") }</span>

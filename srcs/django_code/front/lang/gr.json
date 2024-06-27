@@ -78,7 +78,8 @@
 			"username_already_use": "I am Groot",
 			"email_already_use": "I am Groot",
 			"bad_image": "I am Groot",
-			"internal_error": "I am Groot"
+			"internal_error": "I am Groot",
+			"bad_connection": "I am Groot"
 		}
 	},
 	"about": {

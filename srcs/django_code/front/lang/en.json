@@ -75,7 +75,8 @@
 			"username_already_use": "Username already in use",
 			"email_already_use": "Email already in use",
 			"bad_image": "Bad image",
-			"internal_error": "Internal error, try again later"
+			"internal_error": "Internal error, try again later",
+			"bad_connection": "Wrong password or username"
 		}
 	},
 	"about": {
