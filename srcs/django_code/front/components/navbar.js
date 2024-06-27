@@ -21,7 +21,7 @@ export class Navbar extends Component {
 		{
 			this.innerHTML = await content(userInfo);
 
-			this.addEventListener("click", this.onSearchClick);
+			document.addEventListener("click", this.onSearchClick);
 			this.addEventListener("input", this.onSearchInput);
 			this.querySelector("#msg-btn").addEventListener("click", this.onMsgBtnClick);
 		}
