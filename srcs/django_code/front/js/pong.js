@@ -43,7 +43,8 @@ const keydown_event = (event) => {
 window.addEventListener('keydown', keydown_event);
 
 const keyup_event = (event) => {
-    delete game.inputs[event.key];
+	if (event.key in game.inputs)
+    	delete game.inputs[event.key];
 };
 
 window.addEventListener('keyup', keyup_event);
