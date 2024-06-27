@@ -6,9 +6,9 @@ export class LangBtn extends Component {
         return "langbtn";
     }
 
-	async setLang(choice)
+	setLang(choice)
 	{
-		await cookieStore.set({ name: "lang", value: choice });
+		cookieStore.set({ name: "lang", value: choice });
 		this.querySelector(".active").classList.remove("active");
 		this.querySelector(`#${choice}-lang`).classList.add('active');
 		this.querySelector("#title-lang").innerHTML = choice.toUpperCase();
