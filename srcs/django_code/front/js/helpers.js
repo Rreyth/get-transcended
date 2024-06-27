@@ -1,20 +1,19 @@
 import { Cache } from "./cache.js"
 
+const DEFAULT_LANG = "en"
+
 export const translate = async (key) => {
-    const DEFAULT_LANG = "en"
-    let lang = await cookieStore.get("lang")
 
-    if (lang == null)
+    const langFromCookie = await cookieStore.get("lang")
+    const lang = langFromCookie?.value ?? DEFAULT_LANG
+
+    if (!langFromCookie) { cookieStore.set({ name: "lang", value: DEFAULT_LANG }) }
+
+    let currentLang = Cache.get(`lang-${lang}`)
+
+    if (currentLang == null)
     {
-        cookieStore.set({ name: "lang", value: DEFAULT_LANG })
-        lang = { value: DEFAULT_LANG }
-    }
-
-    let data = Cache.get(`lang-${lang}`)
-
-    if (data == null)
-    {
-        const response = await fetch(`https://${location.hostname}:${location.port}/static/lang/${lang.value}.json`)
+        const response = await fetch(`https://${location.hostname}:${location.port}/static/lang/${lang}.json`)
 
         if (!response.ok)
         {
@@ -23,17 +22,15 @@ export const translate = async (key) => {
             return await translate(key);
         }
 
-        data = await response.json()
-        Cache.set(`lang-${lang}`, data)
+        currentLang = await response.json()
+        Cache.set(`lang-${lang}`, currentLang)
     }
 
-    let keys = key.split(".")
-    let value = null
+    const keys = key.split(".")
+    let value = currentLang[keys.shift()]
 
-    for (let k of keys)
-    {
-        value = value == null ? data[k] : value[k]
-    }
+    for (const k of keys)
+        value = value[k];
 
     return value
 }

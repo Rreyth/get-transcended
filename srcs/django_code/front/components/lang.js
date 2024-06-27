@@ -1,13 +1,14 @@
 import { Component } from "../js/component.js";
+import { Router } from "../js/router.js"
 
 export class LangBtn extends Component {
     static getName() {
         return "langbtn";
     }
 
-	setLang(choice)
+	async setLang(choice)
 	{
-		cookieStore.set({ name: "lang", value: choice });
+		await cookieStore.set({ name: "lang", value: choice });
 		this.querySelector(".active").classList.remove("active");
 		this.querySelector(`#${choice}-lang`).classList.add('active');
 		this.querySelector("#title-lang").innerHTML = choice.toUpperCase();
@@ -24,19 +25,19 @@ export class LangBtn extends Component {
 
 		this.addClickEvent('#en-lang', (e) => {
 			this.setLang("en");
-			location.reload();
+			Router.push(window.location.pathname + window.location.search);
 		})
 		this.addClickEvent('#fr-lang', (e) => {
 			this.setLang("fr");
-			location.reload();
+			Router.push(window.location.pathname + window.location.search);
 		})
 		this.addClickEvent('#es-lang', (e) => {
 			this.setLang("es");
-			location.reload();
+			Router.push(window.location.pathname + window.location.search);
 		})
 		this.addClickEvent('#gr-lang', (e) => {
 			this.setLang("gr");
-			location.reload();
+			Router.push(window.location.pathname + window.location.search);
 		})
     }
 }
