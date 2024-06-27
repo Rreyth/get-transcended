@@ -25,19 +25,19 @@ export class LangBtn extends Component {
 
 		this.addClickEvent('#en-lang', (e) => {
 			this.setLang("en");
-			Router.push(window.location.pathname + window.location.search);
+			Router.push(window.location.pathname + window.location.search, true);
 		})
 		this.addClickEvent('#fr-lang', (e) => {
 			this.setLang("fr");
-			Router.push(window.location.pathname + window.location.search);
+			Router.push(window.location.pathname + window.location.search, true);
 		})
 		this.addClickEvent('#es-lang', (e) => {
 			this.setLang("es");
-			Router.push(window.location.pathname + window.location.search);
+			Router.push(window.location.pathname + window.location.search, true);
 		})
 		this.addClickEvent('#gr-lang', (e) => {
 			this.setLang("gr");
-			Router.push(window.location.pathname + window.location.search);
+			Router.push(window.location.pathname + window.location.search, true);
 		})
     }
 }
