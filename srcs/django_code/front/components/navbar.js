@@ -9,7 +9,6 @@ export class Navbar extends Component {
 
 	async connectedCallback() {
 		window.removeEventListener("refreshNavbar", this.realCallback.bind(this));
-		document.removeEventListener("click", this.clickEvent);
 		window.addEventListener("refreshNavbar", this.realCallback.bind(this));
 	}
 
@@ -45,7 +44,7 @@ export class Navbar extends Component {
 		}
 	}
 
-	onSearchInput() {
+	onSearchInput(e) {
 		let content = this.querySelector("#nav-menu");
 		content.innerHTML = `<c-search content="${e.target.value}"></c-search>`;
 	}
