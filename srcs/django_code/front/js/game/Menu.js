@@ -13,14 +13,15 @@ import { TournamentMenu } from "./TournamentMenu.js";
 
 export class Menu {
 	constructor() {
-		this.button_size = [canvas.width * 0.1, canvas.height * 0.1];
-		this.buttons = [new Button("SOLO", (canvas.width / 3) - (this.button_size[0] / 2), (canvas.height / 2) - this.button_size[1], this.button_size[0], this.button_size[1]),
-					new Button("LOCAL", (canvas.width / 3 * 2) - (this.button_size[0] / 2), (canvas.height / 2) - this.button_size[1], this.button_size[0], this.button_size[1]),
-					new Button("ONLINE", (canvas.width / 3) - (this.button_size[0] / 2), (canvas.height / 3 * 2), this.button_size[0], this.button_size[1]),
-					new Button("CUSTOM", (canvas.width / 3 * 2) - (this.button_size[0] / 2), (canvas.height / 3 * 2), this.button_size[0], this.button_size[1]),
-					new Button("JOIN", (canvas.width * 0.01), (canvas.height * 0.875), this.button_size[0], this.button_size[1]),
-					new Button("", (canvas.width * 0.12), (canvas.height * 0.875), this.button_size[0], this.button_size[1]),
-					new Button("TOURNAMENT", (canvas.width * 0.815), (canvas.height * 0.875), this.button_size[0] * 1.75, this.button_size[1])];
+		this.responsive();
+		// this.button_size = [0.1, 0.1];
+		// this.buttons = [new Button("SOLO", 0.33 - (this.button_size[0] / 2), 0.5 - this.button_size[1], this.button_size[0], this.button_size[1]),
+		// 			new Button("LOCAL", (canvas.width / 3 * 2) - (this.button_size[0] / 2), (canvas.height / 2) - this.button_size[1], this.button_size[0], this.button_size[1]),
+		// 			new Button("ONLINE", (canvas.width / 3) - (this.button_size[0] / 2), (canvas.height / 3 * 2), this.button_size[0], this.button_size[1]),
+		// 			new Button("CUSTOM", (canvas.width / 3 * 2) - (this.button_size[0] / 2), (canvas.height / 3 * 2), this.button_size[0], this.button_size[1]),
+		// 			new Button("JOIN", (canvas.width * 0.01), (canvas.height * 0.875), this.button_size[0], this.button_size[1]),
+		// 			new Button("", (canvas.width * 0.12), (canvas.height * 0.875), this.button_size[0], this.button_size[1]),
+		// 			new Button("TOURNAMENT", (canvas.width * 0.815), (canvas.height * 0.875), this.button_size[0] * 1.75, this.button_size[1])];
 		this.err = false;
 	}
 
@@ -108,13 +109,15 @@ export class Menu {
 	}
 
 	responsive() {
-		this.button_size = [canvas.width * 0.1, canvas.height * 0.1];
-		this.buttons = [new Button("SOLO", (canvas.width / 3) - (this.button_size[0] / 2), (canvas.height / 2) - this.button_size[1], this.button_size[0], this.button_size[1]),
-				  new Button("LOCAL", (canvas.width / 3 * 2) - (this.button_size[0] / 2), (canvas.height / 2) - this.button_size[1], this.button_size[0], this.button_size[1]),
-				  new Button("ONLINE", (canvas.width / 3) - (this.button_size[0] / 2), (canvas.height / 3 * 2), this.button_size[0], this.button_size[1]),
-				  new Button("CUSTOM", (canvas.width / 3 * 2) - (this.button_size[0] / 2), (canvas.height / 3 * 2), this.button_size[0], this.button_size[1]),
-				  new Button("JOIN", (canvas.width * 0.01), (canvas.height * 0.875), this.button_size[0], this.button_size[1]),
-				  new Button("", (canvas.width * 0.12), (canvas.height * 0.875), this.button_size[0], this.button_size[1]),
-				  new Button("TOURNAMENT", (canvas.width * 0.815), (canvas.height * 0.875), this.button_size[0] * 1.75, this.button_size[1])];
+		const third = 0.33;
+		const half = 0.5;
+		this.button_size = [0.1, 0.1];
+		this.buttons = [new Button("SOLO", third - (this.button_size[0] / 2), half - this.button_size[1], this.button_size[0], this.button_size[1]),
+					new Button("LOCAL", third * 2 - (this.button_size[0] / 2), half - this.button_size[1], this.button_size[0], this.button_size[1]),
+					new Button("ONLINE", third - (this.button_size[0] / 2), third * 2, this.button_size[0], this.button_size[1]),
+					new Button("CUSTOM", third * 2 - (this.button_size[0] / 2), third * 2, this.button_size[0], this.button_size[1]),
+					new Button("JOIN", (canvas.width * 0.01), (canvas.height * 0.875), this.button_size[0], this.button_size[1]),
+					new Button("", (canvas.width * 0.12), (canvas.height * 0.875), this.button_size[0], this.button_size[1]),
+					new Button("TOURNAMENT", (canvas.width * 0.815), (canvas.height * 0.875), this.button_size[0] * 1.75, this.button_size[1])];
 	}
 }
