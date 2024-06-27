@@ -3,7 +3,7 @@ DC := docker compose -f srcs/docker-compose.yml
 all: auto_ip up
 
 up:
-	$(DC) up --build
+	$(DC) up --build -d
 
 down:
 	$(DC) down
