@@ -37,13 +37,14 @@ let game = new Game();
 let gameInterval;
 
 const keydown_event = (event) => {
-    game.inputs[event.key] = true;
+	game.inputs[event.key] = true;
 };
 
 window.addEventListener('keydown', keydown_event);
 
 const keyup_event = (event) => {
-    delete game.inputs[event.key];
+	if (event.key in game.inputs)
+		delete game.inputs[event.key];
 };
 
 window.addEventListener('keyup', keyup_event);
