@@ -8,31 +8,29 @@ import { canvas } from './canvas.js';
 
 export class Game {
 	constructor() {
-		this.state = "menu";
-		this.mode = "none";
-		this.menu = new Menu();
-		this.pause = [false, new Pause()];
-		this.end = new End();
-		this.custom_menu = false;
-		this.players = false;
 		this.alias = "ALIAS";
-		this.inputs = {};
-		this.customs = [];
 	}
 
 	start(websocket) {
+		this.start_screen = false;
+		this.wait_screen = false;
+		this.custom_menu = false;
+		this.GameRoom = false;
+		this.players = false;
+		this.online = false;
 		this.state = "menu";
 		this.mode = "none";
 		this.max_score = 5;
-		this.ai = [];
-		this.pressed = [];
-		this.online = false;
 		this.id = 1;
-		this.GameRoom = false;
-		this.GameHub = websocket;
+		this.pressed = [];
+		this.customs = [];
+		this.inputs = {};
+		this.ai = [];
+		this.pause = [false, new Pause()];
+		this.menu = new Menu();
+		this.end = new End();
 		this.last = Date.now() / 1000;
-		this.wait_screen = false;
-		this.start_screen = false;
+		this.GameHub = websocket;
 	}
 
 	endMsg(reason = "end") {
