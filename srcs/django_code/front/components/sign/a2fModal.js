@@ -1,6 +1,7 @@
 import { Component } from "../../js/component.js";
 import { APIRequest } from "../../js/helpers.js";
 import { translate } from "../../js/helpers.js";
+import { Router } from "../../js/router.js";
 
 export class A2fModal extends Component {
     static getName() {
@@ -41,7 +42,8 @@ export class A2fModal extends Component {
 			if (response && response.ok && res.access)
 			{
 				cookieStore.set({name: 'token', value: res.access});
-				location.href = location.href.split('?')[0];
+				btModal.click();
+				Router.push("/");
 			}
 			else
 			{
