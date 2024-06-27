@@ -1,5 +1,6 @@
 import { Component } from "../../js/component.js";
 import { APIRequest, translate } from "../../js/helpers.js";
+import { Router } from "../../js/router.js";
 
 export class SSign extends Component {
     static getName() {
@@ -13,12 +14,12 @@ export class SSign extends Component {
 		const code = urlParams.get('code');
 		if (code)
 		{
-			const response = await APIRequest.build(`/42?code=${code}`, 'GET').send();
+			const response = await APIRequest.build(`/42/?code=${code}`, 'GET').send();
 			const res = (await response.json());
 			if (res.access)
 			{
 				cookieStore.set({name: 'token', value: res.access});
-				location.href = location.href.split('?')[0];
+				Router.push("/");
 			}
 			else if (res.a2f)
 			{
