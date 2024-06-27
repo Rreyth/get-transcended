@@ -263,7 +263,7 @@ export class Chat extends Component {
 					${type == 'GROUP' ? options : /* html */`<li id="chat-block-user" class="dropdown-item text-danger d-flex align-items-center gap-2"><i class='bx bx-block'></i> ${await translate('chat.block_btn')}</li>`}
 				</ul>
 			</div>
-			${type == 'GROUP' ? id.groupName : id}
+			${type == 'GROUP' ? id.groupName : `<a is="c-link" href="/user/${id}">${id}</a>`}
 		`
 
 		document.querySelector('#chat-back').onclick = async () => {
