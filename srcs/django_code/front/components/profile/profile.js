@@ -1,4 +1,3 @@
-import { Router } from "../../js/router.js";
 import { APIRequest, formatDate, getAvatarUrl, translate } from "../../js/helpers.js";
 
 export class Profile extends HTMLElement {
@@ -8,14 +7,7 @@ export class Profile extends HTMLElement {
 		const user = url.substring(url.lastIndexOf('/') + 1);
 		const response = await APIRequest.build(`/user/${user}`, 'GET').send();
 		const data = await response.json();
-		
-		if (response.status == 404) {
-			Router.push('404');
-		}
-		if (response.status == 401) {
-			Router.push('login');
-		}
-		
+
 		let context = {
 			avatar: getAvatarUrl(data.avatar),
 			username: data.username,
@@ -28,7 +20,7 @@ export class Profile extends HTMLElement {
 		}
 
 		this.innerHTML = await content(context);
-		
+
 		const r = await APIRequest.build(`/user/${user}/games/`, 'GET').send()
 
 		const games = await r.json()

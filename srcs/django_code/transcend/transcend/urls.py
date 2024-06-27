@@ -30,3 +30,5 @@ urlpatterns = [
     path('', include('chat.api.urls')),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh')
 ]
+
+handler404 = 'transcend.error_handlers.page_404.page_404'
