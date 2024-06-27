@@ -7,7 +7,7 @@ export class SSign extends Component {
     }
 
     async connectedCallback() {
-		this.innerHTML = content;
+		this.innerHTML = await content();
 
 		const urlParams = new URLSearchParams(window.location.search);
 		const code = urlParams.get('code');
@@ -65,7 +65,7 @@ export class SSign extends Component {
     }
 }
 
-const content = /*html*/`
+const content = async () => /*html*/`
 	<div class="d-flex flex-column position-absolute fixed-bottom row-gap-3 ms-4 mb-4" style="width: 14em;">
 		<div class="d-flex" id="sing-in-switch" style="cursor: pointer;">
 			<div class="d-flex flex-row align-items-center gap-2 fs-3">

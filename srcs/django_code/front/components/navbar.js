@@ -55,6 +55,8 @@ export class Navbar extends Component {
 
 
 const content = async (user) => /* html */ `
+	<c-about></c-about>
+
 	<nav class="navbar fixed-bottom navbar-expand bg-body-tertiary user-select-none">
 		<div class="container-fluid text-center">
 

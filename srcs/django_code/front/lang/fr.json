@@ -75,7 +75,8 @@
 			"username_already_use": "Nom d'utilisateur déjà utilisé",
 			"email_already_use": "Email déjà utilisé",
 			"bad_image": "Mauvaise image",
-			"internal_error": "Erreur interne, essayez plus tard"
+			"internal_error": "Erreur interne, essayez plus tard",
+			"bad_connection": "Mot de passe ou nom d'utilisateur incorrect"
 		}
 	},
 	"about": {

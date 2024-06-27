@@ -7,8 +7,8 @@ export class Login extends Component {
         return "login";
     }
 
-    connectedCallback() {
-		this.innerHTML = content;
+    async connectedCallback() {
+		this.innerHTML = await content();
 		const inputUser = this.querySelector("#input-user");
 		const inputPass = this.querySelector("#input-pass");
 
@@ -45,7 +45,7 @@ async function connect(username, password, me)
 	}
 }
 
-const content = /*html*/`
+const content = async () => /*html*/`
 	<div class="align-self-center" id="sing-in-form">
 		<div class="form-group flex-column d-flex row-gap-5">
 			<div class="d-flex align-self-center justify-content-center align-items-center rounded-circle bg-secondary p-2" style="width: 10em; height: 10em;">
@@ -53,7 +53,7 @@ const content = /*html*/`
 			</div>
 			<div class="flex-column d-flex row-gap-4">
 				<div class="alert alert-danger collapse" id="alert-id" role="alert">
-					Password or user is wrong
+					${ await translate("forms.errors.bad_connection") }
 				</div>
 				<input class="form-control" id="input-user" type="text" placeholder="${ await translate("forms.username") }">
 				<input class="form-control" id="input-pass" type="password" placeholder="${ await translate("forms.password") }">
