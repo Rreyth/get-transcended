@@ -24,7 +24,7 @@ export class Router {
     const response = await fetch(url, { headers: { "X-Source": "SPA" } });
     const text = await response.text();
     if (!dontPush)
-      window.history.pushState(null, "", pathname);
+      window.history.pushState({}, "", pathname);
     let link = url.pathname;
     let title = link.substring(url.pathname.lastIndexOf('/') + 1);
     if (title.length == 0) {
@@ -46,6 +46,6 @@ window.onpopstate = function() {
 
 window.addEventListener("load", () => {
   setTimeout(() => {
-    Router.push(window.location.pathname + window.location.search)
+    Router.push(window.location.pathname + window.location.search, true)
   }, 200)
 });
