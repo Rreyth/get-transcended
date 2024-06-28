@@ -1,4 +1,4 @@
-DC := docker compose -f srcs/docker-compose.yml
+DC := docker compose
 
 all: auto_ip up
 
