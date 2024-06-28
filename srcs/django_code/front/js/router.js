@@ -3,11 +3,11 @@ import { user, token_checker } from "./helpers.js";
 import { Socket } from "./socket.js";
 
 export class Router {
-  static async push(pathname, dontPush = false) {
-	if (pathname.includes('pong') && window.location.pathname.includes('pong')) {
-		window.dispatchEvent(new Event("refreshNavbar"));
-		return;
-	}
+  static async push(pathname, dontPush = false, lang = false) {
+    if (pathname.includes('pong') && window.location.pathname.includes('pong') && lang) {
+        window.dispatchEvent(new Event("refreshNavbar"));
+        return;
+    }
     await token_checker();
     const userInfo = await user();
 
