@@ -289,7 +289,13 @@ export class Chat extends Component {
 
 	static addFriend(user)
 	{
-		document.querySelector('#chat-friends').innerHTML += `<c-friend avatar="${user.avatar}" username="${user.username}" connected="${user.online}"></c-friend>`
+		const ele = document.createElement('c-friend')
+
+		ele.setAttribute('avatar', user.avatar)
+		ele.setAttribute('username', user.username)
+		ele.setAttribute('connected', user.online)
+		
+		document.querySelector('#chat-friends').appendChild(ele)
 	}
 
 	static close()
