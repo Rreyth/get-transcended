@@ -13,9 +13,12 @@ export class Router {
 
     if (userInfo == null && !code) {
       pathname = "/login";
+      window.history.pushState({}, "", pathname);
     }
-    else if (userInfo && (pathname == "/login" || pathname == "login"))
+    else if (userInfo && (pathname == "/login" || pathname == "login")) {
       pathname = "/";
+      window.history.pushState({}, "", pathname);
+    }
 
     Thread.clearAll();
     Socket.run();
