@@ -10,16 +10,6 @@ const State = Object.freeze({
 	GROUP_CONVERSATION: Symbol("group_conversation"),
 });
 
-const escapeHtml = (text) => {
-	let map = {
-		'&': '&amp;',
-		'<': '&lt;',
-		'>': '&gt;',
-		'"': '&quot;',
-		"'": '&#039;'
-	};
-	return text.replace(/[&<>"']/g, function (m) { return map[m]; });
-}
 
 export class Chat extends Component {
 
@@ -134,10 +124,10 @@ export class Chat extends Component {
 			switch (Chat.state)
 			{
 				case State.FRIEND_CONVERSATION:
-					Chat.sendMessage(escapeHtml(event.target.value.replace(/\n/g, "<br>")))
+					Chat.sendMessage(event.target.value.replace(/\n/g, "<br>"))
 					break;
 				case State.GROUP_CONVERSATION:
-					Chat.sendMessage(escapeHtml(event.target.value.replace(/\n/g, "<br>")))
+					Chat.sendMessage(event.target.value.replace(/\n/g, "<br>"))
 					break;
 			}
 
