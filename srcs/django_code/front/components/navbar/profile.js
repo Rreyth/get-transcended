@@ -10,11 +10,10 @@ export class NavProfile extends Component {
 
 	async connectedCallback() {
 		super.connectedCallback();
-		if (document.querySelector("c-settings") == null)
-		{
-			let ele = document.createElement("c-settings");
-			document.body.appendChild(ele);
-		}
+		if (document.querySelector("c-settings"))
+			document.querySelector("c-settings").remove();
+		let ele = document.createElement("c-settings");
+		document.body.appendChild(ele);
 		const userValue = await user();
 		if (userValue != null) {
 			this.innerHTML = await content(userValue);
