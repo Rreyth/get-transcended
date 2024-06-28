@@ -44,5 +44,4 @@ class UserView(APIView):
             else:
                 return Response({'error': 'errors.inte_data', 'errormsg': 'Data integrity error'}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print(str(e), flush=True)
-            return Response({'error': 'errors.unexpected', 'errormsg': 'An unexpected error are occurred'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'error': 'errors.unexpected', 'errormsg': 'An unexpected error are occurred'}, status=status.HTTP_400_BAD_REQUEST)
