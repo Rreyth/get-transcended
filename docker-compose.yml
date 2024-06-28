@@ -10,11 +10,11 @@ services:
     networks:
       - transcendNetwork
     env_file:
-      - .env
+      - ./srcs/.env
 
   daphne:
     build:
-      context: ./requirements/Daphne
+      context: ./srcs/requirements/Daphne
     container_name: daphne
     image: daphne
     restart: always
@@ -27,11 +27,11 @@ services:
     depends_on:
       - postgres
     env_file:
-      - .env
+      - ./srcs/.env
 
   nginx:
     build:
-      context: ./requirements/Nginx
+      context: ./srcs/requirements/Nginx
     container_name: nginx
     image: nginx
     restart: always
@@ -46,7 +46,7 @@ services:
 
   pong:
     build:
-      context: ./requirements/Pong-Server
+      context: ./srcs/requirements/Pong-Server
     container_name: pong
     image: pong
     restart: always
@@ -57,7 +57,7 @@ services:
     volumes:
       - app:/app
     env_file:
-      - .env
+      - ./srcs/.env
 
   adminer:
     image: adminer:latest
@@ -78,7 +78,7 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: ./django_code
+      device: ./srcs/django_code
   db:
     name: db
 
